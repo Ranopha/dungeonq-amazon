@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "dungeonq.scenario/v1",
+  "scenarioId": "syn-false-positive-001",
+  "title": "Fresh context recovery",
+  "summary": "A revoked synthetic session stays revoked while fresh reauthentication establishes a new context.",
+  "classification": "SYNTHETIC_ONLY",
+  "seed": "DQ-RECOVERY-001",
+  "subject": {
+    "type": "SESSION",
+    "id": "syn-session-revoked-001"
+  },
+  "environment": {
+    "tenantId": "syn-tenant-recovery-001",
+    "assets": [
+      {
+        "id": "syn-identity-recovery-001",
+        "kind": "IDENTITY",
+        "criticality": "HIGH",
+        "initialState": "CONTEXT_REVOKED"
+      }
+    ]
+  },
+  "policy": {
+    "policyId": "syn-policy-recovery-001",
+    "deceptionThreshold": 60,
+    "quarantineThreshold": 80,
+    "denyThreshold": 95,
+    "maxAutomatedScope": 1,
+    "budgetUnits": 40,
+    "approvalRequiredEffects": [
+      "RELEASE_NEW_CONTEXT"
+    ]
+  },
+  "signals": [
+    {
+      "id": "syn-signal-replay-001",
+      "sourceId": "syn-identity-sensor-001",
+      "sourceClass": "IDENTITY_CONTROL",
+      "independenceGroup": "syn-identity-a",
+      "kind": "CREDENTIAL_REPLAY",
+      "confidence": 85,
+      "subjectId": "syn-session-revoked-001",
+      "evidence": "Synthetic replay affected only the revoked context"
+    },
+    {
+      "id": "syn-signal-reauth-001",
+      "sourceId": "syn-reauth-sensor-001",
+      "sourceClass": "USER_REAUTH",
+      "independenceGroup": "syn-auth-b",
+      "kind": "FRESH_REAUTH",
+      "confidence": 75,
+      "subjectId": "syn-session-revoked-001",
+      "evidence": "Synthetic fresh authentication completed"
+    }
+  ],
+  "failures": [],
+  "requestedEffect": {
+    "type": "RELEASE_NEW_CONTEXT",
+    "targetAssetId": "syn-identity-recovery-001",
+    "scope": 1,
+    "costUnits": 4
+  },
+  "expected": {
+    "route": "NO_ADDITIONAL_RESTRICTION",
+    "approvalRequired": true,
+    "effectExecutable": true,
+    "requiredInvariantIds": [
+      "DQ-INV-008"
+    ]
+  }
+}

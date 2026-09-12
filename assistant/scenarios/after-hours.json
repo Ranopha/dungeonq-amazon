@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "dungeonq.scenario/v1",
+  "scenarioId": "syn-after-hours-001",
+  "title": "After-hours credential misuse",
+  "summary": "An artificial order-service session touches a controlled honey credential. Rehearse containment without touching real orders.",
+  "classification": "SYNTHETIC_ONLY",
+  "seed": "DQ-AFTER-HOURS-001",
+  "subject": { "type": "SESSION", "id": "syn-orders-session" },
+  "environment": { "tenantId": "syn-shop", "assets": [
+    { "id": "syn-orders-session", "kind": "IDENTITY", "criticality": "CRITICAL", "initialState": "AVAILABLE" },
+    { "id": "syn-inventory-session", "kind": "IDENTITY", "criticality": "HIGH", "initialState": "AVAILABLE" }
+  ] },
+  "policy": { "policyId": "syn-response-policy", "deceptionThreshold": 60, "quarantineThreshold": 80,
+    "denyThreshold": 95, "maxAutomatedScope": 1, "budgetUnits": 100, "approvalRequiredEffects": ["ISOLATE_SESSION"] },
+  "signals": [{ "id": "syn-honey-event", "sourceId": "syn-honey-sensor", "sourceClass": "CONTROLLED_HONEY",
+    "independenceGroup": "syn-source-a", "kind": "HONEY_CREDENTIAL_USED", "confidence": 98,
+    "subjectId": "syn-orders-session", "evidence": "Artificial fixture: a honey credential was used by the synthetic session." }],
+  "failures": [],
+  "requestedEffect": { "type": "ISOLATE_SESSION", "targetAssetId": "syn-orders-session", "scope": 1, "costUnits": 10 },
+  "expected": { "route": "DENY", "approvalRequired": true, "effectExecutable": true,
+    "requiredInvariantIds": ["DQ-INV-001", "DQ-INV-003", "DQ-INV-004"] }
+}

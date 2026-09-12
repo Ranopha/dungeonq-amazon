@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "dungeonq.scenario/v1",
+  "scenarioId": "syn-compound-pep-001",
+  "title": "Controlled edge context loss",
+  "summary": "A synthetic edge peer omits route context while the evidence authority is unavailable.",
+  "classification": "SYNTHETIC_ONLY",
+  "seed": "DQ-PEP-001",
+  "subject": {
+    "type": "SESSION",
+    "id": "syn-session-pep-001"
+  },
+  "environment": {
+    "tenantId": "syn-tenant-pep-001",
+    "assets": [
+      {
+        "id": "syn-edge-pep-001",
+        "kind": "EDGE_PEP",
+        "criticality": "CRITICAL",
+        "initialState": "AVAILABLE"
+      }
+    ]
+  },
+  "policy": {
+    "policyId": "syn-policy-pep-001",
+    "deceptionThreshold": 60,
+    "quarantineThreshold": 80,
+    "denyThreshold": 95,
+    "maxAutomatedScope": 1,
+    "budgetUnits": 50,
+    "approvalRequiredEffects": [
+      "ISOLATE_SESSION"
+    ]
+  },
+  "signals": [
+    {
+      "id": "syn-signal-pep-001",
+      "sourceId": "syn-edge-sensor-001",
+      "sourceClass": "EDGE_TELEMETRY",
+      "independenceGroup": "syn-edge-b",
+      "kind": "ANOMALOUS_BEHAVIOR",
+      "confidence": 50,
+      "subjectId": "syn-session-pep-001",
+      "evidence": "Synthetic edge context mismatch"
+    }
+  ],
+  "failures": [
+    "EVIDENCE_AUTHORITY_UNAVAILABLE",
+    "PEP_CONTEXT_MISSING"
+  ],
+  "requestedEffect": {
+    "type": "ISOLATE_SESSION",
+    "targetAssetId": "syn-edge-pep-001",
+    "scope": 1,
+    "costUnits": 5
+  },
+  "expected": {
+    "route": "DENY",
+    "approvalRequired": true,
+    "effectExecutable": false,
+    "requiredInvariantIds": [
+      "DQ-INV-002",
+      "DQ-INV-007"
+    ]
+  }
+}

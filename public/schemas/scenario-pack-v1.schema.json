@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:dungeonq:scenario:v1",
+  "title": "DungeonQ Synthetic Scenario Pack v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "scenarioId",
+    "title",
+    "summary",
+    "classification",
+    "seed",
+    "subject",
+    "environment",
+    "policy",
+    "signals",
+    "failures",
+    "requestedEffect",
+    "expected"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "dungeonq.scenario/v1" },
+    "scenarioId": { "$ref": "#/$defs/syntheticId" },
+    "title": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "summary": { "type": "string", "minLength": 1, "maxLength": 1024 },
+    "classification": { "const": "SYNTHETIC_ONLY" },
+    "seed": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": { "enum": ["SESSION", "CREDENTIAL", "DEVICE", "ACCOUNT"] },
+        "id": { "$ref": "#/$defs/syntheticId" }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tenantId", "assets"],
+      "properties": {
+        "tenantId": { "$ref": "#/$defs/syntheticId" },
+        "assets": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "kind", "criticality", "initialState"],
+            "properties": {
+              "id": { "$ref": "#/$defs/syntheticId" },
+              "kind": { "enum": ["APPLICATION", "IDENTITY", "DATA_STORE", "EDGE_PEP", "STATION_SIMULATOR"] },
+              "criticality": { "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
+              "initialState": { "enum": ["AVAILABLE", "ISOLATED", "CREDENTIAL_ACTIVE", "CONTEXT_REVOKED", "DECOY_READY"] }
+            }
+          }
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policyId",
+        "deceptionThreshold",
+        "quarantineThreshold",
+        "denyThreshold",
+        "maxAutomatedScope",
+        "budgetUnits",
+        "approvalRequiredEffects"
+      ],
+      "properties": {
+        "policyId": { "$ref": "#/$defs/syntheticId" },
+        "deceptionThreshold": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "quarantineThreshold": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "denyThreshold": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "maxAutomatedScope": { "type": "integer", "minimum": 1, "maximum": 32 },
+        "budgetUnits": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "approvalRequiredEffects": {
+          "type": "array",
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/effectType" }
+        }
+      }
+    },
+    "signals": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "sourceId", "sourceClass", "independenceGroup", "kind", "confidence", "subjectId", "evidence"],
+        "properties": {
+          "id": { "$ref": "#/$defs/syntheticId" },
+          "sourceId": { "$ref": "#/$defs/syntheticId" },
+          "sourceClass": { "enum": ["CONTROLLED_HONEY", "IDENTITY_CONTROL", "EDGE_TELEMETRY", "ENDPOINT_TELEMETRY", "USER_REAUTH", "UNTRUSTED_MODEL"] },
+          "independenceGroup": { "$ref": "#/$defs/syntheticId" },
+          "kind": { "enum": ["HONEY_CREDENTIAL_USED", "CREDENTIAL_REPLAY", "PRIVILEGE_PROBE", "ANOMALOUS_BEHAVIOR", "FRESH_REAUTH", "COUNTER_EVIDENCE"] },
+          "confidence": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "subjectId": { "$ref": "#/$defs/syntheticId" },
+          "evidence": { "type": "string", "minLength": 1, "maxLength": 1024 }
+        }
+      }
+    },
+    "failures": {
+      "type": "array",
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "CAMPAIGN_STORE_UNAVAILABLE",
+          "EVIDENCE_AUTHORITY_UNAVAILABLE",
+          "BUDGET_EXHAUSTED",
+          "APPROVAL_UNAVAILABLE",
+          "ROUTE_INDEX_STALE",
+          "PEP_CONTEXT_MISSING",
+          "STATION_DECOMMISSION_PENDING"
+        ]
+      }
+    },
+    "requestedEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "targetAssetId", "scope", "costUnits"],
+      "properties": {
+        "type": { "$ref": "#/$defs/effectType" },
+        "targetAssetId": { "$ref": "#/$defs/syntheticId" },
+        "scope": { "type": "integer", "minimum": 1, "maximum": 32 },
+        "costUnits": { "type": "integer", "minimum": 0, "maximum": 10000 }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "approvalRequired", "effectExecutable", "requiredInvariantIds"],
+      "properties": {
+        "route": { "enum": ["NO_ADDITIONAL_RESTRICTION", "ALLOW_DECEPTION", "QUARANTINE", "DENY"] },
+        "approvalRequired": { "type": "boolean" },
+        "effectExecutable": { "type": "boolean" },
+        "requiredInvariantIds": {
+          "type": "array",
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": { "pattern": "^DQ-INV-00[1-9]$|^DQ-INV-010$" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "syntheticId": { "type": "string", "pattern": "^syn-[a-z0-9][a-z0-9._-]{0,59}$" },
+    "effectType": { "enum": ["STATIC_DECOY", "ISOLATE_SESSION", "ROTATE_CREDENTIAL", "RELEASE_NEW_CONTEXT"] }
+  }
+}

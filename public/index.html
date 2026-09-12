@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="DungeonQ is a governed cyber dungeon for testing deception before reality."
+    />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:title" content="DungeonQ — Enter the unknown. Exit with proof." />
+    <meta
+      property="og:description"
+      content="Bring a synthetic security scenario. Let an agent navigate deterministic controls. Keep human approval human."
+    />
+    <meta property="og:type" content="website" />
+    <title>DungeonQ — Synthetic Security Proving Ground</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <script type="module" src="./assets/app.mjs"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to lab</a>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="#main-content" aria-label="DungeonQ home">
+        <span class="brand-mark" aria-hidden="true"><span></span></span>
+        <span>
+          <strong>DungeonQ</strong>
+          <small>PROOF QUEUE / 0.1</small>
+        </span>
+      </a>
+      <div class="runtime-badges" aria-label="Runtime boundaries">
+        <span class="badge badge-safe">SYNTHETIC ONLY</span>
+        <span class="badge">SYNTHETIC RUNTIME</span>
+        <span class="badge" id="webmcp-status">WEBMCP: CHECKING</span>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="hero" aria-labelledby="hero-title">
+        <div>
+          <p class="eyebrow"><span>01</span> Queryable cyber-defense dungeon</p>
+          <h1 id="hero-title">Enter the unknown.<br /><em>Exit with proof.</em></h1>
+          <p class="hero-copy">
+            Bring a synthetic scenario into the dungeon. The same deterministic engine runs in Web or CLI,
+            while every decision, human gate, receipt, and compensation step enters a replayable proof queue.
+          </p>
+        </div>
+        <div class="hero-proof" aria-label="Current proof boundary">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <div>
+            <small>CLAIM BOUNDARY</small>
+            <strong>SYNTHETIC_SIMULATION_ONLY</strong>
+          <p>No real systems. No live attacks. No production-effect claims.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="agent-path" aria-labelledby="agent-path-heading">
+        <div class="agent-path-copy">
+          <p class="section-index">NEW / WEBMCP-NATIVE</p>
+          <h2 id="agent-path-heading">Bring your own dungeon</h2>
+          <p>
+            Give your agent a complete synthetic Scenario Pack. <code>dungeonq_scenario_admit</code> sends it through
+            the same strict validator as the UI and CLI—then the available tools reshape at every state.
+          </p>
+          <div class="judge-launch">
+            <button class="button button-primary" id="judge-quick-run" type="button">Run judge proof</button>
+            <output id="judge-guide" role="status" aria-live="polite">
+              Runs Overlay → adapter parity → blocked apply → review request, then stops for a human.
+            </output>
+          </div>
+        </div>
+        <ol class="agent-route" aria-label="Human and agent collaboration route">
+          <li data-role="agent"><span>01</span><strong>Agent admits</strong><small>Strict contract</small></li>
+          <li data-role="agent"><span>02</span><strong>Agent simulates</strong><small>Pure decision</small></li>
+          <li data-role="agent"><span>03</span><strong>Agent requests</strong><small>Bound review</small></li>
+          <li data-role="human"><span>04</span><strong>Human approves</strong><small>No agent tool</small></li>
+          <li data-role="agent"><span>05</span><strong>Agent proves</strong><small>Apply · verify · recover</small></li>
+        </ol>
+      </section>
+
+      <section class="lab-grid" aria-label="DungeonQ interactive lab">
+        <aside class="panel scenario-panel" aria-labelledby="scenario-heading">
+          <div class="panel-heading">
+            <div>
+              <p class="section-index">A / INPUT</p>
+              <h2 id="scenario-heading">Scenario Pack</h2>
+            </div>
+            <span class="state-chip" id="scenario-status">LOADING</span>
+          </div>
+
+          <label class="field-label" for="scenario-select">Built-in adversarial case</label>
+          <div class="select-row">
+            <select id="scenario-select">
+              <option value="honey-credential.json">Honey replay — DENY + human gate</option>
+              <option value="compound-pep-failure.json">Compound edge failure — fail closed</option>
+              <option value="false-positive-recovery.json">Fresh-context recovery — bounded recovery</option>
+            </select>
+            <button class="button button-secondary" id="load-example" type="button">Load</button>
+          </div>
+
+          <div class="editor-heading">
+            <label class="field-label" for="scenario-editor">Editable JSON contract</label>
+            <label class="file-trigger" for="scenario-file">Import .json</label>
+            <input id="scenario-file" type="file" accept="application/json,.json" />
+          </div>
+          <textarea id="scenario-editor" spellcheck="false" aria-describedby="editor-help"></textarea>
+          <p class="field-help" id="editor-help">Max 128 KiB · synthetic IDs only · no URLs, scripts, file paths, or credentials</p>
+
+          <div class="button-row">
+            <button class="button button-primary" id="validate-scenario" type="button">Validate pack</button>
+            <button class="button button-ghost" id="reset-lab" type="button">Reset</button>
+          </div>
+          <div class="message" id="validation-message" role="status" aria-live="polite"></div>
+        </aside>
+
+        <section class="panel proof-panel" aria-labelledby="proof-heading">
+          <div class="panel-heading proof-title-row">
+            <div>
+              <p class="section-index">B / DECISION</p>
+              <h2 id="proof-heading">Deterministic proof</h2>
+            </div>
+            <span class="state-chip state-active" id="runtime-state">VALIDATED</span>
+          </div>
+
+          <div class="decision-grid">
+            <article class="risk-card">
+              <div class="risk-orbit" id="risk-orbit" aria-label="Risk score 0">
+                <span id="risk-score">—</span>
+                <small>/100</small>
+              </div>
+              <div>
+                <small>ROUTE SAFETY OVERLAY</small>
+                <strong id="route-result">NOT RUN</strong>
+                <p id="decision-reason">Validate, then run the scenario.</p>
+              </div>
+            </article>
+            <article class="metric-card">
+              <small>ASSERTIONS</small>
+              <strong id="assertion-score">—</strong>
+              <span id="assertion-label">Awaiting run</span>
+            </article>
+            <article class="metric-card">
+              <small>INPUT DIGEST</small>
+              <code id="input-digest">—</code>
+              <span>Canonical SHA-256</span>
+            </article>
+          </div>
+
+          <article class="adapter-proof" aria-label="Adapter conformance proof">
+            <div>
+              <small>LIVE ADAPTER CONFORMANCE</small>
+              <strong id="adapter-parity">AWAITING RUN</strong>
+            </div>
+            <code id="adapter-digest">UI and WebMCP will replay the same pack independently.</code>
+            <span>Input digest + decision + proposal digest</span>
+          </article>
+
+          <div class="lifecycle" aria-labelledby="lifecycle-heading">
+            <div class="subheading-row">
+              <h3 id="lifecycle-heading">Governed lifecycle</h3>
+              <small>Agent proposes · Human approves · Broker applies</small>
+            </div>
+            <ol class="lifecycle-track" id="lifecycle-track">
+              <li data-state="SIMULATED"><span>1</span><strong>Simulate</strong><small>Pure decision</small></li>
+              <li data-state="APPROVAL_PENDING"><span>2</span><strong>Request</strong><small>Bound digest</small></li>
+              <li data-state="APPROVED"><span>3</span><strong>Approve</strong><small>Human only</small></li>
+              <li data-state="APPLIED"><span>4</span><strong>Apply</strong><small>Local effect</small></li>
+              <li data-state="VERIFIED"><span>5</span><strong>Verify</strong><small>Read-back</small></li>
+              <li data-state="ROLLED_BACK"><span>6</span><strong>Compensate</strong><small>Append only</small></li>
+            </ol>
+            <div class="action-bar">
+              <button class="button button-primary" id="run-simulation" type="button">Run simulation</button>
+              <button class="button button-secondary" id="request-approval" type="button" disabled>Request review</button>
+              <button class="button button-human" id="human-approve" type="button" disabled>Human approve</button>
+              <button class="button button-secondary" id="apply-effect" type="button" disabled>Apply effect</button>
+              <button class="button button-secondary" id="verify-receipt" type="button" disabled>Verify receipt</button>
+              <button class="button button-ghost" id="rollback-effect" type="button" disabled>Compensate</button>
+            </div>
+          </div>
+
+          <article class="adversarial-card" aria-labelledby="adversarial-heading">
+            <div>
+              <p class="section-index">LIVE NEGATIVE PROOF</p>
+              <h3 id="adversarial-heading">Challenge the guardrails</h3>
+              <p>Run a prohibited action against a clone. The original session and evidence must remain unchanged.</p>
+            </div>
+            <div class="adversarial-actions">
+              <button class="button button-danger" id="probe-unapproved-apply" type="button" disabled>
+                Attempt unapproved apply
+              </button>
+              <button class="button button-danger" id="probe-tampered-receipt" type="button" disabled>
+                Verify tampered receipt
+              </button>
+            </div>
+            <output id="adversarial-result" role="status" aria-live="polite">Run a simulation to unlock a negative proof.</output>
+          </article>
+
+          <div class="detail-grid">
+            <article class="detail-card">
+              <div class="subheading-row">
+                <h3>Capability envelope</h3>
+                <span id="failure-count">0 failures</span>
+              </div>
+              <div class="capability-columns">
+                <div>
+                  <small class="allowed-label">ALLOWED</small>
+                  <ul id="allowed-capabilities"><li>Run simulation to inspect</li></ul>
+                </div>
+                <div>
+                  <small class="blocked-label">BLOCKED</small>
+                  <ul id="blocked-capabilities"><li>—</li></ul>
+                </div>
+              </div>
+            </article>
+            <article class="detail-card">
+              <div class="subheading-row">
+                <h3>Invariant checks</h3>
+                <span id="invariant-score">—</span>
+              </div>
+              <ul class="check-list" id="invariant-list"><li>Awaiting deterministic evaluation</li></ul>
+            </article>
+          </div>
+
+          <article class="evidence-card">
+            <div class="subheading-row">
+              <div>
+                <p class="section-index">C / EVIDENCE</p>
+                <h3>Receipts &amp; audit chain</h3>
+              </div>
+              <button class="button button-ghost" id="export-evidence" type="button" disabled>Export evidence.json</button>
+            </div>
+            <div class="evidence-grid">
+              <ol class="audit-timeline" id="audit-timeline"><li>No events yet.</li></ol>
+              <pre id="evidence-preview" tabindex="0">Evidence appears after the first simulation.</pre>
+            </div>
+          </article>
+        </section>
+      </section>
+
+      <section class="verification-strip" aria-label="Verification surfaces">
+        <span>ONE SCENARIO PACK</span><i aria-hidden="true"></i><span>ONE ENGINE</span><i aria-hidden="true"></i
+        ><span>WEB + CLI + WEBMCP</span><i aria-hidden="true"></i><span>REPLAYABLE EVIDENCE</span>
+      </section>
+    </main>
+
+    <footer>
+      <p>DungeonQ is public under Apache-2.0. Synthetic results are not field validation.</p>
+      <div><code>dungeonq.scenario/v1</code><span aria-hidden="true">·</span><code>dungeonq.engine/1.0.0</code></div>
+    </footer>
+  </body>
+</html>

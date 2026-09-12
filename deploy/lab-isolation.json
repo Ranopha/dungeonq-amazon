@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "dungeonq.isolation-plan/v1",
+  "profile": "SYNTHETIC_ONLY",
+  "tenantId": "tenant-lab",
+  "planes": [
+    {
+      "name": "control",
+      "identity": "control-identity",
+      "storage": "control-store",
+      "network": "control-network",
+      "uid": 10001,
+      "readOnlyRoot": true,
+      "dropAllCapabilities": true,
+      "hostAccess": false,
+      "metadataAccess": false,
+      "secrets": [
+        "control-only"
+      ],
+      "egress": [
+        "broker",
+        "evidence"
+      ],
+      "memoryMiB": 128,
+      "pids": 32,
+      "cpuMillis": 100
+    },
+    {
+      "name": "broker",
+      "identity": "broker-identity",
+      "storage": "broker-store",
+      "network": "broker-network",
+      "uid": 10002,
+      "readOnlyRoot": true,
+      "dropAllCapabilities": true,
+      "hostAccess": false,
+      "metadataAccess": false,
+      "secrets": [
+        "broker-only"
+      ],
+      "egress": [
+        "issuer",
+        "evidence"
+      ],
+      "memoryMiB": 128,
+      "pids": 32,
+      "cpuMillis": 100
+    },
+    {
+      "name": "issuer",
+      "identity": "issuer-identity",
+      "storage": "issuer-store",
+      "network": "issuer-network",
+      "uid": 10003,
+      "readOnlyRoot": true,
+      "dropAllCapabilities": true,
+      "hostAccess": false,
+      "metadataAccess": false,
+      "secrets": [
+        "issuer-only"
+      ],
+      "egress": [],
+      "memoryMiB": 128,
+      "pids": 32,
+      "cpuMillis": 100
+    },
+    {
+      "name": "consumer",
+      "identity": "consumer-identity",
+      "storage": "consumer-store",
+      "network": "consumer-network",
+      "uid": 10004,
+      "readOnlyRoot": true,
+      "dropAllCapabilities": true,
+      "hostAccess": false,
+      "metadataAccess": false,
+      "secrets": [
+        "consumer-only"
+      ],
+      "egress": [
+        "issuer"
+      ],
+      "memoryMiB": 128,
+      "pids": 32,
+      "cpuMillis": 100
+    },
+    {
+      "name": "evidence",
+      "identity": "evidence-identity",
+      "storage": "evidence-store",
+      "network": "evidence-network",
+      "uid": 10005,
+      "readOnlyRoot": true,
+      "dropAllCapabilities": true,
+      "hostAccess": false,
+      "metadataAccess": false,
+      "secrets": [
+        "evidence-only"
+      ],
+      "egress": [],
+      "memoryMiB": 128,
+      "pids": 32,
+      "cpuMillis": 100
+    },
+    {
+      "name": "deception",
+      "identity": "deception-identity",
+      "storage": "deception-store",
+      "network": "deception-network",
+      "uid": 10006,
+      "readOnlyRoot": true,
+      "dropAllCapabilities": true,
+      "hostAccess": false,
+      "metadataAccess": false,
+      "secrets": [],
+      "egress": [
+        "telemetry"
+      ],
+      "memoryMiB": 128,
+      "pids": 32,
+      "cpuMillis": 100
+    },
+    {
+      "name": "telemetry",
+      "identity": "telemetry-identity",
+      "storage": "telemetry-store",
+      "network": "telemetry-network",
+      "uid": 10007,
+      "readOnlyRoot": true,
+      "dropAllCapabilities": true,
+      "hostAccess": false,
+      "metadataAccess": false,
+      "secrets": [],
+      "egress": [],
+      "memoryMiB": 128,
+      "pids": 32,
+      "cpuMillis": 100
+    }
+  ]
+}

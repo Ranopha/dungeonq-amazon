@@ -1,0 +1,16 @@
+/node_modules/
+/.next/
+/.vinext/
+/dist/
+/.wrangler/
+/next-env.d.ts
+/tsconfig.tsbuildinfo
+/.env*
+/.DS_Store
+npm-debug.log*
+/.openai/hosting.json
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.pem
+local-instance.json
