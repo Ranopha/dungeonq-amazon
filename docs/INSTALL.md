@@ -71,4 +71,3 @@ The private directory contains credentials, signing material and SQLite state. N
 ## Cleanup
 
 The proof removes only its own new disposable private fixture and retains public evidence output. Interactive labs remain yours. Stop the lab, identify the exact printed directory and decide whether you need its state before removing it with your normal file manager. Do not delete parent directories or blindly run recursive cleanup commands.
-

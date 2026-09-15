@@ -27,4 +27,3 @@ New source requires a regenerated manifest. Verification must fail for stale, mi
 ## Competition boundary
 
 This is the standalone Amazon edition, not the older WebMCP deployment. The initial source commit remains available. 0.3.0 improves reproducibility without changing the existing video workflow. GitHub release, Devpost submission and organizer acceptance are separate states; publishing this release does not resubmit the entry.
-

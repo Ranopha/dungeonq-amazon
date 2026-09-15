@@ -35,4 +35,3 @@ New effect mappings, public endpoints and real enterprise connections require a 
 ## Maintenance value
 
 This is an early-stage project, not a broad-adoption claim. Contribution surfaces include scenario admission, adapter conformance, setup diagnostics, offline verification and regression tests. Useful changes make a boundary easier to test, explain or preserve. [Contributing](../CONTRIBUTING.md) requires a reproducible case and scoped claims; [Security policy](../SECURITY.md) covers sensitive reports.
-

@@ -27,4 +27,3 @@ Potential vulnerabilities belong under [SECURITY.md](SECURITY.md), never a publi
 AI assistance is welcome when disclosed. Submitters remain responsible for understanding the diff, licenses and tests. Model output is a proposal, not a security authority. Neither AI review nor passing tests is independent certification.
 
 Keep contributions Apache-2.0-compatible and preserve attribution/notices. No separate CLA or response-time guarantee is promised. Maintainer review and release notes record what actually shipped.
-

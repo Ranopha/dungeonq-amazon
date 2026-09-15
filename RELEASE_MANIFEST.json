@@ -1,7 +1,7 @@
 {
   "schemaVersion": "dungeonq.source-release/v1",
   "profile": "SYNTHETIC_ONLY",
-  "generatedAt": "2026-09-15T04:30:38.236Z",
+  "generatedAt": "2026-09-15T04:35:11.675Z",
   "privateHistoryIncluded": false,
   "entries": [
     {
@@ -56,8 +56,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "e8f1c10a4844c92372788785112b8a865e4c170051e4bd45067639abb435ec2c",
-      "bytes": 1517
+      "sha256": "0bbb6970556532d0282fbd8583b22dccfc3d1761549e5df2ac95370bb85b654b",
+      "bytes": 1516
     },
     {
       "path": "cli/run.mjs",
@@ -66,8 +66,8 @@
     },
     {
       "path": "CONTRIBUTING.md",
-      "sha256": "60bcbe24febdc386035fa0066cd0456c184a764f899904d0840b7c7442f37b2d",
-      "bytes": 2338
+      "sha256": "25c9f347d6957ec93a038e4b72e595fd0f70d639b51c67ee17100454c4a7000d",
+      "bytes": 2337
     },
     {
       "path": "deploy/lab-isolation.json",
@@ -91,13 +91,13 @@
     },
     {
       "path": "docs/GOVERNANCE.md",
-      "sha256": "3bd20b39b2f5704d78b4e7b3199fca1dd56f80e69bc1de94896b2b78c2e25247",
-      "bytes": 3923
+      "sha256": "aed4e57df2c767542c123efd15edc0ae19f5e2427a1c4faa9af463dcbc831402",
+      "bytes": 3922
     },
     {
       "path": "docs/INSTALL.md",
-      "sha256": "58a3b84a0b8ef7a641f16ff0634bd92acd03609c3335c20976f4a21800068c59",
-      "bytes": 4954
+      "sha256": "244e0d147d5ea2070416d5d0d64b81d8b025306a82bbb871acd4c2ca8e25784c",
+      "bytes": 4953
     },
     {
       "path": "docs/MCP.md",
@@ -111,13 +111,13 @@
     },
     {
       "path": "docs/RELEASE.md",
-      "sha256": "b0cda1a2d47b31dd16c745e7f6c5efbf6352cb9a62075803dbaba5b7b48740cb",
-      "bytes": 2481
+      "sha256": "664e64f10c67529770d36472ed58005697011f6ef372716d94adbc0141eef416",
+      "bytes": 2480
     },
     {
       "path": "docs/REVIEWER_GUIDE.md",
-      "sha256": "2b3097821549abf8cee2e5becffb117d9fbda2305c6c90ea01f5c182b73f952c",
-      "bytes": 3639
+      "sha256": "871c0269009477c544f0cfbf48faf61ac49a6e1a0a26230bf4283d7a9f8b2c83",
+      "bytes": 3638
     },
     {
       "path": "docs/SCENARIO_PACK.md",
@@ -136,8 +136,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "sha256": "14d69c046b06653ff5d541e24f9e48d65c0c6eccbd580d0e8b9465f994acae41",
-      "bytes": 2748
+      "sha256": "33e5894aa2401c58b831fc7461a843b9cec6ab0ef2e0fc4e5d7663eee7759a1f",
+      "bytes": 2747
     },
     {
       "path": "LICENSE",
@@ -246,7 +246,7 @@
     },
     {
       "path": "SBOM.cdx.json",
-      "sha256": "cc66d76473166fa88d3b69c86e7d4b7863074ae92e716084c870843ea9f0e184",
+      "sha256": "37ec49f28f11e4c51be7ff2e68602d4cfe9ccae00057cf546adf709918afed6f",
       "bytes": 211652
     },
     {

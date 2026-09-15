@@ -18,4 +18,3 @@ The automated proof controls both test roles. Human presence, production effecti
 Initial standalone Amazon source at `b3ec2e22cd53e7c16c7334c39ad9942d890b9c95`.
 
 Real MCP 2025-11-25 Streamable HTTP, six bounded tools, SQLite governance, separate human HTTPS approval, signed receipts, scenario import and negative tests. That checkpoint recorded 110 tests and three fixed-seed goldens. The initial source had no GitHub release tag; this documents its original commit, not a retroactively invented release.
-

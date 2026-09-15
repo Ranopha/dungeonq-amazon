@@ -54,4 +54,3 @@ Copy `assistant/scenarios/after-hours.json`, retain `dungeonq.scenario/v1` / `SY
 Unknown fields, credential-like values, URLs and excess budgets should fail. Only the single-session containment mapping executes. The proof harness takes no existing-lab or arbitrary-target argument; custom testing belongs to the documented simulator/interactive paths.
 
 Report failures with version/commit, OS/Node, exact command, sanitized synthetic input, expected/actual result and exit code. Never share the private lab directory. See [contributing](../CONTRIBUTING.md).
-

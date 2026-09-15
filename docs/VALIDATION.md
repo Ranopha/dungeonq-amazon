@@ -22,4 +22,3 @@ The proof harness explicitly controls both fixture roles and does not prove huma
 Generated proof outputs contain synthetic receipt/report data and a public key, not the private fixture. The report and export envelope are unsigned. A receipt verifier needs an independently trusted key; receiving a key next to an artifact alone establishes no trusted origin. Live receipt keys/IDs/times vary between installations; only same-request replay and admitted engine output have the stated deterministic comparisons.
 
 Tests were performed on the selected release source. The final version tag and archive identify the published content; do not transfer these results to unrelated edits. Reproduce the commands rather than treating this record as a warranty.
-
