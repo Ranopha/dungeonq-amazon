@@ -2,68 +2,103 @@
 
 **Let it investigate. Decide before it acts.**
 
-A working Alexa-style assistant rehearsal with a real MCP server, a separately authenticated human review desk, durable synthetic effects, and verifiable receipts. Bring your own artificial incident; see both what the assistant can do and what it must refuse.
+DungeonQ is an Apache-2.0, locally runnable reference lab for **testing the boundary between an assistant's request and a human-authorized effect**. An assistant uses a real MCP server to investigate a synthetic incident and request containment. A separately authenticated reviewer approves an exact manifest. Only then can the assistant change one synthetic session and obtain a verifiable receipt.
 
-This is an explicitly **simulated assistant experience**, not the Alexa service, an Echo integration, an Amazon-certified skill, or production security software. It makes no live attacks, scans, or changes to real infrastructure. The assistant is a deterministic command orchestrator, not an LLM. Its tools cross actual Streamable HTTP using the official MCP SDK.
+For MCP developers, security engineers and reviewers who need more than an approval label: challenge the boundary, inspect what changed, tamper with the evidence, and rerun the checks.
 
-## Run it locally
+**Synthetic only.** The transport, authentication, SQLite writes and signatures are real; the identities, incident and effects are artificial. This is a deterministic assistant simulator, **not an LLM, the Alexa service, an Echo integration or production security software**. No cloud account, API key, credit card, live attack or real enterprise connection is needed.
 
-Prerequisites: Node.js **24.15.0 or newer**, npm, and OpenSSL with `req -addext` support. Tested on macOS; Windows compatibility has not been accepted. No AWS account, cloud subscription, model key, or credit card is required.
+[Watch the 2:35 demo](https://youtu.be/ezX7cOF2s0s) · [Download v0.3.0](https://github.com/Ranopha/dungeonq-amazon/releases/tag/v0.3.0) · [Review the evidence map](docs/GOVERNANCE.md)
+
+## Start in five minutes
+
+Reference platform: macOS, Node.js **24.15.0+**, npm and OpenSSL with `req -addext`. Other operating systems are not yet release-accepted. See [installation and troubleshooting](docs/INSTALL.md).
 
 ```sh
+git clone --branch v0.3.0 --depth 1 https://github.com/Ranopha/dungeonq-amazon.git
+cd dungeonq-amazon
 npm ci --ignore-scripts
+npm run doctor
+```
+
+### A. Reproduce the proof without a browser
+
+```sh
+npm run demo:proof -- --out ../dungeonq-proof-030
+```
+
+Expect **seven PASS checks**, ending with `Result: PASS`. The command starts a fresh lab on random loopback ports, crosses actual HTTPS/CSRF and Streamable HTTP, verifies scope/signature/tamper/replay, stops the entire stack, and verifies persistence after restart. It exits nonzero on failure, refuses an existing output directory and removes only its own disposable private lab.
+
+The output includes `report.json`, original and tampered evidence, and a **public** verification key. No passwords, worker tokens or private keys are exported. The automated driver controls **both fixture roles**; it does not prove human presence or give the runtime assistant an approval tool.
+
+Independently check the signed receipt:
+
+```sh
+npm run verify:assistant-evidence -- ../dungeonq-proof-030/evidence.json ../dungeonq-proof-030/trusted-public-key.pem amazon-local-lab
+npm run verify:assistant-evidence -- ../dungeonq-proof-030/tampered-evidence.json ../dungeonq-proof-030/trusted-public-key.pem amazon-local-lab
+```
+
+The first returns `receiptValid: true` / exit 0. The **second must return false / exit 1**: that is the expected rejection, not a failed installation. The harness pins the key before exporting evidence. For artifacts supplied by someone else, obtain the trusted key independently; accepting an accompanying key proves no trusted origin.
+
+### B. Experience the human approval boundary
+
+```sh
 npm run amazon
 ```
 
-Open **https://127.0.0.1:4186/assistant**. Use `owner-lab` and the fresh disposable password printed by the launcher. The generated self-signed certificate belongs only to this local lab: inspect and handle the browser warning yourself, and do not install a system-wide trust exception or disable certificate validation. Never use a real account password here.
+Open **https://127.0.0.1:4186/assistant**. Sign in as `owner-lab` with the new disposable password printed in your terminal. Inspect and handle the local self-signed certificate warning yourself; do not install system trust or disable TLS validation.
 
-The launcher prints a private data directory. Keep it and your disposable password locally; the directory contains credentials and must never be uploaded. Stop with Ctrl-C. To reopen the same state:
+1. **Investigate this incident** → see route `DENY` and a decision digest; no asset changes.
+2. **Request containment**, then ask the assistant to **Apply** → `HUMAN_APPROVAL_REQUIRED`; both assets stay active.
+3. In **The approval boundary**, review the exact session, digest, five-minute expiry and one-effect limit. Reauthenticate and approve.
+4. Ask the assistant to **Apply** → target becomes `CONTAINED`, version 1; the other session stays `ACTIVE`, version 0.
+5. **Verify receipt**, **Test tampering**, **Replay apply**, **Export evidence** → valid original, rejected altered copy, same receipt and no second mutation.
 
-```sh
-npm run amazon -- --data-dir /absolute/path/to/your/private-lab
-```
+[Reviewer walkthrough](docs/REVIEWER_GUIDE.md) covers expected outcomes, expiry and restart. The public video records the preceding 0.2.0 workflow; 0.3.0 adds onboarding and proof tooling without changing that UI or approval contract.
 
-Do not copy that example path literally. First launch creates a private temporary directory; for deliberate long-term retention, create an empty private directory outside this repository and pass it on first launch. Temporary storage may be removed by your OS. TLS and the lab worker expire after 30 days; this release has no unattended renewal service. A fresh run without `--data-dir` creates an independent lab, not a reset of an existing one.
+## What you can actually verify
 
-## A three-minute judge route
+| Question | Inspectable result |
+|---|---|
+| Can the assistant approve its own request? | Six MCP tools, none for approval; an approval command is rejected. Human HTTPS reauthentication is separate. |
+| Does approval bind the effect's scope? | Exact digest, worker, observed asset/version, expiry and one-effect limit; unrelated asset remains unchanged. |
+| Can a retry execute twice? | Atomic claim and CAS; replay returns the original receipt without incrementing the asset again. |
+| Can an edited receipt pass? | Ed25519 verification against a previously pinned key rejects the modified copy. |
+| Does restart forget the decision? | Real full-stack restart preserves the account, request, effect and receipt in SQLite. |
+| Do combined failures grant more authority? | All 127 nonempty subsets of seven **modeled** failure flags remove capabilities; not 127 infrastructure attacks. |
 
-1. **Investigate this incident** — real MCP analysis returns the shared engine's route and digest. No asset changes.
-2. **Request containment**, then **Ask the agent to apply** before approving — expect `HUMAN_APPROVAL_REQUIRED`; both assets remain active.
-3. At **The approval boundary**, inspect the exact asset, five-minute expiry, manifest digest and one-effect limit. Reauthenticate and approve. The assistant receives no password and has no approval tool.
-4. **Ask the agent to apply** — the targeted synthetic session becomes `CONTAINED`, version 1. The unrelated session remains `ACTIVE`, version 0.
-5. **Verify receipt**, **Test tampering**, **Replay apply** — authentic receipt accepted, altered signature rejected, identical retry returns the original receipt without another effect. Complete replay before the five-minute authorization expires; after expiry, historical evidence remains readable but authority is not revived.
-6. **Export evidence**. Stop/restart with the same directory to inspect the durable request and signed receipt.
+[Governance and security value](docs/GOVERNANCE.md) maps claims to code, checks, limits and reuse. [Architecture](docs/ARCHITECTURE.md) distinguishes modeled decisions, durable local effects and deferred production guarantees.
 
-The advanced workbench remains available at `/`. It is a different operator surface over the same governance application, not an agent shortcut around review.
+## Bring your own synthetic scenario
 
-## Bring your own synthetic environment
+Copy `assistant/scenarios/after-hours.json` and change its synthetic identifiers, seed, policy or signals. The [Scenario Pack contract](docs/SCENARIO_PACK.md) describes accepted fields and limits.
 
-Copy `assistant/scenarios/after-hours.json`, change synthetic IDs, seed, policy, signals or modeled failures, and retain `dungeonq.scenario/v1` and `SYNTHETIC_ONLY`.
-
-- Upload it in the assistant UI to **analyze** through MCP. This does not silently replace the installed environment or grant execution rights.
-- For a new installed synthetic environment, start a fresh lab:
+- **Upload in the UI** to analyze through MCP. Uploading does not replace the installed lab or grant execution rights.
+- **Install in a fresh lab** to exercise the supported containment mapping:
 
 ```sh
 npm run amazon -- --scenario ./my-synthetic-scenario.json
 ```
 
-The live synthetic execution mapping supports **ISOLATE_SESSION, scope 1, AVAILABLE → containment** only. Other modeled effects can be analyzed but are refused by the assistant's execution mapping. The authoritative validator rejects extra fields, URLs, executable content, real-looking credentials and over-budget requests. No network targets are accepted. See [scenario contract](docs/SCENARIO_PACK.md).
+Execution supports **ISOLATE_SESSION, scope 1, AVAILABLE → containment** only. Other modeled effects can be analyzed but cannot be executed by this adapter. URLs, real-looking credentials, extra fields, executable content and excess budget are rejected. Never use real incident data.
 
-## Verify the implementation
+The [reviewer guide](docs/REVIEWER_GUIDE.md) names three fixed-seed cases and expected outcomes. [MCP documentation](docs/MCP.md) includes the six tool authorities and an external local client.
+
+## Verify, contribute, release
 
 ```sh
-npm run test:amazon
-npm test
-npm run verify
-npm run audit
-npm run typecheck
-npm run build
+npm run check
+npm run verify:source
 ```
 
-[Testing](docs/TESTING.md) maps claims to executable checks and explains the 127 modeled failure combinations. [MCP](docs/MCP.md) documents the six tools and an external-client example. [Architecture](docs/ARCHITECTURE.md) distinguishes the simulator, durable local governance, and deferred production boundaries.
+`check` runs source tests, three fixed-seed goldens, release-pattern audit, type checking and build. It is not independent security certification. `verify:source` checks the distribution's file inventory and SHA-256 manifest; a hash manifest is not a signature or trusted timestamp.
 
-## Competition and reuse
+- [Testing and evidence scope](docs/TESTING.md)
+- [v0.3.0 validation record](docs/VALIDATION.md): 115 tests, three goldens, seven proof checks; limits included.
+- [Contributing](CONTRIBUTING.md) · [Security reporting](SECURITY.md)
+- [Release notes](CHANGELOG.md) · [Version/release policy](docs/RELEASE.md)
+- [Amazon-specific changes and provenance](docs/DELTA.md) · [Developer-tool feedback](docs/PRODUCT_FEEDBACK.md)
 
-Prepared for **Build, Ship, Shape: Amazon Developer Hackathon — Alexa+ + Open Source Mini Challenge**. This is substantial follow-on work, not a claim that an earlier browser-only demo already implemented a server-side MCP workflow. [New work and provenance](docs/DELTA.md), [product feedback](docs/PRODUCT_FEEDBACK.md), and [demo script](docs/DEMO_SCRIPT.md).
+Prepared for **Build, Ship, Shape: Amazon Developer Hackathon — Alexa+ + Open Source Mini Challenge**. The older WebMCP entry is separate and unchanged. Public availability and passing local tests do not imply contest acceptance, OpenAI endorsement or production readiness.
 
-Apache-2.0. See [LICENSE](LICENSE), [NOTICE](NOTICE), [third-party notices](THIRD_PARTY_NOTICES.md), and the CycloneDX SBOM. The public release excludes private Git history, local credentials and private development records. No commercial-readiness, external key custody, runtime isolation or real-world defensive effectiveness is claimed.
+Apache-2.0: [LICENSE](LICENSE), [NOTICE](NOTICE), [third-party notices](THIRD_PARTY_NOTICES.md), [SBOM](SBOM.cdx.json). The package is intentionally private to prevent accidental npm publishing; the GitHub source is open source.

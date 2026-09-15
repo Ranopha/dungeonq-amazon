@@ -17,6 +17,13 @@ The original public project supplied strict fixed-seed Scenario Packs, a determi
 - New cross-adapter, transport, approval, scope, restart, migration, replay and tamper regressions; independent offline receipt verification.
 - Separate source distribution and judge documentation explaining what is modeled, cryptographically checked, locally executed, or not tested.
 
+## Reviewer-readiness work on September 15, 2026 (0.3.0)
+
+- Added an executable prerequisite diagnostic and a fresh-lab proof route that crosses real HTTPS/CSRF/MCP, then restarts the complete stack and independently verifies retained receipts.
+- Added safe original/tampered proof artifacts, negative tests for overwrite/symlink output and wrong pinned keys, and source-manifest verification.
+- Added fixed-version installation, a reviewer route, governance-to-test mapping, troubleshooting and contribution/release guidance.
+- Preserved the original 0.2.0 source commit and interactive workflow; no new approval tool, database migration, production connection, deployment or replacement video. The existing video remains explicitly attributed to that earlier workflow.
+
 This distribution intentionally excludes private Git history and local data. Source-file digests in `RELEASE_MANIFEST.json` identify the exported release content. Preserve that manifest, Apache-2.0 license and notices when inspecting provenance. It is a reproducibility record, not an external signature or timestamp authority.
 
 The version does not claim production connectors, actual Alexa-service integration, speech recognition, external key custody, fleet isolation or commercial acceptance. Its value is a working rehearsal boundary an evaluator can challenge with their own synthetic inputs.

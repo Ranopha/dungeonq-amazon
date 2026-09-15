@@ -1,5 +1,13 @@
 # Reproducible testing
 
+## Reviewer entry points (0.3.0)
+
+`npm run doctor` checks prerequisites without installing or changing trust. `npm run demo:proof -- --out ../dungeonq-proof-030` runs a fresh two-role fixture through actual HTTPS/CSRF and MCP, and exports seven named checks plus original/tampered receipts. The expected result is seven PASS checks and exit 0. The tampered artifact must fail the independent receipt verifier with exit 1. See the README and [reviewer guide](REVIEWER_GUIDE.md).
+
+`tests/reviewer-tools.test.mjs` covers diagnostics, proof/restart, original/tampered/wrong-key offline verification, refusal to overwrite an existing or symlinked output, unsupported existing-lab arguments, and manifest hash/inventory/path checks. The proof controls both fixture roles and explicitly sets `humanPresenceProven: false`; it supplements rather than replaces interactive human review.
+
+`npm run verify:source` applies to the clean public distribution. It compares all non-generated source files to `RELEASE_MANIFEST.json`, rejecting missing, extra, duplicate, unsafe-path or changed entries. It does not prove authorship. Keep proof output outside the source tree so it is not mistaken for distribution source.
+
 Run from a clean checkout with Node 24.15.0 or newer and OpenSSL. Install with `npm ci --ignore-scripts`.
 
 | Command | Evidence |
