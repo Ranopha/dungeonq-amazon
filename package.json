@@ -1,6 +1,6 @@
 {
   "name": "dungeonq-amazon",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "description": "A synthetic Alexa-style assistant rehearsal with real MCP, human approval and durable signed receipts.",
   "license": "Apache-2.0",
@@ -27,6 +27,8 @@
   "scripts": {
     "doctor": "node scripts/doctor.mjs",
     "demo:proof": "node scripts/demo-proof.mjs",
+    "mcp:client": "node scripts/mcp-client.mjs",
+    "release:prepare": "node scripts/prepare-release.mjs",
     "verify:source": "node scripts/verify-source.mjs",
     "amazon": "node scripts/amazon.mjs",
     "verify:assistant-evidence": "node scripts/verify-assistant-evidence.mjs",

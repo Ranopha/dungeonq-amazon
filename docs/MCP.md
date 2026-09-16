@@ -15,6 +15,8 @@ All inputs are closed objects. Tool outputs contain `profile: SYNTHETIC_ONLY` an
 
 ## External local client
 
+For the runnable 0.4.0 client, complete approval-boundary walkthrough and optional Codex configuration, use [Bring a separate MCP client or Codex](EXTERNAL_AGENT.md).
+
 Start the lab first. Read **only the MCP access token** from your own private `local-instance.json`; do not give the human password, private signing key or entire file to an agent. Supply that token to a trusted client as `DQ_MCP_TOKEN` in its local environment, without storing it in a repository or pasting it into a chat.
 
 ```js

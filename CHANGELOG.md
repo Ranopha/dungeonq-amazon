@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 — 2026-09-16
+
+- Run a caller-supplied synthetic Scenario Pack through the complete fresh-lab proof; report stable input/decision/proposal digests and explicit success/rejection outcomes.
+- Add modeled-budget and unsupported-mapping rejection fixtures without fabricated effect receipts; reject oversized, non-regular, symlinked, malformed or non-synthetic inputs before lab allocation.
+- Ship a separate-process MCP client with loopback/no-redirect guards, pre-approval rejection and replay acceptance tests; document an optional Codex connection without implying live-model acceptance.
+- Add read-only, pinned Ubuntu/macOS CI and public-source release preparation with regenerated SBOM/inventory. No private history, secrets, model calls or auto-deployment.
+- Preserve SQLite v5, six-tool authority boundary, interactive UI and existing video. Native Windows, real Alexa service, production isolation and human-presence proof remain out of scope.
+
 ## 0.3.0 — 2026-09-15
 
 Reviewer-readiness release. No change to the six MCP tools, approval contract, containment mapping or database schema.

@@ -63,15 +63,14 @@ test('reviewer CLI 拒絕現有 lab／未知參數且 doctor 可機讀', async (
 test('proof 啟動失敗會非零退出、保留失敗報告並回收自己新建的 fixture', async t => {
   const temp = await mkdtemp(join(tmpdir(), 'dungeonq-proof-failure-test-'));
   t.after(() => rm(temp, { recursive: true, force: true }));
-  const existing = (await readdir(tmpdir())).filter(name => name.startsWith('dungeonq-proof-lab-')).sort();
   const output = join(temp, 'failed-proof');
   await assert.rejects(exec(process.execPath, ['scripts/demo-proof.mjs', '--out', output],
-    { cwd: root, timeout: 10000, env: { ...process.env, PATH: temp } }), error => error.code === 1 && /Result: FAIL/u.test(error.stdout));
+    { cwd: root, timeout: 10000, env: { ...process.env, PATH: temp, TMPDIR: temp, TMP: temp, TEMP: temp } }), error => error.code === 1 && /Result: FAIL/u.test(error.stdout));
   const report = JSON.parse(await readFile(join(output, 'report.json'), 'utf8'));
   assert.equal(report.passed, false);
   assert.equal(report.error, 'PROOF_FAILED');
   assert.equal(report.checks[0].name, 'STARTUP');
-  assert.deepEqual((await readdir(tmpdir())).filter(name => name.startsWith('dungeonq-proof-lab-')).sort(), existing);
+  assert.deepEqual((await readdir(temp)).filter(name => name.startsWith('dungeonq-proof-lab-')), []);
   assert.deepEqual(await readdir(output), ['report.json']);
 });
 

@@ -9,16 +9,20 @@ import { createMcpTools, startMcpServer } from '../../server/mcp.mjs';
 import { createAssistantBridge } from '../../server/assistant-bridge.mjs';
 import { startWorkbench } from '../../server/workbench.mjs';
 import { verifyReceipt } from '../../server/governance.mjs';
+import { readScenarioFile } from './scenario-file.mjs';
+import { digest } from '../../server/contracts.mjs';
 
 // This test driver controls BOTH disposable fixture roles. It is not an agent
 // capability, a human-presence proof, or a way to attach to an existing lab.
-export async function runProof({ output } = {}) {
+export async function runProof({ output, scenarioFile } = {}) {
+  const scenario = await readScenarioFile(scenarioFile ?? new URL('../../assistant/scenarios/after-hours.json', import.meta.url));
   const destination = output ? resolve(output) : await mkdtemp(join(tmpdir(), 'dungeonq-proof-evidence-'));
   if (output) await mkdir(destination, { mode: 0o700 }); // Never overwrite, merge or follow an existing target.
-  const scenario = await readFile(new URL('../../assistant/scenarios/after-hours.json', import.meta.url), 'utf8');
   const pkg = JSON.parse(await readFile(new URL('../../package.json', import.meta.url), 'utf8'));
   const report = { schemaVersion: 'dungeonq.proof-run/v1', profile: 'SYNTHETIC_ONLY',
     version: pkg.version, generatedAt: new Date().toISOString(),
+    scenarioId: scenario.scenarioId, platform: process.platform, nodeVersion: process.version,
+    outcome: 'NOT_COMPLETED',
     approvalMode: 'AUTOMATED_HUMAN_ROLE_FIXTURE', humanPresenceProven: false,
     scope: 'FRESH_LOCAL_LAB_ONLY', passed: false, checks: [], artifacts: [],
     limitations: ['No production targets', 'No external sensor-truth claim', 'Receipt signature does not authenticate the export envelope',
@@ -87,9 +91,33 @@ export async function runProof({ output } = {}) {
     await check('SCENARIO_ANALYSIS', async () => {
       assert.equal(analysis.status, 200); assert.equal(analysis.json.failed, false);
       assert.equal(analysis.json.result.assertionsPassed, true);
-      assert.equal(analysis.json.result.decision.route, 'DENY');
-      return { scenarioId: lab.scenario.scenarioId, route: analysis.json.result.decision.route };
+      report.inputDigest = analysis.json.result.inputDigest;
+      report.decisionDigest = digest({ inputDigest: report.inputDigest, decision: analysis.json.result.decision });
+      report.proposalDigest = analysis.json.result.proposal.digest;
+      return { scenarioId: lab.scenario.scenarioId, route: analysis.json.result.decision.route,
+        assertionsPassed: true, proposalDigest: report.proposalDigest };
     });
+    const executable = analysis.json.result.proposal.executableAfterApproval;
+    const supported = scenario.requestedEffect.type === 'ISOLATE_SESSION' && scenario.requestedEffect.scope === 1
+      && analysis.json.result.proposal.expectedBeforeState === 'AVAILABLE';
+    if (!executable || !supported) {
+      report.outcome = executable ? 'UNSUPPORTED_MAPPING_REJECTED' : 'POLICY_BLOCKED';
+      report.approvalMode = 'NOT_REACHED';
+      await check('BLOCKED_REQUEST_LEAVES_ASSETS_AND_REQUESTS_UNCHANGED', async () => {
+        const rejected = await api.post('/api/assistant/command', { command: 'request' });
+        const expected = executable ? 'EXECUTION_MAPPING_UNSUPPORTED' : 'SCENARIO_EFFECT_BLOCKED';
+        assert.equal(rejected.json.error, expected);
+        const after = (await api.post('/api/assistant/command', { command: 'status' })).json.result;
+        assert.deepEqual(after.assets, before.assets);
+        assert.deepEqual(after.responses, before.responses);
+        assert.deepEqual(after.observations, before.observations);
+        await writeArtifact('rejection.json', JSON.stringify({ profile: 'SYNTHETIC_ONLY', code: expected,
+          inputDigest: report.inputDigest, proposalDigest: report.proposalDigest, assetsUnchanged: true,
+          responsesUnchanged: true, observationsUnchanged: true, receiptCreated: false }, null, 2) + '\n');
+        return { code: expected, receiptCreated: false, effectExecuted: false };
+      });
+      report.passed = true;
+    } else {
     stage = 'RESPONSE_REQUEST';
     const requested = await api.post('/api/assistant/command', { command: 'request' });
     assert.equal(requested.status, 200); assert.equal(requested.json.failed, false);
@@ -144,7 +172,9 @@ export async function runProof({ output } = {}) {
       assert.equal(verifyReceipt(exported.json.result.response.receipt, publicKey, pinned.keyId), true);
       assert.equal((await api.call('/api/context')).json.state.assets.find(asset => asset.id === row.assetId).version, 1);
     });
+    report.outcome = 'APPROVED_EFFECT_VERIFIED';
     report.passed = true;
+    }
   } catch {
     report.checks.push({ name: stage, passed: false });
     report.error = 'PROOF_FAILED'; // No credential-bearing exception dumps.

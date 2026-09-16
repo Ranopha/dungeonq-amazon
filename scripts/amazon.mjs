@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readScenarioFile } from './lib/scenario-file.mjs';
 import { resolve } from 'node:path';
 import { openAmazonLab } from '../server/amazon-lab.mjs';
 import { createMcpTools, startMcpServer } from '../server/mcp.mjs';
@@ -13,7 +13,7 @@ for (let i = 0; i < args.length; i += 2) {
   }
   options.set(args[i], args[i + 1]);
 }
-const scenarioText = await readFile(options.has('--scenario') ? resolve(options.get('--scenario')) : new URL('../assistant/scenarios/after-hours.json', import.meta.url), 'utf8');
+const scenarioText = await readScenarioFile(options.has('--scenario') ? resolve(options.get('--scenario')) : new URL('../assistant/scenarios/after-hours.json', import.meta.url));
 let lab; let mcp; let bridge; let web; let stopping = false;
 const stop = async () => {
   if (stopping) return; stopping = true;

@@ -9,7 +9,7 @@ const forbiddenOriginalName = String.fromCodePoint(105, 100, 101, 112, 111, 116)
 const forbiddenRetiredName = String.fromCodePoint(109, 105, 114, 97, 103, 101, 112, 114, 111, 111, 102);
 const privateOwnerToken = String.fromCodePoint(108, 105, 117, 101, 110, 121, 97, 110);
 const privatePathPrefix = ["", "Users", ""].join("/");
-const textExtensions = new Set([".css", ".html", ".json", ".md", ".mjs", ".ts", ".tsx"]);
+const textExtensions = new Set([".css", ".html", ".json", ".md", ".mjs", ".ts", ".tsx", ".yml"]);
 const findings = [];
 
 async function walk(directory) {

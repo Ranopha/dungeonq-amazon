@@ -11,7 +11,7 @@ Do not add a tunnel or bind publicly. Authentication is a **local-host profile**
 
 ## Prerequisites
 
-Install Node.js 24.15.0+ from [Node.js](https://nodejs.org/en/download) and OpenSSL with `req -addext`. No global DungeonQ CLI is needed. macOS is the release reference platform; Linux/Windows are not release-accepted. Node's SQLite/Argon2 features may print experimental warnings.
+Install Node.js 24.15.0+ from [Node.js](https://nodejs.org/en/download) and OpenSSL with `req -addext`. No global DungeonQ CLI is needed. CI targets Ubuntu 24.04 and macOS 14; see [completed validation evidence](VALIDATION.md). Native Windows is not accepted because this local storage profile enforces POSIX private-directory semantics. WSL2 may offer a Linux environment but is not a separately validated platform. Node's SQLite/Argon2 features may print experimental warnings.
 
 From a fresh clone or unpacked release source:
 
