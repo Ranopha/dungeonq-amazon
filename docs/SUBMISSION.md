@@ -30,6 +30,8 @@ The hard part was preserving the authorization boundary across adapters, restart
 
 ## What is new
 
+Version 0.4.0 additionally lets reviewers run their own synthetic file through the complete proof, with explicit approved-effect, policy-blocked and unsupported-mapping outcomes. It adds a separately running MCP client, an optional Codex configuration example, seven new regression tests (122 total locally), public Ubuntu/macOS CI and a public-source-only release builder. The recorded 0.2.0 interactive video remains accurate; no new live-model or cloud-deployment claim is attached to it.
+
 This is an existing project significantly updated during the hackathon. The Amazon-specific work adds the server-side MCP integration, durable response-request binding, English assistant/human handoff, persistent installer, custom-scenario route, tool trace, signed-receipt workflow and corresponding regression tests. Earlier WebMCP assets stay frozen. See DELTA.md for the boundary between reused foundations and new work.
 
 ## Impact and next steps

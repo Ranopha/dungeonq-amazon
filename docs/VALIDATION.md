@@ -1,4 +1,16 @@
-# v0.3.0 validation record
+# Versioned validation record
+
+## v0.4.0 — 2026-09-16
+
+Clean export on macOS arm64 / Node 24.15.0: **122 tests passed, zero failed**; all three existing deterministic goldens, release-pattern audit, typecheck, build and 118-file source inventory passed. Clean install audited 277 packages and reported zero known vulnerabilities at this checkpoint. The retained Vinext unknown-route classification warning remains; build success does not deploy the assistant.
+
+New acceptance includes a judge-authored QUARANTINE scenario through all seven proof checks, equal input/decision/proposal digests on two fresh installations, incorrect-assertion rejection, bounded file admission, modeled-budget and unsupported-mapping rejection with unchanged state, a separate-process MCP client and a public-only distribution builder. The approval fixture remains separate from the client process. No live LLM, human-presence, native Windows, real Alexa/Echo or production certification claim is made.
+
+Public CI: [completed acceptance run 35044834584](https://github.com/Ranopha/dungeonq-amazon/actions/runs/35044834584), source commit `7fd5d29299abe7876a5d343861a00293e875a6c8`: **Ubuntu 24.04 and macOS 14 both succeeded**. Each ran clean install, Doctor, full checks, approved-effect proof, both rejection proofs and public-source release preparation. Sanitized proof artifacts are available on that run. Later release documentation/inventory changes do not alter the tested runtime; release notes identify the final packaged commit. A queued or failed later run is not new platform acceptance.
+
+The three shipped CLI proofs are explicitly different: after-hours has 7 checks and a real local signed receipt; modeled budget exhaustion and unsupported rotation mapping each have 3 checks and a rejection report, with no invented receipt. An invalid over-budget pack fails before lab allocation instead of being reported as an executed scenario.
+
+## Historical v0.3.0
 
 Validated on 2026-09-15 using macOS arm64, Node.js 24.15.0 and LibreSSL 3.3.6 (`req -addext` supported). This records local synthetic acceptance, not production certification or organizer approval.
 

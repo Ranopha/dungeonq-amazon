@@ -1,6 +1,10 @@
 # Reproducible testing
 
-## Reviewer entry points (0.3.0)
+## Reviewer entry points (0.4.0)
+
+Use `--scenario your-synthetic.json` with `demo:proof` to install that admitted pack in a fresh disposable lab. See the README's three **proof** cases and exact expected outcomes; these are additional to the three original browser-engine goldens below. Wrong authored expectations fail instead of silently changing expected results. `tests/platform-tools.test.mjs` covers custom inputs, deterministic digests, explicit rejection paths, a separate-process MCP client and public-source release preparation.
+
+The public CI matrix runs the same source on Ubuntu 24.04 and macOS 14 using Node 24.15.0. It uses no production secrets or live model calls, never deploys, and uploads only synthetic proof output. Consult the linked run/commit in the release notes for actual acceptance, not the existence of a workflow file.
 
 `npm run doctor` checks prerequisites without installing or changing trust. `npm run demo:proof -- --out ../dungeonq-proof-030` runs a fresh two-role fixture through actual HTTPS/CSRF and MCP, and exports seven named checks plus original/tampered receipts. The expected result is seven PASS checks and exit 0. The tampered artifact must fail the independent receipt verifier with exit 1. See the README and [reviewer guide](REVIEWER_GUIDE.md).
 

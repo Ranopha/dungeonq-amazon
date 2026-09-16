@@ -1,7 +1,7 @@
 {
   "schemaVersion": "dungeonq.source-release/v1",
   "profile": "SYNTHETIC_ONLY",
-  "generatedAt": "2026-09-16T01:36:25.347Z",
+  "generatedAt": "2026-09-16T01:40:21.396Z",
   "privateHistoryIncluded": false,
   "entries": [
     {
@@ -146,18 +146,18 @@
     },
     {
       "path": "docs/SUBMISSION.md",
-      "sha256": "e298093cc95ce6b9c440e906ff212d34ea7f5cbeb59d6b5e9c77fdee0176d277",
-      "bytes": 4035
+      "sha256": "76a562c97d0061a99a09204225f3cbe522582d8a8ed16c1df690716c10157e05",
+      "bytes": 4528
     },
     {
       "path": "docs/TESTING.md",
-      "sha256": "39995d426ef621488b8823d257ce2ab5866ce15dbca9c53c06f0acbcfa57e549",
-      "bytes": 4681
+      "sha256": "d174de6fb3089fdf956bed308d5356d613c3dcc22f39529b2b49700b77ec5a2d",
+      "bytes": 5498
     },
     {
       "path": "docs/VALIDATION.md",
-      "sha256": "33e5894aa2401c58b831fc7461a843b9cec6ab0ef2e0fc4e5d7663eee7759a1f",
-      "bytes": 2747
+      "sha256": "f972dfca3816276f91e1819341e5670ee6a7c58d3afdfab0a5e96c1815f2fb7f",
+      "bytes": 4673
     },
     {
       "path": "LICENSE",
@@ -266,7 +266,7 @@
     },
     {
       "path": "SBOM.cdx.json",
-      "sha256": "ff201c02792139aed3cd95e1811c5c79f67bfa2b826172fb08ef1c6d916ecbd8",
+      "sha256": "ff40d060bd482db2b78ed2a72fb7ee6f38019f6f175cc1d198ee0f1d78b212f2",
       "bytes": 211652
     },
     {
