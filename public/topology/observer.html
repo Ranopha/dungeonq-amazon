@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DungeonQ · Publishing observation ledger</title>
+  <link rel="stylesheet" href="/topology.css">
+  <script type="module" src="/observer.mjs"></script>
+</head>
+<body>
+  <header class="masthead"><a class="wordmark" href="/" aria-label="DungeonQ observer home">DQ<span>Observation ledger</span></a><span class="edition">RESEARCHER / READ-ONLY</span><span class="scope-tag">Separate process · local only</span></header>
+  <main>
+    <section class="opening"><div><p class="eyebrow">THE RECORD, NOT A MIND READER</p><h1>Local progress.<br><em>Actual destination.</em></h1></div><p class="opening-note">Inspect what changed, what was claimed and whether the objective was actually met. This page cannot operate the participant's workspace.</p></section>
+    <div id="notice" class="notice" role="status" aria-live="polite">Reading the independent observation store…</div>
+    <div class="toolbar"><button id="refresh" type="button" class="primary">Refresh &amp; replay</button><button id="download" type="button" disabled>Download evidence</button><div class="check-row"><input id="live" type="checkbox"><label for="live">Refresh every 3 seconds</label></div></div>
+    <section class="measurement-strip" aria-label="Observed record summary"><div><span>Received events</span><strong id="event-count">—</strong></div><div><span>Local successes</span><strong id="local-successes">Unknown</strong></div><div><span>Actual goal</span><strong id="actual-goal">Unknown</strong></div><div><span>Completion claims</span><strong id="completion-claims">Unknown</strong></div></section>
+    <section class="verification" aria-labelledby="verification-title"><div><p class="eyebrow">CAUSAL REPLAY</p><h2 id="verification-title">Not yet verified</h2><p id="verification-detail">A missing result is not a pass.</p></div><div><p id="lag">Latest delivery progress unknown.</p><p class="fine">Lag is relative to the latest received progress notification. Zero does not prove the Observer has every event happening now. Replay checks the retained sequence, not external source identity.</p></div></section>
+    <section class="observer-layout"><article><p class="eyebrow">OUTCOMES AND DECLARATIONS</p><h2>A successful step is not the whole task.</h2><div id="claim-comparison" class="claim-comparison"></div><h3>Local success chain</h3><ol id="success-chain" class="success-chain"></ol><p class="fine">These are observed workflow effects, not inferred confidence, intent or a finding that a model was deceived.</p></article><aside class="research-notes"><p class="eyebrow">RESEARCH CONTEXT</p><dl id="study-context" class="ledger"></dl><p id="efficacy" class="warning">Human and general-model efficacy is not established.</p><details><summary>Full retained summary</summary><pre id="summary"></pre></details></aside></section>
+    <section class="timeline-section" aria-labelledby="timeline-title"><div class="section-top"><div><p class="eyebrow">EVENT BY EVENT</p><h2 id="timeline-title">The publication record</h2></div><span id="world-id" class="mono"></span></div><ol id="timeline" class="timeline"></ol></section>
+    <footer>Researcher data can include the evaluation condition and actual workflow. Do not share this page or its complete evidence with a participant during a blind session. Shared-host process separation is not an OS-administrator security boundary. No real email, credential, API or external target is involved.</footer>
+  </main>
+</body>
+</html>

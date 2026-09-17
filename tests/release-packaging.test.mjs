@@ -33,11 +33,12 @@ async function exportFixture(t) {
   for (const path of ['world/kernel.mjs', 'study/experiment.mjs', 'study/designs/archive.json', 'astra-site/index.html',
     'scripts/build-astra-site.mjs', 'docs/SCENARIO_AUTHORING.md']) await file(source, path, 'synthetic fixture');
   for (const target of ['amazon', 'astra']) await file(source, `${target}-release/README.md`, `Synthetic ${target}`);
-  for (const path of ['STUDY_LAB.md', 'STUDY_RESULTS.md', 'WORLD_LAB.md', 'contracts/STUDY_V1.md', 'contracts/WORLD_V1.md']) {
+  for (const path of ['STUDY_LAB.md', 'STUDY_RESULTS.md', 'WORLD_LAB.md', 'contracts/STUDY_V1.md', 'contracts/WORLD_V1.md', 'TOPOLOGY_LAB.md', 'TOPOLOGY_RESULTS.md', 'contracts/TOPOLOGY_V2.md']) {
     await file(source, `release-study/docs/${path}`, 'Synthetic public documentation');
   }
   await file(source, 'release-study/evidence/study-v1/reference-proof.json', '{"profile":"SYNTHETIC_CAUSAL_STUDY"}');
-  for (const path of ['study-evidence.png', 'study-trace.png']) await file(source, `release-study/media/${path}`, 'synthetic media fixture');
+  await file(source, 'release-study/evidence/topology-v2/proof.json', '{"profile":"SYNTHETIC_TOPOLOGY_WORKFLOW"}');
+  for (const path of ['study-evidence.png', 'study-trace.png', 'topology-evidence.png', 'topology-observer.png']) await file(source, `release-study/media/${path}`, 'synthetic media fixture');
   return { base, source };
 }
 
@@ -50,7 +51,8 @@ test('兩種乾淨匯出皆含world/study及英文證據；Amazon不宣告Astra�
     for (const path of ['world/kernel.mjs', 'study/experiment.mjs', 'scripts/world.mjs', 'scripts/world-proof.mjs',
       'scripts/study.mjs', 'scripts/study-proof.mjs', 'docs/STUDY_LAB.md', 'docs/STUDY_RESULTS.md',
       'docs/contracts/STUDY_V1.md', 'docs/WORLD_LAB.md', 'docs/contracts/WORLD_V1.md', 'evidence/study-v1/reference-proof.json',
-      'media/study-evidence.png', 'media/study-trace.png']) {
+      'media/study-evidence.png', 'media/study-trace.png', 'scripts/topology.mjs', 'scripts/topology-proof.mjs',
+      'docs/TOPOLOGY_LAB.md', 'docs/TOPOLOGY_RESULTS.md', 'docs/contracts/TOPOLOGY_V2.md', 'evidence/topology-v2/proof.json']) {
       assert.equal((await lstat(join(output, path))).isFile(), true, path);
     }
     const pkg = JSON.parse(await readFile(join(output, 'package.json'))); assert.equal(pkg.name, `dungeonq-${target}`); assert.equal(pkg.version, '0.6.0');
@@ -89,7 +91,7 @@ test('public release重建拒絕已追蹤的study安裝紀錄，不寫輸出', a
 
 test('即使manifest摘要吻合，私人安裝／DB／憑證路徑仍不算合格公開來源', async t => {
   const base = await temp(t);
-  for (const path of ['study-installation.json', 'world-installation.json', 'world.sqlite', 'study.sqlite-wal', 'tokens.json', '.env.local']) {
+  for (const path of ['study-installation.json', 'world-installation.json', 'topology-installation.json', 'world.sqlite', 'study.sqlite-wal', 'tokens.json', '.env.local']) {
     const directory = join(base, path.replaceAll('.', '_')); await mkdir(directory); const data = Buffer.from('{}');
     await file(directory, path, data);
     await file(directory, 'RELEASE_MANIFEST.json', JSON.stringify({ schemaVersion: 'dungeonq.source-release/v1', profile: 'SYNTHETIC_ONLY', privateHistoryIncluded: false,

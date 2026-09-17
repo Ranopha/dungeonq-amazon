@@ -1,0 +1,137 @@
+{
+  "schemaVersion": "dungeonq.topology-proof/v2",
+  "createdAt": "2026-09-17T02:30:51.172Z",
+  "profile": "SYNTHETIC_TOPOLOGY_WORKFLOW",
+  "participantMode": "SCRIPTED_FIXTURE",
+  "checks": [
+    {
+      "id": "TREATMENT_PERSISTENT_PACKET_CONSUMER_LINEAGE",
+      "passed": true
+    },
+    {
+      "id": "TREATMENT_LOCAL_SUCCESS_DOES_NOT_GRANT_GLOBAL_GOAL",
+      "passed": true
+    },
+    {
+      "id": "TREATMENT_DISCOVERABLE_TRUE_PATH_AND_READBACK",
+      "passed": true
+    },
+    {
+      "id": "TREATMENT_HTTP_MCP_PURE_PARITY_AND_IDEMPOTENCY",
+      "passed": true
+    },
+    {
+      "id": "TREATMENT_INDEPENDENT_OBSERVER_CAUSAL_REPLAY",
+      "passed": true
+    },
+    {
+      "id": "TREATMENT_ALTERED_EVENT_REJECTED",
+      "passed": true
+    },
+    {
+      "id": "CONTROL_PERSISTENT_PACKET_CONSUMER_LINEAGE",
+      "passed": true
+    },
+    {
+      "id": "CONTROL_LOCAL_SUCCESS_DOES_NOT_GRANT_GLOBAL_GOAL",
+      "passed": true
+    },
+    {
+      "id": "CONTROL_DISCOVERABLE_TRUE_PATH_AND_READBACK",
+      "passed": true
+    },
+    {
+      "id": "CONTROL_HTTP_MCP_PURE_PARITY_AND_IDEMPOTENCY",
+      "passed": true
+    },
+    {
+      "id": "CONTROL_INDEPENDENT_OBSERVER_CAUSAL_REPLAY",
+      "passed": true
+    },
+    {
+      "id": "CONTROL_ALTERED_EVENT_REJECTED",
+      "passed": true
+    }
+  ],
+  "trials": [
+    {
+      "arm": "TREATMENT",
+      "summary": {
+        "profile": "SYNTHETIC_TOPOLOGY_WORKFLOW",
+        "phase": "FINISHED",
+        "participantMode": "SCRIPTED_FIXTURE",
+        "arm": "TREATMENT",
+        "eventCount": 14,
+        "localSuccesses": 6,
+        "wrongCompletionClaims": 1,
+        "completionClaims": [
+          {
+            "sequence": 9,
+            "claimedComplete": true,
+            "actualComplete": false
+          },
+          {
+            "sequence": 14,
+            "claimedComplete": true,
+            "actualComplete": true
+          }
+        ],
+        "consecutiveLocalBranchActions": 3,
+        "uniqueLocalBranchSuccesses": [
+          "render-preview",
+          "queue-circulation",
+          "file-circulation"
+        ],
+        "completedLocalChain": true,
+        "firstCounterevidence": 9,
+        "goalCompleted": true,
+        "consumerLineageCount": 1,
+        "beliefStatus": "NOT_INFERRED",
+        "efficacyClaim": "NOT_ESTABLISHED_FOR_HUMANS_OR_LLMS"
+      },
+      "evidenceDigest": "5cbb1aa773166d7870d59fc881da0a4d9d0be2833793371ed0aadad9bf4377c4"
+    },
+    {
+      "arm": "CONTROL",
+      "summary": {
+        "profile": "SYNTHETIC_TOPOLOGY_WORKFLOW",
+        "phase": "FINISHED",
+        "participantMode": "SCRIPTED_FIXTURE",
+        "arm": "CONTROL",
+        "eventCount": 14,
+        "localSuccesses": 6,
+        "wrongCompletionClaims": 1,
+        "completionClaims": [
+          {
+            "sequence": 9,
+            "claimedComplete": true,
+            "actualComplete": false
+          },
+          {
+            "sequence": 14,
+            "claimedComplete": true,
+            "actualComplete": true
+          }
+        ],
+        "consecutiveLocalBranchActions": 3,
+        "uniqueLocalBranchSuccesses": [
+          "render-preview",
+          "queue-circulation",
+          "file-circulation"
+        ],
+        "completedLocalChain": true,
+        "firstCounterevidence": 9,
+        "goalCompleted": true,
+        "consumerLineageCount": 1,
+        "beliefStatus": "NOT_INFERRED",
+        "efficacyClaim": "NOT_ESTABLISHED_FOR_HUMANS_OR_LLMS"
+      },
+      "evidenceDigest": "b35ca4c37e62d30d66067f7bc205abf47cfeaf26d46393b09b7423f33165c4d8"
+    }
+  ],
+  "modelSampleSize": 0,
+  "paidProviderApiCalls": 0,
+  "externalTargetRequests": 0,
+  "claim": "ENGINEERING_ONLY_NOT_INDUCTION_EFFICACY",
+  "passed": true
+}

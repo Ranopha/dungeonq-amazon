@@ -1,5 +1,11 @@
 # A short reviewer route
 
+## v0.7.0: a packet is not a publication
+
+Run `npm run topology` and use the [two-minute English workflow route](TOPOLOGY_LAB.md#a-two-minute-engineering-review-contains-spoilers). Inspect persistent preview/queue/filing writes, submit a deliberately premature completion claim and observe rejection, then complete the real deposit/index route. The separate Observer exports causally replayable evidence.
+
+Read [all four model outcomes](TOPOLOGY_RESULTS.md): local-chain following 2/2 memo versus 0/2 controls, but no false completion in any session. The deliberately premature reviewer action is an engineering check, not a model-induction result. The original Alexa-style governed workflow and video below remain separate.
+
 ## v0.6.0: two minutes with the causal study
 
 After installation, run `npm run study` and follow the [four-step route](STUDY_LAB.md#a-two-minute-reviewer-route): retain UI_CHECK, predict before acting, inspect the result, then withdraw for debrief and download/replay. The UI is Traditional Chinese; the linked English guide includes labels. This functional review is not a human/LLM efficacy sample.

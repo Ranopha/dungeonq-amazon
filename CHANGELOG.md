@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0 — 2026-09-17
+
+- Add the original six-desk publishing workflow, persistent shared records and fixed-consumer delivery/read/decision/write lineage. Desk-scoped unknowns remain null; catalogue read-back is always accessible and truthful.
+- Separate local effects from completion claims; an unsupported claim is rejected while allowing correction. Add English Actor/Observer UI, finite HTTP/MCP tools, restart/backpressure/replay checks and a 12-check engineering proof.
+- Retain a frozen four-session Codex pilot: ordered local branch 2/2 memo vs 0/2 control, but no false completion (0/4). All actual goals were verified. No false-belief or general efficacy claim; v1 evidence unchanged.
+- Publish matching runnable source, protocol, complete evidence and reviewer materials. Static hosting remains a recorded viewer; self-hosting runs the independent Observer.
+
 ## 0.6.0 — 2026-09-17
 
 - Add persistent abstract worlds and a finite two-feature causal study: pre-action prediction, separate reflection, unknown/null self-reports, consent, withdrawal and fixed-rule debrief.

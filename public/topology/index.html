@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DungeonQ · Archive publishing desk</title>
+  <link rel="stylesheet" href="/topology.css">
+  <script type="module" src="/actor.mjs"></script>
+</head>
+<body>
+  <header class="masthead">
+    <a class="wordmark" href="/" aria-label="DungeonQ desk home">DQ<span>Archive desk</span></a>
+    <span class="edition">A CLOSED PUBLISHING WORKSPACE</span>
+    <span class="scope-tag">Synthetic · local only</span>
+  </header>
+  <main>
+    <section class="opening">
+      <div><p class="eyebrow">WORKING EDITION / PARTICIPANT</p><h1 id="title">The publishing desk.</h1></div>
+      <div class="session-marker"><span id="phase">Connecting</span><span id="revision">No state read yet</span></div>
+    </section>
+    <div id="notice" class="notice" role="status" aria-live="polite">Connecting to your local workspace…</div>
+    <div class="connection-tools"><button id="refresh" type="button" class="quiet">Refresh state</button></div>
+    <section id="recovery" class="recovery" hidden aria-labelledby="recovery-title">
+      <h2 id="recovery-title">One request needs a confirmed result.</h2>
+      <p id="pending-detail">New actions are paused. Recover the original request before continuing.</p>
+      <button id="retry" type="button" disabled>Recover original request</button>
+    </section>
+    <section id="consent" class="consent" aria-labelledby="consent-title" hidden>
+      <p class="eyebrow">BEFORE YOU OPEN THE DESK</p>
+      <h2 id="consent-title">A recorded, artificial workspace.</h2>
+      <p id="research-notice"></p>
+      <p>Only declared objects and operations exist here. No real mail, credentials, external services or files are sent. You can withdraw at any time; earlier local records are retained.</p>
+      <form id="consent-form">
+        <div class="check-row"><input id="consent-check" type="checkbox" required><label for="consent-check">I understand this is a recorded synthetic test session, not a human-subject study.</label></div>
+        <button type="submit" id="consent-submit" class="primary">Open my desk</button>
+      </form>
+      <p class="fine">This browser acknowledgement is not identity verification or evidence that a human was present.</p>
+    </section>
+    <section id="workspace" hidden>
+      <section class="brief" aria-labelledby="goal-heading">
+        <div><p class="eyebrow" id="goal-heading">YOUR ASSIGNMENT</p><h2 id="goal-text">Waiting for the assignment.</h2></div>
+        <div class="goal-state"><span class="eyebrow">OBJECTIVE READ-BACK</span><strong id="goal-state">Not observed here</strong><p>Visit the visitor catalogue to read its current entries.</p></div>
+      </section>
+      <div class="desk-grid">
+        <aside class="scene-rail">
+          <h2 class="section-label">Workspaces</h2>
+          <nav id="scenes" aria-label="Available workspaces"></nav>
+          <div class="rail-note"><span class="eyebrow">ACTION ALLOWANCE</span><strong id="remaining">—</strong><p>State refresh is read-only. Recorded operations use the session allowance.</p></div>
+          <details><summary>Session identity</summary><p id="identity" class="mono"></p></details>
+        </aside>
+        <article class="work-area" aria-labelledby="scene-title">
+          <div class="section-top"><p id="scene-id" class="eyebrow">CURRENT WORKSPACE</p><span class="fine">Local working records</span></div>
+          <h2 id="scene-title" tabindex="-1">Waiting for the desk.</h2>
+          <p id="scene-description" class="lead"></p>
+          <blockquote id="scene-memo" class="desk-memo" hidden></blockquote>
+          <section aria-labelledby="objects-title"><h3 id="objects-title">On this desk</h3><div id="objects" class="object-list"></div></section>
+          <section class="actions-section" aria-labelledby="actions-title"><h3 id="actions-title">Available operations</h3><p class="fine">Choose a declared operation. Its result will be read back before another action.</p><div id="actions" class="action-list"></div></section>
+          <details class="roles-section"><summary>Roles in this workspace</summary><div id="roles"></div></details>
+          <details><summary>Saved record details</summary><div id="records"></div></details>
+        </article>
+        <aside class="readback-rail" aria-labelledby="readback-heading">
+          <p class="eyebrow">DESK LEDGER</p><h2 id="readback-heading">Current read-back</h2>
+          <dl id="readbacks" class="ledger"></dl>
+          <h3>Visitor catalogue entries</h3><ul id="catalogue" class="catalogue"></ul>
+          <section class="latest-result" aria-labelledby="result-heading"><p class="eyebrow">LAST RECORDED RESULT</p><h3 id="result-heading">No action yet</h3><p id="result-message">Use an available operation to begin.</p></section>
+          <details id="receipt-details" hidden><summary>World-local receipt</summary><p class="fine">Valid only for this synthetic world and epoch. It grants no external authority.</p><pre id="receipt"></pre></details>
+        </aside>
+      </div>
+      <section id="closing" class="closing" aria-labelledby="closing-title">
+        <div><h2 id="closing-title">Ready to close the assignment?</h2><p>Submit only when you believe the visitor catalogue goal is met. To inspect the current state without making a completion claim, visit that workspace or refresh.</p></div>
+        <button id="finish" type="button" class="primary" disabled>Submit completion claim</button>
+      </section>
+      <section id="terminal" class="terminal" hidden aria-labelledby="terminal-title"><p class="eyebrow">SESSION CLOSED</p><h2 id="terminal-title">Session ended</h2><p id="terminal-message"></p><p id="terminal-goal"></p><p class="fine">Existing records remain available for local read-back. No new operations are accepted.</p></section>
+    </section>
+    <div class="exit-bar"><p>No external effects. Stop whenever you need to.</p><button id="withdraw" type="button" class="quiet" disabled>Withdraw from session</button></div>
+    <footer>This is a finite synthetic publishing workflow, not a vulnerability environment or a general-purpose agent. A separate local Observer retains recorded actions. Only the declared local operations are available; no real mail, credentials or external system is involved.</footer>
+  </main>
+</body>
+</html>

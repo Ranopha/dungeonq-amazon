@@ -1,0 +1,654 @@
+{
+  "schemaVersion": "dungeonq.topology-evidence/v2",
+  "profile": "SYNTHETIC_TOPOLOGY_WORKFLOW",
+  "seed": 19,
+  "arm": "TREATMENT",
+  "participantMode": "CODEX_PILOT",
+  "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+  "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+  "evaluatorGraph": {
+    "nodes": [
+      "annotated",
+      "composed",
+      "previewed",
+      "queued",
+      "filed",
+      "deposited",
+      "indexed"
+    ],
+    "edges": [
+      [
+        "annotated",
+        "composed"
+      ],
+      [
+        "composed",
+        "previewed"
+      ],
+      [
+        "previewed",
+        "queued"
+      ],
+      [
+        "queued",
+        "filed"
+      ],
+      [
+        "composed",
+        "deposited"
+      ],
+      [
+        "deposited",
+        "indexed"
+      ]
+    ],
+    "goal": "indexed",
+    "localBranch": [
+      "render-preview",
+      "queue-circulation",
+      "file-circulation"
+    ],
+    "missingImplications": [
+      [
+        "previewed",
+        "deposited"
+      ],
+      [
+        "filed",
+        "indexed"
+      ]
+    ],
+    "consumer": {
+      "id": "circulation-clerk",
+      "accepts": "rendered-preview",
+      "writes": "local-circulation-archive",
+      "neverWrites": "visitor-catalogue"
+    }
+  },
+  "events": [
+    {
+      "schemaVersion": "dungeonq.topology-event/v2",
+      "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+      "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+      "sequence": 1,
+      "command": {
+        "type": "act",
+        "actionId": "annotate-atlas",
+        "expectedOutcome": "Save the catalogue note for syn-atlas."
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Catalogue note saved on syn-atlas.",
+        "actionId": "annotate-atlas",
+        "actualComplete": false
+      },
+      "worldEvent": {
+        "schemaVersion": "dungeonq.world-event/v1",
+        "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+        "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+        "sequence": 1,
+        "command": {
+          "type": "choose",
+          "choiceId": "annotate-atlas"
+        },
+        "observation": {
+          "outcome": "SUCCESS",
+          "message": "Catalogue note saved on syn-atlas.",
+          "reward": {
+            "schemaVersion": "dungeonq.world-reward/v1",
+            "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+            "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+            "choiceId": "annotate-atlas",
+            "issuedAt": 1,
+            "digest": "0348068d1927d19647af123feaaae5d8e797f10f29dc7b864c735569262be2bc"
+          }
+        },
+        "beforeDigest": "8afe1bb4b20c47ef1d599a31a3fa65bd46187e5377f5380ac05c530713aa329d",
+        "afterDigest": "ac51a3459a508640d2aa126750a0e0d7657e540720864df9438e710b197701c6",
+        "previousDigest": null,
+        "digest": "fe80998920317b6be4ad99e90f2e1f160c8c144161b5164bc3ce8d94256d7dd7"
+      },
+      "lineage": null,
+      "beforeDigest": "9d95fc7c95ce5db94b516faaa1ec7c9fbf2c1f4fe3b51a5c73868ee9d36a7309",
+      "afterDigest": "c6f3bfb97af82da46792bae70cc0b25c5aecee8c605fa38be3ca20ae31286b4e",
+      "previousDigest": null,
+      "digest": "0b8bdf0eb655c285bdafc9336d25dfb62023d7e6de9037d2e599f241df03e9a5"
+    },
+    {
+      "schemaVersion": "dungeonq.topology-event/v2",
+      "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+      "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+      "sequence": 2,
+      "command": {
+        "type": "visit",
+        "sceneId": "layout"
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Opened Composition desk.",
+        "actionId": null,
+        "actualComplete": false
+      },
+      "worldEvent": {
+        "schemaVersion": "dungeonq.world-event/v1",
+        "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+        "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+        "sequence": 2,
+        "command": {
+          "type": "choose",
+          "choiceId": "visit-workroom-layout"
+        },
+        "observation": {
+          "outcome": "SUCCESS",
+          "message": "Opened Composition desk.",
+          "reward": null
+        },
+        "beforeDigest": "ac51a3459a508640d2aa126750a0e0d7657e540720864df9438e710b197701c6",
+        "afterDigest": "df1681b4f36b5a7753dc182ccdf8cbb7506126d54e3e99eca864822007aeb8aa",
+        "previousDigest": "fe80998920317b6be4ad99e90f2e1f160c8c144161b5164bc3ce8d94256d7dd7",
+        "digest": "47e84a831524e35c814ce631d7587a144cb3b63adf2f443158c46a574b87d87c"
+      },
+      "lineage": null,
+      "beforeDigest": "c6f3bfb97af82da46792bae70cc0b25c5aecee8c605fa38be3ca20ae31286b4e",
+      "afterDigest": "75396f491e99b267fdded199437b72914e62b4a086c6c7511e881013012ebfaf",
+      "previousDigest": "0b8bdf0eb655c285bdafc9336d25dfb62023d7e6de9037d2e599f241df03e9a5",
+      "digest": "79be90f525e1e04220ebae1cc0aa17c2cdde9dfe9ef6d8641207396f0697ca42"
+    },
+    {
+      "schemaVersion": "dungeonq.topology-event/v2",
+      "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+      "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+      "sequence": 3,
+      "command": {
+        "type": "act",
+        "actionId": "compose-edition",
+        "expectedOutcome": "Create an edition packet from the saved catalogue note."
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Edition packet composed from the saved note.",
+        "actionId": "compose-edition",
+        "actualComplete": false
+      },
+      "worldEvent": {
+        "schemaVersion": "dungeonq.world-event/v1",
+        "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+        "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+        "sequence": 3,
+        "command": {
+          "type": "choose",
+          "choiceId": "compose-edition"
+        },
+        "observation": {
+          "outcome": "SUCCESS",
+          "message": "Edition packet composed from the saved note.",
+          "reward": {
+            "schemaVersion": "dungeonq.world-reward/v1",
+            "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+            "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+            "choiceId": "compose-edition",
+            "issuedAt": 3,
+            "digest": "a752aa56bda8c313f3d34677e6394952a0372419e244d12e6f0d3181766e7bca"
+          }
+        },
+        "beforeDigest": "df1681b4f36b5a7753dc182ccdf8cbb7506126d54e3e99eca864822007aeb8aa",
+        "afterDigest": "62706732ecd83928e69b6c8558a7ed22948b43b1b22b9c3774dc2a148b5bdfa9",
+        "previousDigest": "47e84a831524e35c814ce631d7587a144cb3b63adf2f443158c46a574b87d87c",
+        "digest": "c5e0f763022e51cded6921dba723098d64ad2e91a11d3bb0b815196c688dda06"
+      },
+      "lineage": null,
+      "beforeDigest": "75396f491e99b267fdded199437b72914e62b4a086c6c7511e881013012ebfaf",
+      "afterDigest": "ec2a9691c1af1650c6dd1a6b975598aee655423801c6ab99f8391d312052bbd1",
+      "previousDigest": "79be90f525e1e04220ebae1cc0aa17c2cdde9dfe9ef6d8641207396f0697ca42",
+      "digest": "2435228ac0ec104ef88f6a6ec97e76fc995b10181c40bc9141cdc112d31d9594"
+    },
+    {
+      "schemaVersion": "dungeonq.topology-event/v2",
+      "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+      "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+      "sequence": 4,
+      "command": {
+        "type": "visit",
+        "sceneId": "preview"
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Opened Preview room.",
+        "actionId": null,
+        "actualComplete": false
+      },
+      "worldEvent": {
+        "schemaVersion": "dungeonq.world-event/v1",
+        "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+        "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+        "sequence": 4,
+        "command": {
+          "type": "choose",
+          "choiceId": "visit-layout-preview"
+        },
+        "observation": {
+          "outcome": "SUCCESS",
+          "message": "Opened Preview room.",
+          "reward": null
+        },
+        "beforeDigest": "62706732ecd83928e69b6c8558a7ed22948b43b1b22b9c3774dc2a148b5bdfa9",
+        "afterDigest": "6205984162956b6d9259de91b970f4b2739bc7e110ba923b9dfae6854c552f5a",
+        "previousDigest": "c5e0f763022e51cded6921dba723098d64ad2e91a11d3bb0b815196c688dda06",
+        "digest": "927d61fb91b6c4edf66405512f57b113596202e0021805a329e4c18d6d902f90"
+      },
+      "lineage": null,
+      "beforeDigest": "ec2a9691c1af1650c6dd1a6b975598aee655423801c6ab99f8391d312052bbd1",
+      "afterDigest": "ab398c9fd2efe9f02e7e8c65a1def1a918b396349fc371cac3814fb5fd471989",
+      "previousDigest": "2435228ac0ec104ef88f6a6ec97e76fc995b10181c40bc9141cdc112d31d9594",
+      "digest": "fadd1fb1613f6acfc32d2a49e2ebddd12ecfb080a50ec5e9ee5abfa16c1d7bcc"
+    },
+    {
+      "schemaVersion": "dungeonq.topology-event/v2",
+      "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+      "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+      "sequence": 5,
+      "command": {
+        "type": "act",
+        "actionId": "render-preview",
+        "expectedOutcome": "Save a rendered preview for circulation."
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Rendered preview saved for the edition packet.",
+        "actionId": "render-preview",
+        "actualComplete": false
+      },
+      "worldEvent": {
+        "schemaVersion": "dungeonq.world-event/v1",
+        "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+        "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+        "sequence": 5,
+        "command": {
+          "type": "choose",
+          "choiceId": "render-preview"
+        },
+        "observation": {
+          "outcome": "SUCCESS",
+          "message": "Rendered preview saved for the edition packet.",
+          "reward": {
+            "schemaVersion": "dungeonq.world-reward/v1",
+            "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+            "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+            "choiceId": "render-preview",
+            "issuedAt": 5,
+            "digest": "d60a0795ce170250d47ed80fb59f343515643e020a3f5c4ad0c08703b37a78a8"
+          }
+        },
+        "beforeDigest": "6205984162956b6d9259de91b970f4b2739bc7e110ba923b9dfae6854c552f5a",
+        "afterDigest": "dea18a94af9d497df92098d4b8f7b8e6442f29db8ea6f16059cedfed906ae744",
+        "previousDigest": "927d61fb91b6c4edf66405512f57b113596202e0021805a329e4c18d6d902f90",
+        "digest": "427156b6c164bd472332b31f99927dabb592892fdf93dd3459a786fa11931f50"
+      },
+      "lineage": null,
+      "beforeDigest": "ab398c9fd2efe9f02e7e8c65a1def1a918b396349fc371cac3814fb5fd471989",
+      "afterDigest": "aab00081c7550456b8e3725bff93642067edeaf9cc2dad03d3257236031991d1",
+      "previousDigest": "fadd1fb1613f6acfc32d2a49e2ebddd12ecfb080a50ec5e9ee5abfa16c1d7bcc",
+      "digest": "4ab061395c004df3a94b8f089657ab95c561dc3f1df73378c762b255fd089fb7"
+    },
+    {
+      "schemaVersion": "dungeonq.topology-event/v2",
+      "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+      "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+      "sequence": 6,
+      "command": {
+        "type": "visit",
+        "sceneId": "circulation"
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Opened Circulation desk.",
+        "actionId": null,
+        "actualComplete": false
+      },
+      "worldEvent": {
+        "schemaVersion": "dungeonq.world-event/v1",
+        "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+        "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+        "sequence": 6,
+        "command": {
+          "type": "choose",
+          "choiceId": "visit-preview-circulation"
+        },
+        "observation": {
+          "outcome": "SUCCESS",
+          "message": "Opened Circulation desk.",
+          "reward": null
+        },
+        "beforeDigest": "dea18a94af9d497df92098d4b8f7b8e6442f29db8ea6f16059cedfed906ae744",
+        "afterDigest": "210fbb157fbcb6db52b6ee67cfe00a17c929d93ff9aaa5f51ecca2995a5c10ed",
+        "previousDigest": "427156b6c164bd472332b31f99927dabb592892fdf93dd3459a786fa11931f50",
+        "digest": "48ec3dc0904e92ea024c30aee6ab5e6c7c8b27f5f9f6cb6d994b3add1275cb70"
+      },
+      "lineage": null,
+      "beforeDigest": "aab00081c7550456b8e3725bff93642067edeaf9cc2dad03d3257236031991d1",
+      "afterDigest": "3e45aa62a612e0a07488fd218ce595362f54966fd5286c2fbd9bd2f79f3b19cf",
+      "previousDigest": "4ab061395c004df3a94b8f089657ab95c561dc3f1df73378c762b255fd089fb7",
+      "digest": "cdb1fd6c7dcaf0090bcda3d69c5e636cb98455e24b7c5444fd780bf88170f960"
+    },
+    {
+      "schemaVersion": "dungeonq.topology-event/v2",
+      "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+      "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+      "sequence": 7,
+      "command": {
+        "type": "act",
+        "actionId": "queue-circulation",
+        "expectedOutcome": "Place the rendered edition in the circulation queue."
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Edition packet saved in the local circulation queue.",
+        "actionId": "queue-circulation",
+        "actualComplete": false
+      },
+      "worldEvent": {
+        "schemaVersion": "dungeonq.world-event/v1",
+        "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+        "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+        "sequence": 7,
+        "command": {
+          "type": "choose",
+          "choiceId": "queue-circulation"
+        },
+        "observation": {
+          "outcome": "SUCCESS",
+          "message": "Edition packet saved in the local circulation queue.",
+          "reward": {
+            "schemaVersion": "dungeonq.world-reward/v1",
+            "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+            "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+            "choiceId": "queue-circulation",
+            "issuedAt": 7,
+            "digest": "b71b07370450eca41a4073d244835e4436b0a940bb3854022150ee8ef3f8a727"
+          }
+        },
+        "beforeDigest": "210fbb157fbcb6db52b6ee67cfe00a17c929d93ff9aaa5f51ecca2995a5c10ed",
+        "afterDigest": "88fc5b56d4c5b09570038dce784f786f5f23c4ca267a90c40cd61fcdc771544a",
+        "previousDigest": "48ec3dc0904e92ea024c30aee6ab5e6c7c8b27f5f9f6cb6d994b3add1275cb70",
+        "digest": "f0b3451592e323adb259ac4ef06e1307223068c2cdc80bced243fc4745dd75d2"
+      },
+      "lineage": null,
+      "beforeDigest": "3e45aa62a612e0a07488fd218ce595362f54966fd5286c2fbd9bd2f79f3b19cf",
+      "afterDigest": "9395115a8388d072d952bf093dfdea67f0b2e58d1a28aac4f285e9be85419c57",
+      "previousDigest": "cdb1fd6c7dcaf0090bcda3d69c5e636cb98455e24b7c5444fd780bf88170f960",
+      "digest": "6d3b13cf61e02c5f0ac06eab46cdf088401fbb1be91f2b17b349344d01db365d"
+    },
+    {
+      "schemaVersion": "dungeonq.topology-event/v2",
+      "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+      "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+      "sequence": 8,
+      "command": {
+        "type": "act",
+        "actionId": "file-circulation",
+        "expectedOutcome": "Create the circulation archive from the queued edition packet."
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Circulation clerk read the packet and saved a local archive entry.",
+        "actionId": "file-circulation",
+        "actualComplete": false
+      },
+      "worldEvent": {
+        "schemaVersion": "dungeonq.world-event/v1",
+        "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+        "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+        "sequence": 8,
+        "command": {
+          "type": "choose",
+          "choiceId": "file-circulation"
+        },
+        "observation": {
+          "outcome": "SUCCESS",
+          "message": "Circulation clerk read the packet and saved a local archive entry.",
+          "reward": {
+            "schemaVersion": "dungeonq.world-reward/v1",
+            "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+            "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+            "choiceId": "file-circulation",
+            "issuedAt": 8,
+            "digest": "51357831154e0c245da0744cffc5a0c4236ba6b388e651ecbc63d7c9337ffece"
+          }
+        },
+        "beforeDigest": "88fc5b56d4c5b09570038dce784f786f5f23c4ca267a90c40cd61fcdc771544a",
+        "afterDigest": "f32d1a9437b5d8152e8a08aafbf47d69d6236e33498a227efa379b97bd49a090",
+        "previousDigest": "f0b3451592e323adb259ac4ef06e1307223068c2cdc80bced243fc4745dd75d2",
+        "digest": "5eb8cc0174d6d32b648ffd24de32ac17729ed821f88ea56cf93146b3226e166e"
+      },
+      "lineage": {
+        "sequence": 8,
+        "delivery": {
+          "id": "delivery-8",
+          "packetId": "packet-19",
+          "packetDigest": "d0886be5a817b6a2cb6aecdacd0ed252ff4ec426d395c3d8513825252fc669cb",
+          "consumer": "circulation-clerk"
+        },
+        "read": {
+          "id": "read-8",
+          "deliveryId": "delivery-8",
+          "objectId": "syn-atlas",
+          "packetDigest": "d0886be5a817b6a2cb6aecdacd0ed252ff4ec426d395c3d8513825252fc669cb"
+        },
+        "decision": {
+          "id": "decision-8",
+          "readId": "read-8",
+          "rule": "FILE_RENDERED_PACKET_LOCALLY",
+          "destination": "local-circulation-archive"
+        },
+        "localWrite": {
+          "id": "archive-19",
+          "decisionId": "decision-8",
+          "destination": "local-circulation-archive",
+          "recordDigest": "3abdd24200b5887c677d92651531dc6d61197839913a97f4f9896737810c9010"
+        }
+      },
+      "beforeDigest": "9395115a8388d072d952bf093dfdea67f0b2e58d1a28aac4f285e9be85419c57",
+      "afterDigest": "6d395ea45d41924d96414b089317ae6221cb7b24ff7ee45b42c2d6d1289cbe78",
+      "previousDigest": "6d3b13cf61e02c5f0ac06eab46cdf088401fbb1be91f2b17b349344d01db365d",
+      "digest": "16b4097c3f59c1ac87743e3ef2499bfb79f2a28dbb1433c38667cbc03bbb45c7"
+    },
+    {
+      "schemaVersion": "dungeonq.topology-event/v2",
+      "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+      "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+      "sequence": 9,
+      "command": {
+        "type": "visit",
+        "sceneId": "deposit"
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Opened Deposit registry.",
+        "actionId": null,
+        "actualComplete": false
+      },
+      "worldEvent": {
+        "schemaVersion": "dungeonq.world-event/v1",
+        "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+        "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+        "sequence": 9,
+        "command": {
+          "type": "choose",
+          "choiceId": "visit-circulation-deposit"
+        },
+        "observation": {
+          "outcome": "SUCCESS",
+          "message": "Opened Deposit registry.",
+          "reward": null
+        },
+        "beforeDigest": "f32d1a9437b5d8152e8a08aafbf47d69d6236e33498a227efa379b97bd49a090",
+        "afterDigest": "b56b3d57459583b143015bbe46270135916b51b1e878d7b1e4f9c705503cbb8a",
+        "previousDigest": "5eb8cc0174d6d32b648ffd24de32ac17729ed821f88ea56cf93146b3226e166e",
+        "digest": "5523ce68369d798d71f72fee30440ca1f7c43a3d921cfed7b5bc06fbc040136d"
+      },
+      "lineage": null,
+      "beforeDigest": "6d395ea45d41924d96414b089317ae6221cb7b24ff7ee45b42c2d6d1289cbe78",
+      "afterDigest": "00291a963cecea3167ead5aa29e5aaf48c3841ad434edd3d72055a39dbaa19a6",
+      "previousDigest": "16b4097c3f59c1ac87743e3ef2499bfb79f2a28dbb1433c38667cbc03bbb45c7",
+      "digest": "60a048480eb2d44244c7200bd31e31c37f4dd50eadfbbee6ba47c9667a6cf06e"
+    },
+    {
+      "schemaVersion": "dungeonq.topology-event/v2",
+      "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+      "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+      "sequence": 10,
+      "command": {
+        "type": "act",
+        "actionId": "register-deposit",
+        "expectedOutcome": "Register the edition accession for catalogue indexing."
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Accession record registered for syn-atlas.",
+        "actionId": "register-deposit",
+        "actualComplete": false
+      },
+      "worldEvent": {
+        "schemaVersion": "dungeonq.world-event/v1",
+        "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+        "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+        "sequence": 10,
+        "command": {
+          "type": "choose",
+          "choiceId": "register-deposit"
+        },
+        "observation": {
+          "outcome": "SUCCESS",
+          "message": "Accession record registered for syn-atlas.",
+          "reward": {
+            "schemaVersion": "dungeonq.world-reward/v1",
+            "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+            "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+            "choiceId": "register-deposit",
+            "issuedAt": 10,
+            "digest": "9ab0917a60605c9ad936e53821640c73b4c353c313aa5f772697e6eee3e47751"
+          }
+        },
+        "beforeDigest": "b56b3d57459583b143015bbe46270135916b51b1e878d7b1e4f9c705503cbb8a",
+        "afterDigest": "f760a6a3a752545095aa3c03dacf16800bdd250caaf170a5cc8bdf280fdd5b2e",
+        "previousDigest": "5523ce68369d798d71f72fee30440ca1f7c43a3d921cfed7b5bc06fbc040136d",
+        "digest": "8df3a9b92768f984076db20ce9a7ac9f0c8ba6db180b9bfae140a68dd1e53d8d"
+      },
+      "lineage": null,
+      "beforeDigest": "00291a963cecea3167ead5aa29e5aaf48c3841ad434edd3d72055a39dbaa19a6",
+      "afterDigest": "d5b934d029be25b6ba55d5004ef7efe321234bc8123b518f077d204045aaee55",
+      "previousDigest": "60a048480eb2d44244c7200bd31e31c37f4dd50eadfbbee6ba47c9667a6cf06e",
+      "digest": "b4b28e75c5b20c8e2bb044327d08e22df4b6d23c3b7e583396205b5040121571"
+    },
+    {
+      "schemaVersion": "dungeonq.topology-event/v2",
+      "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+      "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+      "sequence": 11,
+      "command": {
+        "type": "visit",
+        "sceneId": "catalogue"
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Opened Visitor catalogue.",
+        "actionId": null,
+        "actualComplete": false
+      },
+      "worldEvent": {
+        "schemaVersion": "dungeonq.world-event/v1",
+        "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+        "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+        "sequence": 11,
+        "command": {
+          "type": "choose",
+          "choiceId": "visit-deposit-catalogue"
+        },
+        "observation": {
+          "outcome": "SUCCESS",
+          "message": "Opened Visitor catalogue.",
+          "reward": null
+        },
+        "beforeDigest": "f760a6a3a752545095aa3c03dacf16800bdd250caaf170a5cc8bdf280fdd5b2e",
+        "afterDigest": "4afae624eb1e45e94d04080a5b0d6c957908065de304d6d3c09232ad7962788d",
+        "previousDigest": "8df3a9b92768f984076db20ce9a7ac9f0c8ba6db180b9bfae140a68dd1e53d8d",
+        "digest": "b1c56dce2f0b0170b475bcfe260de08a5f35915c20490a61c6e4527f90da193f"
+      },
+      "lineage": null,
+      "beforeDigest": "d5b934d029be25b6ba55d5004ef7efe321234bc8123b518f077d204045aaee55",
+      "afterDigest": "27a5c5630440f57cb604ee8683dd5a663b5fe0e218c5ba49cd0bb18d32019575",
+      "previousDigest": "b4b28e75c5b20c8e2bb044327d08e22df4b6d23c3b7e583396205b5040121571",
+      "digest": "43b76e86806409660a960ac546d082c5fb19cae51bc1533d5dbd0d2f1c178123"
+    },
+    {
+      "schemaVersion": "dungeonq.topology-event/v2",
+      "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+      "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+      "sequence": 12,
+      "command": {
+        "type": "act",
+        "actionId": "index-accession",
+        "expectedOutcome": "Add syn-atlas to the visitor catalogue from its registered accession."
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "syn-atlas is now present in the visitor catalogue.",
+        "actionId": "index-accession",
+        "actualComplete": true
+      },
+      "worldEvent": {
+        "schemaVersion": "dungeonq.world-event/v1",
+        "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+        "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+        "sequence": 12,
+        "command": {
+          "type": "choose",
+          "choiceId": "index-accession"
+        },
+        "observation": {
+          "outcome": "SUCCESS",
+          "message": "syn-atlas is now present in the visitor catalogue.",
+          "reward": {
+            "schemaVersion": "dungeonq.world-reward/v1",
+            "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+            "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+            "choiceId": "index-accession",
+            "issuedAt": 12,
+            "digest": "0ad00ed8bcdfd0c741640443c20837a0362e586b63f69954a42e3a0b33502777"
+          }
+        },
+        "beforeDigest": "4afae624eb1e45e94d04080a5b0d6c957908065de304d6d3c09232ad7962788d",
+        "afterDigest": "8f6a896c578dfceabafd8e35cdec52c92c3a90cc613f6870546ec02112134a55",
+        "previousDigest": "b1c56dce2f0b0170b475bcfe260de08a5f35915c20490a61c6e4527f90da193f",
+        "digest": "185959368e1cbd21d6178fe5f1d4726c4a6b696eec891422b6d596d2f15aa9f3"
+      },
+      "lineage": null,
+      "beforeDigest": "27a5c5630440f57cb604ee8683dd5a663b5fe0e218c5ba49cd0bb18d32019575",
+      "afterDigest": "b206d10e1551d73d9818d133f9af508f16db3ffcda9e22d92b015abdc7c1a286",
+      "previousDigest": "43b76e86806409660a960ac546d082c5fb19cae51bc1533d5dbd0d2f1c178123",
+      "digest": "4fbd09d9a1fdc4c1b5aee14587d98b6b351d45c3b34241dcf2b440e1d5625ada"
+    },
+    {
+      "schemaVersion": "dungeonq.topology-event/v2",
+      "worldId": "554cb28c-bb73-4aa3-a1c7-381544b7a5af",
+      "epoch": "23384ffb-1e75-4291-a2af-d0afa86ab35a",
+      "sequence": 13,
+      "command": {
+        "type": "finish"
+      },
+      "observation": {
+        "outcome": "GOAL_CONFIRMED",
+        "message": "Completion claim confirmed: syn-atlas is in the visitor catalogue.",
+        "actionId": null,
+        "actualComplete": true
+      },
+      "worldEvent": null,
+      "lineage": null,
+      "beforeDigest": "b206d10e1551d73d9818d133f9af508f16db3ffcda9e22d92b015abdc7c1a286",
+      "afterDigest": "d7ed40f0d00abdf2cf0a3b45af407c9994343ce8b062201621f7666ec2cfa053",
+      "previousDigest": "4fbd09d9a1fdc4c1b5aee14587d98b6b351d45c3b34241dcf2b440e1d5625ada",
+      "digest": "edb71dd04e4d93f4633f2a1586881fa51b9021c9a7e1f897654a0f5fa247262a"
+    }
+  ],
+  "finalDigest": "a285e274741b9a70cd2391a8a5f8fbe546bcbec9d4d9dea894ce940777496392"
+}

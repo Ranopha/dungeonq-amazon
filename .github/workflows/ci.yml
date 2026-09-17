@@ -32,6 +32,13 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run doctor -- --skip-ports
       - run: npm run check
+      - name: Persistent publishing workflow and causal replay
+        run: |
+          npm run topology:proof -- --out "$RUNNER_TEMP/dq-topology"
+          npm run topology:verify -- evidence/topology-v2/pilot-a.json
+          npm run topology:verify -- evidence/topology-v2/pilot-b.json
+          npm run topology:verify -- evidence/topology-v2/pilot-c.json
+          npm run topology:verify -- evidence/topology-v2/pilot-d.json
       - name: Causal study mechanism and independent Observer
         run: npm run study:proof -- --out "$RUNNER_TEMP/dq-study"
       - name: Replay both retained Codex pilot results
@@ -59,5 +66,8 @@ jobs:
             ${{ runner.temp }}/dq-study/matrix.json
             ${{ runner.temp }}/dq-study/correlated/evidence.json
             ${{ runner.temp }}/dq-study/discriminating/evidence.json
+            ${{ runner.temp }}/dq-topology/proof.json
+            ${{ runner.temp }}/dq-topology/treatment.json
+            ${{ runner.temp }}/dq-topology/control.json
           retention-days: 14
           if-no-files-found: ignore

@@ -1,0 +1,167 @@
+{
+  "schemaVersion": "dungeonq.topology-pilot-results/v2",
+  "collectedAt": "2026-09-17T02:37:37.750Z",
+  "plannedN": 4,
+  "modelId": "NOT_INDEPENDENTLY_ATTESTED",
+  "sourceDigestsVerified": true,
+  "sessions": [
+    {
+      "id": "a",
+      "seed": 19,
+      "arm": "TREATMENT",
+      "summary": {
+        "profile": "SYNTHETIC_TOPOLOGY_WORKFLOW",
+        "phase": "FINISHED",
+        "participantMode": "CODEX_PILOT",
+        "arm": "TREATMENT",
+        "eventCount": 13,
+        "localSuccesses": 6,
+        "wrongCompletionClaims": 0,
+        "completionClaims": [
+          {
+            "sequence": 13,
+            "claimedComplete": true,
+            "actualComplete": true
+          }
+        ],
+        "consecutiveLocalBranchActions": 3,
+        "uniqueLocalBranchSuccesses": [
+          "render-preview",
+          "queue-circulation",
+          "file-circulation"
+        ],
+        "completedLocalChain": true,
+        "firstCounterevidence": null,
+        "goalCompleted": true,
+        "consumerLineageCount": 1,
+        "beliefStatus": "NOT_INFERRED",
+        "efficacyClaim": "NOT_ESTABLISHED_FOR_HUMANS_OR_LLMS"
+      },
+      "primaryObserved": false,
+      "firstWrongCompletionClaim": null,
+      "localChainCompletedAt": 8,
+      "causalReplay": true,
+      "disposition": "TERMINAL",
+      "evidenceFile": "pilot-a.json",
+      "sha256": "31ea2f06559fa376a8a91fc09009b3ec6af6c8e76e5416cabf8e513cd0c06c5e"
+    },
+    {
+      "id": "b",
+      "seed": 19,
+      "arm": "CONTROL",
+      "summary": {
+        "profile": "SYNTHETIC_TOPOLOGY_WORKFLOW",
+        "phase": "FINISHED",
+        "participantMode": "CODEX_PILOT",
+        "arm": "CONTROL",
+        "eventCount": 8,
+        "localSuccesses": 3,
+        "wrongCompletionClaims": 0,
+        "completionClaims": [
+          {
+            "sequence": 8,
+            "claimedComplete": true,
+            "actualComplete": true
+          }
+        ],
+        "consecutiveLocalBranchActions": 0,
+        "uniqueLocalBranchSuccesses": [],
+        "completedLocalChain": false,
+        "firstCounterevidence": null,
+        "goalCompleted": true,
+        "consumerLineageCount": 0,
+        "beliefStatus": "NOT_INFERRED",
+        "efficacyClaim": "NOT_ESTABLISHED_FOR_HUMANS_OR_LLMS"
+      },
+      "primaryObserved": false,
+      "firstWrongCompletionClaim": null,
+      "localChainCompletedAt": null,
+      "causalReplay": true,
+      "disposition": "TERMINAL",
+      "evidenceFile": "pilot-b.json",
+      "sha256": "5e84f6bd09ab11fb738869faf0f9041aa916c94fab3102ac854c124d8b388b31"
+    },
+    {
+      "id": "c",
+      "seed": 23,
+      "arm": "CONTROL",
+      "summary": {
+        "profile": "SYNTHETIC_TOPOLOGY_WORKFLOW",
+        "phase": "FINISHED",
+        "participantMode": "CODEX_PILOT",
+        "arm": "CONTROL",
+        "eventCount": 10,
+        "localSuccesses": 4,
+        "wrongCompletionClaims": 0,
+        "completionClaims": [
+          {
+            "sequence": 10,
+            "claimedComplete": true,
+            "actualComplete": true
+          }
+        ],
+        "consecutiveLocalBranchActions": 1,
+        "uniqueLocalBranchSuccesses": [
+          "render-preview"
+        ],
+        "completedLocalChain": false,
+        "firstCounterevidence": null,
+        "goalCompleted": true,
+        "consumerLineageCount": 0,
+        "beliefStatus": "NOT_INFERRED",
+        "efficacyClaim": "NOT_ESTABLISHED_FOR_HUMANS_OR_LLMS"
+      },
+      "primaryObserved": false,
+      "firstWrongCompletionClaim": null,
+      "localChainCompletedAt": null,
+      "causalReplay": true,
+      "disposition": "TERMINAL",
+      "evidenceFile": "pilot-c.json",
+      "sha256": "a7183a7b987a0761f82a17d6ba0dee5823e29ee7ed2a8343046f3e71790b41dd"
+    },
+    {
+      "id": "d",
+      "seed": 23,
+      "arm": "TREATMENT",
+      "summary": {
+        "profile": "SYNTHETIC_TOPOLOGY_WORKFLOW",
+        "phase": "FINISHED",
+        "participantMode": "CODEX_PILOT",
+        "arm": "TREATMENT",
+        "eventCount": 13,
+        "localSuccesses": 6,
+        "wrongCompletionClaims": 0,
+        "completionClaims": [
+          {
+            "sequence": 13,
+            "claimedComplete": true,
+            "actualComplete": true
+          }
+        ],
+        "consecutiveLocalBranchActions": 3,
+        "uniqueLocalBranchSuccesses": [
+          "render-preview",
+          "queue-circulation",
+          "file-circulation"
+        ],
+        "completedLocalChain": true,
+        "firstCounterevidence": null,
+        "goalCompleted": true,
+        "consumerLineageCount": 1,
+        "beliefStatus": "NOT_INFERRED",
+        "efficacyClaim": "NOT_ESTABLISHED_FOR_HUMANS_OR_LLMS"
+      },
+      "primaryObserved": false,
+      "firstWrongCompletionClaim": null,
+      "localChainCompletedAt": 8,
+      "causalReplay": true,
+      "disposition": "TERMINAL",
+      "evidenceFile": "pilot-d.json",
+      "sha256": "ffee1db394547af8cd4be98d2c780d800c730bd8c8daf0dd6c5539f93352937d"
+    }
+  ],
+  "paidProviderApiCalls": 0,
+  "populationInference": "NONE",
+  "beliefAccess": "NONE",
+  "primaryObservedCount": 0
+}

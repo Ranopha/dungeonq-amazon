@@ -1,6 +1,14 @@
 # Submission copy
 
-Version 0.6.0 update copy. Editing this source does not itself update the submitted entry. The original video remains the 0.2.0 governed MCP recording; the new gallery uses actual study evidence-explorer captures and links self-hosted reproduction.
+Version 0.7.0 update copy. Editing this source does not itself update the submitted entry. The original video remains the 0.2.0 governed MCP recording; new workflow evidence is separately labeled and links self-hosted reproduction.
+
+## September 17 workflow update
+
+Version 0.7.0 adds an original six-desk synthetic publishing task. Notes, editions, previews and queue packets persist; a fixed worker leaves delivery/read/decision/local-write lineage. A separate deposit/index path establishes the actual visitor catalogue. The English Actor and separate-process Observer share bounded HTTP/MCP, causal replay, restart recovery and honest completion checks.
+
+In the frozen four-session Codex pilot, both procedural-memo participants followed the full local branch, while neither early-explanation control did. No participant falsely claimed completion (0/4); all ultimately verified the true goal. Route following is not proof of a false belief. Exact pilot model identities were not independently attested. All outcomes and the earlier v1 0/2 result are retained. This update improves the runnable research instrument, not an unsupported efficacy claim.
+
+Reproduce with `npm run topology` or `npm run topology:proof`; see [methods/results](TOPOLOGY_RESULTS.md) and the [two-minute English route](TOPOLOGY_LAB.md). The original Alexa-style governed assistant, MCP 2025-11-25 transport and Open Source Mini entry remain intact. There is no real Alexa-service integration or production security claim.
 
 ## Name
 

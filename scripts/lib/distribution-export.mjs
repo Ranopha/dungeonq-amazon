@@ -14,6 +14,7 @@ export const PUBLIC_SOURCE_PATHS = Object.freeze([
   'public', 'server', 'tests', 'workbench', 'world', 'study', 'scripts/lib',
   'scripts/amazon.mjs', 'scripts/astra.mjs', 'scripts/astra-proof.mjs',
   'scripts/world.mjs', 'scripts/world-proof.mjs', 'scripts/study.mjs', 'scripts/study-proof.mjs',
+  'scripts/topology.mjs', 'scripts/topology-proof.mjs',
   'scripts/doctor.mjs', 'scripts/demo-proof.mjs', 'scripts/mcp-client.mjs', 'scripts/prepare-release.mjs',
   'scripts/verify-source.mjs', 'scripts/audit.mjs', 'scripts/check-isolation.mjs', 'scripts/company-acceptance.mjs',
   'scripts/serve.mjs', 'scripts/verify.mjs', 'scripts/verify-assistant-evidence.mjs',
@@ -21,7 +22,8 @@ export const PUBLIC_SOURCE_PATHS = Object.freeze([
 ]);
 const sharedDocuments = ['docs/STUDY_LAB.md', 'docs/STUDY_RESULTS.md', 'docs/WORLD_LAB.md',
   'docs/contracts/STUDY_V1.md', 'docs/contracts/WORLD_V1.md', 'evidence/study-v1',
-  'media/study-evidence.png', 'media/study-trace.png'];
+  'docs/TOPOLOGY_LAB.md', 'docs/TOPOLOGY_RESULTS.md', 'docs/contracts/TOPOLOGY_V2.md', 'evidence/topology-v2',
+  'media/study-evidence.png', 'media/study-trace.png', 'media/topology-evidence.png', 'media/topology-observer.png'];
 const targets = {
   amazon: { name: 'dungeonq-amazon', description: 'Synthetic assistant governance, persistent abstract worlds and consent-based causal studies with local MCP and replayable evidence.' },
   astra: { name: 'dungeonq-astra', description: 'Bounded Astra governance rehearsal and synthetic causal studies with separate authority, local MCP and replayable evidence.' },

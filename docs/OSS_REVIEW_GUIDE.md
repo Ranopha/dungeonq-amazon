@@ -1,5 +1,11 @@
 # A three-minute open-source review
 
+## v0.7.0 entry point
+
+Start with [the English publishing workflow](TOPOLOGY_LAB.md) and [its complete retained pilot](TOPOLOGY_RESULTS.md). `npm run topology` runs the actual local desk/Observer; `npm run topology:proof` makes no paid call. Persistent packet/consumer lineage, scope-aware observations and causal replay let reviewers inspect a multi-stage task without a real enterprise environment.
+
+The result is intentionally qualified: local-chain following was 2/2 memo versus 0/2 controls, but unsupported completion was 0/4. No cognitive-induction success is claimed. Existing application links continue to reference this same public repository; a new release is not proof that an external reviewer has refreshed their copy. No duplicate OSS application is needed merely to publish this update.
+
 DungeonQ is Apache-2.0 source for local synthetic evaluation. This guide helps inspect maintenance and reproducibility; it does not imply selection, endorsement or production readiness.
 
 **First minute — scope and maintenance.** Read the [README](../README.md), [changelog](../CHANGELOG.md) and [new-work/provenance record](DELTA.md). Existing governed MCP remains intact; v0.6.0 adds finite world/study modules. Dependencies are pinned; release archives contain a source inventory, SHA-256 manifest, SBOM and notices. See [contribution](../CONTRIBUTING.md), [security reporting](../SECURITY.md) and [release policy](RELEASE.md). A manifest is not an independent signature.

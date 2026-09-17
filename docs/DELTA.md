@@ -1,5 +1,11 @@
 # New work and provenance
 
+## v0.7.0 additions — September 17, 2026
+
+Adds a fixed, original six-desk publishing topology with state-derived procedural suggestions, persistent packet/consumer lineage, desk-scoped observations and independent causal observation. It includes an English playable desk, shared HTTP/MCP, restart/retry/backpressure tests and a separate scripted engineering proof. The real completion path remains discoverable; local success cannot manufacture final-goal success.
+
+The frozen four-session pilot records continued local branch following in both memo sessions, versus neither control, but no unsupported completion claim (0/4). [All results and limits](TOPOLOGY_RESULTS.md) are retained. This is new synthetic research instrumentation, not proof of cognitive induction or live security efficacy. The original video remains a recording of the older governed assistant; new workflow evidence is separately labeled.
+
 ## v0.6.0 additions — September 17, 2026
 
 The governed assistant remains intact. New work adds the persistent finite-world kernel, separate-process Observers, world/study MCP adapters, two-feature causal protocol, prediction-before-action records, independent reflection, consent/withdrawal/debrief, offline causal replay and explicit reference learners. These are bounded synthetic learning tasks, not real vulnerability or attack-chain simulation.

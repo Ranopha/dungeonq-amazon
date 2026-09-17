@@ -1,18 +1,18 @@
 {
   "schemaVersion": "dungeonq.source-release/v1",
   "profile": "SYNTHETIC_ONLY",
-  "generatedAt": "2026-09-17T01:08:08.104Z",
+  "generatedAt": "2026-09-17T02:46:11.771Z",
   "privateHistoryIncluded": false,
   "entries": [
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 2345,
-      "sha256": "4d9b01caa85ede94875d9ddb87b34596221795e9ec55a3859e68c3ab16434633"
+      "bytes": 2944,
+      "sha256": "cb7fb5e82181fa01d0db3a7617e2caf5cf7e5dc014e50e71948f4ec079f65a0a"
     },
     {
       "path": ".gitignore",
-      "bytes": 253,
-      "sha256": "c31803f4fb0ee1234cce118051eda29a3a050b0e41716e1d522a6a815bc5802e"
+      "bytes": 280,
+      "sha256": "cb6e9d1bed5078f93526e6d31c57bbddafef671fd9852a83766cedb4ef1cf444"
     },
     {
       "path": "AGENTS.md",
@@ -76,8 +76,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 3297,
-      "sha256": "dab6533f4f9d9ffdb5b17afc876d77bf46fdd6ccbea970bbae4301db0177d5ff"
+      "bytes": 4169,
+      "sha256": "c9c3ba0629dc01f553a4c0fdf54f6678ce5ff63d4f3b1e96e4e274fe378bbeab"
     },
     {
       "path": "cli/run.mjs",
@@ -88,6 +88,11 @@
       "path": "cli/study-verify.mjs",
       "bytes": 720,
       "sha256": "f3560bd724d5bcb5e90c908a249b1e028449606fa0bd7e462d7b9e7856d52b6f"
+    },
+    {
+      "path": "cli/topology-verify.mjs",
+      "bytes": 805,
+      "sha256": "eba1e40d6ee652b3693c7763d3348464a29123dd7622663a12c4991cb4277f31"
     },
     {
       "path": "cli/world-verify.mjs",
@@ -115,14 +120,19 @@
       "sha256": "c679baf4e83bee0c99b16db3d62a48389a06544ec00137ee59a5ecfacee809ba"
     },
     {
+      "path": "docs/contracts/TOPOLOGY_V2.md",
+      "bytes": 4461,
+      "sha256": "55ae1cf929aac8935e3ab03cd203297df684fec0d00cfbb1cf9f0f94cdb20b32"
+    },
+    {
       "path": "docs/contracts/WORLD_V1.md",
       "bytes": 7112,
       "sha256": "930960c4e39ceea5cc4fe88b3da15140f72933cb910fe7cf01d86040290d07b9"
     },
     {
       "path": "docs/DELTA.md",
-      "bytes": 4140,
-      "sha256": "0a0d5084f600417f9fbdd568bc08a560f8845d6407f7e01cd8d919aa8ac1baf7"
+      "bytes": 5055,
+      "sha256": "798de7cb50974e8d82c39d95c7c57902be7c02f82f6e5308ee9febb95b2ed1be"
     },
     {
       "path": "docs/DEMO_SCRIPT.md",
@@ -151,8 +161,8 @@
     },
     {
       "path": "docs/OSS_REVIEW_GUIDE.md",
-      "bytes": 2134,
-      "sha256": "0b286fe2552595df9fc5688a1ff5a7f88162e8c78b5f97f0e268df382e7fe6e5"
+      "bytes": 2938,
+      "sha256": "4176ba8c2341c0472e0e4e119f5bd4e01aaf5675e6e4f876f514f4f76e7be87b"
     },
     {
       "path": "docs/PRODUCT_FEEDBACK.md",
@@ -166,8 +176,8 @@
     },
     {
       "path": "docs/REVIEWER_GUIDE.md",
-      "bytes": 4286,
-      "sha256": "c9cec5e9c75158e121b60481de92a126586c56a0de40101b2fe0ebe3842875af"
+      "bytes": 5012,
+      "sha256": "ad8577a3ec33288a19e855a71982cd5963a23b4c117b82d436558cd35d5f8bf4"
     },
     {
       "path": "docs/SCENARIO_PACK.md",
@@ -186,13 +196,23 @@
     },
     {
       "path": "docs/SUBMISSION.md",
-      "bytes": 5828,
-      "sha256": "f858316e24de4c3a1c391ec9158777e68cd8e52c4fa12f896eb0c3666d5e85f8"
+      "bytes": 7079,
+      "sha256": "9441291f9f63fbceeafb1e47f4d19c4b63b69860775d52488e4d82072e30f2b0"
     },
     {
       "path": "docs/TESTING.md",
       "bytes": 5498,
       "sha256": "d174de6fb3089fdf956bed308d5356d613c3dcc22f39529b2b49700b77ec5a2d"
+    },
+    {
+      "path": "docs/TOPOLOGY_LAB.md",
+      "bytes": 6366,
+      "sha256": "91930d3266434ac61a0c410acf20be90ef5c87bc78562adfa87603832af8d5fa"
+    },
+    {
+      "path": "docs/TOPOLOGY_RESULTS.md",
+      "bytes": 5626,
+      "sha256": "217edb3bc49e8c8b1242f4e694ec0152c6eb0122395888055d9101dd6c920261"
     },
     {
       "path": "docs/VALIDATION.md",
@@ -255,6 +275,56 @@
       "sha256": "9ef0a71b182f1e84a84189db66cd6d8530b146482657e1573790a039b7dd5667"
     },
     {
+      "path": "evidence/topology-v2/control.json",
+      "bytes": 26763,
+      "sha256": "ad4467616329471daac8441e69d396b3bd5e326d94112f7e20211cd49b7af4a9"
+    },
+    {
+      "path": "evidence/topology-v2/pilot-a.json",
+      "bytes": 26397,
+      "sha256": "31ea2f06559fa376a8a91fc09009b3ec6af6c8e76e5416cabf8e513cd0c06c5e"
+    },
+    {
+      "path": "evidence/topology-v2/pilot-b.json",
+      "bytes": 15666,
+      "sha256": "5e84f6bd09ab11fb738869faf0f9041aa916c94fab3102ac854c124d8b388b31"
+    },
+    {
+      "path": "evidence/topology-v2/pilot-c.json",
+      "bytes": 19424,
+      "sha256": "a7183a7b987a0761f82a17d6ba0dee5823e29ee7ed2a8343046f3e71790b41dd"
+    },
+    {
+      "path": "evidence/topology-v2/pilot-d.json",
+      "bytes": 26432,
+      "sha256": "ffee1db394547af8cd4be98d2c780d800c730bd8c8daf0dd6c5539f93352937d"
+    },
+    {
+      "path": "evidence/topology-v2/proof.json",
+      "bytes": 3710,
+      "sha256": "01f6d2db2fcb19d9c2b51cae50764d5f528e26fe35149211b00acae6267a92b5"
+    },
+    {
+      "path": "evidence/topology-v2/protocol.json",
+      "bytes": 2857,
+      "sha256": "2c4ed7e8035ac6e873fc5e6ac19c4e20989af78bdb77d5bf14ba52a1a1703354"
+    },
+    {
+      "path": "evidence/topology-v2/results.json",
+      "bytes": 5063,
+      "sha256": "8a4a882a9509324b5ae66944e22e68d15d06e05c7ea63ae6176621aafca3b4a1"
+    },
+    {
+      "path": "evidence/topology-v2/treatment.json",
+      "bytes": 26765,
+      "sha256": "3a5719001efe6610b63ce05a3d026bdb156bd34e46a9871e48663e7e9ec49d5b"
+    },
+    {
+      "path": "evidence/topology-v2/ui-check.json",
+      "bytes": 26756,
+      "sha256": "ba4d1f12ff7b80c57bb8e64cc235b56217e077309b8350d0c04c3f3e0f1127d3"
+    },
+    {
       "path": "LICENSE",
       "bytes": 11358,
       "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
@@ -270,6 +340,16 @@
       "sha256": "ee65a275435175a3af8fb9d7ae4f5f5773fb8148b32cf251c8b59b0be037c04a"
     },
     {
+      "path": "media/topology-evidence.png",
+      "bytes": 88100,
+      "sha256": "514bc9c1f4b60a2cb0d94bbc25211cba29e8bdd722ea51144a68c464dc7b96da"
+    },
+    {
+      "path": "media/topology-observer.png",
+      "bytes": 72065,
+      "sha256": "e54f98fa745f15314413c0e06ef3f3f6470e2ca180d3845f43a70a66f3d3b091"
+    },
+    {
       "path": "next.config.ts",
       "bytes": 104,
       "sha256": "ab4c61f6ee100ae43610a18512f1ebcec842bb2405431e1009266173f21cf772"
@@ -282,12 +362,12 @@
     {
       "path": "package-lock.json",
       "bytes": 174665,
-      "sha256": "ba20ef6f4f29ffef8bf5d65d6d9f66fb672a67f8596a5e7216573ac5d1584542"
+      "sha256": "5a2fc8ad88296439c5d3d632e28e3dde1ae766cced4443fb7152d663fab8717a"
     },
     {
       "path": "package.json",
-      "bytes": 3107,
-      "sha256": "0a6c020e4805dfd44330025a91e051df61a59e31365815ad9b8c44126aa5de43"
+      "bytes": 3326,
+      "sha256": "c425b0272c3c7582e83887bf83860163c8039d1e42ecfd6190ddc9545aee26de"
     },
     {
       "path": "public/assets/app.mjs",
@@ -390,6 +470,31 @@
       "sha256": "b59c98b0a0758c37c65b8b00f47283794a61e07fd6cdc67337d8edaad8a97d8c"
     },
     {
+      "path": "public/topology/actor.mjs",
+      "bytes": 14283,
+      "sha256": "ab873e270e68253785b534dcaf2db32d54d1fdf0f1ce84bda4b0a82926be4f4c"
+    },
+    {
+      "path": "public/topology/index.html",
+      "bytes": 6410,
+      "sha256": "87cc061267ab07291805711c921dfd6b645f114f63872746f47a37d4782072d2"
+    },
+    {
+      "path": "public/topology/observer.html",
+      "bytes": 3596,
+      "sha256": "003ddf53b1775e9f63d33a4063933c272f3994f6c8f58f28510fe340c8e66396"
+    },
+    {
+      "path": "public/topology/observer.mjs",
+      "bytes": 9634,
+      "sha256": "e8363f011e6f85cfd0364a5f3af6a1787c61f8fde5c41fd04f5e24b87ac8b397"
+    },
+    {
+      "path": "public/topology/topology.css",
+      "bytes": 13170,
+      "sha256": "762b9cbdde0bae3ba683f98e15160f3d2b784bf94fea670652e99517ac381279"
+    },
+    {
       "path": "public/world/actor.mjs",
       "bytes": 6453,
       "sha256": "d08ef1001cfa127061e68cc81ade74dce3d3b4de10f3b2eced68b4fec283e542"
@@ -416,13 +521,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 10909,
-      "sha256": "a96112504db96580bee3d2b217094de5b4f9f4b04d08355bc03eb0300f0c37e2"
+      "bytes": 11767,
+      "sha256": "ffb46c72f8fa4bf9a66cace571048e16de895d5adc604fb8f785aee1b6d920c8"
     },
     {
       "path": "SBOM.cdx.json",
       "bytes": 211709,
-      "sha256": "02b0c06f29a6104886e598a4ee1ba53020515bee8ffd9901080c58260627844f"
+      "sha256": "85d633998d05ab9aa64691cd11aab1b36168c78a81a9bced810c4343c6402e20"
     },
     {
       "path": "scripts/amazon.mjs",
@@ -441,8 +546,8 @@
     },
     {
       "path": "scripts/audit.mjs",
-      "bytes": 4032,
-      "sha256": "27713393bd179d10c4953adcc4366159d5dfbfd689a598cf1a5ba83d66f1616e"
+      "bytes": 4071,
+      "sha256": "58a22df70ac80c5e07b15b65131989390928ca99cbcceac1f32dd3ffffc71061"
     },
     {
       "path": "scripts/check-isolation.mjs",
@@ -466,8 +571,8 @@
     },
     {
       "path": "scripts/lib/distribution-export.mjs",
-      "bytes": 6577,
-      "sha256": "82d064fbbc0e920882d4f3d9d4c79762d382add79eda3514a6c1f3377e1604a9"
+      "bytes": 6806,
+      "sha256": "f6516cd047f379f3d5a134e978ee14aac95d3edbebb9993cf8d036865f061b72"
     },
     {
       "path": "scripts/lib/doctor.mjs",
@@ -491,8 +596,8 @@
     },
     {
       "path": "scripts/lib/release-paths.mjs",
-      "bytes": 1214,
-      "sha256": "9159fc846ed8b6fcc6905a141fb54385df06ae1170bc11187299f0e99447f042"
+      "bytes": 1236,
+      "sha256": "5b9e4f3608b1763ae7ea4be6136ccc38fda34319efda62dbb2b95c0f77094460"
     },
     {
       "path": "scripts/lib/scenario-file.mjs",
@@ -528,6 +633,16 @@
       "path": "scripts/study.mjs",
       "bytes": 4031,
       "sha256": "452948760291df1ea379ba34e13f05bd84be07afc8916b174911e996148325d1"
+    },
+    {
+      "path": "scripts/topology-proof.mjs",
+      "bytes": 6650,
+      "sha256": "263c15531b6a72b44bf9c93b5ddfa3d381ee266dc78eb8066c12aadcf099a137"
+    },
+    {
+      "path": "scripts/topology.mjs",
+      "bytes": 2237,
+      "sha256": "f4fff1cd392835f85c5b778103975e0b00e4a3abd39c9945fbde600743157512"
     },
     {
       "path": "scripts/verify-assistant-evidence.mjs",
@@ -680,6 +795,26 @@
       "sha256": "658455e975ab2a1b8dd1e12fb6d987f04b360b70500b9650a51484f18d29e20a"
     },
     {
+      "path": "server/topology-lab.mjs",
+      "bytes": 8503,
+      "sha256": "f1af1b174769613901752f2ca7cc9b0cf43e2ba4ac8963b188ca3c7d0d712387"
+    },
+    {
+      "path": "server/topology-mcp.mjs",
+      "bytes": 11384,
+      "sha256": "0d252279ed17c8e12ec8652610a2e4746d879861b1fddbf679a0b64416a741f2"
+    },
+    {
+      "path": "server/topology-observer.mjs",
+      "bytes": 13271,
+      "sha256": "31986711ac662d10f9cf283873026aad1e336094e8e6b0c39bcee4f92ccb68fb"
+    },
+    {
+      "path": "server/topology-store.mjs",
+      "bytes": 8924,
+      "sha256": "50e3d27386fb37b1fc3faec02d24b31a9dbda53625e08b89143a3b3a2fb4c585"
+    },
+    {
       "path": "server/totp.mjs",
       "bytes": 2689,
       "sha256": "46e1623a9ef728ac287e994e8d3950ede3de5e04b220cbec95136083e19e7be3"
@@ -801,8 +936,8 @@
     },
     {
       "path": "tests/release-packaging.test.mjs",
-      "bytes": 8287,
-      "sha256": "0ee79ccbecd9a0a1c3753433bd3a1605d20a13a5826badee0d09b21b491896ed"
+      "bytes": 8733,
+      "sha256": "1a56b812a5eee1cffd375f242b3b2b86cd9ac4b5022ef8cc3985441c89160d83"
     },
     {
       "path": "tests/response-governance.test.mjs",
@@ -868,6 +1003,36 @@
       "path": "tests/study-ui.test.mjs",
       "bytes": 6843,
       "sha256": "5fa97eb1f2392eab008d0004989eca9ae2f4b60da253e4d1b615687a2d6ea7df"
+    },
+    {
+      "path": "tests/topology-cli.test.mjs",
+      "bytes": 2403,
+      "sha256": "85d3c5482d22fe9abbbcd14c70ec520158a83540e1f544489f228888b2de4bc0"
+    },
+    {
+      "path": "tests/topology-http.test.mjs",
+      "bytes": 8459,
+      "sha256": "c7ef71d5b6ffb427922c899b4e08ce05d417e4d9d982f33661d16ab63f387f37"
+    },
+    {
+      "path": "tests/topology-kernel.test.mjs",
+      "bytes": 7282,
+      "sha256": "1e602c0119153c26f02431757b371519ba4d63d6c1c24744276a0a4ceaaa00a2"
+    },
+    {
+      "path": "tests/topology-mcp.test.mjs",
+      "bytes": 8394,
+      "sha256": "0db0e4b969dcfdbc9d8fa5c7d7bc94825de7042ea4ec6d1e4693eb4f4e52bcea"
+    },
+    {
+      "path": "tests/topology-runtime.test.mjs",
+      "bytes": 5419,
+      "sha256": "885cd390eda12fedaaeb59c0f403c7f7d3b82976a6ae6b07f0b403726190385d"
+    },
+    {
+      "path": "tests/topology-ui.test.mjs",
+      "bytes": 19672,
+      "sha256": "208e5d8067f42934e9ecf765a4565353a01b74660ff09c590325add34852524f"
     },
     {
       "path": "tests/web-static.test.mjs",
@@ -948,6 +1113,16 @@
       "path": "world/packs/reviewer-lanterns.json",
       "bytes": 1861,
       "sha256": "7afc4c312a553e74f8e4d2b0193a5f588ba343ec8ae489d5ef2e9e3ea5168437"
+    },
+    {
+      "path": "world/topology-fixture.mjs",
+      "bytes": 4396,
+      "sha256": "fedf24b263e51687b5af2b3add9c62c40e127703e6436ed4f8035b1294d3814e"
+    },
+    {
+      "path": "world/topology.mjs",
+      "bytes": 17149,
+      "sha256": "70203515c143af9593e3b0bc333142f32012d181670a5c63eb95722e946f8fe3"
     }
   ]
 }

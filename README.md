@@ -1,6 +1,14 @@
 # DungeonQ — Governed Assistant Lab
 
-## v0.6.0: governed actions and a world you can question
+## v0.7.0: follow the packet, verify the destination
+
+Run `npm run topology` for an English, persistent publishing workflow: saved note → edition → preview → queue → fixed filing worker. The actual visitor catalogue has a separate deposit/index path. HTTP and MCP share the same runtime; a separate Observer retains causal evidence. **No key or paid model call is needed.**
+
+[Two-minute workflow guide](docs/TOPOLOGY_LAB.md) · [All four model pilot records and limits](docs/TOPOLOGY_RESULTS.md).
+
+Both procedural-memo participants followed the complete local branch (2/2), versus 0/2 early-explanation controls. **False completion was not observed (0/4); all four ultimately verified the real goal.** This is observed route following, not proof of a false causal belief or general deception efficacy. The older study below remains intact.
+
+## Retained v0.6.0: governed actions and a world you can question
 
 The original governed MCP workflow stays intact. New `npm run world` and `npm run study` experiences add persistent abstract rooms and a finite two-feature causal experiment: **predict → act → reflect**, with consent, withdrawal, debrief and a separate-process Observer. No API key is needed.
 
@@ -29,7 +37,7 @@ npm ci --ignore-scripts
 npm run doctor
 ```
 
-Run these commands in the unpacked v0.6.0 source directory containing `package.json`.
+Run these commands in the unpacked v0.7.0 source directory containing `package.json`.
 
 ### A. Reproduce the proof without a browser
 
