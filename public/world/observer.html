@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DungeonQ · 世界外觀測</title><link rel="stylesheet" href="/world.css"><script type="module" src="/observer.mjs"></script></head>
+<body><header class="masthead"><a class="brand" href="/">DQ<span>DungeonQ</span></a><span class="eyebrow">OBSERVER / 唯讀觀測端</span><span class="boundary">獨立程序 · 獨立資料庫</span></header><main>
+<section class="intro observer-intro"><p class="eyebrow">把發生過的事，與我們的解釋分開</p><h1>世界外，<em>看見可核對的軌跡。</em></h1><p>逐步重跑世界規則，檢查收到的事件。玩家自評與行動分開呈現；成功次數不能直接當成相信程度。</p></section>
+<div id="notice" role="status" aria-live="polite" class="notice">正在讀取獨立觀測紀錄……</div><div class="toolbar"><button id="refresh">更新並重播核驗</button><button id="download" disabled>下載世界證據</button><label class="check"><input id="live" type="checkbox">每 3 秒更新此本機觀測頁</label></div>
+<section class="observer-stats"><div><span>收到事件</span><strong id="event-count">—</strong></div><div><span>局部成功</span><strong id="successes">—</strong></div><div><span>條件不符</span><strong id="blocked">—</strong></div><div><span>首次高懷疑自評步數</span><strong id="suspicion-step">—</strong></div></section>
+<section class="verification"><div><p class="eyebrow">因果重播</p><h2 id="verification">尚未核驗</h2></div><p id="lag">最新進度未知</p><p class="small">待追趕數量只相對最近收到的進度通知；0 不保證已收到世界此刻的全部事件。核驗也不是外部來源認證。</p></section>
+<section class="report-section"><div><p class="eyebrow">明示自評，不是讀心</p><h2 id="belief-status">UNKNOWN</h2><p id="belief-detail">未收到自評；不從成功或文字流暢程度推知信念。</p></div><div class="table-scroll"><table><caption>假說／信心／懷疑軌跡</caption><thead><tr><th>步數</th><th>假說</th><th>信心</th><th>懷疑</th><th>預計下一步</th></tr></thead><tbody id="reports"></tbody></table></div></section>
+<section class="timeline-section"><p class="eyebrow">可重播事件</p><h2>每一步，都有來處與後果。</h2><ol id="timeline" class="timeline"></ol></section>
+<footer>本頁没有世界控制或核准工具。固定驗收劇本標示 SCRIPTED_FIXTURE_NO_MODEL，不能當成真人／模型受騙實驗。共同主機管理者仍在信任邊界內。</footer></main></body></html>

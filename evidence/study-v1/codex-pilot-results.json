@@ -1,0 +1,390 @@
+{
+  "schemaVersion": "dungeonq.codex-pilot-results/v1",
+  "protocol": "codex-pilot-protocol.json",
+  "plannedN": 2,
+  "completedN": 2,
+  "wrongConfidentBeforeDiagnostic": 0,
+  "paidProviderApiCalls": 0,
+  "modelId": "NOT_INDEPENDENTLY_ATTESTED",
+  "source": "FRESH_CODEX_SUBAGENT",
+  "populationInference": "NONE",
+  "limitations": [
+    "Two one-off task sessions; not a population estimate.",
+    "Participants were told observations may be incomplete and encouraged to base choices on evidence.",
+    "No authenticated model identity or OS-level blindfold attestation.",
+    "Self-reported confidence and suspicion are not calibrated measurements or access to private thoughts.",
+    "All planned sessions retained; no retries seeking the desired effect."
+  ],
+  "sessions": [
+    {
+      "id": "a",
+      "artifact": "codex-pilot-a.json",
+      "eventCount": 22,
+      "valid": true,
+      "lag": 0,
+      "profile": "SYNTHETIC_CAUSAL_STUDY",
+      "phase": "COMPLETE",
+      "participantMode": "EXTERNAL_MODEL_DECLARED",
+      "arm": "DISCRIMINATING",
+      "rule": "structure",
+      "trainingSuccesses": 2,
+      "predictions": [
+        {
+          "sequence": 2,
+          "choiceId": "training-1-card-2",
+          "stage": "training",
+          "features": {
+            "signal": true,
+            "structure": true
+          },
+          "predictedSuccess": null,
+          "hypothesis": "unknown",
+          "confidence": null,
+          "suspicion": null,
+          "outcomeSequence": 3,
+          "actualSuccess": true,
+          "correct": null
+        },
+        {
+          "sequence": 5,
+          "choiceId": "training-2-card-1",
+          "stage": "training",
+          "features": {
+            "signal": true,
+            "structure": false
+          },
+          "predictedSuccess": null,
+          "hypothesis": "unknown",
+          "confidence": null,
+          "suspicion": null,
+          "outcomeSequence": 6,
+          "actualSuccess": false,
+          "correct": null
+        },
+        {
+          "sequence": 8,
+          "choiceId": "training-3-card-2",
+          "stage": "training",
+          "features": {
+            "signal": false,
+            "structure": false
+          },
+          "predictedSuccess": false,
+          "hypothesis": "structure",
+          "confidence": 60,
+          "suspicion": null,
+          "outcomeSequence": 9,
+          "actualSuccess": false,
+          "correct": true
+        },
+        {
+          "sequence": 11,
+          "choiceId": "training-4-card-2",
+          "stage": "training",
+          "features": {
+            "signal": true,
+            "structure": true
+          },
+          "predictedSuccess": true,
+          "hypothesis": "structure",
+          "confidence": 60,
+          "suspicion": null,
+          "outcomeSequence": 12,
+          "actualSuccess": true,
+          "correct": true
+        },
+        {
+          "sequence": 14,
+          "choiceId": "probe-1-card-1",
+          "stage": "probe",
+          "features": {
+            "signal": false,
+            "structure": true
+          },
+          "predictedSuccess": true,
+          "hypothesis": "structure",
+          "confidence": 60,
+          "suspicion": null,
+          "outcomeSequence": 15,
+          "actualSuccess": true,
+          "correct": true
+        },
+        {
+          "sequence": 17,
+          "choiceId": "transfer-card-1",
+          "stage": "transfer",
+          "features": {
+            "signal": false,
+            "structure": true
+          },
+          "predictedSuccess": true,
+          "hypothesis": "structure",
+          "confidence": 95,
+          "suspicion": null,
+          "outcomeSequence": 18,
+          "actualSuccess": true,
+          "correct": true
+        },
+        {
+          "sequence": 20,
+          "choiceId": "transfer-check-card-2",
+          "stage": "transfer",
+          "features": {
+            "signal": true,
+            "structure": false
+          },
+          "predictedSuccess": false,
+          "hypothesis": "structure",
+          "confidence": 95,
+          "suspicion": null,
+          "outcomeSequence": 21,
+          "actualSuccess": false,
+          "correct": true
+        }
+      ],
+      "reflections": [
+        {
+          "sequence": 4,
+          "hypothesis": "unknown",
+          "confidence": null,
+          "suspicion": null,
+          "nextIntent": "discriminate"
+        },
+        {
+          "sequence": 7,
+          "hypothesis": "structure",
+          "confidence": 60,
+          "suspicion": null,
+          "nextIntent": "discriminate"
+        },
+        {
+          "sequence": 10,
+          "hypothesis": "structure",
+          "confidence": 60,
+          "suspicion": null,
+          "nextIntent": "discriminate"
+        },
+        {
+          "sequence": 13,
+          "hypothesis": "structure",
+          "confidence": 60,
+          "suspicion": null,
+          "nextIntent": "discriminate"
+        },
+        {
+          "sequence": 16,
+          "hypothesis": "structure",
+          "confidence": 95,
+          "suspicion": null,
+          "nextIntent": "proceed"
+        },
+        {
+          "sequence": 19,
+          "hypothesis": "structure",
+          "confidence": 95,
+          "suspicion": null,
+          "nextIntent": "proceed"
+        },
+        {
+          "sequence": 22,
+          "hypothesis": "structure",
+          "confidence": 95,
+          "suspicion": null,
+          "nextIntent": "proceed"
+        }
+      ],
+      "firstWrongConfidentStep": null,
+      "firstHighSuspicionStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 0,
+      "missingPredictionCount": 2,
+      "beliefStatus": "SELF_REPORTED_NOT_INFERRED",
+      "efficacyClaim": "NOT_ESTABLISHED_FOR_HUMANS_OR_LLMS"
+    },
+    {
+      "id": "b",
+      "artifact": "codex-pilot-b.json",
+      "eventCount": 22,
+      "valid": true,
+      "lag": 0,
+      "profile": "SYNTHETIC_CAUSAL_STUDY",
+      "phase": "COMPLETE",
+      "participantMode": "EXTERNAL_MODEL_DECLARED",
+      "arm": "CORRELATED",
+      "rule": "structure",
+      "trainingSuccesses": 2,
+      "predictions": [
+        {
+          "sequence": 2,
+          "choiceId": "training-1-card-2",
+          "stage": "training",
+          "features": {
+            "signal": true,
+            "structure": true
+          },
+          "predictedSuccess": null,
+          "hypothesis": "unknown",
+          "confidence": null,
+          "suspicion": 0,
+          "outcomeSequence": 3,
+          "actualSuccess": true,
+          "correct": null
+        },
+        {
+          "sequence": 5,
+          "choiceId": "training-2-card-2",
+          "stage": "training",
+          "features": {
+            "signal": false,
+            "structure": false
+          },
+          "predictedSuccess": null,
+          "hypothesis": "unknown",
+          "confidence": null,
+          "suspicion": 0,
+          "outcomeSequence": 6,
+          "actualSuccess": false,
+          "correct": null
+        },
+        {
+          "sequence": 8,
+          "choiceId": "training-3-card-1",
+          "stage": "training",
+          "features": {
+            "signal": true,
+            "structure": true
+          },
+          "predictedSuccess": true,
+          "hypothesis": "unknown",
+          "confidence": null,
+          "suspicion": 0,
+          "outcomeSequence": 9,
+          "actualSuccess": true,
+          "correct": true
+        },
+        {
+          "sequence": 11,
+          "choiceId": "training-4-card-1",
+          "stage": "training",
+          "features": {
+            "signal": false,
+            "structure": false
+          },
+          "predictedSuccess": false,
+          "hypothesis": "unknown",
+          "confidence": null,
+          "suspicion": 0,
+          "outcomeSequence": 12,
+          "actualSuccess": false,
+          "correct": true
+        },
+        {
+          "sequence": 14,
+          "choiceId": "probe-1-card-1",
+          "stage": "probe",
+          "features": {
+            "signal": false,
+            "structure": true
+          },
+          "predictedSuccess": null,
+          "hypothesis": "unknown",
+          "confidence": null,
+          "suspicion": 0,
+          "outcomeSequence": 15,
+          "actualSuccess": true,
+          "correct": null
+        },
+        {
+          "sequence": 17,
+          "choiceId": "transfer-card-2",
+          "stage": "transfer",
+          "features": {
+            "signal": true,
+            "structure": false
+          },
+          "predictedSuccess": false,
+          "hypothesis": "structure",
+          "confidence": 65,
+          "suspicion": 0,
+          "outcomeSequence": 18,
+          "actualSuccess": false,
+          "correct": true
+        },
+        {
+          "sequence": 20,
+          "choiceId": "transfer-check-card-1",
+          "stage": "transfer",
+          "features": {
+            "signal": false,
+            "structure": true
+          },
+          "predictedSuccess": true,
+          "hypothesis": "structure",
+          "confidence": 95,
+          "suspicion": 0,
+          "outcomeSequence": 21,
+          "actualSuccess": true,
+          "correct": true
+        }
+      ],
+      "reflections": [
+        {
+          "sequence": 4,
+          "hypothesis": "unknown",
+          "confidence": null,
+          "suspicion": 0,
+          "nextIntent": "discriminate"
+        },
+        {
+          "sequence": 7,
+          "hypothesis": "unknown",
+          "confidence": null,
+          "suspicion": 0,
+          "nextIntent": "discriminate"
+        },
+        {
+          "sequence": 10,
+          "hypothesis": "unknown",
+          "confidence": null,
+          "suspicion": 0,
+          "nextIntent": "discriminate"
+        },
+        {
+          "sequence": 13,
+          "hypothesis": "unknown",
+          "confidence": null,
+          "suspicion": 0,
+          "nextIntent": "discriminate"
+        },
+        {
+          "sequence": 16,
+          "hypothesis": "structure",
+          "confidence": 65,
+          "suspicion": 0,
+          "nextIntent": "discriminate"
+        },
+        {
+          "sequence": 19,
+          "hypothesis": "structure",
+          "confidence": 95,
+          "suspicion": 0,
+          "nextIntent": "proceed"
+        },
+        {
+          "sequence": 22,
+          "hypothesis": "structure",
+          "confidence": 95,
+          "suspicion": 0,
+          "nextIntent": "proceed"
+        }
+      ],
+      "firstWrongConfidentStep": null,
+      "firstHighSuspicionStep": null,
+      "firstDiagnosticStep": 15,
+      "wrongPredictionCount": 0,
+      "missingPredictionCount": 3,
+      "beliefStatus": "SELF_REPORTED_NOT_INFERRED",
+      "efficacyClaim": "NOT_ESTABLISHED_FOR_HUMANS_OR_LLMS"
+    }
+  ]
+}

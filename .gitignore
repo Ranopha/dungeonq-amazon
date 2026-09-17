@@ -14,3 +14,5 @@ npm-debug.log*
 *.sqlite-shm
 *.pem
 local-instance.json
+study-installation.json
+world-installation.json

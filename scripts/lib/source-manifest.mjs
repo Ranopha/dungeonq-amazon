@@ -1,11 +1,11 @@
 import { readFile, readdir, lstat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
+import { isPublicSourcePath } from './release-paths.mjs';
 
 const excluded = new Set(['.git', 'node_modules', 'dist', '.vinext', '.next', '.wrangler', '.DS_Store',
   'tsconfig.tsbuildinfo', 'next-env.d.ts']);
-const validPath = value => typeof value === 'string' && value.length <= 256
-  && !value.includes('\\') && !value.startsWith('/') && !value.split('/').some(part => !part || part === '.' || part === '..')
+const validPath = value => isPublicSourcePath(value)
   && !value.split('/').some(part => excluded.has(part)) && value !== 'RELEASE_MANIFEST.json';
 
 export async function verifySource(root) {

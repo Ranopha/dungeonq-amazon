@@ -97,6 +97,17 @@ async function command(name) {
   }
   await refresh();
 }
+document.querySelectorAll('[data-astra-task]').forEach(button => button.addEventListener('click', () => guarded(async () => {
+  message('YOU', `Ask Astra to ${button.dataset.astraTask}. Only the minimized synthetic state is sent to OpenAI.`);
+  const output = await post('/api/assistant/command', { command: 'astra', task: button.dataset.astraTask });
+  renderTrace(output.trace);
+  $('result-json').textContent = JSON.stringify(output, null, 2);
+  message(output.astra.mode === 'LIVE_OPENAI' ? 'GPT-6 ASTRA · LIVE' : 'MOCK MODEL · TEST ONLY', output.astra.candidate.explanation, output.failed);
+  message('RUNTIME', output.failed ? `BLOCKED: ${output.result.error}` : `Candidate: ${output.astra.candidate.action}. Outcome: ${output.result.state ?? output.result.body?.state ?? (output.result.valid === true ? 'VERIFIED' : 'Inspect evidence')}.`);
+  $('proof-result').textContent = `${output.astra.mode} · ${output.astra.model} · ${output.astra.responseId ?? 'No live response ID'} · estimated usage $${(output.astra.estimatedUsageUsd ?? 0).toFixed(4)}`;
+  if (output.result.requestId) activeRequest = output.result;
+  await refresh();
+})));
 $('login-form').addEventListener('submit', event => { event.preventDefault(); guarded(async () => {
   const password = $('login-password').value; const otp = $('login-otp').value;
   $('login-password').value = ''; $('login-otp').value = '';

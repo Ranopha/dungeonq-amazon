@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "dungeonq.study-design/v1",
+  "title": "評審的合成花園",
+  "seed": 7717,
+  "trainingRounds": 5,
+  "probeBudget": 2,
+  "labels": {
+    "signalOn": "三角標籤",
+    "signalOff": "圓形標籤",
+    "structureOn": "雙環紋理",
+    "structureOff": "單環紋理"
+  }
+}

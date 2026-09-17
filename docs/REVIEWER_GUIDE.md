@@ -1,5 +1,11 @@
 # A short reviewer route
 
+## v0.6.0: two minutes with the causal study
+
+After installation, run `npm run study` and follow the [four-step route](STUDY_LAB.md#a-two-minute-reviewer-route): retain UI_CHECK, predict before acting, inspect the result, then withdraw for debrief and download/replay. The UI is Traditional Chinese; the linked English guide includes labels. This functional review is not a human/LLM efficacy sample.
+
+Inspect [all results](STUDY_RESULTS.md), including 48 reference condition units and the N=2 Codex pilot's 0/2 wrong-high-confidence induction. The original governed workflow below remains separate. [OSS maintenance/release review](OSS_REVIEW_GUIDE.md).
+
 ## 30 seconds: understand the claim
 
 Read the README and [governance map](GOVERNANCE.md). The assistant is deterministic; MCP/HTTPS/storage/signatures are real; incidents and effects are synthetic. Watch the [2:35 public demo](https://youtu.be/ezX7cOF2s0s).
@@ -51,6 +57,6 @@ Each canonical JSON bundle reports actual route, assertions and limitations. `np
 
 Copy `assistant/scenarios/after-hours.json`, retain `dungeonq.scenario/v1` / `SYNTHETIC_ONLY`, and edit artificial IDs, seed or allowed policy/signals. Upload to analyze through MCP. For a different installed environment, start a **fresh** lab with `--scenario ./my-synthetic-scenario.json`.
 
-Unknown fields, credential-like values, URLs and excess budgets should fail. Only the single-session containment mapping executes. The proof harness takes no existing-lab or arbitrary-target argument; custom testing belongs to the documented simulator/interactive paths.
+Unknown fields, credential-like values, URLs and excess budgets should fail. Only the single-session containment mapping executes. The proof accepts `--scenario ./my-synthetic-scenario.json` in a fresh lab, but takes no existing-lab or arbitrary-target argument.
 
 Report failures with version/commit, OS/Node, exact command, sanitized synthetic input, expected/actual result and exit code. Never share the private lab directory. See [contributing](../CONTRIBUTING.md).

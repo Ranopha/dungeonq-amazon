@@ -1,8 +1,8 @@
 {
   "name": "dungeonq-amazon",
-  "version": "0.4.0",
+  "version": "0.6.0",
   "private": true,
-  "description": "A synthetic Alexa-style assistant rehearsal with real MCP, human approval and durable signed receipts.",
+  "description": "Synthetic assistant governance, persistent abstract worlds and consent-based causal studies with local MCP and replayable evidence.",
   "license": "Apache-2.0",
   "author": "DungeonQ contributors",
   "repository": {
@@ -25,6 +25,17 @@
     "node": ">=24.15.0"
   },
   "scripts": {
+    "study": "node scripts/study.mjs",
+    "study:proof": "node scripts/study-proof.mjs",
+    "study:verify": "node cli/study-verify.mjs",
+    "test:study": "node --test tests/study-*.test.mjs",
+    "world": "node scripts/world.mjs",
+    "test:world": "node --test tests/world-*.test.mjs",
+    "world:proof": "node scripts/world-proof.mjs",
+    "world:verify": "node cli/world-verify.mjs",
+    "astra": "node scripts/astra.mjs",
+    "test:astra": "node --test tests/astra.test.mjs",
+    "astra:proof": "node scripts/astra-proof.mjs",
     "doctor": "node scripts/doctor.mjs",
     "demo:proof": "node scripts/demo-proof.mjs",
     "mcp:client": "node scripts/mcp-client.mjs",

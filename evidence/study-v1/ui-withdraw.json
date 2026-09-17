@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "dungeonq.study-evidence/v1",
+  "profile": "SYNTHETIC_CAUSAL_STUDY",
+  "design": {
+    "schemaVersion": "dungeonq.study-design/v1",
+    "title": "評審的合成花園",
+    "seed": 7717,
+    "trainingRounds": 5,
+    "probeBudget": 2,
+    "labels": {
+      "signalOn": "三角標籤",
+      "signalOff": "圓形標籤",
+      "structureOn": "雙環紋理",
+      "structureOff": "單環紋理"
+    }
+  },
+  "worldId": "bf75af9e-a532-4335-a2a1-c36e5ea02704",
+  "epoch": "00c6ac14-c0ae-4e3a-b759-4627c6ea1fc9",
+  "arm": "DISCRIMINATING",
+  "rule": "signal",
+  "nonce": "f69df91e1c9da1554ff1d3dfa1e500b980258c0ffb06e834d117cb9ba009d393",
+  "events": [
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "bf75af9e-a532-4335-a2a1-c36e5ea02704",
+      "epoch": "00c6ac14-c0ae-4e3a-b759-4627c6ea1fc9",
+      "sequence": 1,
+      "command": {
+        "type": "consent",
+        "accepted": true,
+        "participantMode": "UI_CHECK"
+      },
+      "observation": {
+        "outcome": "CONSENT_RECORDED",
+        "message": "已記錄參與聲明；來源類型不是經驗證的身分。"
+      },
+      "beforeDigest": "7dfaf089b674b20a677d50952c0d299f9293d231157372ee2f747986708fbd8a",
+      "afterDigest": "3ca6451abc3718f9d98c596ebbceb20608aa75d78b6241b95d3acfcc51a0a004",
+      "previousDigest": null,
+      "digest": "67f1060fedf26c14c265d2ee9c3500a54439363665e6cbb3aeb27fa7a837d152"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "bf75af9e-a532-4335-a2a1-c36e5ea02704",
+      "epoch": "00c6ac14-c0ae-4e3a-b759-4627c6ea1fc9",
+      "sequence": 2,
+      "command": {
+        "type": "withdraw"
+      },
+      "observation": {
+        "outcome": "WITHDRAWN",
+        "message": "已停止新互動並提供解答。既有本機紀錄保留，未產生其他效果。"
+      },
+      "beforeDigest": "3ca6451abc3718f9d98c596ebbceb20608aa75d78b6241b95d3acfcc51a0a004",
+      "afterDigest": "05dc0c47fb435cccd080ee05682788f9752ba6ce28c1ec6ec8c7ebaebeddc9a1",
+      "previousDigest": "67f1060fedf26c14c265d2ee9c3500a54439363665e6cbb3aeb27fa7a837d152",
+      "digest": "e5468017d203a1be29802befb6184915c5d96872d24a5190e1d9dec3d02478cf"
+    }
+  ],
+  "finalDigest": "c811eb54ef00deb35cc8860256c9b27a3449bb5b7a31a4f09a790cdff4c0ebaf"
+}

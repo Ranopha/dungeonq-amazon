@@ -32,6 +32,12 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run doctor -- --skip-ports
       - run: npm run check
+      - name: Causal study mechanism and independent Observer
+        run: npm run study:proof -- --out "$RUNNER_TEMP/dq-study"
+      - name: Replay both retained Codex pilot results
+        run: |
+          npm run study:verify -- evidence/study-v1/codex-pilot-a.json
+          npm run study:verify -- evidence/study-v1/codex-pilot-b.json
       - name: Approved-effect proof
         run: npm run demo:proof -- --out "$RUNNER_TEMP/dq-proof-approved"
       - name: Budget rejection proof
@@ -49,5 +55,9 @@ jobs:
             ${{ runner.temp }}/dq-proof-approved/*
             ${{ runner.temp }}/dq-proof-budget/*
             ${{ runner.temp }}/dq-proof-unsupported/*
+            ${{ runner.temp }}/dq-study/proof.json
+            ${{ runner.temp }}/dq-study/matrix.json
+            ${{ runner.temp }}/dq-study/correlated/evidence.json
+            ${{ runner.temp }}/dq-study/discriminating/evidence.json
           retention-days: 14
           if-no-files-found: ignore

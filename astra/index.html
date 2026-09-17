@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DungeonQ — Astra Safety Rehearsal</title><link rel="stylesheet" href="/assistant.css"></head>
+<body>
+<header><a class="brand" href="/assistant" aria-label="DungeonQ home"><span class="mark">Q</span>DungeonQ</a><span class="pill">SYNTHETIC ONLY</span><a href="/">Advanced workbench</a></header>
+<main>
+  <section class="intro"><p class="eyebrow">GPT-6 ASTRA / A SAFETY REHEARSAL FOR AGENTS</p><h1>A capable agent.<br>A boundary it cannot approve.</h1><p>Let Astra propose the next step in a synthetic incident. DungeonQ checks the command. Only a separately authenticated person can approve the change.</p><div class="boundary">Live Astra candidate when requested · Local synthetic effects only · No real systems or live attacks</div></section>
+  <section id="login-panel" class="login-panel" aria-labelledby="login-title"><div><p class="eyebrow">YOUR PRIVATE LOCAL LAB</p><h2 id="login-title">Open the review desk</h2><p>Use the disposable account printed by the launcher. Your password never enters an agent tool.</p></div>
+    <form id="login-form"><label>Username<input id="username" autocomplete="username" value="owner-lab" required></label><label>Local lab password<input id="login-password" type="password" autocomplete="current-password" required></label><label>Authenticator code <span>(only if enabled)</span><input id="login-otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></label><button type="submit">Open lab <span aria-hidden="true">↗</span></button></form>
+  </section>
+  <div id="notice" role="status" aria-live="polite" hidden></div>
+  <div id="workspace" hidden>
+    <div class="session-bar"><span id="identity"></span><span id="protocol">Connecting…</span><button id="refresh" class="quiet">Refresh</button><button id="logout" class="quiet">Sign out</button></div>
+    <div class="desk">
+      <section class="conversation" aria-labelledby="conversation-title"><p class="eyebrow">01 / ASSISTANT</p><h2 id="conversation-title">The incident desk</h2><p id="scenario-title" class="muted"></p>
+        <div class="case-strip"><span class="dot"></span>Artificial order-service session<span class="muted">Fixed-seed lab</span></div>
+        <div id="conversation" class="messages" role="log" aria-label="Assistant conversation" aria-live="polite"></div>
+        <p class="eyebrow">ASK ASTRA · OPTIONAL PAID CALL</p><div class="actions"><button data-astra-task="prepare">1. Astra: prepare a request</button><button data-astra-task="execute" class="secondary">2. Astra: continue after review</button></div><p class="hint">No approval tool. The server independently checks every command. A persistent local budget limits model calls; all controls below run without AI charges.</p><p class="eyebrow">VERIFY THE BOUNDARY · NO MODEL CALL</p>
+        <div class="actions"><button data-command="analyze">Investigate this incident</button><button data-command="request" class="secondary">Request containment</button><button data-command="apply" class="secondary">Ask the agent to apply</button></div>
+        <p class="hint">Before approval, the last action must be rejected. Analysis is automatic; a change is not.</p>
+        <details><summary>Bring your own synthetic scenario</summary><p>Upload a Scenario Pack v1 to analyze it with the same engine. It cannot change this running lab’s registered assets. To execute a supported custom containment scenario, launch a separate lab with <code>--scenario</code>.</p><label class="upload">Scenario JSON<input id="scenario-file" type="file" accept=".json,application/json"></label><button id="custom-analyze" class="secondary">Analyze uploaded scenario</button></details>
+      </section>
+      <aside class="review" aria-labelledby="review-title"><p class="eyebrow">02 / HUMAN AUTHORITY</p><h2 id="review-title">The approval boundary</h2><div id="request-state" class="state">NO REQUEST YET</div><p id="review-description">Ask the assistant to request containment. The exact scope will appear here before you approve.</p>
+        <div id="manifest" hidden><dl><dt>Target</dt><dd id="target"></dd><dt>Change</dt><dd>Contain one synthetic asset</dd><dt>Maximum effects</dt><dd>1 · no fleet-wide authority</dd><dt>Expires</dt><dd id="expiry"></dd></dl><label>Manifest digest<output id="manifest-digest" class="digest"></output></label><details><summary>Inspect the full immutable manifest</summary><pre id="manifest-json"></pre></details>
+          <form id="approve-form"><label>Re-enter your password<input id="approve-password" type="password" autocomplete="current-password" required></label><label>Authenticator code <span>(only if enabled)</span><input id="approve-otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></label><button type="submit" class="approve">Approve this exact change</button><p class="hint">Separate human endpoint · fresh password check · no MCP approval tool</p></form>
+        </div>
+        <div id="asset-list" class="asset-list"></div>
+      </aside>
+    </div>
+    <section class="proof" aria-labelledby="proof-title"><div class="proof-heading"><div><p class="eyebrow">03 / EVIDENCE, NOT ASSURANCES</p><h2 id="proof-title">Try to prove it wrong.</h2></div><div class="actions"><button data-command="verify" class="secondary">Verify receipt</button><button data-command="tamper" class="secondary">Test tampering</button><button data-command="replay" class="secondary">Replay apply</button><button data-command="export" class="secondary">Export evidence</button></div></div>
+      <div id="proof-result" class="proof-result">After execution, verify the signature, alter a receipt copy, or replay the same request.</div>
+      <div class="table-wrap"><table><caption>Actual MCP calls, including runtime-enforced candidate actions</caption><thead><tr><th>Call</th><th>Tool</th><th>Outcome</th><th>Output digest</th></tr></thead><tbody id="trace"></tbody></table></div>
+      <details><summary>Latest structured result</summary><pre id="result-json">No calls yet.</pre></details>
+    </section>
+  </div>
+  <footer>GPT-6 Astra supplies untrusted command candidates; the deterministic runtime retains authority. MCP 2025-11-25 / Streamable HTTP, SQLite read-back and local Ed25519 receipts. This is a local synthetic rehearsal, not production security or external model attestation.</footer>
+</main><script type="module" src="/assistant.mjs"></script>
+</body></html>

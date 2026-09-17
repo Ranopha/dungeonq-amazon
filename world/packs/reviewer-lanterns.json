@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "dungeonq.world/v1",
+  "title": "評審範例 · 雙色燈室",
+  "seed": 7721,
+  "maxSteps": 30,
+  "startRoom": "porch",
+  "initialFlags": [],
+  "hypotheses": [
+    { "id": "all-lamps", "label": "亮過一盞燈就能點亮全部燈" },
+    { "id": "separate-switches", "label": "不同燈各有對應條件" }
+  ],
+  "rooms": [
+    {
+      "id": "porch", "title": "燈室前廊", "description": "這個自訂場域不使用檔案館的房間或印記；同一引擎讀取另一組已宣告的因果規則。",
+      "clues": [ { "text": "牆上有兩枚獨立開關，分別標示藍色與綠色。", "requires": [] } ],
+      "choices": [
+        { "id": "blue-switch", "label": "按藍色開關", "requires": [], "grants": ["blue-on"], "consumes": [], "to": "porch", "outcome": "SUCCESS", "message": "藍燈亮起，變更會保存。", "reward": true },
+        { "id": "green-switch", "label": "按綠色開關", "requires": [], "grants": ["green-on"], "consumes": [], "to": "porch", "outcome": "SUCCESS", "message": "綠燈亮起，變更會保存。", "reward": true },
+        { "id": "enter-green", "label": "走入綠燈房", "requires": ["green-on"], "grants": [], "consumes": [], "to": "green-room", "outcome": "SUCCESS", "message": "綠燈房只認自己的開關；藍燈的成功不足以開門。", "reward": true }
+      ]
+    },
+    {
+      "id": "green-room", "title": "綠燈房", "description": "房間保持開啟，回訪或重啟不會忘記開關狀態。",
+      "clues": [ { "text": "窗邊沒有其他出口；世界不會憑空追加。", "requires": [] } ],
+      "choices": [
+        { "id": "return-porch", "label": "返回前廊", "requires": [], "grants": [], "consumes": [], "to": "porch", "outcome": "PARTIAL", "message": "回到前廊，燈光仍維持原狀。", "reward": false }
+      ]
+    }
+  ]
+}

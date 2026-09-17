@@ -1,25 +1,35 @@
 # DungeonQ — Governed Assistant Lab
 
+## v0.6.0: governed actions and a world you can question
+
+The original governed MCP workflow stays intact. New `npm run world` and `npm run study` experiences add persistent abstract rooms and a finite two-feature causal experiment: **predict → act → reflect**, with consent, withdrawal, debrief and a separate-process Observer. No API key is needed.
+
+[Two-minute study route](docs/STUDY_LAB.md#a-two-minute-reviewer-route) · [World guide](docs/WORLD_LAB.md) · [Research results and raw evidence](docs/STUDY_RESULTS.md) · [Three-minute OSS reviewer guide](docs/OSS_REVIEW_GUIDE.md).
+
+The evidence includes **48 reference-learner conditions, not 48 subjects**, and an N=2 Codex pilot with **0/2 wrong-high-confidence induction**. Exact pilot model identity was not independently attested. No general human/LLM efficacy is claimed. This is finite feature learning, not exploitable vulnerabilities or attack chains.
+
+The study UI remains Traditional Chinese; its English guide includes important labels. [Overview](media/study-evidence.png) and [learner trace](media/study-trace.png) are actual recorded-evidence explorer captures, not a live hosted study. The independent Observer requires self-hosting. The original video below records the 0.2.0 governed workflow, not these new features.
+
 **Let it investigate. Decide before it acts.**
 
 DungeonQ is an Apache-2.0, locally runnable reference lab for **testing the boundary between an assistant's request and a human-authorized effect**. An assistant uses a real MCP server to investigate a synthetic incident and request containment. A separately authenticated reviewer approves an exact manifest. Only then can the assistant change one synthetic session and obtain a verifiable receipt.
 
 For MCP developers, security engineers and reviewers who need more than an approval label: challenge the boundary, inspect what changed, tamper with the evidence, and rerun the checks.
 
-**Synthetic only.** The transport, authentication, SQLite writes and signatures are real; the identities, incident and effects are artificial. This is a deterministic assistant simulator, **not an LLM, the Alexa service, an Echo integration or production security software**. No cloud account, API key, credit card, live attack or real enterprise connection is needed.
+**Synthetic only.** The transport, authentication, SQLite writes and signatures are real; the identities, incident and effects are artificial. The governed assistant is deterministic, **not an LLM, the Alexa service, an Echo integration or production security software**. No cloud account, API key, credit card, live attack or real enterprise connection is needed.
 
-[Watch the 2:35 demo](https://youtu.be/ezX7cOF2s0s) · [Download v0.4.0](https://github.com/Ranopha/dungeonq-amazon/releases/tag/v0.4.0) · [Review the evidence map](docs/GOVERNANCE.md) · [Public acceptance runs](https://github.com/Ranopha/dungeonq-amazon/actions/workflows/ci.yml)
+[Watch the original 2:35 demo](https://youtu.be/ezX7cOF2s0s) · [Source releases](https://github.com/Ranopha/dungeonq-amazon/releases) · [Review the evidence map](docs/GOVERNANCE.md) · [Public acceptance runs](https://github.com/Ranopha/dungeonq-amazon/actions/workflows/ci.yml)
 
 ## Start in five minutes
 
 Reference runtime: Node.js **24.15.0+**, npm and OpenSSL with `req -addext`. Public CI targets Ubuntu 24.04 and macOS 14; the [validation record](docs/VALIDATION.md) identifies completed runs. Native Windows is not release-accepted. See [installation and troubleshooting](docs/INSTALL.md).
 
 ```sh
-git clone --branch v0.4.0 --depth 1 https://github.com/Ranopha/dungeonq-amazon.git
-cd dungeonq-amazon
 npm ci --ignore-scripts
 npm run doctor
 ```
+
+Run these commands in the unpacked v0.6.0 source directory containing `package.json`.
 
 ### A. Reproduce the proof without a browser
 

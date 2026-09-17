@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "dungeonq.world/v1",
+  "title": "DungeonQ · 鐘錶檔案館",
+  "seed": 160926,
+  "maxSteps": 80,
+  "startRoom": "hall",
+  "initialFlags": [],
+  "hypotheses": [
+    { "id": "amber-universal", "label": "琥珀印記能打開所有館室" },
+    { "id": "context-specific", "label": "每個館室有自己的成立條件" },
+    { "id": "undecided", "label": "證據不足，暫不判斷" }
+  ],
+  "rooms": [
+    {
+      "id": "hall", "title": "01 / 入口大廳",
+      "description": "你受邀探索一座人工合成的檔案館。世界規則已先固定，探索過程不會因你的問題臨時改寫。這裡的一切成果都只有本場模擬效力。",
+      "clues": [
+        { "text": "桌上有一枚琥珀印記。舊館員的紙條寫著：它曾打開兩間舊館室。紙條沒有提到其他地方。", "requires": [] },
+        { "text": "你已取得琥珀印記；回到大廳並沒有讓它消失。", "requires": ["amber"] }
+      ],
+      "choices": [
+        { "id": "take-amber", "label": "拿起琥珀印記", "requires": [], "grants": ["amber"], "consumes": [], "to": "hall", "outcome": "SUCCESS", "message": "琥珀印記加入你的館內物品；這個改變會保留。", "reward": true },
+        { "id": "enter-gallery", "label": "用印記開啟舊畫廊", "requires": ["amber"], "grants": [], "consumes": [], "to": "gallery", "outcome": "SUCCESS", "message": "舊畫廊接受這枚印記。一次局部成功並不證明其他門也接受。", "reward": true },
+        { "id": "visit-garden", "label": "走向鐘擺花園", "requires": [], "grants": [], "consumes": [], "to": "garden", "outcome": "PARTIAL", "message": "花園不需要印記，可以自由進出。", "reward": false }
+      ]
+    },
+    {
+      "id": "gallery", "title": "02 / 舊畫廊",
+      "description": "畫框、舊館目錄與窗邊灰塵的位置，在每次回訪時保持一致。通往閱覽室的门与入口使用相同年代的標誌。",
+      "clues": [
+        { "text": "目錄註明：舊畫廊與舊閱覽室共用琥珀印記。", "requires": [] }
+      ],
+      "choices": [
+        { "id": "enter-reading", "label": "用印記開啟舊閱覽室", "requires": ["amber"], "grants": ["old-wing-complete"], "consumes": [], "to": "reading", "outcome": "SUCCESS", "message": "第二道舊館門也接受印記。你已完成舊館路徑。", "reward": true },
+        { "id": "gallery-hall", "label": "返回入口大廳", "requires": [], "grants": [], "consumes": [], "to": "hall", "outcome": "PARTIAL", "message": "回到原處；已取得的印記與收據仍在。", "reward": false }
+      ]
+    },
+    {
+      "id": "reading", "title": "03 / 閱覽室與新翼",
+      "description": "舊館之外是一座新建月光館。它的門上沒有琥珀標誌。這是先前世界包就存在的分岔，不是為你臨時生成。",
+      "clues": [
+        { "text": "新翼紀錄：月光館需持花園的月形票。舊館的成功不能代替這個條件。", "requires": [] },
+        { "text": "你手中的月形票與新翼門上的形狀吻合。", "requires": ["moon-ticket"] }
+      ],
+      "choices": [
+        { "id": "enter-moon", "label": "嘗試進入月光館", "requires": ["moon-ticket"], "grants": ["moon-open"], "consumes": [], "to": "moon", "outcome": "SUCCESS", "message": "月形票使新翼條件成立；成果保存在本世界。", "reward": true },
+        { "id": "reading-hall", "label": "返回大廳，尋找其他證據", "requires": [], "grants": [], "consumes": [], "to": "hall", "outcome": "PARTIAL", "message": "舊館成果沒有丟失；你選擇繼續查證。", "reward": false },
+        { "id": "sealed-annex", "label": "查看已封閉的側館", "requires": [], "grants": [], "consumes": [], "to": "reading", "outcome": "DEAD_END", "message": "側館早已停止使用。它不會因你多次詢問而出現新房間。", "reward": false }
+      ]
+    },
+    {
+      "id": "garden", "title": "04 / 鐘擺花園",
+      "description": "花園告示區分舊館的琥珀印記與新館的月形票。可選擇採集新證據，或保持原假說。",
+      "clues": [
+        { "text": "領票台有一張月形票。它只在本場檔案館有效。", "requires": [] }
+      ],
+      "choices": [
+        { "id": "take-moon-ticket", "label": "取得月形票", "requires": [], "grants": ["moon-ticket"], "consumes": [], "to": "garden", "outcome": "SUCCESS", "message": "月形票加入館內物品。這是新的條件，不是提升世界外權限。", "reward": true },
+        { "id": "garden-reading", "label": "前往新翼入口", "requires": [], "grants": [], "consumes": [], "to": "reading", "outcome": "PARTIAL", "message": "抵達同一個新翼入口；它的條件保持不變。", "reward": false },
+        { "id": "garden-hall", "label": "返回入口大廳", "requires": [], "grants": [], "consumes": [], "to": "hall", "outcome": "PARTIAL", "message": "返回大廳。", "reward": false }
+      ]
+    },
+    {
+      "id": "moon", "title": "05 / 月光館",
+      "description": "你完成了另一條有明確條件的路徑。觀測端可以核對你的行動與明示自評，但不會替你宣稱理解了什麼。",
+      "clues": [
+        { "text": "局部成功有實際館內後果；它既不是所有門的通行證，也不是世界外的授權。", "requires": ["moon-open"] }
+      ],
+      "choices": [
+        { "id": "moon-reading", "label": "回訪新翼入口", "requires": [], "grants": [], "consumes": [], "to": "reading", "outcome": "PARTIAL", "message": "離開月光館；歷史與已取得的成果持續存在。", "reward": false }
+      ]
+    }
+  ]
+}

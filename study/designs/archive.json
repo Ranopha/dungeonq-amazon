@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "dungeonq.study-design/v1",
+  "title": "雙特徵檔案館",
+  "seed": 170926,
+  "trainingRounds": 4,
+  "probeBudget": 3,
+  "labels": {
+    "signalOn": "琥珀徽記",
+    "signalOff": "靛藍徽記",
+    "structureOn": "有槽紋",
+    "structureOff": "無槽紋"
+  }
+}

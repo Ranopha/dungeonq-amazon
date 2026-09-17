@@ -4,6 +4,8 @@
 
 - `npm run amazon`: durable assistant + human-review demo; the primary experience.
 - `npm run demo:proof`: fresh automated two-role fixture over the same runtime; no browser required.
+- `npm run study`: separate finite causal study and researcher Observer; see the [English study guide](STUDY_LAB.md). Its interface is currently Traditional Chinese.
+- `npm run world`: persistent abstract exploration; see [world operation](WORLD_LAB.md).
 - `npm run dev`: retained browser-only simulator, **not** the durable assistant.
 - `npm run build`: builds that retained browser shell; it does not deploy the lab.
 

@@ -68,7 +68,7 @@ export async function startWorkbench({ application, tls, port = 0, assistant }) 
       ['/assistant', 'index.html', 'text/html; charset=utf-8'],
       ['/assistant.css', 'assistant.css', 'text/css; charset=utf-8'],
       ['/assistant.mjs', 'assistant.mjs', 'text/javascript; charset=utf-8']
-    ]) assets.set(route, { bytes: await readFile(new URL(`../assistant/${file}`, import.meta.url)), type });
+    ]) assets.set(route, { bytes: await readFile(new URL(`../${assistant.info?.model && file === 'index.html' ? 'astra' : 'assistant'}/${file}`, import.meta.url)), type });
   }
   const csrfKey = randomBytes(32);
   let origin; let active = 0; let count = 0; let reset = Date.now() + 60_000;
@@ -179,7 +179,7 @@ export async function startWorkbench({ application, tls, port = 0, assistant }) 
       send(statusFor(code), { error: code, traceId });
     } finally { if (admitted) active--; }
   });
-  server.requestTimeout = 10_000; server.headersTimeout = 5000; server.timeout = 10_000;
+  server.requestTimeout = 10_000; server.headersTimeout = 5000; server.timeout = assistant?.info?.model ? 90_000 : 10_000;
   server.maxConnections = 32; server.maxRequestsPerSocket = 100; server.keepAliveTimeout = 2000;
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(port, '127.0.0.1', resolve); });
   origin = `https://127.0.0.1:${server.address().port}`;

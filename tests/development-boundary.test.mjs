@@ -15,7 +15,7 @@ test("開發套件只指向新庫並保持禁止 npm 發布", async () => {
 test("開發工作樹沒有參賽 Sites 綁定或自動部署流程", async () => {
   await assert.rejects(access(new URL(".openai/hosting.json", root)), { code: "ENOENT" });
   const pkg = JSON.parse(await readFile(new URL("package.json", root), "utf8"));
-  if (pkg.name === 'dungeonq-amazon') {
+  if (['dungeonq-amazon', 'dungeonq-astra'].includes(pkg.name)) {
     assert.deepEqual(await readdir(new URL('.github/workflows', root)), ['ci.yml']);
     const ci = await readFile(new URL('.github/workflows/ci.yml', root), 'utf8');
     assert.match(ci, /permissions:\s+contents: read/u);

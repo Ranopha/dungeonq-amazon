@@ -1,5 +1,13 @@
 # New work and provenance
 
+## v0.6.0 additions — September 17, 2026
+
+The governed assistant remains intact. New work adds the persistent finite-world kernel, separate-process Observers, world/study MCP adapters, two-feature causal protocol, prediction-before-action records, independent reflection, consent/withdrawal/debrief, offline causal replay and explicit reference learners. These are bounded synthetic learning tasks, not real vulnerability or attack-chain simulation.
+
+Original study evidence includes 48 reference conditions (not subjects) and both planned Codex pilot sessions. Wrong-high-confidence induction was 0/2; model identity is not independently attested. This negative result is retained rather than presented as successful LLM deception. See [results](STUDY_RESULTS.md) and the [two-minute operation route](STUDY_LAB.md#a-two-minute-reviewer-route).
+
+New gallery captures show the recorded-evidence explorer. The original 0.2.0 video still documents the unchanged governed MCP flow; it is not a recording of the study. The full study/Observer requires local installation, not static hosting.
+
 DungeonQ is an existing project, significantly updated for this entry. The earlier WebMCP submission is frozen and is not the deployment or submission target of this version.
 
 ## Earlier work retained

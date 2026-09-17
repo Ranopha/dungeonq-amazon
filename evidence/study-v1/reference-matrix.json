@@ -1,0 +1,1121 @@
+{
+  "schemaVersion": "dungeonq.reference-matrix/v1",
+  "participantMode": "REFERENCE_LEARNER",
+  "rows": [
+    {
+      "seed": 101,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.2,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9896907216494846
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "c764dc2383348d42a54dd91151a2bf319ac818c089bd24aec630346fc49c19d3"
+    },
+    {
+      "seed": 101,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9600000000000001
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "821766e9f5c7abdc659bfa90ca9be73c19288c65b036c85b07145678bc5da3bd"
+    },
+    {
+      "seed": 101,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.5999999999999999,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          false,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9696969696969697
+      },
+      "firstWrongConfidentStep": 13,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "69a6e47c21e2b2672c97623066c7097637ae73d984ece2b4fb6aecad993179dd"
+    },
+    {
+      "seed": 101,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.888888888888889
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "72dfaa8d7ea9f347d3dea82a6cc60302effc5243196ae3c9220f6cd4a8207a64"
+    },
+    {
+      "seed": 101,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.4,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          false,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9846153846153847
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "1f7ad8d1412de6224de57912a9a46caafade7f5adf2caac7b33eb98dfa06ed39"
+    },
+    {
+      "seed": 101,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9411764705882353
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "6f474f0a5731b833d3c8bd85cff98f5a155442dc0bf7ba0313fdc9847b3c0ade"
+    },
+    {
+      "seed": 101,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.4,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9846153846153847
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "8e709d3663987fb49fc2e9c4adc81834ff317c19b6b0c051622c897e401da847"
+    },
+    {
+      "seed": 101,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9411764705882353
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "2a057d35068e203af1b795b86292ce6e7a0ecb3f334f169bbce137fe523b2547"
+    },
+    {
+      "seed": 101,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "signal",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.2,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9600000000000001
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 15,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "36f372e9ea0299f3030822d54705531e4d157bd656bf9c547e42799515e1ec1a"
+    },
+    {
+      "seed": 101,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "signal",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9600000000000001
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "f0449d0fa2c173a7da2247bf5d42417c8813c5a4303d1b7f7222d18ac4ee3978"
+    },
+    {
+      "seed": 101,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "structure",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.5999999999999999,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.888888888888889
+      },
+      "firstWrongConfidentStep": 13,
+      "firstDiagnosticStep": 15,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "26d8518d6e6fb79356bb58b598431f129b53023e897820d6bc6d8d67ba94a8a1"
+    },
+    {
+      "seed": 101,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "structure",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.888888888888889
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "a0900a112b6eb47b99a3db5fab7d5fdcc3692c1a666b4b226b67a0be238a8b97"
+    },
+    {
+      "seed": 202,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.2,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9896907216494846
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "e651557cf788fe8b5c803961446296b32867588a4e6917ebf9eabe541b901bba"
+    },
+    {
+      "seed": 202,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9795918367346939
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "9372bc8d82f75fd62ab2d3559e163febcdbacabcd2ffd2833a0eb64c3b1eb277"
+    },
+    {
+      "seed": 202,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.5999999999999999,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          false,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9696969696969697
+      },
+      "firstWrongConfidentStep": 13,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "e808d6dcb4a6f606d5556588ac73d259b2e641804afc71d174275f71a39bbb38"
+    },
+    {
+      "seed": 202,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9411764705882353
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "aee208c7fede652b8906a175f5433ef54869db1a8f4f2556aadd5b29ae4c88e3"
+    },
+    {
+      "seed": 202,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.4,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9846153846153847
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "463a6503f0f991fa016a3c98c3895f1a30d120dccaf88e686c7c3f7972604c73"
+    },
+    {
+      "seed": 202,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9696969696969697
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "1ff79fb700d19cf6dc99ad814918f206876b5bab415a8de969ac0f01b17d6c17"
+    },
+    {
+      "seed": 202,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.4,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          false,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9846153846153847
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "570a6d4a62df825649d4b2ea5b9a853f5203c2a0f164f8922560e20ad992246c"
+    },
+    {
+      "seed": 202,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9696969696969697
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "bc21f7f8cedec573e321f90c1b3e715d156c923056f86e14a3a082c86a1f8e0e"
+    },
+    {
+      "seed": 202,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "signal",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.2,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9600000000000001
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 15,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "64c6963a116e7d37591b68c75a67d4aca35f5a189cbef71a802ba9684484fe12"
+    },
+    {
+      "seed": 202,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "signal",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9795918367346939
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "2f90a68f39eb0e79396ca5e2e35d128ff83f7da1a8e93d0ccd3cd0baf7281a81"
+    },
+    {
+      "seed": 202,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "structure",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.5999999999999999,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.888888888888889
+      },
+      "firstWrongConfidentStep": 13,
+      "firstDiagnosticStep": 15,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "2dde543153bfe7cc0b614fd84da0a89aa73d59de7deea77b7fb45c780bdb184e"
+    },
+    {
+      "seed": 202,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "structure",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9411764705882353
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "0b81a1fe338548d8d0369ecc6dd68eafa52ba022cd6e64a3471b0c7d7eab64b6"
+    },
+    {
+      "seed": 303,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.2,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9896907216494846
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "39b91601ff0e9a09a2443d3a4db19318adb44272cbc048ff68a8d37137451696"
+    },
+    {
+      "seed": 303,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9600000000000001
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "2994f02328fb7ed4f70ff98c56898a7d56ac81070dc60c7e1f5ac9cd069d0e92"
+    },
+    {
+      "seed": 303,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.5999999999999999,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          false,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9696969696969697
+      },
+      "firstWrongConfidentStep": 13,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "60697e5a148cc49eef0793a9d5cbd58e3c820284a6769005a276a0b42b77d9d9"
+    },
+    {
+      "seed": 303,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.888888888888889
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "116e7b5a2e7576e15b66b1448c3ecb163d655596fb7c1ab5bc2990056a3a7c12"
+    },
+    {
+      "seed": 303,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.4,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9846153846153847
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "dff745da4559ab14d6520fbc417951f609015ad6b1b623ec717914a3ba68c5bb"
+    },
+    {
+      "seed": 303,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9411764705882353
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "8ff11506b87b0ff287e7babe917c88e57b4ef1cb9c1e9c17c357d4014667c8ad"
+    },
+    {
+      "seed": 303,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.4,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          false,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9846153846153847
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "17e17a6a5cf5548aec13effbcc1387853ce3d0eaa956f352aa58c82f597f7bb9"
+    },
+    {
+      "seed": 303,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9411764705882353
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "203ef0e080305cb90ad8776651c889332e4bc16dc58beba7995028e2673a4867"
+    },
+    {
+      "seed": 303,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "signal",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.2,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9600000000000001
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 15,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "59890d9ddc4d08424cc42240085fdb509c95823874e1a888a94a7085a31b26eb"
+    },
+    {
+      "seed": 303,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "signal",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9600000000000001
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "d198b35e5fd7b79176d0ff2454eef4f6971dbb18f990a37f41839085ba1c7459"
+    },
+    {
+      "seed": 303,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "structure",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.5999999999999999,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.888888888888889
+      },
+      "firstWrongConfidentStep": 13,
+      "firstDiagnosticStep": 15,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "0875303d80b8ecb94b646a714422e3fac277034bd303371edfff71612d1457de"
+    },
+    {
+      "seed": 303,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "structure",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.888888888888889
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "779564e6a28e1db76e766ac8666c75bfbf53fb6b2121bc91c4907914e81a9810"
+    },
+    {
+      "seed": 404,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.2,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9896907216494846
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "2c0679a6255be40b89c76c3882e1f9692983b81c4af1361c582e8dda13f30069"
+    },
+    {
+      "seed": 404,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9795918367346939
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "4e04b5fc861481279ea120b0a0d4bb1105c24976f8fec2c8595fa5d2016db718"
+    },
+    {
+      "seed": 404,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.5999999999999999,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          false,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9696969696969697
+      },
+      "firstWrongConfidentStep": 13,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "fdb09ee7ce866200861f6e3c367efb8682d8199b1750d752b96ebdf6f6ca7f91"
+    },
+    {
+      "seed": 404,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.888888888888889
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "2d80f0f8b7be8a3deee6631633a4a225532dbdf5c2199db769193b6d0e659e66"
+    },
+    {
+      "seed": 404,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.4,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9846153846153847
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "17177ad7dca73c70027688207939853fab166b7503a4576ea8f9f4e2700379d4"
+    },
+    {
+      "seed": 404,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "signal",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9696969696969697
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "baa565b2ad07659aff32ca7ec56df31a397c49a3c0a9a581c880c10158d01a77"
+    },
+    {
+      "seed": 404,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.4,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          false,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9846153846153847
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 24,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "762d59b8625e9fc9579a9d4fd70fa0f949b9ac9553d8c798b9dcb31cbd2caa36"
+    },
+    {
+      "seed": 404,
+      "config": {
+        "prior": "NEUTRAL",
+        "policy": "GREEDY"
+      },
+      "rule": "structure",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.1,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.9411764705882353
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "a15725d1139c04c8f6b72161bf1449de80319fea06c3aca09ffd0afe23c907d9"
+    },
+    {
+      "seed": 404,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "signal",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.2,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9600000000000001
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 15,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "1cc2b0b54821315f95a1525049daaf1387769204b342841e6d917c2f955a06ba"
+    },
+    {
+      "seed": 404,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "signal",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.05,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "signal",
+        "finalTrueFactorProbability": 0.9795918367346939
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 0,
+      "bundleDigest": "ee9998d6bab9386d1d8578b2e539ba4c4a0e87e6999c9234af94b72c37b578a0"
+    },
+    {
+      "seed": 404,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "structure",
+      "arm": "CORRELATED",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0.5999999999999999,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.888888888888889
+      },
+      "firstWrongConfidentStep": 13,
+      "firstDiagnosticStep": 15,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "64d65cfc8fb4c763089f46749eb43ad35200aac9bb9340611fdf7c6104fe1776"
+    },
+    {
+      "seed": 404,
+      "config": {
+        "prior": "SURFACE_BIASED",
+        "policy": "INFORMATION_SEEKING"
+      },
+      "rule": "structure",
+      "arm": "DISCRIMINATING",
+      "measurements": {
+        "wrongFactorProbabilityAfterTraining": 0,
+        "wrongFactorProbabilityInitially": 0.15,
+        "transferPredictionCorrect": [
+          true,
+          true
+        ],
+        "finalReportedHypothesis": "structure",
+        "finalTrueFactorProbability": 0.888888888888889
+      },
+      "firstWrongConfidentStep": null,
+      "firstDiagnosticStep": 6,
+      "wrongPredictionCount": 1,
+      "bundleDigest": "4202d79c31b69a83ebaf647fe3cd6c597f1163073429e68114156dbad0f75be7"
+    }
+  ],
+  "analysis": {
+    "units": 48,
+    "seedReplicates": 4,
+    "comparison": "PAIRED_PRESENTATION_SEEDS_FIXED_PRIORS_COUNTERBALANCED_TRUE_RULE",
+    "populationInference": "NONE",
+    "pValue": null,
+    "humanOrLlmSampleSize": 0,
+    "limitations": "Presentation seeds are not independent human subjects. The learner priors and policies are explicit model assumptions; no general deception efficacy follows."
+  },
+  "paidModelCalls": 0,
+  "externalTargetRequests": 0
+}

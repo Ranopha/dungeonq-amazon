@@ -1,5 +1,11 @@
 # Versioned validation record
 
+## v0.6.0 — 2026-09-17 local clean-source checkpoint
+
+Both clean public distributions passed **214 tests, three fixed-seed goldens, source audit, typecheck and build**. Each distribution's world and study proofs passed 12 checks each. The original study JSON is preserved byte-for-byte; source manifests identify final packaged contents. These are local clean-export results, not a claim that the new public CI or deployment has completed. Consult the actual release/CI record for those separate gates.
+
+The new functionality is finite synthetic learning and persistence, not real vulnerabilities or general LLM efficacy. The N=2 Codex pilot recorded 0/2 wrong-high-confidence induction; its exact model identity was not independently attested. [Results and evidence](STUDY_RESULTS.md).
+
 ## v0.4.0 — 2026-09-16
 
 Clean export on macOS arm64 / Node 24.15.0: **122 tests passed, zero failed**; all three existing deterministic goldens, release-pattern audit, typecheck, build and 118-file source inventory passed. Clean install audited 277 packages and reported zero known vulnerabilities at this checkpoint. The retained Vinext unknown-route classification warning remains; build success does not deploy the assistant.

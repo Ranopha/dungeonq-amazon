@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0 — 2026-09-17
+
+- Add persistent abstract worlds and a finite two-feature causal study: pre-action prediction, separate reflection, unknown/null self-reports, consent, withdrawal and fixed-rule debrief.
+- Add separate-process/database Observers, bounded MCP tools, durable retries/restart and offline causal replay. Local synthetic operation is not a security sandbox or exploitable environment.
+- Retain all 48 reference-learner conditions (not subjects) and both Codex pilot sessions: 0/2 wrong-high-confidence induction; model identity not independently attested. No general human/LLM efficacy claim.
+- Add English operation/contracts/results, actual evidence-explorer captures and an OSS reviewer route. Preserve MCP 2025-11-25 governance, installation, approval controls and the original video provenance.
+
 ## 0.4.0 — 2026-09-16
 
 - Run a caller-supplied synthetic Scenario Pack through the complete fresh-lab proof; report stable input/decision/proposal digests and explicit success/rejection outcomes.

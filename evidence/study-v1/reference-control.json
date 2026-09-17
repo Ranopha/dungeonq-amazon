@@ -1,0 +1,702 @@
+{
+  "schemaVersion": "dungeonq.study-evidence/v1",
+  "profile": "SYNTHETIC_CAUSAL_STUDY",
+  "design": {
+    "schemaVersion": "dungeonq.study-design/v1",
+    "title": "雙特徵檔案館",
+    "seed": 170926,
+    "trainingRounds": 4,
+    "probeBudget": 3,
+    "labels": {
+      "signalOn": "琥珀徽記",
+      "signalOff": "靛藍徽記",
+      "structureOn": "有槽紋",
+      "structureOff": "無槽紋"
+    }
+  },
+  "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+  "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+  "arm": "DISCRIMINATING",
+  "rule": "structure",
+  "nonce": "6389d9d8ded9e78103dee0e2d276548c0db3af68de8d9535d4c526ed58a03a0a",
+  "events": [
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 1,
+      "command": {
+        "type": "consent",
+        "accepted": true,
+        "participantMode": "REFERENCE_LEARNER"
+      },
+      "observation": {
+        "outcome": "CONSENT_RECORDED",
+        "message": "已記錄參與聲明；來源類型不是經驗證的身分。"
+      },
+      "beforeDigest": "b4b97f38809b22211121f014a45fa40b7e2a1af0085bab416e0a13da975f25ab",
+      "afterDigest": "208e60edc9b0153de99bf9a8892fe59dc3a0d7ec182f34bd2d916937e55eeff5",
+      "previousDigest": null,
+      "digest": "675253b47648323fdfed8a66bd30139d6744bb6faeaad3c71bf18394f1ad5df8"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 2,
+      "command": {
+        "type": "predict",
+        "choiceId": "training-1-card-2",
+        "predictedSuccess": true,
+        "hypothesis": "unknown",
+        "confidence": null,
+        "suspicion": null
+      },
+      "observation": {
+        "outcome": "PREDICTION_COMMITTED",
+        "message": "預測已保存。下一步只會執行這個已選物件，還沒有產生成果。"
+      },
+      "beforeDigest": "208e60edc9b0153de99bf9a8892fe59dc3a0d7ec182f34bd2d916937e55eeff5",
+      "afterDigest": "e7ee98cf2129a16a514b071ae19c8b06522f59f70760348a70eb50aebcb06925",
+      "previousDigest": "675253b47648323fdfed8a66bd30139d6744bb6faeaad3c71bf18394f1ad5df8",
+      "digest": "b2510331c5bfe5b6208f770235c07fc2e18357d1ef152c9df5d8d97d59d44cc2"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 3,
+      "command": {
+        "type": "act"
+      },
+      "observation": {
+        "outcome": "RESULT_OBSERVED",
+        "result": {
+          "choiceId": "training-1-card-2",
+          "features": {
+            "signal": true,
+            "structure": true
+          },
+          "stage": "training",
+          "success": true,
+          "message": "這個物件被館內裝置接受。成果已保留。"
+        },
+        "worldEvent": {
+          "schemaVersion": "dungeonq.world-event/v1",
+          "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+          "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+          "sequence": 1,
+          "command": {
+            "type": "choose",
+            "choiceId": "training-1-card-2"
+          },
+          "observation": {
+            "outcome": "SUCCESS",
+            "message": "這個物件被館內裝置接受。成果已保留。",
+            "reward": {
+              "schemaVersion": "dungeonq.world-reward/v1",
+              "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+              "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+              "choiceId": "training-1-card-2",
+              "issuedAt": 1,
+              "digest": "6997f63b29f3f15a992c51405f9793be2e9fbfe7bbb788e19247d31649f1ac6a"
+            }
+          },
+          "beforeDigest": "139922dd20e79b3a1e67034d5c5836fa3fbe1681adc7a9174ec441d45e4afa45",
+          "afterDigest": "7c3aabb62ebfc4b3d07e568ddb1eaedc5a1b3f0af7d60b14fc522eec0f80da9f",
+          "previousDigest": null,
+          "digest": "3ed1724997c6aa92d5d90002064fdc8ab3878a0f1cdec2d5216c32316994a975"
+        }
+      },
+      "beforeDigest": "e7ee98cf2129a16a514b071ae19c8b06522f59f70760348a70eb50aebcb06925",
+      "afterDigest": "f463dccd3ce59ae60485d2d0379ad9d0b14b5dfa34cdfdfa214a046360543274",
+      "previousDigest": "b2510331c5bfe5b6208f770235c07fc2e18357d1ef152c9df5d8d97d59d44cc2",
+      "digest": "eb7b0cba8c957deaeaff1dd39ab5900c4bcf6ecf6568d2c972957fdc4aec174b"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 4,
+      "command": {
+        "type": "reflect",
+        "hypothesis": "unknown",
+        "confidence": null,
+        "suspicion": null,
+        "nextIntent": "proceed"
+      },
+      "observation": {
+        "outcome": "REFLECTION_RECORDED",
+        "message": "事後反思已獨立保存，不會覆寫事前預測。"
+      },
+      "beforeDigest": "f463dccd3ce59ae60485d2d0379ad9d0b14b5dfa34cdfdfa214a046360543274",
+      "afterDigest": "df055e490736657e46ead0fb1d0f68bb5d81fcfddc871ef130abcb31ed2d90e8",
+      "previousDigest": "eb7b0cba8c957deaeaff1dd39ab5900c4bcf6ecf6568d2c972957fdc4aec174b",
+      "digest": "8b373f4869fa77c64f8d85f7c5dc5cd9fa6d5a0ac7501bc5471e6d9e6ddc7d39"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 5,
+      "command": {
+        "type": "predict",
+        "choiceId": "training-2-card-2",
+        "predictedSuccess": true,
+        "hypothesis": "unknown",
+        "confidence": null,
+        "suspicion": null
+      },
+      "observation": {
+        "outcome": "PREDICTION_COMMITTED",
+        "message": "預測已保存。下一步只會執行這個已選物件，還沒有產生成果。"
+      },
+      "beforeDigest": "df055e490736657e46ead0fb1d0f68bb5d81fcfddc871ef130abcb31ed2d90e8",
+      "afterDigest": "775b1c965d6243468959995ecc67fd73595cb3327dc3f3d497a363a3ec383750",
+      "previousDigest": "8b373f4869fa77c64f8d85f7c5dc5cd9fa6d5a0ac7501bc5471e6d9e6ddc7d39",
+      "digest": "c8a052778eed80da8db1c9c5e5a4d3d46da419d974ad53a8c3917a15bce69e37"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 6,
+      "command": {
+        "type": "act"
+      },
+      "observation": {
+        "outcome": "RESULT_OBSERVED",
+        "result": {
+          "choiceId": "training-2-card-2",
+          "features": {
+            "signal": true,
+            "structure": false
+          },
+          "stage": "training",
+          "success": false,
+          "message": "這個物件未被館內裝置接受。觀察已保留。"
+        },
+        "worldEvent": {
+          "schemaVersion": "dungeonq.world-event/v1",
+          "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+          "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+          "sequence": 2,
+          "command": {
+            "type": "choose",
+            "choiceId": "training-2-card-2"
+          },
+          "observation": {
+            "outcome": "PARTIAL",
+            "message": "這個物件未被館內裝置接受。觀察已保留。",
+            "reward": null
+          },
+          "beforeDigest": "7c3aabb62ebfc4b3d07e568ddb1eaedc5a1b3f0af7d60b14fc522eec0f80da9f",
+          "afterDigest": "4280767e8ba89c1d4b72fdf71c69bc90fc6edb6d694911d3c1ca885bdd470a1a",
+          "previousDigest": "3ed1724997c6aa92d5d90002064fdc8ab3878a0f1cdec2d5216c32316994a975",
+          "digest": "8327e787b4adeada76b6b1d2e5c83ace701252c8cee0a96b072a77010f50cf32"
+        }
+      },
+      "beforeDigest": "775b1c965d6243468959995ecc67fd73595cb3327dc3f3d497a363a3ec383750",
+      "afterDigest": "9d60ace0c61cf5e64e911c38b9e8a21ca60a979bf9ecc6a482232b1ec67c87c9",
+      "previousDigest": "c8a052778eed80da8db1c9c5e5a4d3d46da419d974ad53a8c3917a15bce69e37",
+      "digest": "4cca32b2f5761eed347882c37f913260bf1f01b48afc2c768788de235e063fe5"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 7,
+      "command": {
+        "type": "reflect",
+        "hypothesis": "unknown",
+        "confidence": null,
+        "suspicion": null,
+        "nextIntent": "proceed"
+      },
+      "observation": {
+        "outcome": "REFLECTION_RECORDED",
+        "message": "事後反思已獨立保存，不會覆寫事前預測。"
+      },
+      "beforeDigest": "9d60ace0c61cf5e64e911c38b9e8a21ca60a979bf9ecc6a482232b1ec67c87c9",
+      "afterDigest": "2bcf23df94fbfd97834423a00f72b92ee1c18a513192ae29aab3fc2b4214d855",
+      "previousDigest": "4cca32b2f5761eed347882c37f913260bf1f01b48afc2c768788de235e063fe5",
+      "digest": "9c527858f26cacbd97a8d803b33161a4a9fd28718b2442d3105a20eb499dd280"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 8,
+      "command": {
+        "type": "predict",
+        "choiceId": "training-3-card-2",
+        "predictedSuccess": true,
+        "hypothesis": "unknown",
+        "confidence": null,
+        "suspicion": null
+      },
+      "observation": {
+        "outcome": "PREDICTION_COMMITTED",
+        "message": "預測已保存。下一步只會執行這個已選物件，還沒有產生成果。"
+      },
+      "beforeDigest": "2bcf23df94fbfd97834423a00f72b92ee1c18a513192ae29aab3fc2b4214d855",
+      "afterDigest": "36a07bc6db39d57f77422ceafe8c9153ae23313e6568eba58236fc6267b6657d",
+      "previousDigest": "9c527858f26cacbd97a8d803b33161a4a9fd28718b2442d3105a20eb499dd280",
+      "digest": "352330e4eb04f97a4c4bd5604b2eec15e926d268a3269ca0a4848a35ba60be40"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 9,
+      "command": {
+        "type": "act"
+      },
+      "observation": {
+        "outcome": "RESULT_OBSERVED",
+        "result": {
+          "choiceId": "training-3-card-2",
+          "features": {
+            "signal": true,
+            "structure": true
+          },
+          "stage": "training",
+          "success": true,
+          "message": "這個物件被館內裝置接受。成果已保留。"
+        },
+        "worldEvent": {
+          "schemaVersion": "dungeonq.world-event/v1",
+          "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+          "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+          "sequence": 3,
+          "command": {
+            "type": "choose",
+            "choiceId": "training-3-card-2"
+          },
+          "observation": {
+            "outcome": "SUCCESS",
+            "message": "這個物件被館內裝置接受。成果已保留。",
+            "reward": {
+              "schemaVersion": "dungeonq.world-reward/v1",
+              "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+              "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+              "choiceId": "training-3-card-2",
+              "issuedAt": 3,
+              "digest": "c2c8572fd157931db54278db31f54efbc198c4887d0d882061e2ec130fde328d"
+            }
+          },
+          "beforeDigest": "4280767e8ba89c1d4b72fdf71c69bc90fc6edb6d694911d3c1ca885bdd470a1a",
+          "afterDigest": "652d18fe6a1c3d3ecf336dcc1ddcd64f8ac58bc0eedd6a5f3aa7ff724ff69f0c",
+          "previousDigest": "8327e787b4adeada76b6b1d2e5c83ace701252c8cee0a96b072a77010f50cf32",
+          "digest": "e1a7eb49f842c429741c9ee3ecff7a2dda90867ccd30de74011910b25cdf7d42"
+        }
+      },
+      "beforeDigest": "36a07bc6db39d57f77422ceafe8c9153ae23313e6568eba58236fc6267b6657d",
+      "afterDigest": "9518f951f50df53cf3b1d8aec3cddbbec6475f2021468759dfada40bcce7e00a",
+      "previousDigest": "352330e4eb04f97a4c4bd5604b2eec15e926d268a3269ca0a4848a35ba60be40",
+      "digest": "1e785efdcc1be784e70231678f6a1da15969d31ad7830b808786a0eef7f5c176"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 10,
+      "command": {
+        "type": "reflect",
+        "hypothesis": "unknown",
+        "confidence": null,
+        "suspicion": null,
+        "nextIntent": "proceed"
+      },
+      "observation": {
+        "outcome": "REFLECTION_RECORDED",
+        "message": "事後反思已獨立保存，不會覆寫事前預測。"
+      },
+      "beforeDigest": "9518f951f50df53cf3b1d8aec3cddbbec6475f2021468759dfada40bcce7e00a",
+      "afterDigest": "893b71dbb87535d9d22d68eb02b54ec8c4b32e7c544ee2fac56c81127c18e2e9",
+      "previousDigest": "1e785efdcc1be784e70231678f6a1da15969d31ad7830b808786a0eef7f5c176",
+      "digest": "625de8ffba3b6552c7bbca2a88403dd38038dc1f869fba235074d8f63c76ac86"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 11,
+      "command": {
+        "type": "predict",
+        "choiceId": "training-4-card-2",
+        "predictedSuccess": true,
+        "hypothesis": "unknown",
+        "confidence": null,
+        "suspicion": null
+      },
+      "observation": {
+        "outcome": "PREDICTION_COMMITTED",
+        "message": "預測已保存。下一步只會執行這個已選物件，還沒有產生成果。"
+      },
+      "beforeDigest": "893b71dbb87535d9d22d68eb02b54ec8c4b32e7c544ee2fac56c81127c18e2e9",
+      "afterDigest": "a6dcdd8d53d5ad0ef01c76b01d805cb1c3af40b876f057fca7b1ad99d85bc5ec",
+      "previousDigest": "625de8ffba3b6552c7bbca2a88403dd38038dc1f869fba235074d8f63c76ac86",
+      "digest": "3cd60a41a479340eeaf689158c58ae1befd845269b98312c2c56984a6c4fe70c"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 12,
+      "command": {
+        "type": "act"
+      },
+      "observation": {
+        "outcome": "RESULT_OBSERVED",
+        "result": {
+          "choiceId": "training-4-card-2",
+          "features": {
+            "signal": true,
+            "structure": true
+          },
+          "stage": "training",
+          "success": true,
+          "message": "這個物件被館內裝置接受。成果已保留。"
+        },
+        "worldEvent": {
+          "schemaVersion": "dungeonq.world-event/v1",
+          "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+          "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+          "sequence": 4,
+          "command": {
+            "type": "choose",
+            "choiceId": "training-4-card-2"
+          },
+          "observation": {
+            "outcome": "SUCCESS",
+            "message": "這個物件被館內裝置接受。成果已保留。",
+            "reward": {
+              "schemaVersion": "dungeonq.world-reward/v1",
+              "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+              "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+              "choiceId": "training-4-card-2",
+              "issuedAt": 4,
+              "digest": "f89a497f9bb15919c027b8ce51bc2d175eee0be7a7f88477c2f2b513bada7bed"
+            }
+          },
+          "beforeDigest": "652d18fe6a1c3d3ecf336dcc1ddcd64f8ac58bc0eedd6a5f3aa7ff724ff69f0c",
+          "afterDigest": "925c263ce57cc2855091753efd79dc1e3533e770c1bc8f0440703c7d175c9e39",
+          "previousDigest": "e1a7eb49f842c429741c9ee3ecff7a2dda90867ccd30de74011910b25cdf7d42",
+          "digest": "54d1007c18db723f88a6cc6f18e578b78f1fbf31fc6388dd78c8b200f0279625"
+        }
+      },
+      "beforeDigest": "a6dcdd8d53d5ad0ef01c76b01d805cb1c3af40b876f057fca7b1ad99d85bc5ec",
+      "afterDigest": "06e2de80f306fcf52781512705166bc925c48ba76abc8cd839c55808ed985cb5",
+      "previousDigest": "3cd60a41a479340eeaf689158c58ae1befd845269b98312c2c56984a6c4fe70c",
+      "digest": "71720aadd5c0c4e3cc2847e790727a0f67f6d83de3ec9cb649f598608ac9b710"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 13,
+      "command": {
+        "type": "reflect",
+        "hypothesis": "structure",
+        "confidence": 50,
+        "suspicion": null,
+        "nextIntent": "proceed"
+      },
+      "observation": {
+        "outcome": "REFLECTION_RECORDED",
+        "message": "事後反思已獨立保存，不會覆寫事前預測。"
+      },
+      "beforeDigest": "06e2de80f306fcf52781512705166bc925c48ba76abc8cd839c55808ed985cb5",
+      "afterDigest": "0e28c5226ffba0b1a9a4d461d69ab10bd09ede5b42a85c9cb41e860c59aec13f",
+      "previousDigest": "71720aadd5c0c4e3cc2847e790727a0f67f6d83de3ec9cb649f598608ac9b710",
+      "digest": "7d28e485a74c544852e74e62629f2d29841372ad7dc6f8d680f4454a44d95e4e"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 14,
+      "command": {
+        "type": "predict",
+        "choiceId": "probe-1-card-2",
+        "predictedSuccess": true,
+        "hypothesis": "structure",
+        "confidence": 50,
+        "suspicion": null
+      },
+      "observation": {
+        "outcome": "PREDICTION_COMMITTED",
+        "message": "預測已保存。下一步只會執行這個已選物件，還沒有產生成果。"
+      },
+      "beforeDigest": "0e28c5226ffba0b1a9a4d461d69ab10bd09ede5b42a85c9cb41e860c59aec13f",
+      "afterDigest": "6b860e5602435181a79809bc078581d27479c9501c4bbf31e9c97dedcc155349",
+      "previousDigest": "7d28e485a74c544852e74e62629f2d29841372ad7dc6f8d680f4454a44d95e4e",
+      "digest": "6eaf8fadc5b7ba842f1dc31f498dca51c15ea2d261ef5a59774b9b3f68bca273"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 15,
+      "command": {
+        "type": "act"
+      },
+      "observation": {
+        "outcome": "RESULT_OBSERVED",
+        "result": {
+          "choiceId": "probe-1-card-2",
+          "features": {
+            "signal": false,
+            "structure": true
+          },
+          "stage": "probe",
+          "success": true,
+          "message": "這個物件被館內裝置接受。成果已保留。"
+        },
+        "worldEvent": {
+          "schemaVersion": "dungeonq.world-event/v1",
+          "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+          "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+          "sequence": 5,
+          "command": {
+            "type": "choose",
+            "choiceId": "probe-1-card-2"
+          },
+          "observation": {
+            "outcome": "SUCCESS",
+            "message": "這個物件被館內裝置接受。成果已保留。",
+            "reward": {
+              "schemaVersion": "dungeonq.world-reward/v1",
+              "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+              "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+              "choiceId": "probe-1-card-2",
+              "issuedAt": 5,
+              "digest": "174046ba859fc28a3dab9c5ae315082e6a64581934d4bd3238d383c28790b1ba"
+            }
+          },
+          "beforeDigest": "925c263ce57cc2855091753efd79dc1e3533e770c1bc8f0440703c7d175c9e39",
+          "afterDigest": "b87527392f8908a0f26bb0d1bcc0d3c5b5f1966ba3481655260ac8ce995b1b32",
+          "previousDigest": "54d1007c18db723f88a6cc6f18e578b78f1fbf31fc6388dd78c8b200f0279625",
+          "digest": "e7464357238a17a526c12193e64a07eef719326d0606a5ee0004baf899760950"
+        }
+      },
+      "beforeDigest": "6b860e5602435181a79809bc078581d27479c9501c4bbf31e9c97dedcc155349",
+      "afterDigest": "5d475f1853c83a5ddbc7bd43ccc65930a663bf16249da3be1acc0e44501810d3",
+      "previousDigest": "6eaf8fadc5b7ba842f1dc31f498dca51c15ea2d261ef5a59774b9b3f68bca273",
+      "digest": "f4147476fe1bc6bcd45e20d109bea9e0cae28f67ffba794b84ac303b9e8582d6"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 16,
+      "command": {
+        "type": "reflect",
+        "hypothesis": "structure",
+        "confidence": 66.67,
+        "suspicion": null,
+        "nextIntent": "proceed"
+      },
+      "observation": {
+        "outcome": "REFLECTION_RECORDED",
+        "message": "事後反思已獨立保存，不會覆寫事前預測。"
+      },
+      "beforeDigest": "5d475f1853c83a5ddbc7bd43ccc65930a663bf16249da3be1acc0e44501810d3",
+      "afterDigest": "9f9ccd1de5190fcc9ddafbaf9b39d8d10b2247252ce7dd47c56e909a97705c23",
+      "previousDigest": "f4147476fe1bc6bcd45e20d109bea9e0cae28f67ffba794b84ac303b9e8582d6",
+      "digest": "1ef42d4ff9311f6c04d0a98ea67437f234668da0171aa39a4b5dff9a9eaea8b5"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 17,
+      "command": {
+        "type": "predict",
+        "choiceId": "transfer-card-2",
+        "predictedSuccess": true,
+        "hypothesis": "structure",
+        "confidence": 66.67,
+        "suspicion": null
+      },
+      "observation": {
+        "outcome": "PREDICTION_COMMITTED",
+        "message": "預測已保存。下一步只會執行這個已選物件，還沒有產生成果。"
+      },
+      "beforeDigest": "9f9ccd1de5190fcc9ddafbaf9b39d8d10b2247252ce7dd47c56e909a97705c23",
+      "afterDigest": "36f71b8c309f74070180e83e0f5db4bd04b68a8da1be283d94c8bf98a89f3fd0",
+      "previousDigest": "1ef42d4ff9311f6c04d0a98ea67437f234668da0171aa39a4b5dff9a9eaea8b5",
+      "digest": "a91f070973d94a1b0d4ba43a21741f5feda8567812cdf8069b662c7a6a44bd10"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 18,
+      "command": {
+        "type": "act"
+      },
+      "observation": {
+        "outcome": "RESULT_OBSERVED",
+        "result": {
+          "choiceId": "transfer-card-2",
+          "features": {
+            "signal": false,
+            "structure": true
+          },
+          "stage": "transfer",
+          "success": true,
+          "message": "這個物件被館內裝置接受。成果已保留。"
+        },
+        "worldEvent": {
+          "schemaVersion": "dungeonq.world-event/v1",
+          "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+          "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+          "sequence": 6,
+          "command": {
+            "type": "choose",
+            "choiceId": "transfer-card-2"
+          },
+          "observation": {
+            "outcome": "SUCCESS",
+            "message": "這個物件被館內裝置接受。成果已保留。",
+            "reward": {
+              "schemaVersion": "dungeonq.world-reward/v1",
+              "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+              "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+              "choiceId": "transfer-card-2",
+              "issuedAt": 6,
+              "digest": "6974bf967204e1451ed5b76f9c2a8527816abe7556ccd52f6a6198ff13cf07ec"
+            }
+          },
+          "beforeDigest": "b87527392f8908a0f26bb0d1bcc0d3c5b5f1966ba3481655260ac8ce995b1b32",
+          "afterDigest": "50f55fbba087032c8fb594dc2050aa9faa7e289f42d72c27ab99aeae5d8f1a0a",
+          "previousDigest": "e7464357238a17a526c12193e64a07eef719326d0606a5ee0004baf899760950",
+          "digest": "ca1fe8c7a3f295d379ef049daa2aaa541480c41658f72bb17b8acce21651f014"
+        }
+      },
+      "beforeDigest": "36f71b8c309f74070180e83e0f5db4bd04b68a8da1be283d94c8bf98a89f3fd0",
+      "afterDigest": "246b0679240c4fa221d7938253400f4473ad899374569caa9959b992edef73f0",
+      "previousDigest": "a91f070973d94a1b0d4ba43a21741f5feda8567812cdf8069b662c7a6a44bd10",
+      "digest": "db84194b15df8a6926a14ae9ebc747f121a645ec80f35c2d64cb40745b90631c"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 19,
+      "command": {
+        "type": "reflect",
+        "hypothesis": "structure",
+        "confidence": 80,
+        "suspicion": null,
+        "nextIntent": "proceed"
+      },
+      "observation": {
+        "outcome": "REFLECTION_RECORDED",
+        "message": "事後反思已獨立保存，不會覆寫事前預測。"
+      },
+      "beforeDigest": "246b0679240c4fa221d7938253400f4473ad899374569caa9959b992edef73f0",
+      "afterDigest": "740a4515ed07be55f1038e59f1d22828f2579d1849825d01d21c1fa51fbe1eed",
+      "previousDigest": "db84194b15df8a6926a14ae9ebc747f121a645ec80f35c2d64cb40745b90631c",
+      "digest": "774ef648485731bf2c3b873560aaa63a6d1653186013f5ffc6ed7132d2bff348"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 20,
+      "command": {
+        "type": "predict",
+        "choiceId": "transfer-check-card-1",
+        "predictedSuccess": true,
+        "hypothesis": "structure",
+        "confidence": 80,
+        "suspicion": null
+      },
+      "observation": {
+        "outcome": "PREDICTION_COMMITTED",
+        "message": "預測已保存。下一步只會執行這個已選物件，還沒有產生成果。"
+      },
+      "beforeDigest": "740a4515ed07be55f1038e59f1d22828f2579d1849825d01d21c1fa51fbe1eed",
+      "afterDigest": "ad019afd63d0333e5d01ca5091b433c067c0208d7a77bb232f686e1464061cf0",
+      "previousDigest": "774ef648485731bf2c3b873560aaa63a6d1653186013f5ffc6ed7132d2bff348",
+      "digest": "1572407919819a46be28b6a66448928bb474f083c2a28986008e9fca72bb5b85"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 21,
+      "command": {
+        "type": "act"
+      },
+      "observation": {
+        "outcome": "RESULT_OBSERVED",
+        "result": {
+          "choiceId": "transfer-check-card-1",
+          "features": {
+            "signal": false,
+            "structure": true
+          },
+          "stage": "transfer",
+          "success": true,
+          "message": "這個物件被館內裝置接受。成果已保留。"
+        },
+        "worldEvent": {
+          "schemaVersion": "dungeonq.world-event/v1",
+          "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+          "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+          "sequence": 7,
+          "command": {
+            "type": "choose",
+            "choiceId": "transfer-check-card-1"
+          },
+          "observation": {
+            "outcome": "SUCCESS",
+            "message": "這個物件被館內裝置接受。成果已保留。",
+            "reward": {
+              "schemaVersion": "dungeonq.world-reward/v1",
+              "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+              "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+              "choiceId": "transfer-check-card-1",
+              "issuedAt": 7,
+              "digest": "86e86d9cca41c71896c984d78ed2a3332f7de47f66a012a186d943e78a4fd1cd"
+            }
+          },
+          "beforeDigest": "50f55fbba087032c8fb594dc2050aa9faa7e289f42d72c27ab99aeae5d8f1a0a",
+          "afterDigest": "ed3e8c06e4721c04f26004efa5353f7126de010f078da34747f602bd3f855b01",
+          "previousDigest": "ca1fe8c7a3f295d379ef049daa2aaa541480c41658f72bb17b8acce21651f014",
+          "digest": "4b947ea16f06a3aabb5cdf4b2b61a7e6de5d03ea6e8003cdfd6f9cdcd631afc6"
+        }
+      },
+      "beforeDigest": "ad019afd63d0333e5d01ca5091b433c067c0208d7a77bb232f686e1464061cf0",
+      "afterDigest": "748c4526e0fd18dc8e57d69d65e6a8d6ad6215f0740b15550eb08b9371a83fc6",
+      "previousDigest": "1572407919819a46be28b6a66448928bb474f083c2a28986008e9fca72bb5b85",
+      "digest": "b8cd05399eceb05cb6a163dc9f6fab62f8a7d995e979f77db5ebaed3d229d7bc"
+    },
+    {
+      "schemaVersion": "dungeonq.study-event/v1",
+      "worldId": "34003d87-32de-45b6-aceb-fc247ae7e56e",
+      "epoch": "58165dca-dd3e-4d3f-b5f0-969f451a2cdf",
+      "sequence": 22,
+      "command": {
+        "type": "reflect",
+        "hypothesis": "structure",
+        "confidence": 88.89,
+        "suspicion": null,
+        "nextIntent": "proceed"
+      },
+      "observation": {
+        "outcome": "STUDY_COMPLETE",
+        "message": "事後反思已獨立保存，不會覆寫事前預測。"
+      },
+      "beforeDigest": "748c4526e0fd18dc8e57d69d65e6a8d6ad6215f0740b15550eb08b9371a83fc6",
+      "afterDigest": "183f25ed4fd300e979ea8c8a87eadb73e0d5dcdfd129e0adbfce976e3713e327",
+      "previousDigest": "b8cd05399eceb05cb6a163dc9f6fab62f8a7d995e979f77db5ebaed3d229d7bc",
+      "digest": "3a75dae6901f92387753d4d474a1042b8b1aa24fe6447769c09f812c6bfe0cde"
+    }
+  ],
+  "finalDigest": "a87d9e0dc0922227219efb43769be5c7809775bad385f852e2835baad35a1b9c"
+}
