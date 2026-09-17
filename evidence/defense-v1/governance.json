@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "dungeonq.lab-evidence/v1",
+  "profile": "SYNTHETIC_ONLY",
+  "receipts": [],
+  "events": [
+    {
+      "body": {
+        "details": {},
+        "kind": "LOCAL_BOOTSTRAP",
+        "now": 1789617241990,
+        "previousDigest": null,
+        "profile": "SYNTHETIC_ONLY",
+        "schemaVersion": "dungeonq.lab-audit/v1",
+        "sequence": 1,
+        "subject": "6de9fb8b-73a6-4f26-8923-6427faef5c3a",
+        "tenant": "tenant-lab"
+      },
+      "digest": "8c2cf4b57498c8c092efbf478cfad774da56b6772684cb9a865c8e0976d6bf6a"
+    },
+    {
+      "body": {
+        "details": {},
+        "kind": "LOCAL_WORKER_PROVISIONED",
+        "now": 1789617241991,
+        "previousDigest": "8c2cf4b57498c8c092efbf478cfad774da56b6772684cb9a865c8e0976d6bf6a",
+        "profile": "SYNTHETIC_ONLY",
+        "schemaVersion": "dungeonq.lab-audit/v1",
+        "sequence": 2,
+        "subject": "defense-worker",
+        "tenant": "tenant-lab"
+      },
+      "digest": "d2be85c41aeb93e28e8742159a71402f69d4ec48f50bf19f6ff5c78fc8953aeb"
+    },
+    {
+      "body": {
+        "details": {
+          "consumer": "clean-consumer",
+          "epoch": 1,
+          "generation": 0
+        },
+        "kind": "ROTATION_TARGET_REGISTERED",
+        "now": 1789617241992,
+        "previousDigest": "d2be85c41aeb93e28e8742159a71402f69d4ec48f50bf19f6ff5c78fc8953aeb",
+        "profile": "SYNTHETIC_ONLY",
+        "schemaVersion": "dungeonq.lab-audit/v1",
+        "sequence": 3,
+        "subject": "api-orders",
+        "tenant": "tenant-lab"
+      },
+      "digest": "7452a492dcb11ae237d2009682e395e62cbf7c426938daad6c37e0fe61a660fa"
+    },
+    {
+      "body": {
+        "details": {},
+        "kind": "LOGIN_SUCCEEDED",
+        "now": 1789617242137,
+        "previousDigest": "7452a492dcb11ae237d2009682e395e62cbf7c426938daad6c37e0fe61a660fa",
+        "profile": "SYNTHETIC_ONLY",
+        "schemaVersion": "dungeonq.lab-audit/v1",
+        "sequence": 4,
+        "subject": "6de9fb8b-73a6-4f26-8923-6427faef5c3a",
+        "tenant": "tenant-lab"
+      },
+      "digest": "1552644ddd528971ea4171f347c9b302c472aeea2389cb612dedaab3083278b0"
+    },
+    {
+      "body": {
+        "details": {
+          "actorClassification": "UNDETERMINED",
+          "assetId": "api-orders",
+          "eventDigest": "f8e8e8ed253428b9c1da16ae8c5789dd528602ae3eee0afb62109c80af2ee979",
+          "source": "CONFIGURED_LOCAL_DECOY",
+          "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e"
+        },
+        "kind": "DECOY_CONTACT",
+        "now": 1789617242180,
+        "previousDigest": "1552644ddd528971ea4171f347c9b302c472aeea2389cb612dedaab3083278b0",
+        "profile": "SYNTHETIC_ONLY",
+        "schemaVersion": "dungeonq.lab-audit/v1",
+        "sequence": 5,
+        "subject": "incident-1b0eeefe1fc4b52a",
+        "tenant": "tenant-lab"
+      },
+      "digest": "98bb35b0f5330cf97b5c3859bba03c27ccfa195bb0b9e6ac637d13958fb38a9c"
+    },
+    {
+      "body": {
+        "details": {
+          "domain": "dungeonq.reference-rotation/v1\n",
+          "incidentId": "incident-1b0eeefe1fc4b52a",
+          "manifestDigest": "b113ae3aa4ca7654b8ada01f02fb97d7b2c0a800373929bdf2ab58dfd2daafd5",
+          "requestId": "rotation-b0bdb97a0cc2b138"
+        },
+        "kind": "ROTATION_REQUESTED",
+        "now": 1789617242180,
+        "previousDigest": "98bb35b0f5330cf97b5c3859bba03c27ccfa195bb0b9e6ac637d13958fb38a9c",
+        "profile": "SYNTHETIC_ONLY",
+        "schemaVersion": "dungeonq.lab-audit/v1",
+        "sequence": 6,
+        "subject": "defense-worker",
+        "tenant": "tenant-lab"
+      },
+      "digest": "1064808ee354021e7b60e953d3b46ff9b4dddbef965a3da2ea0a8ae868e078c7"
+    },
+    {
+      "body": {
+        "details": {
+          "attempts": 1,
+          "eventId": 5,
+          "receipt": "db2503907a261ea1c2abc83840d3ae28cfab59b3725f8996c9c645ce15eece01",
+          "state": "DELIVERED"
+        },
+        "kind": "NOTIFICATION_RESULT",
+        "now": 1789617242182,
+        "previousDigest": "1064808ee354021e7b60e953d3b46ff9b4dddbef965a3da2ea0a8ae868e078c7",
+        "profile": "SYNTHETIC_ONLY",
+        "schemaVersion": "dungeonq.lab-audit/v1",
+        "sequence": 7,
+        "subject": "local-dispatcher",
+        "tenant": "tenant-lab"
+      },
+      "digest": "49aa8e36bb9c3f0b0545440f9330dffb4d5413e3673373900f8c2a47daee8280"
+    },
+    {
+      "body": {
+        "details": {
+          "manifestDigest": "b113ae3aa4ca7654b8ada01f02fb97d7b2c0a800373929bdf2ab58dfd2daafd5",
+          "purpose": "APPROVE_ROTATION"
+        },
+        "kind": "INTENT_ISSUED",
+        "now": 1789617242228,
+        "previousDigest": "49aa8e36bb9c3f0b0545440f9330dffb4d5413e3673373900f8c2a47daee8280",
+        "profile": "SYNTHETIC_ONLY",
+        "schemaVersion": "dungeonq.lab-audit/v1",
+        "sequence": 8,
+        "subject": "6de9fb8b-73a6-4f26-8923-6427faef5c3a",
+        "tenant": "tenant-lab"
+      },
+      "digest": "3e7336b3bbc83c9d0f80b9523eea36a474059e549698b42d5dd1d47d885432a0"
+    },
+    {
+      "body": {
+        "details": {
+          "authorization": "SINGLE_OWNER_AUTHORIZED",
+          "incidentId": "incident-1b0eeefe1fc4b52a",
+          "manifestDigest": "b113ae3aa4ca7654b8ada01f02fb97d7b2c0a800373929bdf2ab58dfd2daafd5",
+          "requestId": "rotation-b0bdb97a0cc2b138"
+        },
+        "kind": "ROTATION_APPROVED",
+        "now": 1789617242230,
+        "previousDigest": "3e7336b3bbc83c9d0f80b9523eea36a474059e549698b42d5dd1d47d885432a0",
+        "profile": "SYNTHETIC_ONLY",
+        "schemaVersion": "dungeonq.lab-audit/v1",
+        "sequence": 9,
+        "subject": "6de9fb8b-73a6-4f26-8923-6427faef5c3a",
+        "tenant": "tenant-lab"
+      },
+      "digest": "d44a2880418927ce13308182b11aa81bfebac197c2b93294e70685b9b13bd0bd"
+    },
+    {
+      "body": {
+        "details": {
+          "incidentId": "incident-1b0eeefe1fc4b52a",
+          "manifestDigest": "b113ae3aa4ca7654b8ada01f02fb97d7b2c0a800373929bdf2ab58dfd2daafd5",
+          "requestId": "rotation-b0bdb97a0cc2b138"
+        },
+        "kind": "ROTATION_CLAIMED",
+        "now": 1789617242231,
+        "previousDigest": "d44a2880418927ce13308182b11aa81bfebac197c2b93294e70685b9b13bd0bd",
+        "profile": "SYNTHETIC_ONLY",
+        "schemaVersion": "dungeonq.lab-audit/v1",
+        "sequence": 10,
+        "subject": "defense-worker",
+        "tenant": "tenant-lab"
+      },
+      "digest": "1b3aaa39e5feca16061bcdae2218536a3291f4f034d3a01491c4edfc9a102933"
+    },
+    {
+      "body": {
+        "details": {
+          "authorizationActive": true,
+          "checks": {
+            "decoyKeyDenied": true,
+            "newKeyBusiness": true,
+            "oldConsumerDenied": true,
+            "oldKeyDenied": true
+          },
+          "incidentId": "incident-1b0eeefe1fc4b52a",
+          "manifestDigest": "b113ae3aa4ca7654b8ada01f02fb97d7b2c0a800373929bdf2ab58dfd2daafd5",
+          "receiptDigest": "af49dda87ac2b57b9fe86e143369040699d75994e17fd2cbd90bc6a9d2dd4c92",
+          "state": "COMPLETED"
+        },
+        "kind": "ROTATION_RESULT",
+        "now": 1789617242233,
+        "previousDigest": "1b3aaa39e5feca16061bcdae2218536a3291f4f034d3a01491c4edfc9a102933",
+        "profile": "SYNTHETIC_ONLY",
+        "schemaVersion": "dungeonq.lab-audit/v1",
+        "sequence": 11,
+        "subject": "rotation-b0bdb97a0cc2b138",
+        "tenant": "tenant-lab"
+      },
+      "digest": "aa6c1c744ea7e8602f9f37c46f8c9567b9fc9bb289f1a6cb685afaf818e8003c"
+    }
+  ]
+}

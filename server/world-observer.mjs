@@ -6,7 +6,6 @@ import { fileURLToPath } from 'node:url';
 import { advanceWorld, createWorld, replayWorld, summarizeWorldEvents, validateWorldPack, worldDigest } from '../world/kernel.mjs';
 import { exactWorld, makeWorldBundle, openPrivateWorldDatabase, requireWorld, WORLD_PROFILE, worldError } from './world-store.mjs';
 
-const staticRoot = fileURLToPath(new URL('../public/world/', import.meta.url));
 const MAX_BODY = 16_384;
 function securityHeaders(res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -30,8 +29,10 @@ async function readBody(req) {
 }
 
 // Each origin owns one scoped capability. No CORS, generic file route, upload, or runtime-control route.
-export async function startWorldHttp({ role, token, port = 0, snapshot, command, evidence }) {
+export async function startWorldHttp({ role, token, port = 0, snapshot, command, evidence, artifact, variant = 'world' }) {
   requireWorld(['actor', 'observer'].includes(role), 'ROLE_INVALID');
+  requireWorld(['world', 'defense'].includes(variant) && (variant !== 'defense' || role === 'actor'), 'VARIANT_INVALID');
+  const staticRoot = fileURLToPath(new URL(variant === 'defense' ? '../public/defense-world/' : '../public/world/', import.meta.url));
   requireWorld(Number.isInteger(port) && port >= 0 && port <= 65535, 'PORT_INVALID');
   requireWorld(typeof token === 'string' && /^[A-Za-z0-9_-]{43}$/.test(token), 'TOKEN_INVALID');
   const files = new Map();
@@ -68,6 +69,10 @@ export async function startWorldHttp({ role, token, port = 0, snapshot, command,
         return json(res, 200, snapshot());
       }
       if (role === 'observer' && req.url === '/api/evidence' && req.method === 'GET') return json(res, 200, evidence());
+      if (role === 'actor' && artifact && req.url === '/api/artifact' && req.method === 'GET') return json(res, 200, artifact.issue());
+      if (role === 'actor' && artifact && req.url === '/api/artifact/read' && req.method === 'POST') {
+        const body = await readBody(req); exactWorld(body, ['credential']); return json(res, 200, artifact.read(body.credential));
+      }
       if (role === 'actor' && req.url === '/api/world/command' && req.method === 'POST') {
         const result = command(await readBody(req));
         return json(res, 200, { view: result.view, replayed: result.replayed });

@@ -58,7 +58,7 @@ function statusFor(code) {
 }
 
 // 只暴露固定 Application 方法；不接收 local／execution handles。
-export async function startWorkbench({ application, tls, port = 0, assistant }) {
+export async function startWorkbench({ application, tls, port = 0, assistant, defense }) {
   requireThat(tls?.key && tls?.cert, 'TLS_REQUIRED');
   requireThat(Number.isInteger(port) && port >= 0 && port <= 65535, 'PORT_INVALID');
   const assets = new Map();
@@ -69,6 +69,13 @@ export async function startWorkbench({ application, tls, port = 0, assistant }) 
       ['/assistant.css', 'assistant.css', 'text/css; charset=utf-8'],
       ['/assistant.mjs', 'assistant.mjs', 'text/javascript; charset=utf-8']
     ]) assets.set(route, { bytes: await readFile(new URL(`../${assistant.info?.model && file === 'index.html' ? 'astra' : 'assistant'}/${file}`, import.meta.url)), type });
+  }
+  if (defense) {
+    for (const [route, file, type] of [
+      ['/defense', 'defense.html', 'text/html; charset=utf-8'],
+      ['/defense.css', 'defense.css', 'text/css; charset=utf-8'],
+      ['/defense.mjs', 'defense.mjs', 'text/javascript; charset=utf-8']
+    ]) assets.set(route, { bytes: await readFile(new URL(`../workbench/${file}`, import.meta.url)), type });
   }
   const csrfKey = randomBytes(32);
   let origin; let active = 0; let count = 0; let reset = Date.now() + 60_000;
@@ -124,12 +131,21 @@ export async function startWorkbench({ application, tls, port = 0, assistant }) 
       if (request.method === 'GET' && path === '/api/evidence') { send(200, application.evidence(session)); return; }
       if (request.method === 'GET' && path === '/api/members') { send(200, application.members(session)); return; }
       if (request.method === 'GET' && path === '/api/notifications') { send(200, application.notifications(session)); return; }
+      if (defense && request.method === 'GET' && path === '/api/defense/status') {
+        const state = application.status(session);
+        authorize(state.role, 'READ_STATUS');
+        requireThat(state.tenantId === 'tenant-lab', 'TENANT_DENIED');
+        // Notification receipts are Owner-only; readers can still inspect the lab.
+        const notifications = state.capabilities.includes('MANAGE_MEMBERS') ? application.notifications(session) : null;
+        send(200, { governance: application.rotationStatus(session), lab: await defense.status(), notifications }); return;
+      }
       if (assistant && request.method === 'GET' && path === '/api/assistant/context') {
         application.status(session);
         send(200, { info: assistant.info, responses: application.responses(session) }); return;
       }
       const assistantPost = assistant && ['/api/assistant/command', '/api/assistant/approve'].includes(path);
-      requireThat(POSTS.has(path) || assistantPost, 'NOT_FOUND');
+      const defensePost = defense && ['/api/defense/approve', '/api/defense/apply', '/api/defense/reconcile', '/api/defense/refresh'].includes(path);
+      requireThat(POSTS.has(path) || assistantPost || defensePost, 'NOT_FOUND');
       requireThat(request.method === 'POST', 'METHOD_DENIED');
       requireThat(request.headers.origin === origin, 'ORIGIN_DENIED');
       const visitor = path === '/api/login' || path === '/api/recover';
@@ -140,6 +156,20 @@ export async function startWorkbench({ application, tls, port = 0, assistant }) 
       const body = await jsonBody(request, path === '/api/assistant/command' ? 196_608 : 16_384);
       // 不信任 X-Forwarded-For 或請求中自稱的來源。
       const source = 'loopback-workbench';
+      if (defensePost) {
+        const state = application.status(session);
+        requireThat(state.tenantId === 'tenant-lab', 'TENANT_DENIED');
+        authorize(state.role, 'PUBLISH_GRANT');
+        if (path === '/api/defense/approve') {
+          exact(body, ['requestId', 'manifestDigest', 'intentToken']);
+          send(200, application.approveRotation(session, body)); return;
+        }
+        exact(body, ['requestId']);
+        requireThat(typeof body.requestId === 'string' && /^[A-Za-z0-9_-]{1,128}$/u.test(body.requestId), 'SCHEMA_INVALID');
+        if (path === '/api/defense/refresh') { send(200, application.refreshRotation(session, body)); return; }
+        if (path === '/api/defense/reconcile') { send(200, await defense.reconcileRotation(body.requestId)); return; }
+        send(200, await defense.runRotation(body.requestId)); return;
+      }
       if (assistantPost) {
         const state = application.status(session);
         // This optional UI controls only the launcher's single synthetic tenant.

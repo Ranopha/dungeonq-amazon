@@ -1,6 +1,7 @@
 import { sign, verify, createPublicKey, randomUUID, randomBytes } from 'node:crypto';
 import { seedVault, matchOtp, base32 } from './totp.mjs';
 import { notificationDispatcher } from './notifications.mjs';
+import { createDefenseGovernance } from './defense-governance.mjs';
 import { Store } from './store.mjs';
 import { hashPassword, verifyPassword, passwordText } from './passwords.mjs';
 import { authorize, capabilities, MEMBER_ROLES } from './authorization.mjs';
@@ -12,7 +13,7 @@ const SIGN_DOMAIN = 'dungeonq.lab-governance/v1\n';
 const bytes = body => Buffer.from(SIGN_DOMAIN + canonicalJson(body));
 
 // 此工廠只由可信的伺服器組裝端使用；不是 HTTP／MCP 的可呼叫管理入口。
-export async function openGovernance({ path, privateKey, keyId, clock = Date.now, profile = 'SYNTHETIC_ONLY', factorKey }) {
+export async function openGovernance({ path, privateKey, keyId, clock = Date.now, profile = 'SYNTHETIC_ONLY', factorKey, rotationPrivateKey }) {
   requireThat(profile === 'SYNTHETIC_ONLY', 'PROFILE_NOT_AUTHORIZED');
   requireThat(privateKey?.type === 'private' && privateKey.asymmetricKeyType === 'ed25519', 'SIGNER_INVALID');
   id(keyId);
@@ -137,6 +138,7 @@ export async function openGovernance({ path, privateKey, keyId, clock = Date.now
     db.run('UPDATE tenants SET epoch=epoch+1 WHERE id=?', tenant);
     db.run("UPDATE outbox SET status='FENCED' WHERE job IN (SELECT id FROM jobs WHERE tenant=? AND state='CLAIMED')", tenant);
     db.run("UPDATE jobs SET state='FENCED' WHERE tenant=? AND state='CLAIMED'", tenant);
+    db.run("UPDATE rotation_requests SET state='FENCED' WHERE tenant=? AND state IN ('AWAITING_HUMAN','APPROVED','CLAIMED','UNKNOWN')", tenant);
   }
   function memberState(user, now) {
     return user.disabled ? 'DISABLED' : user.setup_expires === null ? 'ACTIVE' : user.setup_expires <= now ? 'SETUP_EXPIRED' : 'SETUP_PENDING';
@@ -197,7 +199,12 @@ export async function openGovernance({ path, privateKey, keyId, clock = Date.now
       draft: row.draft, manifestDigest: row.digest, state, grantId: row.grant_id, jobId: job?.id ?? null, receipt };
   }
 
+  let defense;
+  try { defense = createDefenseGovernance({ db, rotationPrivateKey, governancePublicKey: publicKey, principal, worker, consumeIntent }); }
+  catch (error) { db.close(); throw error; }
+
   const application = Object.freeze({
+    ...defense.application,
     async login(input, source) {
       exact(input, Object.hasOwn(input ?? {}, 'otp') ? ['tenantId', 'username', 'password', 'otp'] : ['tenantId', 'username', 'password']);
       input = { ...input };
@@ -252,7 +259,7 @@ export async function openGovernance({ path, privateKey, keyId, clock = Date.now
     async reauthenticate(sessionToken, input, source) {
       exact(input, Object.hasOwn(input ?? {}, 'otp') ? ['password', 'purpose', 'manifestDigest', 'otp'] : ['password', 'purpose', 'manifestDigest']);
       input = { ...input };
-      requireThat(['PUBLISH_GRANT', 'REVOKE_GRANTS', 'RENEW_RECOVERY', 'MANAGE_MEMBERS', 'ENROLL_TOTP', 'REMOVE_TOTP'].includes(input.purpose)
+      requireThat(['PUBLISH_GRANT', 'REVOKE_GRANTS', 'RENEW_RECOVERY', 'MANAGE_MEMBERS', 'ENROLL_TOTP', 'REMOVE_TOTP', 'APPROVE_ROTATION'].includes(input.purpose)
         && typeof input.manifestDigest === 'string' && /^[a-f0-9]{64}$/u.test(input.manifestDigest), 'SCHEMA_INVALID');
       const initial = db.transaction(now => principal(sessionToken, now, input.purpose));
       rate('reauth', initial.tenant, initial.username, source);
@@ -480,6 +487,7 @@ export async function openGovernance({ path, privateKey, keyId, clock = Date.now
     return codes;
   }
   const local = Object.freeze({
+    ...defense.local,
     // 僅可信部署組裝端的合成身分配置；不可從 HTTP／MCP 呼叫。
     async provisionMember(input) {
       exact(input, ['tenantId', 'username', 'password', 'role']); id(input.tenantId); id(input.username);
@@ -570,6 +578,7 @@ export async function openGovernance({ path, privateKey, keyId, clock = Date.now
   });
 
   const execution = Object.freeze({
+    ...defense.execution,
     inspect(workerToken) {
       return db.transaction(now => {
         const machine = worker(workerToken, now);

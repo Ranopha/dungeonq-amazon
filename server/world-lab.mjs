@@ -3,14 +3,19 @@ import { fork } from 'node:child_process';
 import { lstat, mkdir } from 'node:fs/promises';
 import { isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { validateWorldPack } from '../world/kernel.mjs';
+import { validateWorldPack, worldDigest } from '../world/kernel.mjs';
 import { openWorldStore, requireWorld, worldError } from './world-store.mjs';
 import { startWorldHttp } from './world-observer.mjs';
 import { startWorldMcpServer } from './world-mcp.mjs';
 
-export async function startWorldLab({ dataDir, pack, actorPort = 0, observerPort = 0, mcpPort = 0 }) {
+export function localArtifactCredential(worldId, epoch) {
+  return Buffer.from(worldDigest({ domain: 'dungeonq.local-artifact/v1', worldId, epoch }), 'hex').toString('base64url');
+}
+
+export async function startWorldLab({ dataDir, pack, actorPort = 0, observerPort = 0, mcpPort = 0, onAccess = () => {}, localArtifact = false }) {
   requireWorld(typeof dataDir === 'string' && isAbsolute(dataDir), 'STORAGE_PATH_INVALID');
   const admitted = validateWorldPack(pack);
+  requireWorld(typeof onAccess === 'function' && typeof localArtifact === 'boolean', 'WORLD_CALLBACK_INVALID');
   await mkdir(dataDir, { recursive: true, mode: 0o700 });
   const info = await lstat(dataDir);
   requireWorld(info.isDirectory() && !info.isSymbolicLink() && (info.mode & 0o077) === 0, 'STORAGE_NOT_PRIVATE');
@@ -18,6 +23,23 @@ export async function startWorldLab({ dataDir, pack, actorPort = 0, observerPort
   const identity = store.snapshot();
   const actorToken = randomBytes(32).toString('base64url');
   const observerToken = randomBytes(32).toString('base64url');
+  const touch = () => onAccess({ worldId: identity.worldId, epoch: identity.epoch, packDigest: worldDigest(admitted) });
+  const actorStore = {
+    snapshot() { touch(); return store.snapshot(); },
+    command(envelope) { touch(); return store.command(envelope); },
+  };
+  const issue = () => {
+    touch(); const view = store.snapshot();
+    requireWorld(view.receipts.length > 0, 'LOCAL_OUTCOME_REQUIRED');
+    // A public synthetic fixture value, not a secret or an origin credential.
+    const credential = localArtifactCredential(view.worldId, view.epoch);
+    return { profile: 'SYNTHETIC_ONLY', kind: 'SYNTHETIC_RESOURCE_CREDENTIAL', worldId: view.worldId, epoch: view.epoch, credential, scope: 'DUNGEON_ONLY' };
+  };
+  const artifact = localArtifact ? { issue, read(credential) {
+    requireWorld(typeof credential === 'string' && /^[A-Za-z0-9_-]{43}$/.test(credential), 'CREDENTIAL_INVALID');
+    requireWorld(credential === issue().credential, 'LOCAL_CREDENTIAL_REJECTED');
+    return { profile: 'SYNTHETIC_ONLY', recordId: 'synthetic-relay-record', quantity: 7, scope: 'DUNGEON_ONLY' };
+  } } : undefined;
   let actor; let mcp; let child; let ready = false; let closed = false; let retryTimer; let deliveryTimer;
   let observerUrl; let inflight = 0; let deliveryAt = 0; let observerSequence = 0;
   const children = new Set();
@@ -87,10 +109,13 @@ export async function startWorldLab({ dataDir, pack, actorPort = 0, observerPort
   try {
     await startObserver(true);
     actor = await startWorldHttp({ role: 'actor', token: actorToken, port: actorPort,
-      snapshot: () => store.snapshot(), command: envelope => { const result = store.command(envelope); deliver(); return result; } });
-    mcp = await startWorldMcpServer({ store, accessToken: actorToken, onChange: deliver, port: mcpPort });
+      snapshot: () => actorStore.snapshot(), command: envelope => { const result = actorStore.command(envelope); deliver(); return result; }, artifact,
+      variant: localArtifact ? 'defense' : 'world' });
+    mcp = await startWorldMcpServer({ store: actorStore, accessToken: actorToken, onChange: deliver, artifact, port: mcpPort });
     deliveryTimer = setInterval(deliver, 1000); deliveryTimer.unref();
     return { actorUrl: actor.url, observerUrl, actorToken, observerToken, mcpEndpoint: mcp.endpoint, mcpToken: actorToken, worldId: identity.worldId,
+      // Trusted assembly handles; these are not exposed as actor tools.
+      snapshot: () => store.snapshot(), exportEvidence: () => store.exportEvidence(),
       get observerProcessId() { return child?.pid ?? null; }, close };
   } catch (error) { await close(); throw error; }
 }

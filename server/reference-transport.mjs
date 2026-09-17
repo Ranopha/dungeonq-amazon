@@ -53,7 +53,12 @@ export function referenceClient({ origin, ca }) {
         response.on('data', chunk => { text += chunk; if (Buffer.byteLength(text) > 16384) request.destroy(new GovernanceError('RESPONSE_LIMIT')); });
         response.on('error', () => reject(new GovernanceError('TRANSPORT_UNKNOWN')));
         response.on('end', () => {
-          if (response.statusCode !== 200) { reject(new GovernanceError('REMOTE_REJECTED')); return; }
+          if (response.statusCode !== 200) {
+            const error = new GovernanceError('REMOTE_REJECTED');
+            // Preserve only a bounded protocol code, never a remote stack/body.
+            try { const value = JSON.parse(text); if (/^[A-Z_]{1,64}$/u.test(value.error)) error.remoteCode = value.error; } catch { /* Untrusted response. */ }
+            reject(error); return;
+          }
           try { resolve(JSON.parse(text)); } catch { reject(new GovernanceError('RESPONSE_INVALID')); }
         });
       });

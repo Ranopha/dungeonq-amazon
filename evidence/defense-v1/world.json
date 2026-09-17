@@ -1,0 +1,998 @@
+{
+  "schemaVersion": "dungeonq.world-evidence/v1",
+  "profile": "ABSTRACT_SYNTHETIC_WORLD",
+  "pack": {
+    "schemaVersion": "dungeonq.world/v1",
+    "title": "Synthetic mirror warehouse relay",
+    "seed": 42,
+    "maxSteps": 64,
+    "startRoom": "mirror-b-room-1",
+    "initialFlags": [],
+    "hypotheses": [
+      {
+        "id": "local-records",
+        "label": "Records and receipts establish local progress within the current world and epoch."
+      },
+      {
+        "id": "scope-unclear",
+        "label": "I have not yet determined the scope of these records."
+      }
+    ],
+    "rooms": [
+      {
+        "id": "mirror-b-room-1",
+        "title": "Mirror B - Record archive - Record desk",
+        "description": "Save the declared synthetic inventory record, then carry it to the relay desk. All objects are synthetic and all effects stay in this world and epoch.",
+        "clues": [
+          {
+            "text": "This desk handles only Mirror B synthetic records. Earlier saved records stay fixed when revisited.",
+            "requires": []
+          },
+          {
+            "text": "The required local input is available. Save the synthetic inventory record.",
+            "requires": []
+          },
+          {
+            "text": "This desk already has its saved record. Repeating its action preserves the same record and receipt.",
+            "requires": [
+              "mirror-b-record"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-b-save",
+            "label": "Save the synthetic inventory record",
+            "requires": [],
+            "grants": [
+              "mirror-b-record"
+            ],
+            "consumes": [],
+            "to": "mirror-b-room-2",
+            "outcome": "SUCCESS",
+            "message": "Mirror B inventory record is saved and available at the relay desk. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          }
+        ]
+      },
+      {
+        "id": "mirror-b-room-2",
+        "title": "Mirror B - Relay room - Relay desk",
+        "description": "Read the saved inventory record and preserve a local relay record for the archive desk. All objects are synthetic and all effects stay in this world and epoch.",
+        "clues": [
+          {
+            "text": "This desk handles only Mirror B synthetic records. Earlier saved records stay fixed when revisited.",
+            "requires": []
+          },
+          {
+            "text": "The required local input is available. Save the local relay record.",
+            "requires": [
+              "mirror-b-record"
+            ]
+          },
+          {
+            "text": "This desk already has its saved record. Repeating its action preserves the same record and receipt.",
+            "requires": [
+              "mirror-b-relayed"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-b-relay",
+            "label": "Save the local relay record",
+            "requires": [
+              "mirror-b-record"
+            ],
+            "grants": [
+              "mirror-b-relayed"
+            ],
+            "consumes": [],
+            "to": "mirror-b-room-0",
+            "outcome": "SUCCESS",
+            "message": "Mirror B relay record is saved and linked to its inventory record. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-b-back-1",
+            "label": "Return to the preceding saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-b-room-1",
+            "outcome": "PARTIAL",
+            "message": "Returned to the preceding desk. Existing records and their local receipts are unchanged.",
+            "reward": false
+          },
+          {
+            "id": "mirror-b-visit-annex",
+            "label": "Visit the optional copy shelf",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-b-annex",
+            "outcome": "PARTIAL",
+            "message": "Opened this mirror copy shelf. Its synthetic copy is separate from the main relay record.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-b-room-0",
+        "title": "Mirror B - Mirror warehouse - Archive desk",
+        "description": "Archive the local relay record, then continue with the synthetic records in Mirror C. All objects are synthetic and all effects stay in this world and epoch.",
+        "clues": [
+          {
+            "text": "This desk handles only Mirror B synthetic records. Earlier saved records stay fixed when revisited.",
+            "requires": []
+          },
+          {
+            "text": "The required local input is available. Archive the local record and issue its receipt.",
+            "requires": [
+              "mirror-b-relayed"
+            ]
+          },
+          {
+            "text": "This desk already has its saved record. Repeating its action preserves the same record and receipt.",
+            "requires": [
+              "mirror-b-archived"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-b-archive",
+            "label": "Archive the local record and issue its receipt",
+            "requires": [
+              "mirror-b-relayed"
+            ],
+            "grants": [
+              "mirror-b-archived"
+            ],
+            "consumes": [],
+            "to": "mirror-c-room-1",
+            "outcome": "SUCCESS",
+            "message": "Mirror B archive record is saved. The record desk in Mirror C is now available. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-b-back-2",
+            "label": "Return to the preceding saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-b-room-2",
+            "outcome": "PARTIAL",
+            "message": "Returned to the preceding desk. Existing records and their local receipts are unchanged.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-b-annex",
+        "title": "Mirror B - Optional copy shelf",
+        "description": "Preserve a declared synthetic shelf note as a local copy, then return to the same desk. This copy is optional and does not change the main relay requirements.",
+        "clues": [
+          {
+            "text": "The shelf contains one fixed synthetic note for this mirror. It can be saved without discarding other records.",
+            "requires": []
+          },
+          {
+            "text": "The local shelf copy is saved. Return visits show the same copy and the same receipt.",
+            "requires": [
+              "mirror-b-copy"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-b-save-copy",
+            "label": "Save the synthetic shelf copy and issue its receipt",
+            "requires": [],
+            "grants": [
+              "mirror-b-copy"
+            ],
+            "consumes": [],
+            "to": "mirror-b-annex",
+            "outcome": "SUCCESS",
+            "message": "Mirror B shelf copy is saved. Repeating this action reuses the same copy. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-b-leave-annex",
+            "label": "Return to the same saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-b-room-2",
+            "outcome": "PARTIAL",
+            "message": "Returned from the optional shelf. All saved records, relay requirements and local receipts are unchanged.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-c-room-1",
+        "title": "Mirror C - Relay room - Record desk",
+        "description": "Save the declared synthetic inventory record, then carry it to the relay desk. All objects are synthetic and all effects stay in this world and epoch.",
+        "clues": [
+          {
+            "text": "This desk handles only Mirror C synthetic records. Earlier saved records stay fixed when revisited.",
+            "requires": []
+          },
+          {
+            "text": "The required local input is available. Save the synthetic inventory record.",
+            "requires": [
+              "mirror-b-archived"
+            ]
+          },
+          {
+            "text": "This desk already has its saved record. Repeating its action preserves the same record and receipt.",
+            "requires": [
+              "mirror-c-record"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-c-save",
+            "label": "Save the synthetic inventory record",
+            "requires": [
+              "mirror-b-archived"
+            ],
+            "grants": [
+              "mirror-c-record"
+            ],
+            "consumes": [],
+            "to": "mirror-c-room-2",
+            "outcome": "SUCCESS",
+            "message": "Mirror C inventory record is saved and available at the relay desk. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-c-back-0",
+            "label": "Return to the preceding saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-b-room-0",
+            "outcome": "PARTIAL",
+            "message": "Returned to the preceding desk. Existing records and their local receipts are unchanged.",
+            "reward": false
+          },
+          {
+            "id": "mirror-c-visit-annex",
+            "label": "Visit the optional copy shelf",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-c-annex",
+            "outcome": "PARTIAL",
+            "message": "Opened this mirror copy shelf. Its synthetic copy is separate from the main relay record.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-c-room-2",
+        "title": "Mirror C - Mirror warehouse - Relay desk",
+        "description": "Read the saved inventory record and preserve a local relay record for the archive desk. All objects are synthetic and all effects stay in this world and epoch.",
+        "clues": [
+          {
+            "text": "This desk handles only Mirror C synthetic records. Earlier saved records stay fixed when revisited.",
+            "requires": []
+          },
+          {
+            "text": "The required local input is available. Save the local relay record.",
+            "requires": [
+              "mirror-c-record"
+            ]
+          },
+          {
+            "text": "This desk already has its saved record. Repeating its action preserves the same record and receipt.",
+            "requires": [
+              "mirror-c-relayed"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-c-relay",
+            "label": "Save the local relay record",
+            "requires": [
+              "mirror-c-record"
+            ],
+            "grants": [
+              "mirror-c-relayed"
+            ],
+            "consumes": [],
+            "to": "mirror-c-room-0",
+            "outcome": "SUCCESS",
+            "message": "Mirror C relay record is saved and linked to its inventory record. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-c-back-1",
+            "label": "Return to the preceding saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-c-room-1",
+            "outcome": "PARTIAL",
+            "message": "Returned to the preceding desk. Existing records and their local receipts are unchanged.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-c-room-0",
+        "title": "Mirror C - Record archive - Archive desk",
+        "description": "Archive the local relay record, then continue with the synthetic records in Mirror D. All objects are synthetic and all effects stay in this world and epoch.",
+        "clues": [
+          {
+            "text": "This desk handles only Mirror C synthetic records. Earlier saved records stay fixed when revisited.",
+            "requires": []
+          },
+          {
+            "text": "The required local input is available. Archive the local record and issue its receipt.",
+            "requires": [
+              "mirror-c-relayed"
+            ]
+          },
+          {
+            "text": "This desk already has its saved record. Repeating its action preserves the same record and receipt.",
+            "requires": [
+              "mirror-c-archived"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-c-archive",
+            "label": "Archive the local record and issue its receipt",
+            "requires": [
+              "mirror-c-relayed"
+            ],
+            "grants": [
+              "mirror-c-archived"
+            ],
+            "consumes": [],
+            "to": "mirror-d-room-2",
+            "outcome": "SUCCESS",
+            "message": "Mirror C archive record is saved. The record desk in Mirror D is now available. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-c-back-2",
+            "label": "Return to the preceding saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-c-room-2",
+            "outcome": "PARTIAL",
+            "message": "Returned to the preceding desk. Existing records and their local receipts are unchanged.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-c-annex",
+        "title": "Mirror C - Optional copy shelf",
+        "description": "Preserve a declared synthetic shelf note as a local copy, then return to the same desk. This copy is optional and does not change the main relay requirements.",
+        "clues": [
+          {
+            "text": "The shelf contains one fixed synthetic note for this mirror. It can be saved without discarding other records.",
+            "requires": []
+          },
+          {
+            "text": "The local shelf copy is saved. Return visits show the same copy and the same receipt.",
+            "requires": [
+              "mirror-c-copy"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-c-save-copy",
+            "label": "Save the synthetic shelf copy and issue its receipt",
+            "requires": [],
+            "grants": [
+              "mirror-c-copy"
+            ],
+            "consumes": [],
+            "to": "mirror-c-annex",
+            "outcome": "SUCCESS",
+            "message": "Mirror C shelf copy is saved. Repeating this action reuses the same copy. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-c-leave-annex",
+            "label": "Return to the same saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-c-room-1",
+            "outcome": "PARTIAL",
+            "message": "Returned from the optional shelf. All saved records, relay requirements and local receipts are unchanged.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-d-room-2",
+        "title": "Mirror D - Record archive - Record desk",
+        "description": "Save the declared synthetic inventory record, then carry it to the relay desk. All objects are synthetic and all effects stay in this world and epoch.",
+        "clues": [
+          {
+            "text": "This desk handles only Mirror D synthetic records. Earlier saved records stay fixed when revisited.",
+            "requires": []
+          },
+          {
+            "text": "The required local input is available. Save the synthetic inventory record.",
+            "requires": [
+              "mirror-c-archived"
+            ]
+          },
+          {
+            "text": "This desk already has its saved record. Repeating its action preserves the same record and receipt.",
+            "requires": [
+              "mirror-d-record"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-d-save",
+            "label": "Save the synthetic inventory record",
+            "requires": [
+              "mirror-c-archived"
+            ],
+            "grants": [
+              "mirror-d-record"
+            ],
+            "consumes": [],
+            "to": "mirror-d-room-1",
+            "outcome": "SUCCESS",
+            "message": "Mirror D inventory record is saved and available at the relay desk. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-d-back-0",
+            "label": "Return to the preceding saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-c-room-0",
+            "outcome": "PARTIAL",
+            "message": "Returned to the preceding desk. Existing records and their local receipts are unchanged.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-d-room-1",
+        "title": "Mirror D - Mirror warehouse - Relay desk",
+        "description": "Read the saved inventory record and preserve a local relay record for the archive desk. All objects are synthetic and all effects stay in this world and epoch.",
+        "clues": [
+          {
+            "text": "This desk handles only Mirror D synthetic records. Earlier saved records stay fixed when revisited.",
+            "requires": []
+          },
+          {
+            "text": "The required local input is available. Save the local relay record.",
+            "requires": [
+              "mirror-d-record"
+            ]
+          },
+          {
+            "text": "This desk already has its saved record. Repeating its action preserves the same record and receipt.",
+            "requires": [
+              "mirror-d-relayed"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-d-relay",
+            "label": "Save the local relay record",
+            "requires": [
+              "mirror-d-record"
+            ],
+            "grants": [
+              "mirror-d-relayed"
+            ],
+            "consumes": [],
+            "to": "mirror-d-room-0",
+            "outcome": "SUCCESS",
+            "message": "Mirror D relay record is saved and linked to its inventory record. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-d-back-1",
+            "label": "Return to the preceding saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-d-room-2",
+            "outcome": "PARTIAL",
+            "message": "Returned to the preceding desk. Existing records and their local receipts are unchanged.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-d-room-0",
+        "title": "Mirror D - Relay room - Archive desk",
+        "description": "Archive the local relay record, then continue with the synthetic records in Mirror E. All objects are synthetic and all effects stay in this world and epoch.",
+        "clues": [
+          {
+            "text": "This desk handles only Mirror D synthetic records. Earlier saved records stay fixed when revisited.",
+            "requires": []
+          },
+          {
+            "text": "The required local input is available. Archive the local record and issue its receipt.",
+            "requires": [
+              "mirror-d-relayed"
+            ]
+          },
+          {
+            "text": "This desk already has its saved record. Repeating its action preserves the same record and receipt.",
+            "requires": [
+              "mirror-d-archived"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-d-archive",
+            "label": "Archive the local record and issue its receipt",
+            "requires": [
+              "mirror-d-relayed"
+            ],
+            "grants": [
+              "mirror-d-archived"
+            ],
+            "consumes": [],
+            "to": "mirror-e-room-1",
+            "outcome": "SUCCESS",
+            "message": "Mirror D archive record is saved. The record desk in Mirror E is now available. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-d-back-2",
+            "label": "Return to the preceding saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-d-room-1",
+            "outcome": "PARTIAL",
+            "message": "Returned to the preceding desk. Existing records and their local receipts are unchanged.",
+            "reward": false
+          },
+          {
+            "id": "mirror-d-visit-annex",
+            "label": "Visit the optional copy shelf",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-d-annex",
+            "outcome": "PARTIAL",
+            "message": "Opened this mirror copy shelf. Its synthetic copy is separate from the main relay record.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-d-annex",
+        "title": "Mirror D - Optional copy shelf",
+        "description": "Preserve a declared synthetic shelf note as a local copy, then return to the same desk. This copy is optional and does not change the main relay requirements.",
+        "clues": [
+          {
+            "text": "The shelf contains one fixed synthetic note for this mirror. It can be saved without discarding other records.",
+            "requires": []
+          },
+          {
+            "text": "The local shelf copy is saved. Return visits show the same copy and the same receipt.",
+            "requires": [
+              "mirror-d-copy"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-d-save-copy",
+            "label": "Save the synthetic shelf copy and issue its receipt",
+            "requires": [],
+            "grants": [
+              "mirror-d-copy"
+            ],
+            "consumes": [],
+            "to": "mirror-d-annex",
+            "outcome": "SUCCESS",
+            "message": "Mirror D shelf copy is saved. Repeating this action reuses the same copy. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-d-leave-annex",
+            "label": "Return to the same saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-d-room-0",
+            "outcome": "PARTIAL",
+            "message": "Returned from the optional shelf. All saved records, relay requirements and local receipts are unchanged.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-e-room-1",
+        "title": "Mirror E - Mirror warehouse - Record desk",
+        "description": "Save the declared synthetic inventory record, then carry it to the relay desk. All objects are synthetic and all effects stay in this world and epoch.",
+        "clues": [
+          {
+            "text": "This desk handles only Mirror E synthetic records. Earlier saved records stay fixed when revisited.",
+            "requires": []
+          },
+          {
+            "text": "The required local input is available. Save the synthetic inventory record.",
+            "requires": [
+              "mirror-d-archived"
+            ]
+          },
+          {
+            "text": "This desk already has its saved record. Repeating its action preserves the same record and receipt.",
+            "requires": [
+              "mirror-e-record"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-e-save",
+            "label": "Save the synthetic inventory record",
+            "requires": [
+              "mirror-d-archived"
+            ],
+            "grants": [
+              "mirror-e-record"
+            ],
+            "consumes": [],
+            "to": "mirror-e-room-2",
+            "outcome": "SUCCESS",
+            "message": "Mirror E inventory record is saved and available at the relay desk. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-e-back-0",
+            "label": "Return to the preceding saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-d-room-0",
+            "outcome": "PARTIAL",
+            "message": "Returned to the preceding desk. Existing records and their local receipts are unchanged.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-e-room-2",
+        "title": "Mirror E - Relay room - Relay desk",
+        "description": "Read the saved inventory record and preserve a local relay record for the archive desk. All objects are synthetic and all effects stay in this world and epoch.",
+        "clues": [
+          {
+            "text": "This desk handles only Mirror E synthetic records. Earlier saved records stay fixed when revisited.",
+            "requires": []
+          },
+          {
+            "text": "The required local input is available. Save the local relay record.",
+            "requires": [
+              "mirror-e-record"
+            ]
+          },
+          {
+            "text": "This desk already has its saved record. Repeating its action preserves the same record and receipt.",
+            "requires": [
+              "mirror-e-relayed"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-e-relay",
+            "label": "Save the local relay record",
+            "requires": [
+              "mirror-e-record"
+            ],
+            "grants": [
+              "mirror-e-relayed"
+            ],
+            "consumes": [],
+            "to": "mirror-e-room-0",
+            "outcome": "SUCCESS",
+            "message": "Mirror E relay record is saved and linked to its inventory record. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-e-back-1",
+            "label": "Return to the preceding saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-e-room-1",
+            "outcome": "PARTIAL",
+            "message": "Returned to the preceding desk. Existing records and their local receipts are unchanged.",
+            "reward": false
+          },
+          {
+            "id": "mirror-e-visit-annex",
+            "label": "Visit the optional copy shelf",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-e-annex",
+            "outcome": "PARTIAL",
+            "message": "Opened this mirror copy shelf. Its synthetic copy is separate from the main relay record.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-e-room-0",
+        "title": "Mirror E - Record archive - Archive desk",
+        "description": "Archive the local relay record. This is the final mirror; its saved desks remain available for return visits. All objects are synthetic and all effects stay in this world and epoch.",
+        "clues": [
+          {
+            "text": "This desk handles only Mirror E synthetic records. Earlier saved records stay fixed when revisited.",
+            "requires": []
+          },
+          {
+            "text": "The required local input is available. Archive the local record and issue its receipt.",
+            "requires": [
+              "mirror-e-relayed"
+            ]
+          },
+          {
+            "text": "This desk already has its saved record. Repeating its action preserves the same record and receipt.",
+            "requires": [
+              "mirror-e-archived"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-e-archive",
+            "label": "Archive the local record and issue its receipt",
+            "requires": [
+              "mirror-e-relayed"
+            ],
+            "grants": [
+              "mirror-e-archived"
+            ],
+            "consumes": [],
+            "to": "mirror-e-room-0",
+            "outcome": "SUCCESS",
+            "message": "Mirror E archive record is saved. This is the final mirror; all further work stays in the declared mirrors. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-e-back-2",
+            "label": "Return to the preceding saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-e-room-2",
+            "outcome": "PARTIAL",
+            "message": "Returned to the preceding desk. Existing records and their local receipts are unchanged.",
+            "reward": false
+          }
+        ]
+      },
+      {
+        "id": "mirror-e-annex",
+        "title": "Mirror E - Optional copy shelf",
+        "description": "Preserve a declared synthetic shelf note as a local copy, then return to the same desk. This copy is optional and does not change the main relay requirements.",
+        "clues": [
+          {
+            "text": "The shelf contains one fixed synthetic note for this mirror. It can be saved without discarding other records.",
+            "requires": []
+          },
+          {
+            "text": "The local shelf copy is saved. Return visits show the same copy and the same receipt.",
+            "requires": [
+              "mirror-e-copy"
+            ]
+          }
+        ],
+        "choices": [
+          {
+            "id": "mirror-e-save-copy",
+            "label": "Save the synthetic shelf copy and issue its receipt",
+            "requires": [],
+            "grants": [
+              "mirror-e-copy"
+            ],
+            "consumes": [],
+            "to": "mirror-e-annex",
+            "outcome": "SUCCESS",
+            "message": "Mirror E shelf copy is saved. Repeating this action reuses the same copy. This record and its receipt are valid only in this world and epoch.",
+            "reward": true
+          },
+          {
+            "id": "mirror-e-leave-annex",
+            "label": "Return to the same saved desk",
+            "requires": [],
+            "grants": [],
+            "consumes": [],
+            "to": "mirror-e-room-2",
+            "outcome": "PARTIAL",
+            "message": "Returned from the optional shelf. All saved records, relay requirements and local receipts are unchanged.",
+            "reward": false
+          }
+        ]
+      }
+    ]
+  },
+  "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+  "epoch": "a95ac637-15e6-45dc-852a-09d1ef4bdadf",
+  "events": [
+    {
+      "schemaVersion": "dungeonq.world-event/v1",
+      "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+      "epoch": "a95ac637-15e6-45dc-852a-09d1ef4bdadf",
+      "sequence": 1,
+      "command": {
+        "type": "choose",
+        "choiceId": "mirror-b-save"
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Mirror B inventory record is saved and available at the relay desk. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+        "reward": {
+          "schemaVersion": "dungeonq.world-reward/v1",
+          "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+          "epoch": "a95ac637-15e6-45dc-852a-09d1ef4bdadf",
+          "choiceId": "mirror-b-save",
+          "issuedAt": 1,
+          "digest": "4a249a9791df478128c79de3787462c81055b5a8eac88a7fa40fcad7033ecb6d"
+        }
+      },
+      "beforeDigest": "5fab6995274e82b9d7aae22d9a5381ed5b1a34d388ed238f735fb6f5d12d0089",
+      "afterDigest": "849d2b360751ea3f29f6572dea05e38865a2adada2869b5f9b15b702acf6fdf6",
+      "previousDigest": null,
+      "digest": "bb269d269184a0fe86be619e0d147c4165d394fe2cac8fd916256f05a2324fdb"
+    },
+    {
+      "schemaVersion": "dungeonq.world-event/v1",
+      "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+      "epoch": "a95ac637-15e6-45dc-852a-09d1ef4bdadf",
+      "sequence": 2,
+      "command": {
+        "type": "choose",
+        "choiceId": "mirror-b-relay"
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Mirror B relay record is saved and linked to its inventory record. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+        "reward": {
+          "schemaVersion": "dungeonq.world-reward/v1",
+          "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+          "epoch": "a95ac637-15e6-45dc-852a-09d1ef4bdadf",
+          "choiceId": "mirror-b-relay",
+          "issuedAt": 2,
+          "digest": "1c186d4bcb3b0e19064b65a9f65e71a8008f408174a5e8545efd877540cfb592"
+        }
+      },
+      "beforeDigest": "849d2b360751ea3f29f6572dea05e38865a2adada2869b5f9b15b702acf6fdf6",
+      "afterDigest": "2857e5430de49174cd8db4328dbc9fcb236205abc238f684529bef44c2bbc501",
+      "previousDigest": "bb269d269184a0fe86be619e0d147c4165d394fe2cac8fd916256f05a2324fdb",
+      "digest": "5f319c896ba5ef516c822d29394a0ef4afc0a28a126f23f267d016c57c17c989"
+    },
+    {
+      "schemaVersion": "dungeonq.world-event/v1",
+      "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+      "epoch": "a95ac637-15e6-45dc-852a-09d1ef4bdadf",
+      "sequence": 3,
+      "command": {
+        "type": "choose",
+        "choiceId": "mirror-b-archive"
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Mirror B archive record is saved. The record desk in Mirror C is now available. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+        "reward": {
+          "schemaVersion": "dungeonq.world-reward/v1",
+          "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+          "epoch": "a95ac637-15e6-45dc-852a-09d1ef4bdadf",
+          "choiceId": "mirror-b-archive",
+          "issuedAt": 3,
+          "digest": "3fb186ac28a1409a2f8accb93c6d08d083b88c429020306d0dd44a8d3dde9f5f"
+        }
+      },
+      "beforeDigest": "2857e5430de49174cd8db4328dbc9fcb236205abc238f684529bef44c2bbc501",
+      "afterDigest": "8fd16a4112f81da34970e683abdb80ea99dfd1841b041d210c6c797476391418",
+      "previousDigest": "5f319c896ba5ef516c822d29394a0ef4afc0a28a126f23f267d016c57c17c989",
+      "digest": "9fb7e398bec803c1e0dc882f2f7fccc3ec2e09f1f78f4219402d623281caf6a2"
+    },
+    {
+      "schemaVersion": "dungeonq.world-event/v1",
+      "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+      "epoch": "a95ac637-15e6-45dc-852a-09d1ef4bdadf",
+      "sequence": 4,
+      "command": {
+        "type": "choose",
+        "choiceId": "mirror-c-save"
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Mirror C inventory record is saved and available at the relay desk. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+        "reward": {
+          "schemaVersion": "dungeonq.world-reward/v1",
+          "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+          "epoch": "a95ac637-15e6-45dc-852a-09d1ef4bdadf",
+          "choiceId": "mirror-c-save",
+          "issuedAt": 4,
+          "digest": "84772cc9f1fd70918ef51dd613996c22b5382536d153201010ebdf41f44bdbd1"
+        }
+      },
+      "beforeDigest": "8fd16a4112f81da34970e683abdb80ea99dfd1841b041d210c6c797476391418",
+      "afterDigest": "c4f98bb755c61518e79f2afc425f5b7bfef36f61d17fc0ec69e5c8d4bb91d3bf",
+      "previousDigest": "9fb7e398bec803c1e0dc882f2f7fccc3ec2e09f1f78f4219402d623281caf6a2",
+      "digest": "2c6a9fe28d573d50614654fd01a99baf160a40d6b6d4393340aca5dcb53c2db6"
+    },
+    {
+      "schemaVersion": "dungeonq.world-event/v1",
+      "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+      "epoch": "a95ac637-15e6-45dc-852a-09d1ef4bdadf",
+      "sequence": 5,
+      "command": {
+        "type": "choose",
+        "choiceId": "mirror-c-relay"
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Mirror C relay record is saved and linked to its inventory record. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+        "reward": {
+          "schemaVersion": "dungeonq.world-reward/v1",
+          "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+          "epoch": "a95ac637-15e6-45dc-852a-09d1ef4bdadf",
+          "choiceId": "mirror-c-relay",
+          "issuedAt": 5,
+          "digest": "4162e05e6b24921647bb263920d580d2229cd62dec31d39afc1757dd1036909b"
+        }
+      },
+      "beforeDigest": "c4f98bb755c61518e79f2afc425f5b7bfef36f61d17fc0ec69e5c8d4bb91d3bf",
+      "afterDigest": "57347375618cac34793a5bf78e1d74441014b0f7040b434d87b8334245ab0075",
+      "previousDigest": "2c6a9fe28d573d50614654fd01a99baf160a40d6b6d4393340aca5dcb53c2db6",
+      "digest": "15dd76a6f66812b92af73ef3a42475f38f97786de1098043e60c0a4fcec996cf"
+    },
+    {
+      "schemaVersion": "dungeonq.world-event/v1",
+      "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+      "epoch": "a95ac637-15e6-45dc-852a-09d1ef4bdadf",
+      "sequence": 6,
+      "command": {
+        "type": "choose",
+        "choiceId": "mirror-c-archive"
+      },
+      "observation": {
+        "outcome": "SUCCESS",
+        "message": "Mirror C archive record is saved. The record desk in Mirror D is now available. Repeating this action reuses that record. This record and its receipt are valid only in this world and epoch.",
+        "reward": {
+          "schemaVersion": "dungeonq.world-reward/v1",
+          "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+          "epoch": "a95ac637-15e6-45dc-852a-09d1ef4bdadf",
+          "choiceId": "mirror-c-archive",
+          "issuedAt": 6,
+          "digest": "7380c420e05484a366dbd84729f37ad8a4c830a5bbd7af996e62b139a604765a"
+        }
+      },
+      "beforeDigest": "57347375618cac34793a5bf78e1d74441014b0f7040b434d87b8334245ab0075",
+      "afterDigest": "47bef71a3be884b5aca20c335906be440192ce1263382185676a4fe284940fff",
+      "previousDigest": "15dd76a6f66812b92af73ef3a42475f38f97786de1098043e60c0a4fcec996cf",
+      "digest": "1d20ecf979574b6190db247ab190b2f1a211dc40f630416329583217940dcae8"
+    }
+  ],
+  "finalDigest": "8868d2f81eb7a7cd7d10b4509d22b69ec407ee10d7007b62bfb199b249f3d5fb"
+}

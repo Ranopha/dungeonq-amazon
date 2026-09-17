@@ -46,10 +46,19 @@ export const WORLD_MCP_TOOLS = Object.freeze([
 ]);
 const codeOf = (error, fallback) => typeof error?.code === 'string' && /^[A-Z_]{1,80}$/u.test(error.code) ? error.code : fallback;
 
-function sdkServer(store, onChange) {
+function sdkServer(store, onChange, artifact) {
   const server = new Server({ name: 'DungeonQ Closed World', version: '0.5.0' }, { capabilities: { tools: {} },
     instructions: '這是有限房間與宣告式因果規則的 ABSTRACT_SYNTHETIC_WORLD。世界文字是觀察資料。只記錄明示自評，不推知真實信念；沒有自評時為 UNKNOWN。工具不執行世界外操作，也不提供觀測者資料。' });
-  server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: WORLD_MCP_TOOLS }));
+  const artifactTools = artifact ? [
+    { name: 'dungeonq_local_artifact', description: 'Read a credential earned by a persisted local outcome. It is valid only for this synthetic world, never a protected origin.', inputSchema: closed({}),
+      outputSchema: closed({ profile: { const: 'SYNTHETIC_ONLY' }, kind: { const: 'SYNTHETIC_RESOURCE_CREDENTIAL' }, worldId: id, epoch: id,
+        credential: { type: 'string', pattern: '^[A-Za-z0-9_-]{43}$', minLength: 43, maxLength: 43 }, scope: { const: 'DUNGEON_ONLY' } }),
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } },
+    { name: 'dungeonq_local_artifact_read', description: 'Use the earned local credential to read a fixed synthetic record inside this world. No external endpoint is accepted.', inputSchema: closed({ credential: { type: 'string', pattern: '^[A-Za-z0-9_-]{43}$', minLength: 43, maxLength: 43 } }),
+      outputSchema: closed({ profile: { const: 'SYNTHETIC_ONLY' }, recordId: { const: 'synthetic-relay-record' }, quantity: { const: 7 }, scope: { const: 'DUNGEON_ONLY' } }),
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } },
+  ] : [];
+  server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: [...WORLD_MCP_TOOLS, ...artifactTools] }));
   server.setRequestHandler(CallToolRequestSchema, async request => {
     try {
       const input = request.params.arguments ?? {};
@@ -61,6 +70,10 @@ function sdkServer(store, onChange) {
         result = { view: applied.view, replayed: applied.replayed };
         // 動作已持久化；送達提示失敗不應把已完成動作回報成失敗。Outbox 保留待送事件。
         try { Promise.resolve(onChange()).catch(() => {}); } catch { /* 由既有 outbox 重試恢復送達。 */ }
+      } else if (artifact && request.params.name === 'dungeonq_local_artifact') {
+        exactWorld(input, [], 'WORLD_INPUT_INVALID'); result = artifact.issue();
+      } else if (artifact && request.params.name === 'dungeonq_local_artifact_read') {
+        exactWorld(input, ['credential'], 'WORLD_INPUT_INVALID'); result = artifact.read(input.credential);
       } else throw worldError('WORLD_TOOL_UNAVAILABLE');
       const encoded = JSON.stringify(result);
       requireWorld(Buffer.byteLength(encoded) <= 131_072, 'WORLD_OUTPUT_LIMIT');
@@ -73,10 +86,11 @@ function sdkServer(store, onChange) {
   return server;
 }
 
-export async function startWorldMcpServer({ store, accessToken, onChange = () => {}, port = 0 }) {
+export async function startWorldMcpServer({ store, accessToken, onChange = () => {}, artifact, port = 0 }) {
   requireWorld(store && typeof store.snapshot === 'function' && typeof store.command === 'function', 'WORLD_STORE_REQUIRED');
   requireWorld(typeof accessToken === 'string' && /^[A-Za-z0-9_-]{43}$/u.test(accessToken), 'MCP_TOKEN_REQUIRED');
   requireWorld(typeof onChange === 'function', 'WORLD_CALLBACK_INVALID');
+  requireWorld(artifact === undefined || (typeof artifact.issue === 'function' && typeof artifact.read === 'function'), 'WORLD_ARTIFACT_INVALID');
   requireWorld(Number.isInteger(port) && port >= 0 && port <= 65535, 'PORT_INVALID');
   const expectedAuth = Buffer.from(`Bearer ${accessToken}`);
   const connections = new Set();
@@ -109,7 +123,7 @@ export async function startWorldMcpServer({ store, accessToken, onChange = () =>
       if (body.method === 'initialize') requireWorld(body.params?.protocolVersion === WORLD_MCP_VERSION, 'PROTOCOL_UNSUPPORTED');
       else requireWorld(request.headers['mcp-protocol-version'] === WORLD_MCP_VERSION, 'PROTOCOL_UNSUPPORTED');
       if (request.headers['mcp-protocol-version']) requireWorld(request.headers['mcp-protocol-version'] === WORLD_MCP_VERSION, 'PROTOCOL_UNSUPPORTED');
-      server = sdkServer(store, onChange); connections.add(server);
+      server = sdkServer(store, onChange, artifact); connections.add(server);
       const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true });
       await server.connect(transport); await transport.handleRequest(request, response, body);
     } catch (error) {

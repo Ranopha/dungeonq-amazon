@@ -1,7 +1,7 @@
 {
   "schemaVersion": "dungeonq.source-release/v1",
   "profile": "SYNTHETIC_ONLY",
-  "generatedAt": "2026-09-17T02:46:11.771Z",
+  "generatedAt": "2026-09-17T03:55:08.961Z",
   "privateHistoryIncluded": false,
   "entries": [
     {
@@ -76,8 +76,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 4169,
-      "sha256": "c9c3ba0629dc01f553a4c0fdf54f6678ce5ff63d4f3b1e96e4e274fe378bbeab"
+      "bytes": 5001,
+      "sha256": "81e49590d6491e769d65ddbb27fa5fac61dccf1a4b86d751f89382f6b9684144"
     },
     {
       "path": "cli/run.mjs",
@@ -115,6 +115,11 @@
       "sha256": "04de3074de9e0fc5d189a1a35b8c881e4bbfc9e35838016013116e789619bbc0"
     },
     {
+      "path": "docs/contracts/DEFENSE_GOVERNANCE_V1.md",
+      "bytes": 7780,
+      "sha256": "6c289c7a2a8ad25ec61cf14e920da85eec5571528c16c7c9f7ea408fb8416f43"
+    },
+    {
       "path": "docs/contracts/STUDY_V1.md",
       "bytes": 8731,
       "sha256": "c679baf4e83bee0c99b16db3d62a48389a06544ec00137ee59a5ecfacee809ba"
@@ -128,6 +133,11 @@
       "path": "docs/contracts/WORLD_V1.md",
       "bytes": 7112,
       "sha256": "930960c4e39ceea5cc4fe88b3da15140f72933cb910fe7cf01d86040290d07b9"
+    },
+    {
+      "path": "docs/DEFENSE_LAB.md",
+      "bytes": 9967,
+      "sha256": "827a45c3db27cfa4431573211f56205c8e2cd202a8e0a1390d56f0291b902dc1"
     },
     {
       "path": "docs/DELTA.md",
@@ -161,8 +171,8 @@
     },
     {
       "path": "docs/OSS_REVIEW_GUIDE.md",
-      "bytes": 2938,
-      "sha256": "4176ba8c2341c0472e0e4e119f5bd4e01aaf5675e6e4f876f514f4f76e7be87b"
+      "bytes": 3857,
+      "sha256": "22a5fc6ccb91197f3fff85905e175561ba7b87310dea1388529b498f46b05b69"
     },
     {
       "path": "docs/PRODUCT_FEEDBACK.md",
@@ -223,6 +233,21 @@
       "path": "docs/WORLD_LAB.md",
       "bytes": 6031,
       "sha256": "81c96ac409fcec648d89d95181b62ea1a627173f223657c44f95a6f4993626d5"
+    },
+    {
+      "path": "evidence/defense-v1/governance.json",
+      "bytes": 7433,
+      "sha256": "c27a99d90c3051e425e22dca748baf9c841070572f6272569cfeaa03e4b70d3f"
+    },
+    {
+      "path": "evidence/defense-v1/proof.json",
+      "bytes": 6281,
+      "sha256": "ef8769ba75e32e138d7feb083db9eca5e9098e4cd19775fb1e6e5b6aa32c5368"
+    },
+    {
+      "path": "evidence/defense-v1/world.json",
+      "bytes": 39913,
+      "sha256": "0a5601f515e1915074cc361051d17ef59fc7fe358e8834c9c2dbe2a5271814ba"
     },
     {
       "path": "evidence/study-v1/codex-pilot-a.json",
@@ -362,12 +387,12 @@
     {
       "path": "package-lock.json",
       "bytes": 174665,
-      "sha256": "5a2fc8ad88296439c5d3d632e28e3dde1ae766cced4443fb7152d663fab8717a"
+      "sha256": "8d4cc8ac70d0dc153c538157181a5068c408b021a6fc6da383c36d1219d41514"
     },
     {
       "path": "package.json",
-      "bytes": 3326,
-      "sha256": "c425b0272c3c7582e83887bf83860163c8039d1e42ecfd6190ddc9545aee26de"
+      "bytes": 3484,
+      "sha256": "df2371e5012bb00a1637c2672192975376576ad74b898e42c9773ef6411cd0e9"
     },
     {
       "path": "public/assets/app.mjs",
@@ -378,6 +403,21 @@
       "path": "public/assets/styles.css",
       "bytes": 21813,
       "sha256": "d1fbfd12067c467495c94ebcac09f62b7c9728edc82f6050de668dc92397ed1a"
+    },
+    {
+      "path": "public/defense-world/app.mjs",
+      "bytes": 14825,
+      "sha256": "c3fbfd4f54a48b6c0d5881c573a5c8003f38bea23c2a10bf57a76b73fcbe8198"
+    },
+    {
+      "path": "public/defense-world/index.html",
+      "bytes": 7281,
+      "sha256": "1fa6c5c1e699f37771ea559225e04819b9e6a1bb8ad801c85b546025029f9c6e"
+    },
+    {
+      "path": "public/defense-world/style.css",
+      "bytes": 11148,
+      "sha256": "9faf91b5956535c91e6d3b613fbb9c95c504f47fb81880f41ee5e684e5b60ae7"
     },
     {
       "path": "public/index.html",
@@ -521,13 +561,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 11767,
-      "sha256": "ffb46c72f8fa4bf9a66cace571048e16de895d5adc604fb8f785aee1b6d920c8"
+      "bytes": 14119,
+      "sha256": "eaf2b35339e14e32d713d2e36cd1016f7ef22eea3edb5c5d482bd628a3e06a0f"
     },
     {
       "path": "SBOM.cdx.json",
       "bytes": 211709,
-      "sha256": "85d633998d05ab9aa64691cd11aab1b36168c78a81a9bced810c4343c6402e20"
+      "sha256": "4a6f5291ba0ced9642c61e4f23102b74da4cd2708ab4138450ff586520fe76f4"
     },
     {
       "path": "scripts/amazon.mjs",
@@ -546,8 +586,8 @@
     },
     {
       "path": "scripts/audit.mjs",
-      "bytes": 4071,
-      "sha256": "58a22df70ac80c5e07b15b65131989390928ca99cbcceac1f32dd3ffffc71061"
+      "bytes": 4115,
+      "sha256": "66cdf5b8a8191dc4185b6a88fef82ef59c0561095799a50b7f2557d28a805975"
     },
     {
       "path": "scripts/check-isolation.mjs",
@@ -558,6 +598,16 @@
       "path": "scripts/company-acceptance.mjs",
       "bytes": 394,
       "sha256": "575ed9f498a2b3306e0a605fc699d0f453446044cb99252ae757872fa2006749"
+    },
+    {
+      "path": "scripts/defense-proof.mjs",
+      "bytes": 1141,
+      "sha256": "0d460193d7ec5d1dda738033b97ee2df5bbd376cbd6904b8b7f7aa4e3a0c31cb"
+    },
+    {
+      "path": "scripts/defense.mjs",
+      "bytes": 2108,
+      "sha256": "8bfcd101ae9399949c16eafe2b76e661d152a95bf2cdd4c39f79feee351a3e0b"
     },
     {
       "path": "scripts/demo-proof.mjs",
@@ -571,8 +621,8 @@
     },
     {
       "path": "scripts/lib/distribution-export.mjs",
-      "bytes": 6806,
-      "sha256": "f6516cd047f379f3d5a134e978ee14aac95d3edbebb9993cf8d036865f061b72"
+      "bytes": 7109,
+      "sha256": "09e0d9e0f5c31e521c286d37adaa6e83e079615761f225a059155b6602b7e82a"
     },
     {
       "path": "scripts/lib/doctor.mjs",
@@ -596,8 +646,8 @@
     },
     {
       "path": "scripts/lib/release-paths.mjs",
-      "bytes": 1236,
-      "sha256": "5b9e4f3608b1763ae7ea4be6136ccc38fda34319efda62dbb2b95c0f77094460"
+      "bytes": 1257,
+      "sha256": "20302d6d9b2b06f2eb01474652de674405b8845a6a8743e94676ac7b6ea2f6d3"
     },
     {
       "path": "scripts/lib/scenario-file.mjs",
@@ -711,8 +761,8 @@
     },
     {
       "path": "server/authorization.mjs",
-      "bytes": 848,
-      "sha256": "2dec233841d23248936c73555f4f3e9f5d3019c223e8912ac5a1daaf9a5ac2c5"
+      "bytes": 868,
+      "sha256": "9d65b6fe82d4fd335f16bbe7296f7d1996def61d28559bc3177632f4c72c7597"
     },
     {
       "path": "server/company-acceptance.mjs",
@@ -725,9 +775,24 @@
       "sha256": "39e0ed205e4e09459848a666b4858290b956a8c42b9b60cf376661639ce68666"
     },
     {
+      "path": "server/defense-acceptance.mjs",
+      "bytes": 12482,
+      "sha256": "b127a16645e05e247709a53c0119dce0315da06ebdbeae264bf37e0c73a9abdd"
+    },
+    {
+      "path": "server/defense-governance.mjs",
+      "bytes": 18813,
+      "sha256": "f5404671dfdf241073dd91f166b53aec39439a6c1ffd13819dada43805a453e1"
+    },
+    {
+      "path": "server/defense-lab.mjs",
+      "bytes": 12767,
+      "sha256": "d0e2a7e5ecaaa4c8a2dd9ad2f568ee187454b5a12ad4b84612c2e0ac2e90a9bc"
+    },
+    {
       "path": "server/governance.mjs",
-      "bytes": 47250,
-      "sha256": "e8465a70abf0cff3cd3e348a0e1ac66136b756020a0582490515f133a6e01acf"
+      "bytes": 47779,
+      "sha256": "fd324ff6acfbbab1f75af4d772e9c07dd0cfa23dac80058bb91ea7660a935abd"
     },
     {
       "path": "server/isolation-plan.mjs",
@@ -766,13 +831,13 @@
     },
     {
       "path": "server/reference-transport.mjs",
-      "bytes": 5259,
-      "sha256": "23335dc10faaf4e4a8e30a7fe51d4851e87097ac96937d932a6fbc5c056b7d1a"
+      "bytes": 5556,
+      "sha256": "c565b4d7b43ceb54002a28f24d415918ee5f297b430f5737a2c501f3218eb40a"
     },
     {
       "path": "server/store.mjs",
-      "bytes": 8992,
-      "sha256": "8929635079926cbd457fa0f5389c366c09aeb085f8c7116dc29b76ed27e49cde"
+      "bytes": 10814,
+      "sha256": "a1e47cd6b36898f6aa9b5d3dda130b766ba2b0caf2ff84d4ef3025ec48550b8f"
     },
     {
       "path": "server/study-lab.mjs",
@@ -821,23 +886,23 @@
     },
     {
       "path": "server/workbench.mjs",
-      "bytes": 12924,
-      "sha256": "745ba9e5bb96ddecf8ee7d7bc8a0e23bd1a205276409942261980f4b21458a73"
+      "bytes": 14924,
+      "sha256": "41957fc7459a27700e71e782254bef3ab8ad94508107bb011b9e0bf162c3fda1"
     },
     {
       "path": "server/world-lab.mjs",
-      "bytes": 6239,
-      "sha256": "a5fd33d98ea3adc85264fa651dce18cfed279c485eee9c3bb33195988db4e206"
+      "bytes": 7961,
+      "sha256": "ca0d1038fce1564c86674e8aa4c48b871298ea36485014b4cc0adbe82967aa7b"
     },
     {
       "path": "server/world-mcp.mjs",
-      "bytes": 10166,
-      "sha256": "e50b541ba279fb3cd25b93a4d54d0aea05b734618cbf073eb1ddd4c5f335ba98"
+      "bytes": 11953,
+      "sha256": "89478f6bc8b7ed4e6359c179be0e5a3dcfcedd8cef7b2f35872af7ebb77791d9"
     },
     {
       "path": "server/world-observer.mjs",
-      "bytes": 12344,
-      "sha256": "2c6f7697cdaeff4dd4d661544e9ae0b5baa229c92b515ffc52747bc3ba793c36"
+      "bytes": 12928,
+      "sha256": "5c5e222958171179b1a793c97560f61f5036f65449e8cf2de429f61bd0d84771"
     },
     {
       "path": "server/world-store.mjs",
@@ -895,6 +960,31 @@
       "sha256": "cd3c935e8eb10db5c3be1d67efe3b606d2bba5d6c3ff579b6d60012e7bb7c345"
     },
     {
+      "path": "tests/defense-governance.test.mjs",
+      "bytes": 21554,
+      "sha256": "153cb663753734106ab9cd2a6ea4e9fd104abea5fe8ca1dd45ac7d2650a8d03c"
+    },
+    {
+      "path": "tests/defense-http.test.mjs",
+      "bytes": 7918,
+      "sha256": "0ea0617283503d7ca9d2678589c2ae763d5fb2d4f68f8db93358448940429e0a"
+    },
+    {
+      "path": "tests/defense-integration.test.mjs",
+      "bytes": 3023,
+      "sha256": "a9daa3988b57115a14e4e924478cb10f3201feae057cc8b84568ed65381e134b"
+    },
+    {
+      "path": "tests/defense-map.test.mjs",
+      "bytes": 13046,
+      "sha256": "0f86aa6247a63549a709180841606e3f82e3ccd67317a10025ad14cf4a2058a6"
+    },
+    {
+      "path": "tests/defense-ui.test.mjs",
+      "bytes": 12155,
+      "sha256": "170c33f29f39b7b1fa14ae30f59eaa21e0c8d887eb3980b639d2263b8bb3ab83"
+    },
+    {
       "path": "tests/development-boundary.test.mjs",
       "bytes": 1867,
       "sha256": "68f698776554e0ad30e8bcaf078beebf0625536d4d8b73431ad9e1d55a0a3bfe"
@@ -917,7 +1007,7 @@
     {
       "path": "tests/governance-migration.test.mjs",
       "bytes": 7220,
-      "sha256": "241d292f24b8909ee38d977c796d5bf8c85951dae1ebdb8b175e7ca06e122e51"
+      "sha256": "70e05e83061ab3ddbe7740fbe536b43f4877953076412622f889cefe187bf12b"
     },
     {
       "path": "tests/governance-roles.test.mjs",
@@ -936,8 +1026,8 @@
     },
     {
       "path": "tests/release-packaging.test.mjs",
-      "bytes": 8733,
-      "sha256": "1a56b812a5eee1cffd375f242b3b2b86cd9ac4b5022ef8cc3985441c89160d83"
+      "bytes": 9101,
+      "sha256": "154faa3fe0835839f4165fc41e1c545ac73109e42a3fdad6ef6dec1924f270a3"
     },
     {
       "path": "tests/response-governance.test.mjs",
@@ -1085,6 +1175,21 @@
       "sha256": "6c7b3a8e14a0a3189eed09f5068f080c1e526f82321634787f37511eff705796"
     },
     {
+      "path": "workbench/defense.css",
+      "bytes": 10111,
+      "sha256": "ae2f4bf12f36157a1646b97e8736b428a54ff59046f7f090c5b35036c61bb8d6"
+    },
+    {
+      "path": "workbench/defense.html",
+      "bytes": 7607,
+      "sha256": "da8124ff6694e7bc8aadb181c20aaa8f1c0ce60325a132db6ba78811e3ccfbc7"
+    },
+    {
+      "path": "workbench/defense.mjs",
+      "bytes": 16598,
+      "sha256": "506208b1e8a5376e2a50d3ef2f515b2c547184e48638c60ae693873634b48ef4"
+    },
+    {
       "path": "workbench/index.html",
       "bytes": 11808,
       "sha256": "e7a0ea774553c7a72e5fd3c813343b4f64edb1a7a1ea99d0004b91cbdc9e8e58"
@@ -1098,6 +1203,11 @@
       "path": "workbench/workbench.mjs",
       "bytes": 23442,
       "sha256": "f46dff55788b830ec46b4f188e424209b2f3b9d24015a2057188d8a0dc6063fe"
+    },
+    {
+      "path": "world/defense-map.mjs",
+      "bytes": 8117,
+      "sha256": "0aacdfe48778043903cc29412e50e2aeb2efff70da12c8e684b0a8b499aae194"
     },
     {
       "path": "world/kernel.mjs",

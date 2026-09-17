@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>DungeonQ · Mirror relay</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to the workspace</a>
+  <header class="masthead">
+    <a class="brand" href="/" aria-label="DungeonQ home">DQ<span>DungeonQ</span></a>
+    <span class="edition">MIRROR RELAY / ACTOR</span>
+    <span class="scope-label">Synthetic reference profile</span>
+  </header>
+  <main id="main">
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">A bounded world. A lasting local record.</p>
+        <h1 id="page-title">Follow the record.</h1>
+      </div>
+      <p class="intro-note">Save a record, carry it through the relay, and return to what you have already built. Every outcome stays inside this world and epoch.</p>
+    </section>
+
+    <section class="connection" aria-label="Actor connection">
+      <form id="connect-form" autocomplete="off">
+        <div class="token-field">
+          <label for="actor-token">Actor access token</label>
+          <input id="actor-token" name="actor-token" type="password" required minlength="43" maxlength="43" pattern="[A-Za-z0-9_-]{43}" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="token-help">
+          <p id="token-help" class="small">Enter the actor token supplied for this local session. It stays in this tab's memory and is cleared when you leave.</p>
+        </div>
+        <button id="connect" type="submit" class="primary">Open the world <span aria-hidden="true">→</span></button>
+      </form>
+      <div id="session-bar" class="session-bar" hidden>
+        <p><span class="connection-dot" aria-hidden="true"></span>Actor session connected <span class="session-note">Token held in memory only</span></p>
+        <button id="disconnect" type="button" class="text-button">Disconnect</button>
+      </div>
+    </section>
+
+    <div id="notice" class="notice" role="status" aria-live="polite" aria-atomic="true">Enter your actor token to read this world's current state.</div>
+    <section id="pending-panel" class="pending-panel" aria-labelledby="pending-title" hidden>
+      <div>
+        <h2 id="pending-title">One action needs confirmation</h2>
+        <p id="pending-message">Its result is not yet confirmed. New actions are paused.</p>
+        <p class="small">Keep this tab open. Checking the original request reuses its ID and cannot create a second copy of the action.</p>
+      </div>
+      <button id="retry" type="button">Verify original action</button>
+    </section>
+
+    <div id="workspace" hidden>
+      <section class="world-layout" aria-label="Current world and saved progress">
+        <article class="room-panel" aria-labelledby="room-title">
+          <div class="section-top">
+            <p class="eyebrow">Current desk</p>
+            <button id="refresh" type="button" class="text-button">Read latest state</button>
+          </div>
+          <h2 id="room-title" tabindex="-1">The mirror warehouse</h2>
+          <p id="room-description" class="room-description"></p>
+          <ul id="clues" class="clues" aria-label="Current desk notes"></ul>
+
+          <section class="observation" aria-labelledby="observation-title">
+            <p id="observation-title" class="eyebrow">Previous observation</p>
+            <h3 id="observation-outcome">Ready to begin</h3>
+            <p id="observation-message">Choose one of the declared actions below.</p>
+          </section>
+
+          <div class="section-top action-heading">
+            <h3>Choose your next action</h3>
+            <span class="small">Each action uses one step</span>
+          </div>
+          <div id="choices" class="choices"></div>
+          <div class="utility-actions">
+            <button id="inspect" type="button" class="text-button">Observe this desk · 1 step</button>
+          </div>
+          <p id="budget-message" class="small"></p>
+        </article>
+
+        <aside class="ledger" aria-labelledby="ledger-title">
+          <p class="eyebrow">The local ledger</p>
+          <h2 id="ledger-title">What stays with you</h2>
+          <div class="step-metrics">
+            <div><strong id="remaining">—</strong><span>Steps remaining</span></div>
+            <div><strong id="earned">0</strong><span>Earned outcomes</span></div>
+          </div>
+          <label id="progress-label" class="small" for="step-progress">Steps used</label>
+          <progress id="step-progress" max="1" value="0">0</progress>
+          <p id="visited" class="small"></p>
+          <h3>Saved receipts</h3>
+          <p class="small">Receipts remain valid only in this world and epoch. Returning to a desk preserves its earlier outcome.</p>
+          <ol id="receipts" class="receipts" aria-label="Saved local receipts" tabindex="0"></ol>
+          <button id="verify-receipt" type="button" class="text-button" disabled>Verify latest receipt · 1 step</button>
+          <details class="identity-details">
+            <summary>World identity and saved records</summary>
+            <dl class="identity-list">
+              <dt>World</dt><dd id="world-id"></dd>
+              <dt>Epoch</dt><dd id="epoch"></dd>
+              <dt>View generation</dt><dd id="generation"></dd>
+            </dl>
+            <ul id="inventory" class="inventory"></ul>
+          </details>
+        </aside>
+      </section>
+
+      <section class="artifact-section" aria-labelledby="artifact-title">
+        <div class="artifact-intro">
+          <p class="eyebrow">Read back a local result</p>
+          <h2 id="artifact-title">A record you can open here.</h2>
+          <p>After your first saved receipt, get a synthetic credential and use it to read this world's fixed relay record.</p>
+          <p class="small">Scope: DUNGEON_ONLY. This credential grants no access outside this synthetic reference profile.</p>
+        </div>
+        <div class="artifact-workspace">
+          <div class="artifact-actions">
+            <button id="issue-artifact" type="button" disabled>1. Get local credential</button>
+            <button id="read-artifact" type="button" disabled>2. Read synthetic record</button>
+          </div>
+          <p id="artifact-status" class="small" role="status" aria-live="polite">Save a local outcome to unlock this read-back.</p>
+          <div id="credential-panel" class="credential-panel" hidden>
+            <p class="eyebrow">Synthetic local credential</p>
+            <code id="artifact-credential"></code>
+          </div>
+          <div id="record-panel" class="record-panel" hidden>
+            <p class="eyebrow">Read-back confirmed · DUNGEON_ONLY</p>
+            <dl>
+              <dt>Record</dt><dd id="record-id"></dd>
+              <dt>Synthetic quantity</dt><dd id="record-quantity"></dd>
+            </dl>
+          </div>
+        </div>
+      </section>
+    </div>
+    <footer>Original synthetic records · Finite actions and step budget · Local outcomes do not establish access to any external resource or prove that a person or model was misled.</footer>
+  </main>
+</body>
+</html>

@@ -22,7 +22,7 @@ async function legacy(t) {
   return { directory, path };
 }
 
-test('真實 v1 Schema 副本遷移 v5：保留資料、舊撤銷 epoch／clock／signer／證據，重開不重設', async t => {
+test('真實 v1 Schema 副本遷移 v6：保留資料、舊撤銷 epoch／clock／signer／證據，重開不重設', async t => {
   const f = await legacy(t);
   const copy = join(f.directory, 'verified-copy.sqlite'); await copyFile(f.path, copy); await chmod(copy, 0o600);
   assert.deepEqual(await readFile(copy), await readFile(f.path));
@@ -30,7 +30,7 @@ test('真實 v1 Schema 副本遷移 v5：保留資料、舊撤銷 epoch／clock�
   const tables = ['meta', 'configuration', 'tenants', 'sessions', 'recovery', 'audit'];
   const rows = Object.fromEntries(tables.map(table => [table, before.prepare(`SELECT * FROM ${table}`).all().map(row => ({ ...row }))])); before.close();
   let db = new Store(copy, () => 7000);
-  assert.equal(db.get('PRAGMA user_version').user_version, 5);
+  assert.equal(db.get('PRAGMA user_version').user_version, 6);
   assert.equal(db.get('SELECT setup_expires FROM users').setup_expires, null);
   assert.equal(db.get('SELECT role FROM users').role, 'TENANT_SUPER_ADMIN');
   assert.equal(db.get('SELECT disabled FROM users').disabled, 0);
@@ -63,7 +63,7 @@ test('v2→v3 保留成員角色／停用／epoch，既有帳號不被改成待�
   const copy = join(f.directory, 'v2-copy.sqlite'); await copyFile(f.path, copy); await chmod(copy, 0o600);
   assert.deepEqual(await readFile(copy), await readFile(f.path));
   const db = new Store(copy, () => 7000);
-  assert.equal(db.get('PRAGMA user_version').user_version, 5);
+  assert.equal(db.get('PRAGMA user_version').user_version, 6);
   assert.deepEqual(db.get('SELECT role,disabled,epoch,setup_expires FROM users'), { role: 'AUDITOR', disabled: 1, epoch: 3, setup_expires: null });
   assert.equal(db.get('SELECT epoch FROM tenants').epoch, 9); assert.equal(db.verifyAudit().entries, 1); db.close();
 });

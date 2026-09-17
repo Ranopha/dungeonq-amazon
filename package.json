@@ -1,6 +1,6 @@
 {
   "name": "dungeonq-amazon",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "description": "Synthetic assistant governance, persistent abstract worlds and consent-based causal studies with local MCP and replayable evidence.",
   "license": "Apache-2.0",
@@ -25,6 +25,9 @@
     "node": ">=24.15.0"
   },
   "scripts": {
+    "defense": "node scripts/defense.mjs",
+    "defense:proof": "node scripts/defense-proof.mjs",
+    "test:defense": "node --test tests/defense-*.test.mjs",
     "topology": "node scripts/topology.mjs",
     "topology:proof": "node scripts/topology-proof.mjs",
     "topology:verify": "node cli/topology-verify.mjs",

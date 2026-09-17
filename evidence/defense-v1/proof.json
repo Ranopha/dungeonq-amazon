@@ -1,0 +1,185 @@
+{
+  "schemaVersion": "dungeonq.defense-proof/v1",
+  "profile": "SYNTHETIC_ONLY",
+  "createdAt": "2026-09-17T03:54:01.878Z",
+  "approvalMode": "SCRIPTED_OWNER_CREDENTIAL_NOT_HUMAN_PRESENCE_PROOF",
+  "participantMode": "SCRIPTED_FIXTURE",
+  "claim": "INTEGRATED_DEFENSIVE_ENGINEERING_NOT_LLM_EFFICACY_OR_PRODUCTION_ISOLATION",
+  "paidProviderApiCalls": 0,
+  "externalTargetRequests": 0,
+  "checks": [
+    {
+      "id": "NO_CONTACT_NO_INCIDENT_AND_A_GENERATION_ZERO",
+      "passed": true
+    },
+    {
+      "id": "ACTOR_MCP_CLOSED_TOOLS_NO_APPROVAL_OR_ORIGIN_CONTROL",
+      "passed": true
+    },
+    {
+      "id": "SAME_INCIDENT_ALERT_DELIVERED_AND_INDEPENDENT_SINK_READBACK",
+      "passed": true
+    },
+    {
+      "id": "UNAPPROVED_APPLY_DENIED_A_UNCHANGED",
+      "passed": true
+    },
+    {
+      "id": "THREE_PERSISTED_LOCAL_SUCCESSES_AND_B_TO_C_CONTINUITY",
+      "passed": true
+    },
+    {
+      "id": "EARNED_DUNGEON_TOKEN_WORKS_LOCALLY_REJECTED_BY_A_AUTHORIZATION",
+      "passed": true
+    },
+    {
+      "id": "SEPARATE_OWNER_REAUTH_EXACT_DIGEST_APPROVAL_WRONG_DIGEST_DENIED",
+      "passed": true
+    },
+    {
+      "id": "ACTUAL_TLS_ROTATION_ALL_FOUR_INDEPENDENT_READBACKS",
+      "passed": true,
+      "checks": {
+        "decoyKeyDenied": true,
+        "newKeyBusiness": true,
+        "oldConsumerDenied": true,
+        "oldKeyDenied": true
+      }
+    },
+    {
+      "id": "COMPLETED_APPLY_REPLAY_HAS_NO_NEW_PERMIT_OR_GENERATION",
+      "passed": true
+    },
+    {
+      "id": "DUNGEON_CONTINUES_C_TO_D_AFTER_A_PROTECTION_COMPLETES",
+      "passed": true
+    },
+    {
+      "id": "HTTP_MCP_PARITY_AND_WORLD_IDEMPOTENCY",
+      "passed": true
+    },
+    {
+      "id": "SEPARATE_OBSERVER_CAUSAL_REPLAY_AND_TAMPER_REJECTION",
+      "passed": true
+    },
+    {
+      "id": "RESTART_PRESERVES_WORLD_ALERT_APPROVAL_AND_NONREVIVING_CREDENTIAL_STATE",
+      "passed": true
+    }
+  ],
+  "sourceDigests": {
+    "server/defense-lab.mjs": "d0e2a7e5ecaaa4c8a2dd9ad2f568ee187454b5a12ad4b84612c2e0ac2e90a9bc",
+    "server/defense-governance.mjs": "f5404671dfdf241073dd91f166b53aec39439a6c1ffd13819dada43805a453e1",
+    "server/governance.mjs": "fd324ff6acfbbab1f75af4d772e9c07dd0cfa23dac80058bb91ea7660a935abd",
+    "server/store.mjs": "a1e47cd6b36898f6aa9b5d3dda130b766ba2b0caf2ff84d4ef3025ec48550b8f",
+    "server/reference-issuer.mjs": "0fb18436b63a2c70d4e948a71b92873279793fd5a861236919b3556b496f1a7e",
+    "server/reference-transport.mjs": "c565b4d7b43ceb54002a28f24d415918ee5f297b430f5737a2c501f3218eb40a",
+    "server/world-lab.mjs": "ca0d1038fce1564c86674e8aa4c48b871298ea36485014b4cc0adbe82967aa7b",
+    "server/world-mcp.mjs": "89478f6bc8b7ed4e6359c179be0e5a3dcfcedd8cef7b2f35872af7ebb77791d9",
+    "server/world-store.mjs": "b6821ac7467348155b2ba1f3836f6992b098b4765f936ff9c67624e9b62403e0",
+    "server/world-observer.mjs": "5c5e222958171179b1a793c97560f61f5036f65449e8cf2de429f61bd0d84771",
+    "server/workbench.mjs": "41957fc7459a27700e71e782254bef3ab8ad94508107bb011b9e0bf162c3fda1",
+    "world/defense-map.mjs": "0aacdfe48778043903cc29412e50e2aeb2efff70da12c8e684b0a8b499aae194",
+    "world/kernel.mjs": "fd57bf0f4652491482d6d0696fedc4322cd7eb1e0724d6980de8e7a59c103a8b",
+    "server/defense-acceptance.mjs": "b127a16645e05e247709a53c0119dce0315da06ebdbeae264bf37e0c73a9abdd"
+  },
+  "timeline": [
+    {
+      "event": "NO_CONTACT_NO_INCIDENT_AND_A_GENERATION_ZERO",
+      "at": 1789617242139
+    },
+    {
+      "event": "ACTOR_MCP_CLOSED_TOOLS_NO_APPROVAL_OR_ORIGIN_CONTROL",
+      "at": 1789617242179
+    },
+    {
+      "event": "SAME_INCIDENT_ALERT_DELIVERED_AND_INDEPENDENT_SINK_READBACK",
+      "at": 1789617242184
+    },
+    {
+      "event": "UNAPPROVED_APPLY_DENIED_A_UNCHANGED",
+      "at": 1789617242185
+    },
+    {
+      "event": "THREE_PERSISTED_LOCAL_SUCCESSES_AND_B_TO_C_CONTINUITY",
+      "at": 1789617242197
+    },
+    {
+      "event": "EARNED_DUNGEON_TOKEN_WORKS_LOCALLY_REJECTED_BY_A_AUTHORIZATION",
+      "at": 1789617242200
+    },
+    {
+      "event": "SEPARATE_OWNER_REAUTH_EXACT_DIGEST_APPROVAL_WRONG_DIGEST_DENIED",
+      "at": 1789617242231
+    },
+    {
+      "event": "ACTUAL_TLS_ROTATION_ALL_FOUR_INDEPENDENT_READBACKS",
+      "at": 1789617242234
+    },
+    {
+      "event": "COMPLETED_APPLY_REPLAY_HAS_NO_NEW_PERMIT_OR_GENERATION",
+      "at": 1789617242234
+    },
+    {
+      "event": "DUNGEON_CONTINUES_C_TO_D_AFTER_A_PROTECTION_COMPLETES",
+      "at": 1789617242242
+    },
+    {
+      "event": "HTTP_MCP_PARITY_AND_WORLD_IDEMPOTENCY",
+      "at": 1789617242245
+    },
+    {
+      "event": "SEPARATE_OBSERVER_CAUSAL_REPLAY_AND_TAMPER_REJECTION",
+      "at": 1789617242256
+    },
+    {
+      "event": "RESTART_PRESERVES_WORLD_ALERT_APPROVAL_AND_NONREVIVING_CREDENTIAL_STATE",
+      "at": 1789617242495
+    }
+  ],
+  "passed": true,
+  "incidentId": "incident-1b0eeefe1fc4b52a",
+  "worldId": "2b53ffa9-ea74-41f3-9c4e-d29c041aaf0e",
+  "rotation": {
+    "requestId": "rotation-b0bdb97a0cc2b138",
+    "manifest": {
+      "assetId": "api-orders",
+      "cleanConsumer": "clean-consumer",
+      "epoch": 1,
+      "expectedGeneration": 0,
+      "expiresAt": 1789617542180,
+      "profile": "SYNTHETIC_ONLY",
+      "schemaVersion": "dungeonq.reference-rotation/v1",
+      "tenantId": "tenant-lab"
+    },
+    "manifestDigest": "b113ae3aa4ca7654b8ada01f02fb97d7b2c0a800373929bdf2ab58dfd2daafd5",
+    "receipt": {
+      "assetId": "api-orders",
+      "businessVerified": false,
+      "consumer": "clean-consumer",
+      "generation": 1,
+      "issuerReadback": true,
+      "manifestDigest": "b113ae3aa4ca7654b8ada01f02fb97d7b2c0a800373929bdf2ab58dfd2daafd5",
+      "profile": "SYNTHETIC_ONLY",
+      "replay": false,
+      "schemaVersion": "dungeonq.reference-issuer-receipt/v1",
+      "tenantId": "tenant-lab"
+    },
+    "checks": {
+      "decoyKeyDenied": true,
+      "newKeyBusiness": true,
+      "oldConsumerDenied": true,
+      "oldKeyDenied": true
+    },
+    "approvalPresenceAttested": false
+  },
+  "alert": {
+    "eventId": 5,
+    "state": "DELIVERED",
+    "receipt": "db2503907a261ea1c2abc83840d3ae28cfab59b3725f8996c9c645ce15eece01"
+  },
+  "evidence": {
+    "worldDigest": "fe7818051704717b865ef73f533949f4f1a814250fa4dc9ecd5aa06c200706f7",
+    "governanceDigest": "0ca83c8608550cb072ed18006ed2b5eedac023065d69e180bca10c0f742c8ded"
+  }
+}

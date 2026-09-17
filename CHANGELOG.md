@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8.0 — 2026-09-17
+
+- Assemble one synthetic incident end to end: seeded persistent B/C/D world, durable contact alert with sink receipt, separate Owner approval and actual HTTPS rotation of fixed resource A.
+- Verify old-key denial, new-key business success, retired-consumer denial and rejection of a locally usable Dungeon credential. Keep the bounded world running after A protection completes.
+- Add English Actor/control-room UI, closed MCP artifact tools, SQLite v6 migration, expiry refresh, unknown-result reconciliation and a 13-check reproducible integration proof.
+- Export the same reference runtime and recorded evidence in both public editions. No new model calls, no general deception-efficacy claim, no real enterprise connector or production isolation claim. Original pilot/live-model records remain intact.
+
 ## 0.7.0 — 2026-09-17
 
 - Add the original six-desk publishing workflow, persistent shared records and fixed-consumer delivery/read/decision/write lineage. Desk-scoped unknowns remain null; catalogue read-back is always accessible and truthful.

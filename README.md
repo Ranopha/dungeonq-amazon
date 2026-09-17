@@ -1,6 +1,27 @@
 # DungeonQ — Governed Assistant Lab
 
-## v0.7.0: follow the packet, verify the destination
+## v0.8.0: one incident, a complete defensive response
+
+Start with `npm run defense:proof` for the new **same-incident reference profile**: a configured honey contact opens a bounded synthetic world, creates a durable local alert and proposes a rotation for protected resource A. Separate Owner reauthentication approves the exact manifest. A real loopback TLS issuer rotates once, then checks the old key, new business request, old consumer and world-issued decoy token independently. The world remains usable afterward.
+
+The recorded engineering proof passes **13 named checks**, including HTTP/MCP parity, altered-evidence rejection and a complete restart. It uses `SCRIPTED_FIXTURE` and an automated Owner credential: **not a human-presence proof, a live LLM evaluation or production defense**. The actor receives no approval or origin-control tool. No API key or paid model call is needed.
+
+[Start the English Actor and Owner desks](docs/DEFENSE_LAB.md) · [Inspect the recorded proof](evidence/defense-v1/proof.json) · [Three-minute OSS review](docs/OSS_REVIEW_GUIDE.md).
+
+```sh
+npm ci --ignore-scripts
+npm run defense:proof -- --out ../dungeonq-defense-proof
+
+# First installation: a new, empty, private directory
+mkdir -m 700 ../dungeonq-defense-lab
+npm run defense -- --data-dir ../dungeonq-defense-lab --seed 42 --depth 4
+```
+
+Use the URLs printed by the launcher. Keep the Owner password outside the Actor/MCP client. This profile supports **one fixed synthetic A and one rotation per installation**, a 30-day local worker credential and a 30-day self-signed certificate. Restart with the same directory, seed and depth. An expired unclaimed proposal can be refreshed; an uncertain execution uses readback reconciliation. [Recovery and exact limits](docs/DEFENSE_LAB.md#expiry-restart-and-uncertain-results).
+
+MCP is an interface, not transparent interception. A honey contact proves neither AI identity nor compromise of A. `LOCAL_SINK_ONLY` means local receipt, not email delivery; same-host services do not establish production isolation. An actor already holding a valid A credential needs origin enforcement and a credential/session fence in a real deployment. The reference does not claim to divert arbitrary traffic.
+
+## Retained v0.7.0: follow the packet, verify the destination
 
 Run `npm run topology` for an English, persistent publishing workflow: saved note → edition → preview → queue → fixed filing worker. The actual visitor catalogue has a separate deposit/index path. HTTP and MCP share the same runtime; a separate Observer retains causal evidence. **No key or paid model call is needed.**
 
@@ -37,7 +58,7 @@ npm ci --ignore-scripts
 npm run doctor
 ```
 
-Run these commands in the unpacked v0.7.0 source directory containing `package.json`.
+Run these commands in the unpacked source directory containing `package.json`. The sections below retain the earlier governed-containment workflow; the v0.8.0 defense entry above is separate.
 
 ### A. Reproduce the proof without a browser
 

@@ -61,7 +61,7 @@ export class Store {
       this.#db.exec('PRAGMA foreign_keys=ON; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA trusted_schema=OFF;');
       this.#db.exec('BEGIN IMMEDIATE');
       const version = this.get('PRAGMA user_version').user_version;
-      requireThat([0, 1, 2, 3, 4, 5].includes(version), 'SCHEMA_VERSION_UNSUPPORTED');
+      requireThat([0, 1, 2, 3, 4, 5, 6].includes(version), 'SCHEMA_VERSION_UNSUPPORTED');
       if (version === 0) this.#db.exec(SCHEMA);
       if (version < 2) this.#db.exec(MIGRATE_V2);
       if (version < 3) this.#db.exec('ALTER TABLE users ADD COLUMN setup_expires INTEGER CHECK(setup_expires IS NULL OR setup_expires>0); PRAGMA user_version=3;');
@@ -82,6 +82,28 @@ export class Store {
           draft TEXT NOT NULL, digest TEXT NOT NULL, grant_id TEXT REFERENCES grants(id),
           PRIMARY KEY(tenant,id), FOREIGN KEY(tenant,asset) REFERENCES assets(tenant,id)) STRICT;
         PRAGMA user_version=5;
+      `);
+      if (version < 6) this.#db.exec(`
+        CREATE TABLE rotation_targets (tenant TEXT NOT NULL, asset TEXT NOT NULL, generation INTEGER NOT NULL,
+          epoch INTEGER NOT NULL, consumer TEXT NOT NULL, registration TEXT NOT NULL,
+          PRIMARY KEY(tenant,asset), FOREIGN KEY(tenant,asset) REFERENCES assets(tenant,id)) STRICT;
+        CREATE TABLE decoy_incidents (tenant TEXT NOT NULL, id TEXT NOT NULL, asset TEXT NOT NULL,
+          world TEXT NOT NULL, event_digest TEXT NOT NULL, observed_at INTEGER NOT NULL,
+          audit_seq INTEGER NOT NULL REFERENCES audit(seq), PRIMARY KEY(tenant,id),
+          FOREIGN KEY(tenant,asset) REFERENCES rotation_targets(tenant,asset)) STRICT;
+        CREATE TABLE rotation_requests (tenant TEXT NOT NULL, id TEXT NOT NULL, incident TEXT NOT NULL,
+          asset TEXT NOT NULL, worker TEXT NOT NULL, governance_epoch INTEGER NOT NULL,
+          manifest TEXT NOT NULL, digest TEXT NOT NULL, state TEXT NOT NULL
+          CHECK(state IN ('AWAITING_HUMAN','APPROVED','CLAIMED','UNKNOWN','COMPLETED','FAILED','FENCED')),
+          approved_by TEXT REFERENCES users(id), approved_at INTEGER, claimed_at INTEGER,
+          completed_at INTEGER, signature TEXT, receipt TEXT, checks TEXT,
+          PRIMARY KEY(tenant,id), UNIQUE(tenant,incident),
+          FOREIGN KEY(tenant,incident) REFERENCES decoy_incidents(tenant,id),
+          FOREIGN KEY(tenant,asset) REFERENCES rotation_targets(tenant,asset)) STRICT;
+        CREATE TABLE rotation_claims (tenant TEXT NOT NULL, asset TEXT NOT NULL, generation INTEGER NOT NULL,
+          request_id TEXT NOT NULL, PRIMARY KEY(tenant,asset,generation),
+          FOREIGN KEY(tenant,request_id) REFERENCES rotation_requests(tenant,id)) STRICT;
+        PRAGMA user_version=6;
       `);
       this.#db.exec('COMMIT');
       requireThat(this.get('PRAGMA quick_check').quick_check === 'ok', 'STORAGE_CORRUPT');
@@ -118,12 +140,13 @@ export class Store {
     this.run('INSERT INTO audit VALUES (?,?,?)', entry.sequence, canonicalJson(entry), digest(entry));
     if (['RECOVERY_CODES_REPLACED', 'ACCOUNT_RECOVERED', 'ACCOUNT_RECOVERED_GRANTS_REVOKED',
       'MEMBER_ACTIVATED', 'MEMBER_CHANGE_APPLIED', 'GRANT_PUBLISHED', 'GRANTS_REVOKED',
-      'TOTP_ENABLED', 'TOTP_REMOVED'].includes(kind)) {
+      'TOTP_ENABLED', 'TOTP_REMOVED', 'DECOY_CONTACT'].includes(kind)) {
       // 不複製自由 details、Token、密碼或 Seed；audit 與 queue 同一筆交易。
       this.run('INSERT INTO notifications(id,tenant,body,next_at) VALUES (?,?,?,?)', entry.sequence, tenant,
         canonicalJson({ schemaVersion: 'dungeonq.lab-notification/v1', eventId: entry.sequence,
           tenantId: tenant, kind, subject, auditDigest: digest(entry), channel: 'LOCAL_SINK_ONLY' }), now);
     }
+    return entry.sequence;
   }
   verifyAudit() {
     let previous = null;

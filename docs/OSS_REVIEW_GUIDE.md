@@ -1,25 +1,34 @@
 # A three-minute open-source review
 
-## v0.7.0 entry point
+Start with the v0.8.0 [defense reference guide](DEFENSE_LAB.md). It connects a configured synthetic honey contact, a bounded world, a durable local alert, exact Owner approval and an actual loopback TLS rotation under one incident. Earlier governed-containment, Astra and research profiles remain available with their original evidence boundaries.
 
-Start with [the English publishing workflow](TOPOLOGY_LAB.md) and [its complete retained pilot](TOPOLOGY_RESULTS.md). `npm run topology` runs the actual local desk/Observer; `npm run topology:proof` makes no paid call. Persistent packet/consumer lineage, scope-aware observations and causal replay let reviewers inspect a multi-stage task without a real enterprise environment.
+DungeonQ is Apache-2.0 source for local synthetic evaluation. This guide identifies inspectable behavior and reproducibility; it does not imply selection, endorsement, publication status or production readiness.
 
-The result is intentionally qualified: local-chain following was 2/2 memo versus 0/2 controls, but unsupported completion was 0/4. No cognitive-induction success is claimed. Existing application links continue to reference this same public repository; a new release is not proof that an external reviewer has refreshed their copy. No duplicate OSS application is needed merely to publish this update.
+## First minute: follow one incident
 
-DungeonQ is Apache-2.0 source for local synthetic evaluation. This guide helps inspect maintenance and reproducibility; it does not imply selection, endorsement or production readiness.
+Open [the recorded proof](../evidence/defense-v1/proof.json). Its 13 named engineering checks connect the incident and world IDs, manifest digest, local notification receipt, rotation receipt and four separate authorization/business readbacks. Read the [world events](../evidence/defense-v1/world.json) and [governance events](../evidence/defense-v1/governance.json) alongside it.
 
-**First minute — scope and maintenance.** Read the [README](../README.md), [changelog](../CHANGELOG.md) and [new-work/provenance record](DELTA.md). Existing governed MCP remains intact; v0.6.0 adds finite world/study modules. Dependencies are pinned; release archives contain a source inventory, SHA-256 manifest, SBOM and notices. See [contribution](../CONTRIBUTING.md), [security reporting](../SECURITY.md) and [release policy](RELEASE.md). A manifest is not an independent signature.
+The automated proof controls an Owner fixture credential. It is not proof of human presence, an LLM trial or a transparent traffic-interception product. No provider call or external target is involved. Same-host processes are not production isolation; a local sink receipt is not email delivery.
 
-**Second minute — tests and repeatability.** The v0.6.0 clean Amazon and Astra source checks each passed 214 tests, three goldens, audit, typecheck and build. Each world/study proof passed 12 checks. These are local engineering checks; current [public CI](https://github.com/Ranopha/dungeonq-amazon/actions/workflows/ci.yml) is a separate record. Reproduce from an unpacked source archive:
+## Second minute: reproduce the boundary
+
+From an extracted source release, with Node 24.15+, npm and OpenSSL:
 
 ```sh
 npm ci --ignore-scripts
-npm run check
-npm run study:verify -- evidence/study-v1/codex-pilot-b.json
+npm run test:defense
+npm run defense:proof -- --out ../dungeonq-review-proof
+npm run world:verify -- ../dungeonq-review-proof/world.json
 ```
 
-No model API key is needed. The [two-minute interactive route](STUDY_LAB.md#a-two-minute-reviewer-route) is optional after setup. The current study UI is Traditional Chinese with English documentation.
+Expect 13 successful proof checks only when the run actually completes. A nonzero exit, an unknown outcome or a missing check is not a pass. The proof uses a fresh private installation, genuine local HTTPS/CSRF and official-SDK MCP, exercises a complete restart and exports only the three synthetic evidence files. The [interactive guide](DEFENSE_LAB.md#a-short-interactive-review) describes the separate English Actor and Owner desks.
 
-**Third minute — inspect the unfavorable result.** Read [study results](STUDY_RESULTS.md) and the linked original bundles. The transparent learner matrix contains 48 conditions, not subjects. Both planned Codex sessions are retained: wrong-high-confidence induction **0/2**, model identity not independently attested. There is no general human/LLM efficacy claim. UI_CHECK records are not experimental subjects.
+For the broader source checkpoint, run `npm run check` and `npm run verify:source`. The distribution inventory, SHA-256 manifest, SBOM and notices support inspection; they are not an independent signature or security certification. Review the distribution's validation record for the version actually under review. Local checks, public CI and public deployment are distinct records.
 
-[Actual overview capture](../media/study-evidence.png) · [Reference trace capture](../media/study-trace.png). These depict a recorded-evidence explorer; only local installation provides a separate server/Observer. No arbitrary targets, real exploits, external scans or paid API calls are required.
+## Third minute: inspect the limits and retained negative results
+
+The defense reference is one fixed synthetic A with one rotation, finite B/C/D worlds, five-minute proposals, a 30-day worker credential and a 30-day certificate. Owner-only refresh and readback reconciliation are explicit. The Actor has no approval, arbitrary target, shell, SQL or network-control tool. A honey contact does not prove AI identity or A compromise.
+
+The [v0.7 pilot](TOPOLOGY_RESULTS.md) retains **2/2** procedural-memo local-chain following versus **0/2** controls, but **0/4** unsupported completion claims; all four ultimately verified the actual goal. The [v0.6 study](STUDY_RESULTS.md) retains **0/2** wrong-high-confidence induction. Its 48 reference-learner conditions are not 48 subjects. No general deception efficacy is claimed, and exact pilot model identities were not independently attested. The Astra edition's earlier live API record is separate and unchanged.
+
+Read the source [README](../README.md), [security policy](../SECURITY.md), [contribution guide](../CONTRIBUTING.md), [changelog](../CHANGELOG.md), [license](../LICENSE) and [notices](../NOTICE). The static website displays saved engineering/research evidence; self-hosting is required to operate the actual separate server roles. A new source version does not prove that an external reviewer has refreshed an earlier application, and does not require a duplicate application.
