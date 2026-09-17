@@ -22,7 +22,7 @@ async function legacy(t) {
   return { directory, path };
 }
 
-test('真實 v1 Schema 副本遷移 v6：保留資料、舊撤銷 epoch／clock／signer／證據，重開不重設', async t => {
+test('真實 v1 Schema 副本遷移 v7：保留資料、舊撤銷 epoch／clock／signer／證據，重開不重設', async t => {
   const f = await legacy(t);
   const copy = join(f.directory, 'verified-copy.sqlite'); await copyFile(f.path, copy); await chmod(copy, 0o600);
   assert.deepEqual(await readFile(copy), await readFile(f.path));
@@ -30,7 +30,7 @@ test('真實 v1 Schema 副本遷移 v6：保留資料、舊撤銷 epoch／clock�
   const tables = ['meta', 'configuration', 'tenants', 'sessions', 'recovery', 'audit'];
   const rows = Object.fromEntries(tables.map(table => [table, before.prepare(`SELECT * FROM ${table}`).all().map(row => ({ ...row }))])); before.close();
   let db = new Store(copy, () => 7000);
-  assert.equal(db.get('PRAGMA user_version').user_version, 6);
+  assert.equal(db.get('PRAGMA user_version').user_version, 7);
   assert.equal(db.get('SELECT setup_expires FROM users').setup_expires, null);
   assert.equal(db.get('SELECT role FROM users').role, 'TENANT_SUPER_ADMIN');
   assert.equal(db.get('SELECT disabled FROM users').disabled, 0);
@@ -63,7 +63,7 @@ test('v2→v3 保留成員角色／停用／epoch，既有帳號不被改成待�
   const copy = join(f.directory, 'v2-copy.sqlite'); await copyFile(f.path, copy); await chmod(copy, 0o600);
   assert.deepEqual(await readFile(copy), await readFile(f.path));
   const db = new Store(copy, () => 7000);
-  assert.equal(db.get('PRAGMA user_version').user_version, 6);
+  assert.equal(db.get('PRAGMA user_version').user_version, 7);
   assert.deepEqual(db.get('SELECT role,disabled,epoch,setup_expires FROM users'), { role: 'AUDITOR', disabled: 1, epoch: 3, setup_expires: null });
   assert.equal(db.get('SELECT epoch FROM tenants').epoch, 9); assert.equal(db.verifyAudit().entries, 1); db.close();
 });
@@ -99,4 +99,28 @@ test('v4→v5 衝突不覆寫未知 response 表，也不提升版本或重設�
   assert.equal(read.prepare('SELECT marker FROM response_requests').get().marker, 'synthetic-original');
   assert.equal(read.prepare('SELECT epoch FROM tenants').get().epoch, 9);
   assert.equal(read.prepare('SELECT COUNT(*) AS count FROM audit').get().count, 1); read.close();
+});
+
+test('v6→v7 保留既有撤銷與證據；信箱表衝突時全部回復', async t => {
+  for (const conflict of [false, true]) {
+    const f = await legacy(t); const current = new Store(f.path, () => 7000);
+    const evidence = current.all('SELECT * FROM audit'); current.close();
+    const old = new DatabaseSync(f.path);
+    old.exec('DROP TABLE external_identities; DROP TABLE email_outbox; DROP TABLE email_challenges; DROP TABLE email_bindings; PRAGMA user_version=6;');
+    if (conflict) old.exec("CREATE TABLE email_challenges(marker TEXT); INSERT INTO email_challenges VALUES ('retain-me');");
+    old.close();
+    if (conflict) {
+      assert.throws(() => new Store(f.path), /already exists/u);
+      const read = new DatabaseSync(f.path);
+      assert.equal(read.prepare('PRAGMA user_version').get().user_version, 6);
+      assert.equal(read.prepare("SELECT name FROM sqlite_schema WHERE name='email_bindings'").get(), undefined);
+      assert.equal(read.prepare('SELECT marker FROM email_challenges').get().marker, 'retain-me'); read.close();
+    } else {
+      const upgraded = new Store(f.path, () => 7000);
+      assert.equal(upgraded.get('PRAGMA user_version').user_version, 7);
+      assert.equal(upgraded.get('SELECT epoch FROM tenants').epoch, 9);
+      assert.deepEqual(upgraded.all('SELECT * FROM audit'), evidence);
+      assert.equal(upgraded.get('SELECT count(*) AS n FROM email_outbox').n, 0); upgraded.close();
+    }
+  }
 });

@@ -233,7 +233,7 @@ test('Rotation signer選配且獨立，啟用後缺失／替換拒絕；一般St
   await assert.rejects(openGovernance({ ...g.options, rotationPrivateKey: undefined }), code('ROTATION_KEY_REQUIRED'));
   await assert.rejects(openGovernance({ ...g.options, rotationPrivateKey: generateKeyPairSync('ed25519').privateKey }), code('ROTATION_KEY_PIN_MISMATCH'));
   assert.equal(g.core.local.rotationVerificationKey().domain, ROTATION_DOMAIN);
-  const plain = new Store(join(g.directory, 'plain.sqlite')); assert.equal(plain.get('PRAGMA user_version').user_version, 6); plain.close();
+  const plain = new Store(join(g.directory, 'plain.sqlite')); assert.equal(plain.get('PRAGMA user_version').user_version, 7); plain.close();
 });
 
 test('v5→v6保留原紀錄／clock／epoch與舊證據；新增表衝突整體rollback', async t => {
@@ -245,7 +245,7 @@ test('v5→v6保留原紀錄／clock／epoch與舊證據；新增表衝突整體
     db.transaction(now => { db.run("INSERT INTO tenants VALUES ('tenant-a',9)"); db.audit(now, 'tenant-a', 'HISTORIC_SYNTHETIC_EVENT', 'fixture'); });
     const previous = db.all('SELECT * FROM audit'); db.close();
     const legacy = new DatabaseSync(path);
-    legacy.exec('DROP TABLE rotation_claims; DROP TABLE rotation_requests; DROP TABLE decoy_incidents; DROP TABLE rotation_targets; PRAGMA user_version=5;');
+    legacy.exec('DROP TABLE external_identities; DROP TABLE email_outbox; DROP TABLE email_challenges; DROP TABLE email_bindings; DROP TABLE rotation_claims; DROP TABLE rotation_requests; DROP TABLE decoy_incidents; DROP TABLE rotation_targets; PRAGMA user_version=5;');
     if (conflict) legacy.exec('CREATE TABLE rotation_requests(marker TEXT); INSERT INTO rotation_requests VALUES (\'synthetic-original\');');
     legacy.close();
     if (conflict) {
@@ -255,7 +255,7 @@ test('v5→v6保留原紀錄／clock／epoch與舊證據；新增表衝突整體
       assert.equal(read.prepare('SELECT marker FROM rotation_requests').get().marker, 'synthetic-original');
       assert.equal(read.prepare("SELECT name FROM sqlite_schema WHERE name='rotation_targets'").get(), undefined); read.close();
     } else {
-      db = new Store(path); assert.equal(db.get('PRAGMA user_version').user_version, 6);
+      db = new Store(path); assert.equal(db.get('PRAGMA user_version').user_version, 7);
       assert.equal(db.get("SELECT epoch FROM tenants WHERE id='tenant-a'").epoch, 9);
       assert.equal(db.get("SELECT value FROM meta WHERE key='clock'").value, 12345);
       assert.deepEqual(db.all('SELECT * FROM audit'), previous); db.close();

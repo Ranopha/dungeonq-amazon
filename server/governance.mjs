@@ -2,6 +2,7 @@ import { sign, verify, createPublicKey, randomUUID, randomBytes } from 'node:cry
 import { seedVault, matchOtp, base32 } from './totp.mjs';
 import { notificationDispatcher } from './notifications.mjs';
 import { createDefenseGovernance } from './defense-governance.mjs';
+import { createEmailNotifications, normalizeEmail } from './email-notifications.mjs';
 import { Store } from './store.mjs';
 import { hashPassword, verifyPassword, passwordText } from './passwords.mjs';
 import { authorize, capabilities, MEMBER_ROLES } from './authorization.mjs';
@@ -13,7 +14,7 @@ const SIGN_DOMAIN = 'dungeonq.lab-governance/v1\n';
 const bytes = body => Buffer.from(SIGN_DOMAIN + canonicalJson(body));
 
 // 此工廠只由可信的伺服器組裝端使用；不是 HTTP／MCP 的可呼叫管理入口。
-export async function openGovernance({ path, privateKey, keyId, clock = Date.now, profile = 'SYNTHETIC_ONLY', factorKey, rotationPrivateKey }) {
+export async function openGovernance({ path, privateKey, keyId, clock = Date.now, profile = 'SYNTHETIC_ONLY', factorKey, rotationPrivateKey, emailTransport }) {
   requireThat(profile === 'SYNTHETIC_ONLY', 'PROFILE_NOT_AUTHORIZED');
   requireThat(privateKey?.type === 'private' && privateKey.asymmetricKeyType === 'ed25519', 'SIGNER_INVALID');
   id(keyId);
@@ -202,14 +203,21 @@ export async function openGovernance({ path, privateKey, keyId, clock = Date.now
   let defense;
   try { defense = createDefenseGovernance({ db, rotationPrivateKey, governancePublicKey: publicKey, principal, worker, consumeIntent }); }
   catch (error) { db.close(); throw error; }
+  let email;
+  try { email = createEmailNotifications({ db, factorKey, transport: emailTransport, principal, consumeIntent, rate, newSession, authentication }); }
+  catch (error) { db.close(); throw error; }
 
   const application = Object.freeze({
     ...defense.application,
+    ...email.application,
     async login(input, source) {
       exact(input, Object.hasOwn(input ?? {}, 'otp') ? ['tenantId', 'username', 'password', 'otp'] : ['tenantId', 'username', 'password']);
       input = { ...input };
-      rate('login', input.tenantId, input.username, source);
-      const user = db.get('SELECT * FROM users WHERE tenant=? AND username=?', input.tenantId, input.username);
+      const alias = typeof input.username === 'string' && input.username.includes('@');
+      const loginName = alias ? normalizeEmail(input.username) : id(input.username);
+      const user = alias ? email.loginUser(input.tenantId, loginName)
+        : db.get('SELECT * FROM users WHERE tenant=? AND username=?', input.tenantId, loginName);
+      rate('login', input.tenantId, user?.username ?? (alias ? `email-${digest(loginName).slice(0, 56)}` : loginName), source);
       let good = false;
       try { good = await verifyPassword(input.password, user?.password ?? dummyPassword); }
       catch (error) { if (error.code !== 'PASSWORD_INVALID') throw error; }
@@ -217,6 +225,7 @@ export async function openGovernance({ path, privateKey, keyId, clock = Date.now
       return authTransaction(input.tenantId, 'LOGIN_REJECTED', now => {
         const current = db.get('SELECT * FROM users WHERE id=?', user.id);
         requireThat(current && !current.disabled && current.setup_expires === null && current.epoch === user.epoch && current.password === user.password, 'AUTH_FAILED');
+        if (alias) requireThat(email.loginUser(input.tenantId, loginName)?.id === current.id, 'AUTH_FAILED');
         verifyFactor(user.id, input.otp, now);
         db.audit(now, user.tenant, 'LOGIN_SUCCEEDED', user.id);
         return newSession(current, now);
@@ -259,7 +268,7 @@ export async function openGovernance({ path, privateKey, keyId, clock = Date.now
     async reauthenticate(sessionToken, input, source) {
       exact(input, Object.hasOwn(input ?? {}, 'otp') ? ['password', 'purpose', 'manifestDigest', 'otp'] : ['password', 'purpose', 'manifestDigest']);
       input = { ...input };
-      requireThat(['PUBLISH_GRANT', 'REVOKE_GRANTS', 'RENEW_RECOVERY', 'MANAGE_MEMBERS', 'ENROLL_TOTP', 'REMOVE_TOTP', 'APPROVE_ROTATION'].includes(input.purpose)
+      requireThat(['PUBLISH_GRANT', 'REVOKE_GRANTS', 'RENEW_RECOVERY', 'MANAGE_MEMBERS', 'ENROLL_TOTP', 'REMOVE_TOTP', 'APPROVE_ROTATION', 'MANAGE_EMAIL'].includes(input.purpose)
         && typeof input.manifestDigest === 'string' && /^[a-f0-9]{64}$/u.test(input.manifestDigest), 'SCHEMA_INVALID');
       const initial = db.transaction(now => principal(sessionToken, now, input.purpose));
       rate('reauth', initial.tenant, initial.username, source);
@@ -488,6 +497,7 @@ export async function openGovernance({ path, privateKey, keyId, clock = Date.now
   }
   const local = Object.freeze({
     ...defense.local,
+    ...email.local,
     // 僅可信部署組裝端的合成身分配置；不可從 HTTP／MCP 呼叫。
     async provisionMember(input) {
       exact(input, ['tenantId', 'username', 'password', 'role']); id(input.tenantId); id(input.username);
@@ -720,7 +730,8 @@ export async function openGovernance({ path, privateKey, keyId, clock = Date.now
       });
     }
   });
-  return Object.freeze({ application, local, execution, notifications: notificationDispatcher(db), close: () => db.close() });
+  return Object.freeze({ application, local, execution, notifications: notificationDispatcher(db),
+    emailNotifications: email.dispatcher, close: () => db.close() });
 }
 
 // 只需已釘選公鑰的獨立核驗器，不持有私鑰或資料庫。

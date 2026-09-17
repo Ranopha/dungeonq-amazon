@@ -47,6 +47,7 @@ PRAGMA user_version=2;
 export class Store {
   #db;
   #clock;
+  #emailEnqueuer;
   constructor(path, clock = Date.now) {
     requireThat(isAbsolute(path), 'STORAGE_PATH_INVALID');
     const parent = lstatSync(dirname(path));
@@ -61,7 +62,7 @@ export class Store {
       this.#db.exec('PRAGMA foreign_keys=ON; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA trusted_schema=OFF;');
       this.#db.exec('BEGIN IMMEDIATE');
       const version = this.get('PRAGMA user_version').user_version;
-      requireThat([0, 1, 2, 3, 4, 5, 6].includes(version), 'SCHEMA_VERSION_UNSUPPORTED');
+      requireThat([0, 1, 2, 3, 4, 5, 6, 7].includes(version), 'SCHEMA_VERSION_UNSUPPORTED');
       if (version === 0) this.#db.exec(SCHEMA);
       if (version < 2) this.#db.exec(MIGRATE_V2);
       if (version < 3) this.#db.exec('ALTER TABLE users ADD COLUMN setup_expires INTEGER CHECK(setup_expires IS NULL OR setup_expires>0); PRAGMA user_version=3;');
@@ -105,6 +106,37 @@ export class Store {
           FOREIGN KEY(tenant,request_id) REFERENCES rotation_requests(tenant,id)) STRICT;
         PRAGMA user_version=6;
       `);
+      if (version < 7) this.#db.exec(`
+        CREATE TABLE email_bindings (user_id TEXT PRIMARY KEY REFERENCES users(id),
+          tenant TEXT NOT NULL REFERENCES tenants(id), email_hash TEXT, sealed TEXT,
+          version INTEGER NOT NULL, user_epoch INTEGER NOT NULL,
+          state TEXT NOT NULL CHECK(state IN ('PENDING','VERIFIED','REMOVED')),
+          method TEXT NOT NULL CHECK(method IN ('LOCAL_EMAIL_CAPTURE','SMTP','OAUTH_VERIFIED')),
+          verified_at INTEGER, UNIQUE(tenant,email_hash)) STRICT;
+        CREATE TABLE email_challenges (id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id),
+          tenant TEXT NOT NULL REFERENCES tenants(id), session_hash TEXT NOT NULL,
+          user_epoch INTEGER NOT NULL, binding_version INTEGER NOT NULL, code_hash TEXT NOT NULL,
+          mode TEXT NOT NULL CHECK(mode IN ('LOCAL_EMAIL_CAPTURE','SMTP')),
+          expires INTEGER NOT NULL, attempts INTEGER NOT NULL DEFAULT 0,
+          state TEXT NOT NULL CHECK(state IN ('PENDING','CONFIRMED','LOCKED','CANCELED'))) STRICT;
+        CREATE TABLE email_outbox (id TEXT PRIMARY KEY, tenant TEXT NOT NULL REFERENCES tenants(id),
+          user_id TEXT NOT NULL REFERENCES users(id), binding_version INTEGER NOT NULL,
+          user_epoch INTEGER NOT NULL, event_id INTEGER NOT NULL REFERENCES audit(seq),
+          challenge_id TEXT REFERENCES email_challenges(id), kind TEXT NOT NULL
+          CHECK(kind IN ('VERIFY_EMAIL','DECOY_CONTACT')), mode TEXT NOT NULL
+          CHECK(mode IN ('LOCAL_EMAIL_CAPTURE','SMTP')), sealed TEXT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'PENDING'
+          CHECK(status IN ('PENDING','SENDING','RETRY','UNKNOWN','ACCEPTED','FAILED','FENCED')),
+          attempts INTEGER NOT NULL DEFAULT 0, next_at INTEGER NOT NULL, created INTEGER NOT NULL,
+          claim TEXT, deadline INTEGER, provider_message_id TEXT, UNIQUE(event_id,user_id)) STRICT;
+        CREATE INDEX email_outbox_due ON email_outbox(status,next_at);
+        CREATE TABLE external_identities (provider TEXT NOT NULL CHECK(provider IN ('google','github')),
+          subject TEXT NOT NULL, user_id TEXT NOT NULL REFERENCES users(id),
+          email_hash TEXT NOT NULL, mode TEXT NOT NULL CHECK(mode IN ('REAL_VERIFIED','SIMULATED')),
+          binding_version INTEGER NOT NULL, user_epoch INTEGER NOT NULL, verified_at INTEGER NOT NULL,
+          PRIMARY KEY(provider,subject), UNIQUE(user_id,provider)) STRICT;
+        PRAGMA user_version=7;
+      `);
       this.#db.exec('COMMIT');
       requireThat(this.get('PRAGMA quick_check').quick_check === 'ok', 'STORAGE_CORRUPT');
       this.verifyAudit();
@@ -113,6 +145,7 @@ export class Store {
   get(sql, ...args) { const row = this.#db.prepare(sql).get(...args); return row ? { ...row } : undefined; }
   all(sql, ...args) { return this.#db.prepare(sql).all(...args).map(row => ({ ...row })); }
   run(sql, ...args) { return this.#db.prepare(sql).run(...args); }
+  setEmailEnqueuer(enqueue) { this.#emailEnqueuer = enqueue; }
   transaction(operation) {
     this.#db.exec('BEGIN IMMEDIATE');
     let checkpoint = false;
@@ -146,6 +179,7 @@ export class Store {
         canonicalJson({ schemaVersion: 'dungeonq.lab-notification/v1', eventId: entry.sequence,
           tenantId: tenant, kind, subject, auditDigest: digest(entry), channel: 'LOCAL_SINK_ONLY' }), now);
     }
+    if (kind === 'DECOY_CONTACT') this.#emailEnqueuer?.(entry);
     return entry.sequence;
   }
   verifyAudit() {

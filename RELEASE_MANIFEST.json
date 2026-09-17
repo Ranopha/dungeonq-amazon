@@ -1,7 +1,7 @@
 {
   "schemaVersion": "dungeonq.source-release/v1",
   "profile": "SYNTHETIC_ONLY",
-  "generatedAt": "2026-09-17T05:26:55.469Z",
+  "generatedAt": "2026-09-17T08:16:13.887Z",
   "privateHistoryIncluded": false,
   "entries": [
     {
@@ -76,8 +76,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 5628,
-      "sha256": "f3a8ddf6884236ef18697549042654372e33ab7d9480b9afab0f2b04cc6b62ac"
+      "bytes": 6368,
+      "sha256": "d309ad7afab2cd27f25f193143633458573eaf7992d713f917824265cee5b717"
     },
     {
       "path": "cli/run.mjs",
@@ -151,13 +151,18 @@
     },
     {
       "path": "docs/DELTA.md",
-      "bytes": 5055,
-      "sha256": "798de7cb50974e8d82c39d95c7c57902be7c02f82f6e5308ee9febb95b2ed1be"
+      "bytes": 5947,
+      "sha256": "8c418e1ca31e4f97037f9fa098379fcb71d63e6ade3d3c2ef72ac37aff0a7b60"
     },
     {
       "path": "docs/DEMO_SCRIPT.md",
       "bytes": 2292,
       "sha256": "00caa6b73074c7784c45d45c3755491e61751954924956b36c10a69fea34659b"
+    },
+    {
+      "path": "docs/EMAIL_NOTIFICATIONS.md",
+      "bytes": 8153,
+      "sha256": "da169f4948b9f8e7193641ea4ae4a8a535e167596c2526ad51efd5211ffe8602"
     },
     {
       "path": "docs/EXTERNAL_AGENT.md",
@@ -181,8 +186,8 @@
     },
     {
       "path": "docs/OSS_REVIEW_GUIDE.md",
-      "bytes": 4473,
-      "sha256": "a0edb35589c5c67a8d959b2e2c06e82e908be5f9ecf2be06359678acfe578d9f"
+      "bytes": 5059,
+      "sha256": "bb3ebe76f4bf8432a0b6b19c70d630db6a6d911f8f4d39a5bdb516747f0840aa"
     },
     {
       "path": "docs/PRODUCT_FEEDBACK.md",
@@ -216,8 +221,8 @@
     },
     {
       "path": "docs/SUBMISSION.md",
-      "bytes": 7079,
-      "sha256": "9441291f9f63fbceeafb1e47f4d19c4b63b69860775d52488e4d82072e30f2b0"
+      "bytes": 8364,
+      "sha256": "2f0238fd1bedf118cd93519dbe6017dfb1cdc18b5a94fbb5757f64f1f0fc72af"
     },
     {
       "path": "docs/TESTING.md",
@@ -236,8 +241,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 6254,
-      "sha256": "c959f7b1f0910abfeed0ced6bd620bbb17ff2e4ecd424fd711f9a3db7a36d7d6"
+      "bytes": 7200,
+      "sha256": "49e38c70abdd7f4daab2b7373aedb325d4142aafe766cf1589bc6c19abbff734"
     },
     {
       "path": "docs/WORKSPACE_LAB.md",
@@ -323,6 +328,11 @@
       "path": "evidence/defense-v1/world.json",
       "bytes": 39913,
       "sha256": "0a5601f515e1915074cc361051d17ef59fc7fe358e8834c9c2dbe2a5271814ba"
+    },
+    {
+      "path": "evidence/email-v1/proof.json",
+      "bytes": 3449,
+      "sha256": "5ffb4ea28186344204be428d52f30d8ae59aec54071a818bff9d1d06649a5708"
     },
     {
       "path": "evidence/study-v1/codex-pilot-a.json",
@@ -501,13 +511,13 @@
     },
     {
       "path": "package-lock.json",
-      "bytes": 174665,
-      "sha256": "def4807dea67a88893b30a085c5b93dd82f098489e09448aabf61f77c4e94453"
+      "bytes": 175076,
+      "sha256": "9b9bc1dcd888a8eaadec50f1e4431eee55c777013e3dc1dd8fe4cf471205b0bb"
     },
     {
       "path": "package.json",
-      "bytes": 3639,
-      "sha256": "e5e8ee8393b020c592fb080ad42197bffddec172a730423b99cc7b133fe9484f"
+      "bytes": 3742,
+      "sha256": "9fddd621ffeaeb701f34157bb4483043b242c0efa1686fa0520f1bef137a7174"
     },
     {
       "path": "public/assets/app.mjs",
@@ -691,13 +701,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 15421,
-      "sha256": "458d3f1af08c20915b8ccb90f1f8bbc80f050578dd9ee5bdd18d09d8bbefc666"
+      "bytes": 16825,
+      "sha256": "dab7e590bd110ca0771500d6642a6aa3ebef428a13f4ff15d9d4d70942ddf7f0"
     },
     {
       "path": "SBOM.cdx.json",
-      "bytes": 211709,
-      "sha256": "2d030eee81096a96e82bd793d9f004fdb3aa65589d5929b3de4e697aacb45074"
+      "bytes": 212281,
+      "sha256": "c6e4a5a095e8d944b134b6968561b448c11c5aee58bd84ca3ed0dd9b3df8988e"
     },
     {
       "path": "scripts/amazon.mjs",
@@ -741,8 +751,8 @@
     },
     {
       "path": "scripts/defense.mjs",
-      "bytes": 2323,
-      "sha256": "e577b18dd6302a621e5b406f029866720ddc952e34723e070cafbb7616af889b"
+      "bytes": 3184,
+      "sha256": "a4b0add2dda9a2418d3a0c613902e803767aea84ef45f3dd81e4d27e11fee072"
     },
     {
       "path": "scripts/demo-proof.mjs",
@@ -755,9 +765,14 @@
       "sha256": "49792c07a7a6fa42b5043efb6b6522abe06d89914e523840dc1884bcd3483d7b"
     },
     {
+      "path": "scripts/email-proof.mjs",
+      "bytes": 1008,
+      "sha256": "f3eb267368645e4ec92ce3f63e9902224ba3b297f144bc0ccd4957e6ab3e58ef"
+    },
+    {
       "path": "scripts/lib/distribution-export.mjs",
-      "bytes": 7424,
-      "sha256": "62fd4391ae4b5318b591d736000e0a29cf858de298f357af8aaa804a88db06d8"
+      "bytes": 7507,
+      "sha256": "61fa7476b8efdcc42900a177d4d8000c8572efb9f97d464ea983df21ef309764"
     },
     {
       "path": "scripts/lib/doctor.mjs",
@@ -781,8 +796,8 @@
     },
     {
       "path": "scripts/lib/release-paths.mjs",
-      "bytes": 1257,
-      "sha256": "20302d6d9b2b06f2eb01474652de674405b8845a6a8743e94676ac7b6ea2f6d3"
+      "bytes": 1298,
+      "sha256": "da244fedbeb57ba5a3bd6b4be24ac3a3b0e8a0647b99485647b3dad2ac23d964"
     },
     {
       "path": "scripts/lib/scenario-file.mjs",
@@ -916,8 +931,8 @@
     },
     {
       "path": "server/authorization.mjs",
-      "bytes": 868,
-      "sha256": "9d65b6fe82d4fd335f16bbe7296f7d1996def61d28559bc3177632f4c72c7597"
+      "bytes": 884,
+      "sha256": "6a3ba85def5c9d50441119369d7a1effede48331dd438598e65886548e4cbd6d"
     },
     {
       "path": "server/company-acceptance.mjs",
@@ -941,13 +956,28 @@
     },
     {
       "path": "server/defense-lab.mjs",
-      "bytes": 13222,
-      "sha256": "73e532b88a025b9935b460b82622b4ba19cec6d63648426e1fdce09d435fd327"
+      "bytes": 14263,
+      "sha256": "62d363b18b6a0b344859e23d7b29f12565735a316e68144e3c6cbb8a590bdc95"
+    },
+    {
+      "path": "server/email-acceptance.mjs",
+      "bytes": 6955,
+      "sha256": "86693a2081b775ce284c16f8cf53afa39a213af52c5ab63ddae0cfd7d914d6b3"
+    },
+    {
+      "path": "server/email-notifications.mjs",
+      "bytes": 25130,
+      "sha256": "3c98276e8f2c0b6c724eefa2e835ae89364b12dfac091979e81c28daac66c114"
+    },
+    {
+      "path": "server/email-transport.mjs",
+      "bytes": 12559,
+      "sha256": "ecec1d9d0ca5c73a81fb99f4f22dbf5ecd646c0dea13d988556856533909f0fd"
     },
     {
       "path": "server/governance.mjs",
-      "bytes": 47779,
-      "sha256": "fd324ff6acfbbab1f75af4d772e9c07dd0cfa23dac80058bb91ea7660a935abd"
+      "bytes": 48599,
+      "sha256": "e52801e44eb7ac7aaeb5c22b1494cd7a8f2b93f2cb0092513f709016ddb3681a"
     },
     {
       "path": "server/isolation-plan.mjs",
@@ -995,9 +1025,14 @@
       "sha256": "c565b4d7b43ceb54002a28f24d415918ee5f297b430f5737a2c501f3218eb40a"
     },
     {
+      "path": "server/social-oauth.mjs",
+      "bytes": 11043,
+      "sha256": "9e9e4a839d4bd642ed19ec89d22b4c9a0d5d7e2f1888d818eee172b34a52f3e0"
+    },
+    {
       "path": "server/store.mjs",
-      "bytes": 10814,
-      "sha256": "a1e47cd6b36898f6aa9b5d3dda130b766ba2b0caf2ff84d4ef3025ec48550b8f"
+      "bytes": 13443,
+      "sha256": "44989d54815eecc880b542fec4f1bd5d0dbed84acc47cbadd8b98191c32cc447"
     },
     {
       "path": "server/study-lab.mjs",
@@ -1046,8 +1081,8 @@
     },
     {
       "path": "server/workbench.mjs",
-      "bytes": 14924,
-      "sha256": "41957fc7459a27700e71e782254bef3ab8ad94508107bb011b9e0bf162c3fda1"
+      "bytes": 17945,
+      "sha256": "704f5d7d16ff9db2bba5a9aebf1aeedbde9f6957e1e3bf6c84136a0d165cf455"
     },
     {
       "path": "server/world-lab.mjs",
@@ -1121,8 +1156,8 @@
     },
     {
       "path": "tests/defense-governance.test.mjs",
-      "bytes": 21554,
-      "sha256": "153cb663753734106ab9cd2a6ea4e9fd104abea5fe8ca1dd45ac7d2650a8d03c"
+      "bytes": 21667,
+      "sha256": "4cca8dadfca74c193a3285893d190a8ec52339ba2939308d44650875dd4a7bf8"
     },
     {
       "path": "tests/defense-http.test.mjs",
@@ -1141,13 +1176,28 @@
     },
     {
       "path": "tests/defense-ui.test.mjs",
-      "bytes": 12155,
-      "sha256": "170c33f29f39b7b1fa14ae30f59eaa21e0c8d887eb3980b639d2263b8bb3ab83"
+      "bytes": 24919,
+      "sha256": "b8404b1fe2254a92bb4b66ab7125987db7f4be65ddf5bff13f33600e04827dc4"
     },
     {
       "path": "tests/development-boundary.test.mjs",
       "bytes": 1867,
       "sha256": "68f698776554e0ad30e8bcaf078beebf0625536d4d8b73431ad9e1d55a0a3bfe"
+    },
+    {
+      "path": "tests/email-integration.test.mjs",
+      "bytes": 757,
+      "sha256": "b24fe7674e2a9dbeaf500cc8ea873fcef3179dab40b3ee210e4fb0c92694a566"
+    },
+    {
+      "path": "tests/email-notifications.test.mjs",
+      "bytes": 20897,
+      "sha256": "d324711e832fe20977f1b2321697028f5dc4000ed49f7fda709b19713f8b028f"
+    },
+    {
+      "path": "tests/email-transport.test.mjs",
+      "bytes": 15813,
+      "sha256": "2297ff7711496619cba090125ef5f6def47ab0c3d9396749c4d67fcd854c9a5f"
     },
     {
       "path": "tests/fixtures/governance-v1.sql",
@@ -1166,8 +1216,8 @@
     },
     {
       "path": "tests/governance-migration.test.mjs",
-      "bytes": 7220,
-      "sha256": "70e05e83061ab3ddbe7740fbe536b43f4877953076412622f889cefe187bf12b"
+      "bytes": 8674,
+      "sha256": "3ea82c83e4b55bc61ab7b35cb21ffed035de6684767e097119ae202a6660b562"
     },
     {
       "path": "tests/governance-roles.test.mjs",
@@ -1191,8 +1241,8 @@
     },
     {
       "path": "tests/release-packaging.test.mjs",
-      "bytes": 9409,
-      "sha256": "d3096228a79b66c348e1d54698b234288126640de38970ac7a2b59851e6ed106"
+      "bytes": 9696,
+      "sha256": "1fb034ff0ca42d3c2cb9b43c733e972033543e2f527a4ced6597b1f93e9a32e2"
     },
     {
       "path": "tests/response-governance.test.mjs",
@@ -1223,6 +1273,16 @@
       "path": "tests/session.test.mjs",
       "bytes": 5855,
       "sha256": "52f4680bf3fbf1b08e449197b8bdcc9558f72b7cca115567be216f5d849e22cb"
+    },
+    {
+      "path": "tests/social-http.test.mjs",
+      "bytes": 14161,
+      "sha256": "c981bf4c242e40f2c28a3ba7df2a5f1a44d22234f3e53574026327bea2689cd2"
+    },
+    {
+      "path": "tests/social-oauth.test.mjs",
+      "bytes": 18346,
+      "sha256": "99d652c536aadb5bd5b23af5a66b87397ca85ec1f91745c7ef162464a9308ee4"
     },
     {
       "path": "tests/study-http.test.mjs",
@@ -1331,8 +1391,8 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "bytes": 1700,
-      "sha256": "4d487d103dcb744c5d77fde6c5f70e9abd3387a6b4e42bd34ba9a664501186c6"
+      "bytes": 1907,
+      "sha256": "5eb03936bcbe785a79ec0eb07d4cf2726a291fc697b753d56d326c09967f7c08"
     },
     {
       "path": "tsconfig.json",
@@ -1346,23 +1406,23 @@
     },
     {
       "path": "workbench/defense.css",
-      "bytes": 10111,
-      "sha256": "ae2f4bf12f36157a1646b97e8736b428a54ff59046f7f090c5b35036c61bb8d6"
+      "bytes": 13425,
+      "sha256": "4d4382b41d77b89b5960b0ce70933de54b94be703fab69f156e1ca01fe4b6bb7"
     },
     {
       "path": "workbench/defense.html",
-      "bytes": 7607,
-      "sha256": "da8124ff6694e7bc8aadb181c20aaa8f1c0ce60325a132db6ba78811e3ccfbc7"
+      "bytes": 14202,
+      "sha256": "35cf0aa10d845ee0218f5cf29fa63472728d2b775fc7da1a10c455e869755d5e"
     },
     {
       "path": "workbench/defense.mjs",
-      "bytes": 16598,
-      "sha256": "506208b1e8a5376e2a50d3ef2f515b2c547184e48638c60ae693873634b48ef4"
+      "bytes": 36180,
+      "sha256": "8d5931ae4325c4b651b5b725bdda128206d7ccd0959ee8cca549ce358cefce13"
     },
     {
       "path": "workbench/index.html",
-      "bytes": 11808,
-      "sha256": "e7a0ea774553c7a72e5fd3c813343b4f64edb1a7a1ea99d0004b91cbdc9e8e58"
+      "bytes": 11833,
+      "sha256": "31b278e082febfea2cfc8ec8bd705e3d079bb4953d6faff33c9ccfc2ecc4c477"
     },
     {
       "path": "workbench/workbench.css",

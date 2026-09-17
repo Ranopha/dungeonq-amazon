@@ -1,5 +1,11 @@
 # New work and provenance
 
+## v0.10.0 additions — September 17, 2026
+
+Adds administrator-bound alert email, single-use verification, a login alias, durable encrypted recipient-versioned outbox, explicit local capture and optional TLS SMTP. Optional Google/GitHub adapters link an existing Owner using a verified provider email; Apple is unavailable. New identity/notification tests cover wrong roles, tenants, state, cookies, replay, restart, mode changes, timeouts and unknown delivery. Nine scripted HTTPS checks can be reproduced without a provider or paid call. There is no live OAuth or inbox-delivery acceptance claim.
+
+This builds on the retained v0.9 Orders Workspace and v0.8 same-incident alert/approval/rotation reference; it is not a newly claimed model-efficacy result. All earlier model records, negative findings and the historical video remain published. See [current setup](EMAIL_NOTIFICATIONS.md).
+
 ## v0.7.0 additions — September 17, 2026
 
 Adds a fixed, original six-desk publishing topology with state-derived procedural suggestions, persistent packet/consumer lineage, desk-scoped observations and independent causal observation. It includes an English playable desk, shared HTTP/MCP, restart/retry/backpressure tests and a separate scripted engineering proof. The real completion path remains discoverable; local success cannot manufacture final-goal success.

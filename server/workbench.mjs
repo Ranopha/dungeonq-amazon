@@ -6,6 +6,7 @@ import { authorize } from './authorization.mjs';
 
 const SESSION = '__Host-dq-session';
 const NONCE = '__Host-dq-visit';
+const OAUTH_FLOW = '__Host-dq-oauth';
 const COOKIE_FLAGS = 'Path=/; Secure; HttpOnly; SameSite=Strict';
 const STATIC = new Map([
   ['/', ['../workbench/index.html', 'text/html; charset=utf-8']],
@@ -26,7 +27,7 @@ function cookies(header = '') {
   const found = new Map();
   for (const entry of header.split(';')) {
     const [name, ...rest] = entry.trim().split('=');
-    if (![SESSION, NONCE].includes(name)) continue;
+    if (![SESSION, NONCE, OAUTH_FLOW].includes(name)) continue;
     requireThat(!found.has(name), 'COOKIE_INVALID');
     const value = rest.join('=');
     requireThat(/^[A-Za-z0-9_-]{43}$/u.test(value), 'COOKIE_INVALID');
@@ -58,7 +59,7 @@ function statusFor(code) {
 }
 
 // 只暴露固定 Application 方法；不接收 local／execution handles。
-export async function startWorkbench({ application, tls, port = 0, assistant, defense }) {
+export async function startWorkbench({ application, tls, port = 0, assistant, defense, identity }) {
   requireThat(tls?.key && tls?.cert, 'TLS_REQUIRED');
   requireThat(Number.isInteger(port) && port >= 0 && port <= 65535, 'PORT_INVALID');
   const assets = new Map();
@@ -97,15 +98,18 @@ export async function startWorkbench({ application, tls, port = 0, assistant, de
       response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' }); response.end(encoded);
     };
     const clearSession = () => response.setHeader('Set-Cookie', `${SESSION}=; ${COOKIE_FLAGS}; Max-Age=0`);
-    let admitted = false;
+    let admitted = false; let identityCallback = false;
     try {
       requireThat(request.socket.remoteAddress === '127.0.0.1', 'HOST_DENIED');
       requireThat(request.headers.host === new URL(origin).host, 'HOST_DENIED');
-      requireThat(!request.headers.origin || request.headers.origin === origin, 'ORIGIN_DENIED');
-      requireThat(!request.headers['sec-fetch-site'] || ['same-origin', 'none'].includes(request.headers['sec-fetch-site']), 'FETCH_CONTEXT_DENIED');
       requireThat(request.url?.startsWith('/') && !request.url.startsWith('//'), 'NOT_FOUND');
       const url = new URL(request.url, origin);
-      requireThat(url.origin === origin && !url.search, 'NOT_FOUND');
+      identityCallback = !!identity && request.method === 'GET' && url.pathname === '/api/identity/callback';
+      requireThat(url.origin === origin && (identityCallback || !url.search), 'NOT_FOUND');
+      if (!identityCallback) {
+        requireThat(!request.headers.origin || request.headers.origin === origin, 'ORIGIN_DENIED');
+        requireThat(!request.headers['sec-fetch-site'] || ['same-origin', 'none'].includes(request.headers['sec-fetch-site']), 'FETCH_CONTEXT_DENIED');
+      }
       if (Date.now() >= reset) { count = 0; reset = Date.now() + 60_000; }
       requireThat(++count <= 600 && active < 8, 'TRANSPORT_CAPACITY');
       active++; admitted = true;
@@ -116,6 +120,19 @@ export async function startWorkbench({ application, tls, port = 0, assistant, de
       requireThat(path.startsWith('/api/'), 'NOT_FOUND');
       const jar = cookies(request.headers.cookie);
       const session = jar.get(SESSION);
+      if (identityCallback) {
+        const parameters = [...url.searchParams.keys()];
+        requireThat(parameters.length <= 8 && new Set(parameters).size === parameters.length
+          && parameters.every(key => ['code', 'state', 'scope', 'authuser', 'prompt', 'iss', 'error', 'error_description'].includes(key)), 'OAUTH_STATE_INVALID');
+        const result = await identity.callback({ state: url.searchParams.get('state'), code: url.searchParams.get('code'), cookie: jar.get(OAUTH_FLOW), sessionToken: session });
+        const setCookies = [`${OAUTH_FLOW}=; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=0`];
+        if (result.session) {
+          if (session) { try { application.logout(session); } catch (error) { if (error.code !== 'AUTH_REQUIRED') throw error; } }
+          setCookies.push(`${SESSION}=${result.session.sessionToken}; ${COOKIE_FLAGS}; Max-Age=28800`);
+        }
+        response.writeHead(303, { Location: '/defense', 'Set-Cookie': setCookies }); response.end(); return;
+      }
+      if (identity && request.method === 'GET' && path === '/api/identity/providers') { send(200, identity.providers()); return; }
       if (request.method === 'GET' && path === '/api/context') {
         let state = null;
         if (session) {
@@ -131,6 +148,7 @@ export async function startWorkbench({ application, tls, port = 0, assistant, de
       if (request.method === 'GET' && path === '/api/evidence') { send(200, application.evidence(session)); return; }
       if (request.method === 'GET' && path === '/api/members') { send(200, application.members(session)); return; }
       if (request.method === 'GET' && path === '/api/notifications') { send(200, application.notifications(session)); return; }
+      if (defense && request.method === 'GET' && path === '/api/email/status') { send(200, application.emailStatus(session)); return; }
       if (defense && request.method === 'GET' && path === '/api/defense/status') {
         const state = application.status(session);
         authorize(state.role, 'READ_STATUS');
@@ -145,10 +163,12 @@ export async function startWorkbench({ application, tls, port = 0, assistant, de
       }
       const assistantPost = assistant && ['/api/assistant/command', '/api/assistant/approve'].includes(path);
       const defensePost = defense && ['/api/defense/approve', '/api/defense/apply', '/api/defense/reconcile', '/api/defense/refresh'].includes(path);
-      requireThat(POSTS.has(path) || assistantPost || defensePost, 'NOT_FOUND');
+      const emailPost = defense && ['/api/email/begin', '/api/email/confirm', '/api/email/remove'].includes(path);
+      const identityPost = identity && ['/api/identity/start', '/api/identity/link'].includes(path);
+      requireThat(POSTS.has(path) || assistantPost || defensePost || emailPost || identityPost, 'NOT_FOUND');
       requireThat(request.method === 'POST', 'METHOD_DENIED');
       requireThat(request.headers.origin === origin, 'ORIGIN_DENIED');
-      const visitor = path === '/api/login' || path === '/api/recover';
+      const visitor = path === '/api/login' || path === '/api/recover' || path === '/api/identity/start';
       if (path === '/api/recover') requireThat(!session, 'LOGOUT_REQUIRED');
       const binding = visitor ? `visit:${jar.get(NONCE) ?? ''}` : `session:${session ?? ''}`;
       requireThat(visitor ? jar.has(NONCE) : !!session, visitor ? 'CSRF_INVALID' : 'AUTH_REQUIRED');
@@ -156,6 +176,21 @@ export async function startWorkbench({ application, tls, port = 0, assistant, de
       const body = await jsonBody(request, path === '/api/assistant/command' ? 196_608 : 16_384);
       // 不信任 X-Forwarded-For 或請求中自稱的來源。
       const source = 'loopback-workbench';
+      if (identityPost) {
+        const linking = path === '/api/identity/link';
+        exact(body, linking ? ['provider', 'intentToken'] : ['provider']);
+        if (!linking) requireThat(!session, 'LOGOUT_REQUIRED');
+        const cookie = token();
+        const result = identity.start({ provider: body.provider, origin, cookie,
+          ...(linking ? { sessionToken: session, intentToken: body.intentToken } : {}) });
+        response.setHeader('Set-Cookie', `${OAUTH_FLOW}=${cookie}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=300`);
+        send(200, result); return;
+      }
+      if (emailPost) {
+        if (path === '/api/email/begin') { send(200, await application.beginEmailVerification(session, body, source)); return; }
+        if (path === '/api/email/confirm') { send(200, await application.confirmEmailVerification(session, body, source)); return; }
+        send(200, await application.removeEmailBinding(session, body)); return;
+      }
       if (defensePost) {
         const state = application.status(session);
         requireThat(state.tenantId === 'tenant-lab', 'TENANT_DENIED');
@@ -204,6 +239,10 @@ export async function startWorkbench({ application, tls, port = 0, assistant, de
     } catch (error) {
       if (response.headersSent || response.destroyed) return;
       const code = error instanceof GovernanceError ? error.code : 'SERVICE_UNAVAILABLE';
+      if (identityCallback) {
+        response.writeHead(303, { Location: '/defense#identity-signin-failed',
+          'Set-Cookie': `${OAUTH_FLOW}=; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=0` }); response.end(); return;
+      }
       if (code === 'AUTH_REQUIRED') clearSession();
       // 不把底層 SQL、路徑、密碼、Cookie、Body 或 stack 傳出／記錄。
       send(statusFor(code), { error: code, traceId });

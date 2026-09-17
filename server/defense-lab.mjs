@@ -7,6 +7,8 @@ import { openGovernance } from './governance.mjs';
 import { openReferenceIssuer } from './reference-issuer.mjs';
 import { startReferenceTransport, referenceClient } from './reference-transport.mjs';
 import { openLocalNotificationSink } from './local-notification-sink.mjs';
+import { openEmailCapture, createSmtpEmailTransport } from './email-transport.mjs';
+import { createSocialOAuth } from './social-oauth.mjs';
 import { startWorldLab, localArtifactCredential } from './world-lab.mjs';
 import { startWorkbench } from './workbench.mjs';
 import { generateDefensePack } from '../world/defense-map.mjs';
@@ -21,7 +23,7 @@ const privatePem = () => generateKeyPairSync('ed25519').privateKey.export({ type
 // A fixed, self-hosted reference profile. No arbitrary endpoint, production secret,
 // exploit, or shell can be supplied by a participant. The host itself remains trusted.
 export async function openDefenseLab({ directory, seed = 42, depth = 4, webPort = 0, actorPort = 0, mcpPort = 0,
-  createTransport = startReferenceTransport, presentation = 'disclosed/v1' }) {
+  createTransport = startReferenceTransport, presentation = 'disclosed/v1', emailConfig, identityConfig }) {
   requireThat(typeof createTransport === 'function', 'TRANSPORT_FACTORY_INVALID');
   requireThat(['disclosed/v1', 'orders-workspace/v1'].includes(presentation), 'PRESENTATION_INVALID');
   const pack = presentation === 'orders-workspace/v1' ? generateOrdersPack({ seed, depth }) : generateDefensePack({ seed, depth });
@@ -30,8 +32,8 @@ export async function openDefenseLab({ directory, seed = 42, depth = 4, webPort 
   const info = await lstat(target);
   requireThat(info.isDirectory() && !info.isSymbolicLink() && (info.mode & 0o077) === 0, 'STORAGE_NOT_PRIVATE');
   const statePath = join(target, 'defense-installation.json');
-  let saved; let created = false; let password; let core; let issuer; let transport; let sink; let world; let web;
-  let timer; let dispatching; let pending; let closed = false; let resource = { assetId: ASSET, generation: null, readbackAt: null };
+  let saved; let created = false; let password; let core; let issuer; let transport; let sink; let world; let web; let emailTransport; let identity;
+  let timer; let dispatching; let emailDispatching; let pending; let closed = false; let resource = { assetId: ASSET, generation: null, readbackAt: null };
   let contactRecorded = false;
   try {
     const stateInfo = await lstat(statePath);
@@ -61,14 +63,16 @@ export async function openDefenseLab({ directory, seed = 42, depth = 4, webPort 
   }
   async function close() {
     if (closed) return; closed = true; clearInterval(timer);
-    await web?.close(); await world?.close(); await pending?.catch(() => {}); await dispatching?.catch(() => {});
-    await transport?.close(); sink?.close(); issuer?.close(); core?.close();
+    await web?.close(); await world?.close(); await pending?.catch(() => {}); await dispatching?.catch(() => {}); await emailDispatching?.catch(() => {});
+    await transport?.close(); identity?.close(); emailTransport?.close(); sink?.close(); issuer?.close(); core?.close();
   }
   try {
     const tls = { key: await readFile(join(target, 'tls-key.pem')), cert: await readFile(join(target, 'tls-cert.pem')) };
     const rotationKey = createPrivateKey(saved.rotationPrivateKey);
+    emailTransport = emailConfig ? createSmtpEmailTransport(emailConfig)
+      : openEmailCapture({ path: join(target, 'email-capture.sqlite'), key: Buffer.from(saved.factorKey, 'base64url') });
     core = await openGovernance({ path: join(target, 'governance.sqlite'), privateKey: createPrivateKey(saved.privateKey),
-      keyId: 'defense-local-lab', factorKey: Buffer.from(saved.factorKey, 'base64url'), rotationPrivateKey: rotationKey });
+      keyId: 'defense-local-lab', factorKey: Buffer.from(saved.factorKey, 'base64url'), rotationPrivateKey: rotationKey, emailTransport });
     issuer = openReferenceIssuer({ path: join(target, 'origin.sqlite'), custodyKey: Buffer.from(saved.custodyKey, 'base64url'),
       authorizationPublicKey: createPublicKey(rotationKey) });
     sink = openLocalNotificationSink({ path: join(target, 'notification-sink.sqlite'), tenantId: TENANT });
@@ -105,6 +109,11 @@ export async function openDefenseLab({ directory, seed = 42, depth = 4, webPort 
       dispatching = core.notifications.dispatch(sink);
       try { return await dispatching; } finally { dispatching = undefined; }
     }
+    async function flushEmail() {
+      if (emailDispatching) return emailDispatching;
+      emailDispatching = core.emailNotifications.dispatch({ timeoutMs: 5000 });
+      try { return await emailDispatching; } finally { emailDispatching = undefined; }
+    }
     world = await startWorldLab({ dataDir: join(target, 'dungeon'), pack, actorPort, mcpPort, localArtifact: true, presentation,
       onAccess(context) {
         if (contactRecorded) return;
@@ -113,6 +122,7 @@ export async function openDefenseLab({ directory, seed = 42, depth = 4, webPort 
         core.execution.requestRotation(saved.workerToken, { requestId: saved.requestId, incidentId: saved.incidentId });
         contactRecorded = true;
         void flushNotifications().catch(() => {}); // Durable pending/unknown state remains visible to the Owner.
+        void flushEmail().catch(() => {});
       } });
     async function verifyReceipt(requestId, manifestDigest, receipt) {
       const checks = emptyChecks();
@@ -169,17 +179,18 @@ export async function openDefenseLab({ directory, seed = 42, depth = 4, webPort 
         return { profile: 'SYNTHETIC_ONLY', presentation, campaigns: [{ incidentId: saved.incidentId,
           worldId: view.worldId, seed, steps: view.revision, currentMap: view.room.id, localSuccesses: view.receipts.length,
           phase: view.stepsRemaining > 0 ? 'BOUNDED_WORLD_ACTIVE' : 'WORLD_BUDGET_EXHAUSTED' }], resource: { ...resource },
-        notificationChannel: 'LOCAL_SINK_ONLY', runtimeIsolation: 'NOT_PRODUCTION_ISOLATION',
+        notificationChannel: 'LOCAL_SINK_ONLY', emailChannel: emailTransport.mode, runtimeIsolation: 'NOT_PRODUCTION_ISOLATION',
         limitation: 'One fixed synthetic origin and bounded campaign. Local decoy contact does not establish AI identity or origin compromise. Same-host services are not a production isolation boundary.' };
       },
       runRotation: requestId => serial(executeRotation, requestId),
       reconcileRotation: requestId => serial(reconcileRotation, requestId)
     });
-    web = await startWorkbench({ application: core.application, tls, port: webPort, defense });
-    timer = setInterval(() => { void flushNotifications().catch(() => {}); }, 1000); timer.unref();
+    identity = createSocialOAuth({ configuration: identityConfig ?? {}, local: core.local, application: core.application });
+    web = await startWorkbench({ application: core.application, tls, port: webPort, defense, identity });
+    timer = setInterval(() => { void flushNotifications().catch(() => {}); void flushEmail().catch(() => {}); }, 1000); timer.unref();
     // Handles below are for the local owner/test assembly, never Actor tools or public evidence.
     return { directory: target, password, tls, core, world, defense, web, origin: transport.origin,
-      incidentId: saved.incidentId, requestId: saved.requestId, flushNotifications,
+      incidentId: saved.incidentId, requestId: saved.requestId, flushNotifications, flushEmail,
       notificationReceipt: receiptId => sink.lookup(receiptId), close };
   } catch (error) { await close(); throw error; }
 }

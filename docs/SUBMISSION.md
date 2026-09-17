@@ -1,5 +1,13 @@
 # Submission copy
 
+## Current v0.10.0 update — administrator-bound notifications
+
+The self-hosted synthetic lab now routes a new honey-contact alert to the administrator's verified login email, through a durable encrypted outbox with binding-version checks, bounded retries and no blind resend after an unknown outcome. The Actor and MCP cannot pick the recipient or approve rotation. Google / GitHub adapters can link an existing Owner after fresh reauthentication; they require the deployment owner's registered applications. Apple remains unavailable in this local profile.
+
+The default local simulated mailbox works without a provider, API key or charge. Optional SMTP requires explicit private configuration and verified TLS. Recorded evidence contains nine scripted HTTPS/restart checks, not real inbox delivery or live OAuth acceptance. All earlier model records and the original video are retained with their limits.
+
+Current reviewer route: `npm run defense:workspace` and `npm run email:proof`; [email setup and boundary](EMAIL_NOTIFICATIONS.md), [recorded proof](../evidence/email-v1/proof.json), and [v0.10.0 release](https://github.com/Ranopha/dungeonq-amazon/releases/tag/v0.10.0). The historical copy below is not the current release status. External form saving is tracked separately.
+
 Version 0.7.0 update copy. Editing this source does not itself update the submitted entry. The original video remains the 0.2.0 governed MCP recording; new workflow evidence is separately labeled and links self-hosted reproduction.
 
 ## September 17 workflow update

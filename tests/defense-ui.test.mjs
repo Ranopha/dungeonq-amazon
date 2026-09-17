@@ -2,10 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
+import { canonicalJson, sha256Hex } from '../public/src/canonical.mjs';
 
 const source = readFileSync(new URL('../workbench/defense.mjs', import.meta.url), 'utf8');
 const admin = () => ({ authenticated: true, csrfToken: 'csrf-lab', state: { tenantId: 'tenant-lab', role: 'TENANT_SUPER_ADMIN',
-  capabilities: ['READ_STATUS', 'PUBLISH_GRANT', 'MANAGE_MEMBERS'], serverNow: Date.now() } });
+  capabilities: ['READ_STATUS', 'PUBLISH_GRANT', 'MANAGE_MEMBERS', 'MANAGE_EMAIL'], serverNow: Date.now() } });
+const mailStatus = overrides => ({ schemaVersion: 'dungeonq.email-status/v1', mode: 'LOCAL_EMAIL_CAPTURE', configured: true,
+  recipient: { state: 'UNBOUND', email: null, maskedEmail: null, loginAliasEnabled: false }, pendingChallenge: null,
+  linkedIdentities: [], deliveries: [], captureMessages: [], ...overrides });
+const providers = [{ id: 'google', label: 'Google', enabled: false, reason: 'NOT_CONFIGURED' },
+  { id: 'github', label: 'GitHub', enabled: false, reason: 'NOT_CONFIGURED' },
+  { id: 'apple', label: 'Apple', enabled: false, reason: 'UNSUPPORTED_LOCAL_PROFILE' }];
 const request = overrides => ({ requestId: 'rotation-1', incidentId: 'incident-1', assetId: 'api-orders', workerId: 'worker-1',
   manifest: { schemaVersion: 'dungeonq.reference-rotation/v1', assetId: 'api-orders', expectedGeneration: 0, expiresAt: Date.now() + 300_000 },
   manifestDigest: 'a'.repeat(64), domain: 'SYNTHETIC_ROTATION', state: 'AWAITING_HUMAN', authorizationActive: false,
@@ -17,8 +24,8 @@ function snapshot(current = request(), notifications = []) {
       steps: 2, localSuccesses: 1, currentMap: 'B', phase: 'ACTIVE' }], runtimeIsolation: 'NOT_PRODUCTION_ISOLATION', limitation: 'Synthetic local resource.' }, notifications };
 }
 const allText = element => [element.textContent, ...element.children.map(allText)].join(' ');
-async function boot(replies) {
-  const elements = new Map(); const requests = []; const allElements = [];
+async function boot(replies, options = {}) {
+  const elements = new Map(); const requests = []; const allElements = []; const navigation = []; const historyChanges = [];
   const create = tag => {
     const element = { tagName: tag.toUpperCase(), textContent: '', className: '', children: [], attributes: {}, listeners: new Map(),
       disabled: false, hidden: false, checked: false, value: '',
@@ -27,25 +34,36 @@ async function boot(replies) {
     allElements.push(element); return element;
   };
   const element = id => {
-    if (!elements.has(id)) elements.set(id, Object.assign(create(['approve', 'execute', 'refresh', 'logout', 'dismiss-message', 'reconcile', 'refresh-proposal'].includes(id) ? 'button' : 'div'), { id }));
+    if (!elements.has(id)) elements.set(id, Object.assign(create(['approve', 'execute', 'refresh', 'logout', 'dismiss-message', 'reconcile', 'refresh-proposal',
+      'email-begin', 'email-confirm', 'email-remove', 'identity-link', 'identity-login-google', 'identity-login-github', 'identity-login-apple'].includes(id) ? 'button' : 'div'), { id }));
     return elements.get(id);
   };
-  for (const id of ['login-form', 'approve-form']) {
-    element(id).elements = Object.fromEntries(['tenantId', 'username', 'password', 'otp', 'acknowledge'].map(name => [name, create('input')]));
+  for (const id of ['login-form', 'approve-form', 'email-bind-form', 'email-confirm-form', 'email-remove-form', 'identity-link-form']) {
+    element(id).elements = Object.fromEntries(['tenantId', 'username', 'password', 'otp', 'acknowledge', 'email', 'code', 'provider'].map(name => [name, create('input')]));
     element(id).elements.tenantId.value = 'tenant-lab'; element(id).elements.username.value = 'owner-lab';
   }
+  element('email-bind-form').elements.email = element('email-address');
+  element('email-confirm-form').elements.code = element('email-code');
+  element('identity-link-form').elements.provider = element('identity-link-provider');
   const document = { getElementById: element, createElement: create, querySelectorAll: selector => selector === 'button' ? allElements.filter(item => item.tagName === 'BUTTON') : [] };
-  const environment = { document, Date, async fetch(path, options) {
-    const row = { path, method: options.method ?? 'GET', body: options.body ? JSON.parse(options.body) : null, headers: options.headers };
-    requests.push(row); assert.ok(replies.length, `No response prepared for ${path}`);
-    let reply = replies.shift(); if (typeof reply === 'function') reply = await reply(row);
+  const location = { origin: 'https://127.0.0.1:4196', pathname: '/defense', search: '', hash: options.hash ?? '', assign(value) { navigation.push(value); } };
+  const environment = { document, Date, URL, location, __canonical: { canonicalJson, sha256Hex },
+    history: { replaceState(_state, _title, value) { historyChanges.push(value); location.hash = ''; } }, async fetch(path, requestOptions) {
+    const row = { path, method: requestOptions.method ?? 'GET', body: requestOptions.body ? JSON.parse(requestOptions.body) : null, headers: requestOptions.headers };
+    requests.push(row);
+    let reply;
+    if (path === '/api/identity/providers') reply = options.providers ?? { providers, configured: false };
+    else if (path === '/api/email/status') reply = options.email ?? mailStatus();
+    else { assert.ok(replies.length, `No response prepared for ${path}`); reply = replies.shift(); }
+    if (typeof reply === 'function') reply = await reply(row);
     if (reply instanceof Error) throw reply;
     if (reply?.httpStatus) return { ok: false, status: reply.httpStatus, json: async () => reply.body };
     return { ok: true, status: 200, json: async () => reply };
   } };
-  await runInNewContext(`(async () => {\n${source}\n})()`, environment, { timeout: 1000 });
+  const vmSource = source.replace("await import('/canonical.mjs')", '__canonical');
+  await runInNewContext(`(async () => {\n${vmSource}\n})()`, environment, { timeout: 1000 });
   const dispatch = async (id, type = 'click') => { const handler = element(id).listeners.get(type); assert.ok(handler, `${id} ${type}`); await handler({ preventDefault() {} }); };
-  return { element, requests, dispatch };
+  return { element, requests, dispatch, navigation, historyChanges };
 }
 
 test('Defense英文可存取頁與固定assets，無儲存秘密或不安全HTML sink', () => {
@@ -65,7 +83,7 @@ test('Defense英文可存取頁與固定assets，無儲存秘密或不安全HTML
 test('Defense讀取不核准，digest綁定fresh reauth後需分開執行且清除密碼', async () => {
   const approved = request({ state: 'APPROVED', authorizationActive: true, approvedAt: Date.now(), approvedBy: 'owner-1' });
   const ui = await boot([admin(), snapshot(), admin(), { intentToken: 'intent-once' }, admin(), approved, admin(), snapshot(approved)]);
-  assert.deepEqual(ui.requests.map(row => row.method), ['GET', 'GET']);
+  assert.ok(ui.requests.every(row => row.method === 'GET'));
   assert.equal(ui.element('execute').disabled, true); assert.equal(ui.element('approve').disabled, false);
   const form = ui.element('approve-form'); form.elements.password.value = 'synthetic-fresh-password'; form.elements.otp.value = '123456'; form.elements.acknowledge.checked = true;
   await ui.dispatch('approve-form', 'submit');
@@ -155,4 +173,137 @@ test('Defense登入後清除密碼與OTP，登入只使用context CSRF與同源c
   const post = ui.requests.find(row => row.method === 'POST'); assert.equal(post.path, '/api/login');
   assert.equal(post.headers['X-DQ-CSRF'], 'visit-csrf'); assert.equal(post.body.otp, '654321');
   assert.equal(form.elements.password.value, ''); assert.equal(form.elements.otp.value, ''); assert.equal(ui.element('no-request').hidden, false);
+});
+
+test('Defense社群登入依真實設定停用，Google與GitHub不冒充已設定，Apple說明本機限制', async () => {
+  const visitor = { authenticated: false, csrfToken: 'visitor-csrf' };
+  const ui = await boot([visitor]);
+  for (const provider of ['google', 'github', 'apple']) {
+    assert.equal(ui.element(`identity-login-${provider}`).disabled, true);
+    await ui.dispatch(`identity-login-${provider}`);
+  }
+  assert.match(ui.element('identity-reason-google').textContent, /Not configured/u);
+  assert.match(ui.element('identity-reason-apple').textContent, /configured deployment/u);
+  assert.match(ui.element('identity-provider-status').textContent, /local administrator access/u);
+  assert.equal(ui.requests.some(row => row.method === 'POST'), false);
+});
+
+test('Defense已設定provider登入以訪客CSRF開始，單獨跳轉，不核准rotation', async () => {
+  const visitor = { authenticated: false, csrfToken: 'visitor-csrf' };
+  const configured = { providers: [{ id: 'google', label: 'Google', enabled: true, reason: null }], configured: true };
+  const ui = await boot([visitor, visitor, { authorizationUrl: 'https://accounts.google.com/o/oauth2/v2/auth?state=opaque' }], { providers: configured });
+  assert.equal(ui.element('identity-login-google').disabled, false);
+  await ui.dispatch('identity-login-google');
+  const posts = ui.requests.filter(row => row.method === 'POST');
+  assert.deepEqual(posts.map(row => row.path), ['/api/identity/start']);
+  assert.deepEqual(posts[0].body, { provider: 'google' });
+  assert.equal(posts[0].headers['X-DQ-CSRF'], 'visitor-csrf');
+  assert.deepEqual(ui.navigation, ['https://accounts.google.com/o/oauth2/v2/auth?state=opaque']);
+});
+
+test('Defense社群綁定確認精確provider digest及OTP，跳轉前清除密碼', async () => {
+  const configured = { providers: [{ id: 'github', label: 'GitHub', enabled: true, reason: null }], configured: true };
+  const ui = await boot([admin(), snapshot(null), admin(), { intentToken: 'link-once' }, admin(),
+    { authorizationUrl: 'https://github.com/login/oauth/authorize?state=opaque' }], { providers: configured });
+  const form = ui.element('identity-link-form'); form.elements.password.value = 'synthetic-password'; form.elements.otp.value = '123456';
+  await ui.dispatch('identity-link-form', 'submit');
+  const posts = ui.requests.filter(row => row.method === 'POST');
+  assert.deepEqual(posts.map(row => row.path), ['/api/intents', '/api/identity/link']);
+  assert.deepEqual(posts[0].body, { password: 'synthetic-password', otp: '123456', purpose: 'MANAGE_EMAIL',
+    manifestDigest: await sha256Hex(canonicalJson({ action: 'LINK_IDENTITY', provider: 'github' })) });
+  assert.deepEqual(posts[1].body, { provider: 'github', intentToken: 'link-once' });
+  assert.equal(form.elements.password.value, ''); assert.equal(form.elements.otp.value, '');
+  assert.deepEqual(ui.navigation, ['https://github.com/login/oauth/authorize?state=opaque']);
+});
+
+test('Defense provider redirect拒絕非HTTPS，callback失敗訊息不冒充成功且清掉已處理fragment', async () => {
+  const visitor = { authenticated: false, csrfToken: 'visitor-csrf' };
+  const configured = { providers: [{ id: 'google', label: 'Google', enabled: true }], configured: true };
+  const invalid = await boot([visitor, visitor, { authorizationUrl: 'javascript:invalid' }], { providers: configured });
+  await invalid.dispatch('identity-login-google');
+  assert.deepEqual(invalid.navigation, []); assert.match(invalid.element('message-text').textContent, /could not be started/u);
+  const failed = await boot([visitor], { hash: '#identity-signin-failed' });
+  assert.deepEqual(failed.historyChanges, ['/defense']);
+  assert.match(failed.element('message-text').textContent, /was not confirmed/u);
+  assert.match(failed.element('message-text').textContent, /First link.*Owner/u);
+  assert.match(failed.element('message-text').textContent, /authenticator/u);
+});
+
+test('Defense人工備援綁定正規化email與digest，模擬信箱不自動驗證，確認與解除皆讀回', async () => {
+  let email = mailStatus();
+  const now = Date.now();
+  const ui = await boot([admin(), snapshot(null), admin(), { intentToken: 'bind-once' }, admin(), row => {
+    email = mailStatus({ recipient: { state: 'PENDING', email: row.body.email, loginAliasEnabled: false },
+      pendingChallenge: { challengeId: 'challenge-1', email: row.body.email, expiresAt: now + 300_000, attemptsRemaining: 5, simulation: true },
+      captureMessages: [{ id: 'capture-1', to: row.body.email, subject: 'Simulated verification', text: 'Verification code: 246810', acceptedAt: now }] });
+    return { challengeId: 'challenge-1', email: row.body.email, state: 'PENDING', simulation: true };
+  }, admin(), row => {
+    assert.deepEqual(row.body, { challengeId: 'challenge-1', code: '246810' });
+    email = mailStatus({ recipient: { state: 'SIMULATED_VERIFIED', email: 'owner@example.test', maskedEmail: 'o***@example.test',
+      verificationMethod: 'LOCAL_EMAIL_CAPTURE', verifiedAt: now, loginAliasEnabled: true } });
+    return { verified: true, simulation: true };
+  }, admin(), { intentToken: 'remove-once' }, admin(), () => { email = mailStatus(); return { removed: true }; }], { email: () => email });
+  const form = ui.element('email-bind-form'); form.elements.email.value = ' Owner@Example.Test '; form.elements.password.value = 'synthetic-password';
+  await ui.dispatch('email-bind-form', 'submit');
+  const beginIntent = ui.requests.find(row => row.path === '/api/intents');
+  assert.equal(beginIntent.body.purpose, 'MANAGE_EMAIL');
+  assert.equal(beginIntent.body.manifestDigest, await sha256Hex(canonicalJson({ action: 'BIND_EMAIL', email: 'owner@example.test' })));
+  assert.deepEqual(ui.requests.find(row => row.path === '/api/email/begin').body, { email: 'owner@example.test', intentToken: 'bind-once' });
+  assert.equal(form.elements.password.value, '');
+  assert.equal(ui.element('email-manual').open, true); assert.equal(ui.element('email-capture').open, true);
+  assert.match(allText(ui.element('email-capture-list')), /246810/u);
+  assert.equal(ui.element('email-confirm-form').elements.code.value, '');
+  assert.equal(ui.requests.some(row => row.path === '/api/email/confirm'), false);
+  assert.match(ui.element('message-text').textContent, /No external email/u);
+  ui.element('email-confirm-form').elements.code.value = '246810';
+  await ui.dispatch('email-confirm-form', 'submit');
+  assert.match(ui.element('email-recipient').textContent, /Simulated verification/u);
+  assert.match(ui.element('email-alias').textContent, /simulated email sign-in/u);
+  assert.equal(ui.element('email-confirm-form').elements.code.value, '');
+  ui.element('email-remove-form').elements.password.value = 'synthetic-password';
+  await ui.dispatch('email-remove-form', 'submit');
+  assert.equal(ui.requests.filter(row => row.path === '/api/intents').at(-1).body.manifestDigest,
+    await sha256Hex(canonicalJson({ action: 'REMOVE_EMAIL' })));
+  assert.match(ui.element('email-recipient').textContent, /No email bound/u);
+  assert.match(ui.element('message-text').textContent, /linked provider sign-ins removed/u);
+  assert.equal(ui.element('email-remove-form').elements.password.value, '');
+});
+
+test('Defense SMTP接受不宣稱收件匣送達，UNKNOWN禁止新驗證請求，未設定不開放寄送', async () => {
+  const email = mailStatus({ mode: 'SMTP', deliveries: [{ id: 'mail-1', kind: 'DECOY_CONTACT', eventId: 'incident-1', state: 'ACCEPTED',
+    mode: 'SMTP', createdAt: Date.now(), attempts: 1, maskedRecipient: 'o***@example.test' }],
+    captureMessages: [{ text: 'Should not display SMTP content' }] });
+  const smtp = await boot([admin(), snapshot(null)], { email });
+  assert.match(allText(smtp.element('email-delivery-list')), /Accepted by SMTP server.*inbox delivery unconfirmed/u);
+  assert.equal(smtp.element('email-capture').hidden, true); assert.equal(smtp.element('email-capture-list').children.length, 0);
+  const unknown = await boot([admin(), snapshot(null)], { email: mailStatus({ deliveries: [{ kind: 'VERIFY_EMAIL', state: 'UNKNOWN', createdAt: Date.now() }],
+    pendingChallenge: { challengeId: 'pending', email: 'owner@example.test', attemptsRemaining: 5, expiresAt: Date.now() + 300_000, simulation: true } }) });
+  assert.equal(unknown.element('email-begin').disabled, true); assert.match(unknown.element('email-challenge').textContent, /do not resend/u);
+  await unknown.dispatch('email-bind-form', 'submit'); assert.equal(unknown.requests.some(row => row.method === 'POST'), false);
+  const unconfigured = await boot([admin(), snapshot(null)], { email: mailStatus({ mode: 'NOT_CONFIGURED', configured: false }) });
+  assert.equal(unconfigured.element('email-begin').disabled, true); assert.match(unconfigured.element('email-mode').textContent, /not configured/u);
+});
+
+test('Defense email狀態失敗獨立停用信箱，不阻擋rotation閱讀與核准；低權限不讀取email', async () => {
+  const failed = await boot([admin(), snapshot()], { email: { httpStatus: 503, body: { error: 'SERVICE_UNAVAILABLE' } } });
+  assert.equal(failed.element('email-readback-error').hidden, false);
+  assert.equal(failed.element('email-begin').disabled, true); assert.equal(failed.element('identity-link').disabled, true);
+  assert.equal(failed.element('approve').disabled, false);
+  const reader = admin(); reader.state.role = 'AUDITOR'; reader.state.capabilities = ['READ_STATUS'];
+  const readOnly = await boot([reader, snapshot(null, null)]);
+  assert.equal(readOnly.element('email-settings').hidden, true);
+  assert.equal(readOnly.requests.some(row => row.path === '/api/email/status'), false);
+});
+
+test('Defense未知人工綁定結果停用修改至讀回，已連結provider狀態明示來源', async () => {
+  const linked = mailStatus({ recipient: { state: 'VERIFIED', email: 'owner@example.test', maskedEmail: 'o***@example.test',
+    verificationMethod: 'OAUTH_VERIFIED', loginAliasEnabled: true }, linkedIdentities: [{ provider: 'google', mode: 'REAL_VERIFIED', linkedAt: Date.now() }] });
+  const ui = await boot([admin(), snapshot(null), admin(), { intentToken: 'bind-once' }, admin(), new Error('CONNECTION_LOST')], { email: linked });
+  assert.match(ui.element('identity-current').textContent, /Linked: Google/u);
+  ui.element('email-bind-form').elements.email.value = 'new@example.test'; ui.element('email-bind-form').elements.password.value = 'synthetic-password';
+  await ui.dispatch('email-bind-form', 'submit');
+  assert.equal(ui.element('email-begin').disabled, true); assert.equal(ui.element('email-remove').disabled, true);
+  assert.match(ui.element('message-text').textContent, /Read current status/u);
+  await ui.dispatch('email-bind-form', 'submit');
+  assert.equal(ui.requests.filter(row => row.path === '/api/email/begin').length, 1);
 });

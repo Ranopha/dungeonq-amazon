@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.0 — 2026-09-17
+
+- Verified Owner email binding and login alias; fresh reauthentication and single-use verification.
+- Optional Google / GitHub identity linking with verified provider email; no automatic Owner creation. No provider credentials configured or live-provider acceptance claimed. Apple unavailable in this local profile.
+- Durable recipient-bound email outbox alongside retained local event receipts, with bounded retries and no automatic resend after an unknown outcome.
+- Private simulated mailbox by default; opt-in TLS SMTP transport and explicit acceptance-versus-inbox distinction.
+- Current release includes the Orders Workspace, all earlier model records and the separately authorized synthetic rotation flow.
+
 ## 0.9.0 — 2026-09-17
 
 Adds opt-in Orders Workspace: coherent persistent records, four bounded HTTP MCP tools, an English Actor desk and the retained separate Owner alert/approval/rotation chain. Installation presentation is pinned; old profiles remain usable.

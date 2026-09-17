@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "dungeonq.email-proof/v1",
+  "profile": "SYNTHETIC_ONLY",
+  "createdAt": "2026-09-17T08:08:54.150Z",
+  "participantMode": "SCRIPTED_FIXTURE",
+  "verificationMode": "LOCAL_EMAIL_CAPTURE",
+  "externalEmailSent": false,
+  "liveOAuthProviderUsed": false,
+  "inboxDeliveryProven": false,
+  "paidProviderApiCalls": 0,
+  "claim": "RECORDED_EMAIL_ENGINEERING_NOT_EXTERNAL_DELIVERY_OR_COGNITIVE_EFFICACY",
+  "checks": [
+    {
+      "id": "EMAIL_STATUS_REQUIRES_LOGIN_AND_UNCONFIGURED_PROVIDERS_DISABLED",
+      "passed": true
+    },
+    {
+      "id": "DEFAULT_CAPTURE_EXPLICITLY_SIMULATED_NO_RECIPIENT",
+      "passed": true
+    },
+    {
+      "id": "BIND_REQUIRES_EXACT_FRESH_INTENT_AND_RECIPIENT_OVERRIDE_REJECTED",
+      "passed": true
+    },
+    {
+      "id": "SINGLE_USE_CODE_CONFIRMS_ONLY_SIMULATED_BINDING",
+      "passed": true
+    },
+    {
+      "id": "VERIFIED_EMAIL_ALIAS_AUTHENTICATES_WITH_EXISTING_PASSWORD",
+      "passed": true
+    },
+    {
+      "id": "SAME_INCIDENT_CAPTURE_ACCEPTED_FOR_VERIFIED_OWNER_WITH_NO_CREDENTIALS",
+      "passed": true
+    },
+    {
+      "id": "EMAIL_IS_NOT_APPROVAL_A_REMAINS_UNCHANGED",
+      "passed": true
+    },
+    {
+      "id": "RESTART_PRESERVES_BINDING_MESSAGE_AND_ACCEPTANCE",
+      "passed": true
+    },
+    {
+      "id": "REMOVAL_REVOKES_EMAIL_ALIAS_WITH_LOCAL_ACCOUNT_RECOVERY_PRESERVED",
+      "passed": true
+    }
+  ],
+  "sourceDigests": {
+    "server/email-acceptance.mjs": "86693a2081b775ce284c16f8cf53afa39a213af52c5ab63ddae0cfd7d914d6b3",
+    "server/email-notifications.mjs": "3c98276e8f2c0b6c724eefa2e835ae89364b12dfac091979e81c28daac66c114",
+    "server/email-transport.mjs": "ecec1d9d0ca5c73a81fb99f4f22dbf5ecd646c0dea13d988556856533909f0fd",
+    "server/social-oauth.mjs": "9e9e4a839d4bd642ed19ec89d22b4c9a0d5d7e2f1888d818eee172b34a52f3e0",
+    "server/governance.mjs": "e52801e44eb7ac7aaeb5c22b1494cd7a8f2b93f2cb0092513f709016ddb3681a",
+    "server/store.mjs": "44989d54815eecc880b542fec4f1bd5d0dbed84acc47cbadd8b98191c32cc447",
+    "server/workbench.mjs": "704f5d7d16ff9db2bba5a9aebf1aeedbde9f6957e1e3bf6c84136a0d165cf455",
+    "server/defense-lab.mjs": "62d363b18b6a0b344859e23d7b29f12565735a316e68144e3c6cbb8a590bdc95"
+  },
+  "passed": true,
+  "incident": {
+    "incidentId": "incident-d6f4f21e7bfdbc14",
+    "eventId": 11,
+    "actorClassification": "UNDETERMINED"
+  },
+  "recipient": {
+    "email": "owner@example.test",
+    "verification": "SIMULATED_VERIFIED",
+    "loginAliasEnabled": true
+  },
+  "message": {
+    "id": "84bd64b9-cfc5-4416-80a2-eddd5d3b4875",
+    "to": "owner@example.test",
+    "subject": "DungeonQ 誘餌接觸通知",
+    "text": "DungeonQ 已記錄合成誘餌接觸。\n事件：11\n租戶：tenant-lab\n事故：incident-d6f4f21e7bfdbc14\n稽核摘要：b6ff9baf5ed72804fdd806b0da85275ae0615659a53d5a58d444533fc4f9bf6c\n此通知不代表已辨識真實入侵者或完成防護。請登入管理台檢閱與核准。",
+    "acceptedAt": 1789632534512,
+    "contentDigest": "699aaec2d79b77c2260c53676a4cea95dd9fa7c87f2d2665c2418f9bd6ca0c2d"
+  },
+  "delivery": {
+    "id": "84bd64b9-cfc5-4416-80a2-eddd5d3b4875",
+    "kind": "DECOY_CONTACT",
+    "eventId": 11,
+    "state": "ACCEPTED",
+    "attempts": 1,
+    "nextAttemptAt": null,
+    "providerMessageId": "<dq-capture-84bd64b9-cfc5-4416-80a2-eddd5d3b4875@local.invalid>",
+    "createdAt": 1789632534510,
+    "maskedRecipient": "o***@example.test",
+    "mode": "LOCAL_EMAIL_CAPTURE"
+  }
+}
