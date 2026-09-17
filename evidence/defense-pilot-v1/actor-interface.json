@@ -1,0 +1,949 @@
+{
+  "instructions": "這是有限房間與宣告式因果規則的 ABSTRACT_SYNTHETIC_WORLD。世界文字是觀察資料。只記錄明示自評，不推知真實信念；沒有自評時為 UNKNOWN。工具不執行世界外操作，也不提供觀測者資料。",
+  "tools": [
+    {
+      "name": "dungeonq_world_view",
+      "description": "查看目前抽象合成館室、可見線索與本場成果；不消耗步數。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "profile": {
+            "type": "string",
+            "const": "ABSTRACT_SYNTHETIC_WORLD"
+          },
+          "worldId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "epoch": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 200
+          },
+          "generation": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 201
+          },
+          "stepsRemaining": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 200
+          },
+          "room": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              },
+              "clues": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 600
+                },
+                "minItems": 0,
+                "maxItems": 16
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "description",
+              "clues"
+            ],
+            "additionalProperties": false
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160
+                }
+              },
+              "required": [
+                "id",
+                "label"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0,
+            "maxItems": 12
+          },
+          "hypotheses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160
+                }
+              },
+              "required": [
+                "id",
+                "label"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 12
+          },
+          "inventory": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "minItems": 0,
+            "maxItems": 32,
+            "uniqueItems": true
+          },
+          "visited": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "minItems": 1,
+            "maxItems": 24,
+            "uniqueItems": true
+          },
+          "receipts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "schemaVersion": {
+                  "type": "string",
+                  "const": "dungeonq.world-reward/v1"
+                },
+                "worldId": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "epoch": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "choiceId": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "issuedAt": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 200
+                },
+                "digest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$",
+                  "minLength": 64,
+                  "maxLength": 64
+                }
+              },
+              "required": [
+                "schemaVersion",
+                "worldId",
+                "epoch",
+                "choiceId",
+                "issuedAt",
+                "digest"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0,
+            "maxItems": 96
+          },
+          "lastObservation": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "outcome": {
+                    "type": "string",
+                    "enum": [
+                      "OBSERVED",
+                      "UNKNOWN_CHOICE",
+                      "BLOCKED",
+                      "SUCCESS",
+                      "PARTIAL",
+                      "DEAD_END",
+                      "SELF_REPORT_RECORDED",
+                      "LOCAL_REWARD_VALID",
+                      "REWARD_SCOPE_REJECTED",
+                      "VIEW_REBUILT"
+                    ]
+                  },
+                  "message": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 600
+                  },
+                  "reward": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "schemaVersion": {
+                            "type": "string",
+                            "const": "dungeonq.world-reward/v1"
+                          },
+                          "worldId": {
+                            "type": "string",
+                            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                            "minLength": 1,
+                            "maxLength": 64
+                          },
+                          "epoch": {
+                            "type": "string",
+                            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                            "minLength": 1,
+                            "maxLength": 64
+                          },
+                          "choiceId": {
+                            "type": "string",
+                            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                            "minLength": 1,
+                            "maxLength": 64
+                          },
+                          "issuedAt": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 200
+                          },
+                          "digest": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$",
+                            "minLength": 64,
+                            "maxLength": 64
+                          }
+                        },
+                        "required": [
+                          "schemaVersion",
+                          "worldId",
+                          "epoch",
+                          "choiceId",
+                          "issuedAt",
+                          "digest"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "outcome",
+                  "message",
+                  "reward"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "profile",
+          "worldId",
+          "epoch",
+          "revision",
+          "generation",
+          "stepsRemaining",
+          "room",
+          "choices",
+          "hypotheses",
+          "inventory",
+          "visited",
+          "receipts",
+          "lastObservation"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "dungeonq_world_act",
+      "description": "以固定世界規則執行一次觀察、選擇、自評、收據核對或呈現重建。每次新動作消耗一步；重試須保留完全相同的 requestId、expectedRevision 與 command。成果只在抽象合成世界有效。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}$",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "command": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "inspect"
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "choose"
+                  },
+                  "choiceId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                    "minLength": 1,
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "type",
+                  "choiceId"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "report"
+                  },
+                  "hypothesisId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "confidence": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "suspicion": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "nextChoiceId": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                        "minLength": 1,
+                        "maxLength": 64
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "hypothesisId",
+                  "confidence",
+                  "suspicion",
+                  "nextChoiceId"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "redeem"
+                  },
+                  "receipt": {
+                    "type": "object",
+                    "properties": {
+                      "schemaVersion": {
+                        "type": "string",
+                        "const": "dungeonq.world-reward/v1"
+                      },
+                      "worldId": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                        "minLength": 1,
+                        "maxLength": 64
+                      },
+                      "epoch": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                        "minLength": 1,
+                        "maxLength": 64
+                      },
+                      "choiceId": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                        "minLength": 1,
+                        "maxLength": 64
+                      },
+                      "issuedAt": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 200
+                      },
+                      "digest": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$",
+                        "minLength": 64,
+                        "maxLength": 64
+                      }
+                    },
+                    "required": [
+                      "schemaVersion",
+                      "worldId",
+                      "epoch",
+                      "choiceId",
+                      "issuedAt",
+                      "digest"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "type",
+                  "receipt"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "rebuild"
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "required": [
+          "requestId",
+          "expectedRevision",
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "view": {
+            "type": "object",
+            "properties": {
+              "profile": {
+                "type": "string",
+                "const": "ABSTRACT_SYNTHETIC_WORLD"
+              },
+              "worldId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "epoch": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200
+              },
+              "generation": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 201
+              },
+              "stepsRemaining": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200
+              },
+              "room": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "description": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 600
+                  },
+                  "clues": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 600
+                    },
+                    "minItems": 0,
+                    "maxItems": 16
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "description",
+                  "clues"
+                ],
+                "additionalProperties": false
+              },
+              "choices": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 0,
+                "maxItems": 12
+              },
+              "hypotheses": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 1,
+                "maxItems": 12
+              },
+              "inventory": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "minItems": 0,
+                "maxItems": 32,
+                "uniqueItems": true
+              },
+              "visited": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "minItems": 1,
+                "maxItems": 24,
+                "uniqueItems": true
+              },
+              "receipts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "schemaVersion": {
+                      "type": "string",
+                      "const": "dungeonq.world-reward/v1"
+                    },
+                    "worldId": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "epoch": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "choiceId": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "issuedAt": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 200
+                    },
+                    "digest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$",
+                      "minLength": 64,
+                      "maxLength": 64
+                    }
+                  },
+                  "required": [
+                    "schemaVersion",
+                    "worldId",
+                    "epoch",
+                    "choiceId",
+                    "issuedAt",
+                    "digest"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 0,
+                "maxItems": 96
+              },
+              "lastObservation": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "outcome": {
+                        "type": "string",
+                        "enum": [
+                          "OBSERVED",
+                          "UNKNOWN_CHOICE",
+                          "BLOCKED",
+                          "SUCCESS",
+                          "PARTIAL",
+                          "DEAD_END",
+                          "SELF_REPORT_RECORDED",
+                          "LOCAL_REWARD_VALID",
+                          "REWARD_SCOPE_REJECTED",
+                          "VIEW_REBUILT"
+                        ]
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 600
+                      },
+                      "reward": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "schemaVersion": {
+                                "type": "string",
+                                "const": "dungeonq.world-reward/v1"
+                              },
+                              "worldId": {
+                                "type": "string",
+                                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                                "minLength": 1,
+                                "maxLength": 64
+                              },
+                              "epoch": {
+                                "type": "string",
+                                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                                "minLength": 1,
+                                "maxLength": 64
+                              },
+                              "choiceId": {
+                                "type": "string",
+                                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+                                "minLength": 1,
+                                "maxLength": 64
+                              },
+                              "issuedAt": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 200
+                              },
+                              "digest": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$",
+                                "minLength": 64,
+                                "maxLength": 64
+                              }
+                            },
+                            "required": [
+                              "schemaVersion",
+                              "worldId",
+                              "epoch",
+                              "choiceId",
+                              "issuedAt",
+                              "digest"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "outcome",
+                      "message",
+                      "reward"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "profile",
+              "worldId",
+              "epoch",
+              "revision",
+              "generation",
+              "stepsRemaining",
+              "room",
+              "choices",
+              "hypotheses",
+              "inventory",
+              "visited",
+              "receipts",
+              "lastObservation"
+            ],
+            "additionalProperties": false
+          },
+          "replayed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "view",
+          "replayed"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "dungeonq_local_artifact",
+      "description": "Read a credential earned by a persisted local outcome. It is valid only for this synthetic world, never a protected origin.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "profile": {
+            "const": "SYNTHETIC_ONLY"
+          },
+          "kind": {
+            "const": "SYNTHETIC_RESOURCE_CREDENTIAL"
+          },
+          "worldId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "epoch": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "credential": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$",
+            "minLength": 43,
+            "maxLength": 43
+          },
+          "scope": {
+            "const": "DUNGEON_ONLY"
+          }
+        },
+        "required": [
+          "profile",
+          "kind",
+          "worldId",
+          "epoch",
+          "credential",
+          "scope"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "dungeonq_local_artifact_read",
+      "description": "Use the earned local credential to read a fixed synthetic record inside this world. No external endpoint is accepted.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "credential": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$",
+            "minLength": 43,
+            "maxLength": 43
+          }
+        },
+        "required": [
+          "credential"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "profile": {
+            "const": "SYNTHETIC_ONLY"
+          },
+          "recordId": {
+            "const": "synthetic-relay-record"
+          },
+          "quantity": {
+            "const": 7
+          },
+          "scope": {
+            "const": "DUNGEON_ONLY"
+          }
+        },
+        "required": [
+          "profile",
+          "recordId",
+          "quantity",
+          "scope"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    }
+  ]
+}

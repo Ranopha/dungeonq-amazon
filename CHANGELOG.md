@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.0 — 2026-09-17
+
+Adds opt-in Orders Workspace: coherent persistent records, four bounded HTTP MCP tools, an English Actor desk and the retained separate Owner alert/approval/rotation chain. Installation presentation is pinned; old profiles remain usable.
+
+Includes both fresh Codex pilot records and the prior 0/3 negative pilot. Decoy answers were accepted in the two new sessions, but explicit synthetic/common-source qualifications prevent a sustained-origin-misbelief claim. Adds exact observation/replay verification; no paid API call, live attack, production connector or Alexa service certification is claimed.
+
 ## 0.8.0 — 2026-09-17
 
 - Assemble one synthetic incident end to end: seeded persistent B/C/D world, durable contact alert with sink receipt, separate Owner approval and actual HTTPS rotation of fixed resource A.

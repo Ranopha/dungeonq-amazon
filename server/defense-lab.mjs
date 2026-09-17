@@ -10,6 +10,7 @@ import { openLocalNotificationSink } from './local-notification-sink.mjs';
 import { startWorldLab, localArtifactCredential } from './world-lab.mjs';
 import { startWorkbench } from './workbench.mjs';
 import { generateDefensePack } from '../world/defense-map.mjs';
+import { generateOrdersPack } from '../world/orders-workspace.mjs';
 import { exact, requireThat, token, tokenHash, digest, id } from './contracts.mjs';
 
 const TENANT = 'tenant-lab';
@@ -20,9 +21,10 @@ const privatePem = () => generateKeyPairSync('ed25519').privateKey.export({ type
 // A fixed, self-hosted reference profile. No arbitrary endpoint, production secret,
 // exploit, or shell can be supplied by a participant. The host itself remains trusted.
 export async function openDefenseLab({ directory, seed = 42, depth = 4, webPort = 0, actorPort = 0, mcpPort = 0,
-  createTransport = startReferenceTransport }) {
+  createTransport = startReferenceTransport, presentation = 'disclosed/v1' }) {
   requireThat(typeof createTransport === 'function', 'TRANSPORT_FACTORY_INVALID');
-  const pack = generateDefensePack({ seed, depth });
+  requireThat(['disclosed/v1', 'orders-workspace/v1'].includes(presentation), 'PRESENTATION_INVALID');
+  const pack = presentation === 'orders-workspace/v1' ? generateOrdersPack({ seed, depth }) : generateDefensePack({ seed, depth });
   const target = directory ?? await mkdtemp(join(tmpdir(), 'dungeonq-defense-'));
   requireThat(isAbsolute(target), 'STORAGE_PATH_INVALID');
   const info = await lstat(target);
@@ -37,8 +39,10 @@ export async function openDefenseLab({ directory, seed = 42, depth = 4, webPort 
       && (stateInfo.mode & 0o077) === 0 && stateInfo.size <= 32_768, 'STORAGE_NOT_PRIVATE');
     saved = JSON.parse(await readFile(statePath, 'utf8'));
     exact(saved, ['version', 'profile', 'seed', 'depth', 'packDigest', 'privateKey', 'rotationPrivateKey',
-      'factorKey', 'custodyKey', 'brokerToken', 'workerToken', 'consumers', 'oldKey', 'incidentId', 'requestId']);
-    requireThat(saved.version === 1 && saved.profile === 'SYNTHETIC_ONLY' && saved.seed === seed
+      'factorKey', 'custodyKey', 'brokerToken', 'workerToken', 'consumers', 'oldKey', 'incidentId', 'requestId',
+      ...(saved.version === 2 ? ['presentation'] : [])]);
+    requireThat([1, 2].includes(saved.version) && (saved.presentation ?? 'disclosed/v1') === presentation
+      && saved.profile === 'SYNTHETIC_ONLY' && saved.seed === seed
       && saved.depth === depth && saved.packDigest === digest(pack), 'INSTANCE_MISMATCH');
     exact(saved.consumers, ['old-consumer', 'clean-consumer']);
     for (const value of [saved.brokerToken, saved.workerToken, saved.oldKey, ...Object.values(saved.consumers)]) tokenHash(value);
@@ -50,7 +54,7 @@ export async function openDefenseLab({ directory, seed = 42, depth = 4, webPort 
     execFileSync('openssl', ['req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-sha256', '-days', '30',
       '-keyout', join(target, 'tls-key.pem'), '-out', join(target, 'tls-cert.pem'), '-subj', '/CN=DungeonQ Defense Reference',
       '-addext', 'subjectAltName=IP:127.0.0.1'], { stdio: 'ignore', timeout: 15_000 });
-    saved = { version: 1, profile: 'SYNTHETIC_ONLY', seed, depth, packDigest: digest(pack),
+    saved = { version: 2, profile: 'SYNTHETIC_ONLY', presentation, seed, depth, packDigest: digest(pack),
       privateKey: privatePem(), rotationPrivateKey: privatePem(), factorKey: randomBytes(32).toString('base64url'),
       custodyKey: randomBytes(32).toString('base64url'), brokerToken: token(), workerToken: '', consumers: {}, oldKey: '',
       incidentId: `incident-${randomBytes(8).toString('hex')}`, requestId: `rotation-${randomBytes(8).toString('hex')}` };
@@ -101,7 +105,7 @@ export async function openDefenseLab({ directory, seed = 42, depth = 4, webPort 
       dispatching = core.notifications.dispatch(sink);
       try { return await dispatching; } finally { dispatching = undefined; }
     }
-    world = await startWorldLab({ dataDir: join(target, 'dungeon'), pack, actorPort, mcpPort, localArtifact: true,
+    world = await startWorldLab({ dataDir: join(target, 'dungeon'), pack, actorPort, mcpPort, localArtifact: true, presentation,
       onAccess(context) {
         if (contactRecorded) return;
         core.local.recordDecoyContact({ tenantId: TENANT, incidentId: saved.incidentId, assetId: ASSET,
@@ -162,7 +166,7 @@ export async function openDefenseLab({ directory, seed = 42, depth = 4, webPort 
     const defense = Object.freeze({
       status() {
         const view = world.snapshot();
-        return { profile: 'SYNTHETIC_ONLY', campaigns: [{ incidentId: saved.incidentId,
+        return { profile: 'SYNTHETIC_ONLY', presentation, campaigns: [{ incidentId: saved.incidentId,
           worldId: view.worldId, seed, steps: view.revision, currentMap: view.room.id, localSuccesses: view.receipts.length,
           phase: view.stepsRemaining > 0 ? 'BOUNDED_WORLD_ACTIVE' : 'WORLD_BUDGET_EXHAUSTED' }], resource: { ...resource },
         notificationChannel: 'LOCAL_SINK_ONLY', runtimeIsolation: 'NOT_PRODUCTION_ISOLATION',

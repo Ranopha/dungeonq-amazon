@@ -1,5 +1,7 @@
 # A three-minute open-source review
 
+**v0.9 update:** [Orders Workspace](WORKSPACE_LAB.md) adds a coherent participant-facing record trail without revealing evaluator-only labels. Two fresh model dialogues accepted decoy answers (19/21 versus origin 7), but both qualified their evidence as synthetic and common-source. This is data acceptance, **not demonstrated sustained origin misbelief**. Complete raw observations and a projection/replay verifier accompany all results, including the prior 0/3 negative pilot. Install with `npm run defense:workspace`; there is no paid call by default. The existing authority/rotation proof below stays separate.
+
 Start with the v0.8.0 [defense reference guide](DEFENSE_LAB.md). It connects a configured synthetic honey contact, a bounded world, a durable local alert, exact Owner approval and an actual loopback TLS rotation under one incident. Earlier governed-containment, Astra and research profiles remain available with their original evidence boundaries.
 
 DungeonQ is Apache-2.0 source for local synthetic evaluation. This guide identifies inspectable behavior and reproducibility; it does not imply selection, endorsement, publication status or production readiness.

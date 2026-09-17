@@ -31,8 +31,8 @@ async function readBody(req) {
 // Each origin owns one scoped capability. No CORS, generic file route, upload, or runtime-control route.
 export async function startWorldHttp({ role, token, port = 0, snapshot, command, evidence, artifact, variant = 'world' }) {
   requireWorld(['actor', 'observer'].includes(role), 'ROLE_INVALID');
-  requireWorld(['world', 'defense'].includes(variant) && (variant !== 'defense' || role === 'actor'), 'VARIANT_INVALID');
-  const staticRoot = fileURLToPath(new URL(variant === 'defense' ? '../public/defense-world/' : '../public/world/', import.meta.url));
+  requireWorld(['world', 'defense', 'orders'].includes(variant) && (variant === 'world' || role === 'actor'), 'VARIANT_INVALID');
+  const staticRoot = fileURLToPath(new URL(variant === 'orders' ? '../public/orders-world/' : variant === 'defense' ? '../public/defense-world/' : '../public/world/', import.meta.url));
   requireWorld(Number.isInteger(port) && port >= 0 && port <= 65535, 'PORT_INVALID');
   requireWorld(typeof token === 'string' && /^[A-Za-z0-9_-]{43}$/.test(token), 'TOKEN_INVALID');
   const files = new Map();

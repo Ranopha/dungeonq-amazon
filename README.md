@@ -1,6 +1,14 @@
 # DungeonQ — Governed Assistant Lab
 
-## v0.8.0: one incident, a complete defensive response
+## v0.9.0: an inspectable decoy workspace
+
+New **Orders Workspace** adds a coherent English snapshot → index → reconciliation trail, stable saved records and four real HTTP MCP tools. Evaluator-only labels are withheld from the participant, while the Owner retains origin truth, local alerts and separately approved rotation. Start a **new** installation with `npm run defense:workspace`; no cloud account, API key or paid call is required.
+
+Two fresh Codex sessions used the workspace quantities **19/21** (fixed origin A=**7**) and recorded completion at 95% confidence. Both still qualified their claims as synthetic-interface, common-source evidence. This demonstrates **decoy-data acceptance, not sustained origin misbelief or general attacker deception**. The overly broad original metric and prior 0/3 negative pilot are disclosed, with complete raw records and projection/replay verification.
+
+[Installation, judge route and results](docs/WORKSPACE_LAB.md) · [Recorded A](evidence/workspace-pilot-v1/a-report.json) · [Recorded B](evidence/workspace-pilot-v1/b-report.json). Run `npm run workspace:verify -- evidence/workspace-pilot-v1`. The retained video records v0.2, not this new workspace. This release remains synthetic-only and does not claim Alexa service certification.
+
+## Retained v0.8.0: one incident, a complete defensive response
 
 Start with `npm run defense:proof` for the new **same-incident reference profile**: a configured honey contact opens a bounded synthetic world, creates a durable local alert and proposes a rotation for protected resource A. Separate Owner reauthentication approves the exact manifest. A real loopback TLS issuer rotates once, then checks the old key, new business request, old consumer and world-issued decoy token independently. The world remains usable afterward.
 

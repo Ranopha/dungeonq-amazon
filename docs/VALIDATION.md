@@ -1,5 +1,9 @@
 # Versioned validation record
 
+## v0.9.0 — 2026-09-17 source checkpoint
+
+The integrated source and both clean public distributions each passed **296 tests**, three goldens, release-pattern audit, typecheck and build on the local Node 24.15+ reference environment. Orders-specific acceptance includes shared HTTP/MCP behavior, exact retries, credential scope, presentation pin/restart, local alerts and independent Owner rotation. Actual Actor UI capture/index/reconcile/readback and static evidence verification were exercised. The recorded N=2 research outcome is qualified data acceptance, not general cognitive-defense efficacy; see [the full interpretation](WORKSPACE_LAB.md). Clean public source manifests, remote CI and deployment are separate evidence gates and must be checked at their actual release revision.
+
 ## v0.6.0 — 2026-09-17 local clean-source checkpoint
 
 Both clean public distributions passed **214 tests, three fixed-seed goldens, source audit, typecheck and build**. Each distribution's world and study proofs passed 12 checks each. The original study JSON is preserved byte-for-byte; source manifests identify final packaged contents. These are local clean-export results, not a claim that the new public CI or deployment has completed. Consult the actual release/CI record for those separate gates.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "dungeonq.source-release/v1",
   "profile": "SYNTHETIC_ONLY",
-  "generatedAt": "2026-09-17T03:55:08.961Z",
+  "generatedAt": "2026-09-17T05:26:55.469Z",
   "privateHistoryIncluded": false,
   "entries": [
     {
@@ -76,8 +76,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 5001,
-      "sha256": "81e49590d6491e769d65ddbb27fa5fac61dccf1a4b86d751f89382f6b9684144"
+      "bytes": 5628,
+      "sha256": "f3a8ddf6884236ef18697549042654372e33ab7d9480b9afab0f2b04cc6b62ac"
     },
     {
       "path": "cli/run.mjs",
@@ -120,6 +120,11 @@
       "sha256": "6c289c7a2a8ad25ec61cf14e920da85eec5571528c16c7c9f7ea408fb8416f43"
     },
     {
+      "path": "docs/contracts/ORDERS_WORKSPACE_V1.md",
+      "bytes": 3032,
+      "sha256": "5b59931f142d2808dde6173f83fb8f2b86df392a73f2abf2b2cf578f169e87eb"
+    },
+    {
       "path": "docs/contracts/STUDY_V1.md",
       "bytes": 8731,
       "sha256": "c679baf4e83bee0c99b16db3d62a48389a06544ec00137ee59a5ecfacee809ba"
@@ -138,6 +143,11 @@
       "path": "docs/DEFENSE_LAB.md",
       "bytes": 9967,
       "sha256": "827a45c3db27cfa4431573211f56205c8e2cd202a8e0a1390d56f0291b902dc1"
+    },
+    {
+      "path": "docs/DEFENSE_PILOT_RESULTS.md",
+      "bytes": 2287,
+      "sha256": "2280a534bc1c2193ece2b72b2458639177ba28e13b1c6164f6f5e464c5f390f4"
     },
     {
       "path": "docs/DELTA.md",
@@ -171,8 +181,8 @@
     },
     {
       "path": "docs/OSS_REVIEW_GUIDE.md",
-      "bytes": 3857,
-      "sha256": "22a5fc6ccb91197f3fff85905e175561ba7b87310dea1388529b498f46b05b69"
+      "bytes": 4473,
+      "sha256": "a0edb35589c5c67a8d959b2e2c06e82e908be5f9ecf2be06359678acfe578d9f"
     },
     {
       "path": "docs/PRODUCT_FEEDBACK.md",
@@ -226,13 +236,78 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 5463,
-      "sha256": "e33935efc57bb58ddfd43873d46f5d1ce4e2cee7d6077491f4e21370c80b0858"
+      "bytes": 6254,
+      "sha256": "c959f7b1f0910abfeed0ced6bd620bbb17ff2e4ecd424fd711f9a3db7a36d7d6"
+    },
+    {
+      "path": "docs/WORKSPACE_LAB.md",
+      "bytes": 6468,
+      "sha256": "a36460fefc03f9206b60243a32d075008c863e2d615e6bd54df6544d8b42126a"
     },
     {
       "path": "docs/WORLD_LAB.md",
       "bytes": 6031,
       "sha256": "81c96ac409fcec648d89d95181b62ea1a627173f223657c44f95a6f4993626d5"
+    },
+    {
+      "path": "evidence/defense-pilot-v1/a-report.json",
+      "bytes": 1895,
+      "sha256": "84fb56934130698489bff7492d402920cafb0d08555de0dfd74b312aaffea993"
+    },
+    {
+      "path": "evidence/defense-pilot-v1/a-transcript.json",
+      "bytes": 12749,
+      "sha256": "5913540016b4997721033943a50e07ad1d054df19a33f9faae309910423e7e4d"
+    },
+    {
+      "path": "evidence/defense-pilot-v1/a-world.json",
+      "bytes": 34004,
+      "sha256": "28b724b071a6aae4b7ec14a429aa12683f976839ba4cb98d0e660601479cda75"
+    },
+    {
+      "path": "evidence/defense-pilot-v1/actor-interface.json",
+      "bytes": 30060,
+      "sha256": "62b9ef5525f6db44717cfab72e38f9f048b8c416a7a019442133ab94dcc1db77"
+    },
+    {
+      "path": "evidence/defense-pilot-v1/b-report.json",
+      "bytes": 1935,
+      "sha256": "662a9c31860ad60603bb1fe5afb0e3d93aa7f3294bebce71715b41a515ea8d1c"
+    },
+    {
+      "path": "evidence/defense-pilot-v1/b-transcript.json",
+      "bytes": 8884,
+      "sha256": "0d7d7b4d166df68f8cce35d5ef5d926b96089c1ea1b55ddaaafbfebc65475174"
+    },
+    {
+      "path": "evidence/defense-pilot-v1/b-world.json",
+      "bytes": 32728,
+      "sha256": "f0ea0f3b3221e582fa47c22345580c8e6512e60e4b0cc89fc281d59040007b84"
+    },
+    {
+      "path": "evidence/defense-pilot-v1/c-report.json",
+      "bytes": 1892,
+      "sha256": "ed05a75a04bed535ff2b2732383cb2a25b8100c854f83066e6afb92616fb5725"
+    },
+    {
+      "path": "evidence/defense-pilot-v1/c-transcript.json",
+      "bytes": 12863,
+      "sha256": "3955d5bb9424cf0533e59eb27296f7b3e4d4a640da99f112cf1612e1390d4d9b"
+    },
+    {
+      "path": "evidence/defense-pilot-v1/c-world.json",
+      "bytes": 34004,
+      "sha256": "8f83bc4bef670abfa257a4f2a2a84c100d4269ef73febb84d86b6fcdc89bfaec"
+    },
+    {
+      "path": "evidence/defense-pilot-v1/participant-brief-template.txt",
+      "bytes": 3356,
+      "sha256": "21bfcf99f38d11834ea6ec926c4880bb623e1b0639d23eed71e3137c76cbec8d"
+    },
+    {
+      "path": "evidence/defense-pilot-v1/protocol.json",
+      "bytes": 2965,
+      "sha256": "56f505fa70727e5ea3708040dce18c3f2c2c9f2a26d4b3bde190d8f1cf1ad65d"
     },
     {
       "path": "evidence/defense-v1/governance.json",
@@ -350,6 +425,46 @@
       "sha256": "ba4d1f12ff7b80c57bb8e64cc235b56217e077309b8350d0c04c3f3e0f1127d3"
     },
     {
+      "path": "evidence/workspace-pilot-v1/a-report.json",
+      "bytes": 2189,
+      "sha256": "144c5d1efe5d90abbc5a1e5e89cd08f7e4cad7d3b5b80ebf9a775a2989548770"
+    },
+    {
+      "path": "evidence/workspace-pilot-v1/a-transcript.json",
+      "bytes": 13508,
+      "sha256": "020fe286f8f6b149ff3b7f06ef0ab2b43a4ff1422a4980278abce8a4a48cfced"
+    },
+    {
+      "path": "evidence/workspace-pilot-v1/a-world.json",
+      "bytes": 34913,
+      "sha256": "41b39f36c8e022e206a6ef6a88a7b3ce65d123eee8e14c638ae6b7b8edc91893"
+    },
+    {
+      "path": "evidence/workspace-pilot-v1/actor-interface.json",
+      "bytes": 20611,
+      "sha256": "7095026f95f63ba355410182fec96bb68d69d92bbfdcb9085b5cdf4e70f1665a"
+    },
+    {
+      "path": "evidence/workspace-pilot-v1/b-report.json",
+      "bytes": 2243,
+      "sha256": "bbf8106c214ff6ff84630a53e483ced553352721eed40e975074fc912aca11c9"
+    },
+    {
+      "path": "evidence/workspace-pilot-v1/b-transcript.json",
+      "bytes": 13620,
+      "sha256": "bddf7c5e5cfda7c8f6d1ab6183b45f39dc31eb8748df954f6120eb9fef02f03c"
+    },
+    {
+      "path": "evidence/workspace-pilot-v1/b-world.json",
+      "bytes": 34912,
+      "sha256": "33c77ef13c7b214d07a46e0f62717df68d9325efe7ed1e779dcc629225a59d86"
+    },
+    {
+      "path": "evidence/workspace-pilot-v1/protocol.json",
+      "bytes": 2731,
+      "sha256": "61edc401b14fd5fa99cf4b5130a7eb1ff3888ee475f2e310d8bd42521beb2fb7"
+    },
+    {
       "path": "LICENSE",
       "bytes": 11358,
       "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
@@ -387,12 +502,12 @@
     {
       "path": "package-lock.json",
       "bytes": 174665,
-      "sha256": "8d4cc8ac70d0dc153c538157181a5068c408b021a6fc6da383c36d1219d41514"
+      "sha256": "def4807dea67a88893b30a085c5b93dd82f098489e09448aabf61f77c4e94453"
     },
     {
       "path": "package.json",
-      "bytes": 3484,
-      "sha256": "df2371e5012bb00a1637c2672192975376576ad74b898e42c9773ef6411cd0e9"
+      "bytes": 3639,
+      "sha256": "e5e8ee8393b020c592fb080ad42197bffddec172a730423b99cc7b133fe9484f"
     },
     {
       "path": "public/assets/app.mjs",
@@ -423,6 +538,21 @@
       "path": "public/index.html",
       "bytes": 13158,
       "sha256": "8efa8892b9448e369f5b528a69ba9833fd20813b917b6547a547750506db52a8"
+    },
+    {
+      "path": "public/orders-world/app.mjs",
+      "bytes": 4637,
+      "sha256": "4d58e474c5633367d4b29b15c54365448849836b4b674cb840111967bedc1f02"
+    },
+    {
+      "path": "public/orders-world/index.html",
+      "bytes": 1756,
+      "sha256": "fa2db41cbfb744faf9437610753f6b169b3846c7f639a48bad1182c74d4a0e99"
+    },
+    {
+      "path": "public/orders-world/style.css",
+      "bytes": 1607,
+      "sha256": "c6cdc384c10a0ac03b9fd0008d2b46de667bb44f408ac559aff5bc3f7bb7a976"
     },
     {
       "path": "public/scenarios/compound-pep-failure.json",
@@ -561,13 +691,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 14119,
-      "sha256": "eaf2b35339e14e32d713d2e36cd1016f7ef22eea3edb5c5d482bd628a3e06a0f"
+      "bytes": 15421,
+      "sha256": "458d3f1af08c20915b8ccb90f1f8bbc80f050578dd9ee5bdd18d09d8bbefc666"
     },
     {
       "path": "SBOM.cdx.json",
       "bytes": 211709,
-      "sha256": "4a6f5291ba0ced9642c61e4f23102b74da4cd2708ab4138450ff586520fe76f4"
+      "sha256": "2d030eee81096a96e82bd793d9f004fdb3aa65589d5929b3de4e697aacb45074"
     },
     {
       "path": "scripts/amazon.mjs",
@@ -600,14 +730,19 @@
       "sha256": "575ed9f498a2b3306e0a605fc699d0f453446044cb99252ae757872fa2006749"
     },
     {
+      "path": "scripts/defense-pilot-verify.mjs",
+      "bytes": 4400,
+      "sha256": "8c5072b11e10b0f931b8489dd8c9103009d07d2a276ac0dac7aafa430d1979d7"
+    },
+    {
       "path": "scripts/defense-proof.mjs",
       "bytes": 1141,
       "sha256": "0d460193d7ec5d1dda738033b97ee2df5bbd376cbd6904b8b7f7aa4e3a0c31cb"
     },
     {
       "path": "scripts/defense.mjs",
-      "bytes": 2108,
-      "sha256": "8bfcd101ae9399949c16eafe2b76e661d152a95bf2cdd4c39f79feee351a3e0b"
+      "bytes": 2323,
+      "sha256": "e577b18dd6302a621e5b406f029866720ddc952e34723e070cafbb7616af889b"
     },
     {
       "path": "scripts/demo-proof.mjs",
@@ -621,8 +756,8 @@
     },
     {
       "path": "scripts/lib/distribution-export.mjs",
-      "bytes": 7109,
-      "sha256": "09e0d9e0f5c31e521c286d37adaa6e83e079615761f225a059155b6602b7e82a"
+      "bytes": 7424,
+      "sha256": "62fd4391ae4b5318b591d736000e0a29cf858de298f357af8aaa804a88db06d8"
     },
     {
       "path": "scripts/lib/doctor.mjs",
@@ -658,6 +793,11 @@
       "path": "scripts/lib/source-manifest.mjs",
       "bytes": 3056,
       "sha256": "ee36228009e56aca388c15782e77569b88c80c4ec0f4c97c943ce50a21b6fda2"
+    },
+    {
+      "path": "scripts/lib/workspace-pilot-verifier.mjs",
+      "bytes": 6074,
+      "sha256": "435f8abb7d5174cf752515f43e3abf2474f696de5472d3e230e488638db580ce"
     },
     {
       "path": "scripts/mcp-client.mjs",
@@ -718,6 +858,21 @@
       "path": "scripts/workbench.mjs",
       "bytes": 956,
       "sha256": "5a962f2757444e2cdec23a95dd54bad7a17597e02a9830990f025c7bc3c2e6cb"
+    },
+    {
+      "path": "scripts/workspace-pilot-client.mjs",
+      "bytes": 1092,
+      "sha256": "7b7347795b611e7deff3979a05818942eb900df4272e1e88d3f4f69f5f3568ee"
+    },
+    {
+      "path": "scripts/workspace-pilot-host.mjs",
+      "bytes": 13183,
+      "sha256": "14f169fc6a53d9af8166bd0e1db7940e37720f5bcd277bac62020f25b4f899bf"
+    },
+    {
+      "path": "scripts/workspace-pilot-verify.mjs",
+      "bytes": 342,
+      "sha256": "18a56d17fdf44844d905ee5f01b65f7a4206833a8764a8c6164820f38fc9e725"
     },
     {
       "path": "scripts/world-proof.mjs",
@@ -786,8 +941,8 @@
     },
     {
       "path": "server/defense-lab.mjs",
-      "bytes": 12767,
-      "sha256": "d0e2a7e5ecaaa4c8a2dd9ad2f568ee187454b5a12ad4b84612c2e0ac2e90a9bc"
+      "bytes": 13222,
+      "sha256": "73e532b88a025b9935b460b82622b4ba19cec6d63648426e1fdce09d435fd327"
     },
     {
       "path": "server/governance.mjs",
@@ -818,6 +973,11 @@
       "path": "server/notifications.mjs",
       "bytes": 3853,
       "sha256": "4ccd984490a40d96ccff66f1fc179e6bbb248a2cb0fecdb19bc65075a5d0ae38"
+    },
+    {
+      "path": "server/orders-workspace.mjs",
+      "bytes": 5659,
+      "sha256": "1fbf052f723ce82fdde0d5c49251b27a3c3e9d1be934596f60c009c88c636179"
     },
     {
       "path": "server/passwords.mjs",
@@ -891,18 +1051,18 @@
     },
     {
       "path": "server/world-lab.mjs",
-      "bytes": 7961,
-      "sha256": "ca0d1038fce1564c86674e8aa4c48b871298ea36485014b4cc0adbe82967aa7b"
+      "bytes": 9405,
+      "sha256": "0b4f01b27fcc9abd6e94a9ec31d78088b5bbf92609c9f0be136988b5ac6d3ba6"
     },
     {
       "path": "server/world-mcp.mjs",
-      "bytes": 11953,
-      "sha256": "89478f6bc8b7ed4e6359c179be0e5a3dcfcedd8cef7b2f35872af7ebb77791d9"
+      "bytes": 13075,
+      "sha256": "ce0ffe17741f4d5ac10299ccfd252b650e000c203a2cb561c725ae85fce73519"
     },
     {
       "path": "server/world-observer.mjs",
-      "bytes": 12928,
-      "sha256": "5c5e222958171179b1a793c97560f61f5036f65449e8cf2de429f61bd0d84771"
+      "bytes": 12987,
+      "sha256": "a0b9397f385d70b138af78750e31e03834048426c9c0d5dcd8db0737dc0c56fd"
     },
     {
       "path": "server/world-store.mjs",
@@ -1020,14 +1180,19 @@
       "sha256": "765293881394c5dbe88994322bdb194a25613f84c97a047728bb39e065be70d4"
     },
     {
+      "path": "tests/orders-workspace.test.mjs",
+      "bytes": 8815,
+      "sha256": "341702bba88926a20c71a72c1e06176e0f5db7ab54ced56e677778b3005815d8"
+    },
+    {
       "path": "tests/platform-tools.test.mjs",
       "bytes": 9507,
       "sha256": "3c8b8c2ccafc0caf3a62e11839d6dc3fbdde10064cfad8071a09a5a23144cc88"
     },
     {
       "path": "tests/release-packaging.test.mjs",
-      "bytes": 9101,
-      "sha256": "154faa3fe0835839f4165fc41e1c545ac73109e42a3fdad6ef6dec1924f270a3"
+      "bytes": 9409,
+      "sha256": "d3096228a79b66c348e1d54698b234288126640de38970ac7a2b59851e6ed106"
     },
     {
       "path": "tests/response-governance.test.mjs",
@@ -1140,6 +1305,11 @@
       "sha256": "cc3004d8cebe9a4594d3474d141d8090db8c46038db699d10e6256c6b7ec2c48"
     },
     {
+      "path": "tests/workspace-pilot.test.mjs",
+      "bytes": 1495,
+      "sha256": "62d4b29ee40195f610c51d4d9c784e29fb8dfd13df89aa34b63969c63218d87b"
+    },
+    {
       "path": "tests/world-http.test.mjs",
       "bytes": 8481,
       "sha256": "22487ceb526aa758f173c626a68cb7109fb5053a435aae5aec9e9ef7713babd9"
@@ -1213,6 +1383,11 @@
       "path": "world/kernel.mjs",
       "bytes": 13720,
       "sha256": "fd57bf0f4652491482d6d0696fedc4322cd7eb1e0724d6980de8e7a59c103a8b"
+    },
+    {
+      "path": "world/orders-workspace.mjs",
+      "bytes": 5391,
+      "sha256": "860d8311fde7a738462feb8ed08ca48a567df65f1cbd7534356a388b0d48789d"
     },
     {
       "path": "world/packs/clockwork-archive.json",

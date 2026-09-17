@@ -33,12 +33,14 @@ async function exportFixture(t) {
   for (const path of ['world/kernel.mjs', 'study/experiment.mjs', 'study/designs/archive.json', 'astra-site/index.html',
     'scripts/build-astra-site.mjs', 'docs/SCENARIO_AUTHORING.md']) await file(source, path, 'synthetic fixture');
   for (const target of ['amazon', 'astra']) await file(source, `${target}-release/README.md`, `Synthetic ${target}`);
-  for (const path of ['STUDY_LAB.md', 'STUDY_RESULTS.md', 'WORLD_LAB.md', 'contracts/STUDY_V1.md', 'contracts/WORLD_V1.md', 'TOPOLOGY_LAB.md', 'TOPOLOGY_RESULTS.md', 'contracts/TOPOLOGY_V2.md', 'DEFENSE_LAB.md', 'OSS_REVIEW_GUIDE.md', 'contracts/DEFENSE_GOVERNANCE_V1.md']) {
+  for (const path of ['STUDY_LAB.md', 'STUDY_RESULTS.md', 'WORLD_LAB.md', 'contracts/STUDY_V1.md', 'contracts/WORLD_V1.md', 'TOPOLOGY_LAB.md', 'TOPOLOGY_RESULTS.md', 'contracts/TOPOLOGY_V2.md', 'DEFENSE_LAB.md', 'OSS_REVIEW_GUIDE.md', 'contracts/DEFENSE_GOVERNANCE_V1.md', 'WORKSPACE_LAB.md', 'DEFENSE_PILOT_RESULTS.md', 'contracts/ORDERS_WORKSPACE_V1.md']) {
     await file(source, `release-study/docs/${path}`, 'Synthetic public documentation');
   }
   await file(source, 'release-study/evidence/study-v1/reference-proof.json', '{"profile":"SYNTHETIC_CAUSAL_STUDY"}');
   await file(source, 'release-study/evidence/topology-v2/proof.json', '{"profile":"SYNTHETIC_TOPOLOGY_WORKFLOW"}');
   await file(source, 'release-study/evidence/defense-v1/proof.json', '{"profile":"SYNTHETIC_ONLY"}');
+  await file(source, 'release-study/evidence/workspace-pilot-v1/protocol.json', '{"profile":"SYNTHETIC_ONLY"}');
+  await file(source, 'release-study/evidence/defense-pilot-v1/protocol.json', '{"profile":"SYNTHETIC_ONLY"}');
   for (const path of ['study-evidence.png', 'study-trace.png', 'topology-evidence.png', 'topology-observer.png']) await file(source, `release-study/media/${path}`, 'synthetic media fixture');
   return { base, source };
 }

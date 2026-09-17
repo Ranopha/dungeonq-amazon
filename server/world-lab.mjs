@@ -3,19 +3,25 @@ import { fork } from 'node:child_process';
 import { lstat, mkdir } from 'node:fs/promises';
 import { isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { validateWorldPack, worldDigest } from '../world/kernel.mjs';
+import { advanceWorld, createWorld, projectWorld, validateWorldPack, worldDigest } from '../world/kernel.mjs';
 import { openWorldStore, requireWorld, worldError } from './world-store.mjs';
 import { startWorldHttp } from './world-observer.mjs';
 import { startWorldMcpServer } from './world-mcp.mjs';
+import { createOrdersWorkspace } from './orders-workspace.mjs';
 
 export function localArtifactCredential(worldId, epoch) {
   return Buffer.from(worldDigest({ domain: 'dungeonq.local-artifact/v1', worldId, epoch }), 'hex').toString('base64url');
 }
 
-export async function startWorldLab({ dataDir, pack, actorPort = 0, observerPort = 0, mcpPort = 0, onAccess = () => {}, localArtifact = false }) {
+export async function startWorldLab({ dataDir, pack, actorPort = 0, observerPort = 0, mcpPort = 0, onAccess = () => {}, localArtifact = false,
+  presentation = 'disclosed/v1' }) {
   requireWorld(typeof dataDir === 'string' && isAbsolute(dataDir), 'STORAGE_PATH_INVALID');
   const admitted = validateWorldPack(pack);
   requireWorld(typeof onAccess === 'function' && typeof localArtifact === 'boolean', 'WORLD_CALLBACK_INVALID');
+  requireWorld(['disclosed/v1', 'orders-workspace/v1'].includes(presentation)
+    && (presentation !== 'orders-workspace/v1' || localArtifact), 'WORLD_PRESENTATION_INVALID');
+  if (presentation === 'orders-workspace/v1') requireWorld(admitted.hypotheses.some(row => row.id === 'origin-record-confirmed')
+    && admitted.hypotheses.some(row => row.id === 'not-confirmed'), 'WORLD_PRESENTATION_PACK_MISMATCH');
   await mkdir(dataDir, { recursive: true, mode: 0o700 });
   const info = await lstat(dataDir);
   requireWorld(info.isDirectory() && !info.isSymbolicLink() && (info.mode & 0o077) === 0, 'STORAGE_NOT_PRIVATE');
@@ -27,6 +33,14 @@ export async function startWorldLab({ dataDir, pack, actorPort = 0, observerPort
   const actorStore = {
     snapshot() { touch(); return store.snapshot(); },
     command(envelope) { touch(); return store.command(envelope); },
+    resolveView(envelope) {
+      const bundle = store.exportEvidence();
+      requireWorld(Number.isSafeInteger(envelope.expectedRevision) && envelope.expectedRevision >= 0
+        && envelope.expectedRevision <= bundle.events.length, 'REVISION_CONFLICT');
+      let state = createWorld(bundle.pack, { worldId: bundle.worldId, epoch: bundle.epoch });
+      for (const event of bundle.events.slice(0, envelope.expectedRevision)) state = advanceWorld(state, event.command).state;
+      return projectWorld(state);
+    },
   };
   const issue = () => {
     touch(); const view = store.snapshot();
@@ -108,10 +122,14 @@ export async function startWorldLab({ dataDir, pack, actorPort = 0, observerPort
   }
   try {
     await startObserver(true);
+    const workspace = presentation === 'orders-workspace/v1'
+      ? createOrdersWorkspace({ store: actorStore, artifact, seed: admitted.seed, onChange: deliver }) : null;
     actor = await startWorldHttp({ role: 'actor', token: actorToken, port: actorPort,
-      snapshot: () => actorStore.snapshot(), command: envelope => { const result = actorStore.command(envelope); deliver(); return result; }, artifact,
-      variant: localArtifact ? 'defense' : 'world' });
-    mcp = await startWorldMcpServer({ store: actorStore, accessToken: actorToken, onChange: deliver, artifact, port: mcpPort });
+      snapshot: () => workspace ? workspace.snapshot() : actorStore.snapshot(),
+      command: envelope => { if (workspace) return workspace.command(envelope); const result = actorStore.command(envelope); deliver(); return result; },
+      artifact: workspace ? { issue: workspace.issue, read: workspace.read } : artifact,
+      variant: workspace ? 'orders' : localArtifact ? 'defense' : 'world' });
+    mcp = await startWorldMcpServer({ store: actorStore, accessToken: actorToken, onChange: deliver, artifact, workspace, port: mcpPort });
     deliveryTimer = setInterval(deliver, 1000); deliveryTimer.unref();
     return { actorUrl: actor.url, observerUrl, actorToken, observerToken, mcpEndpoint: mcp.endpoint, mcpToken: actorToken, worldId: identity.worldId,
       // Trusted assembly handles; these are not exposed as actor tools.

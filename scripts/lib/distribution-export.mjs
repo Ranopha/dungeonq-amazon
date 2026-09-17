@@ -16,6 +16,8 @@ export const PUBLIC_SOURCE_PATHS = Object.freeze([
   'scripts/world.mjs', 'scripts/world-proof.mjs', 'scripts/study.mjs', 'scripts/study-proof.mjs',
   'scripts/topology.mjs', 'scripts/topology-proof.mjs',
   'scripts/defense.mjs', 'scripts/defense-proof.mjs',
+  'scripts/workspace-pilot-verify.mjs', 'scripts/defense-pilot-verify.mjs',
+  'scripts/workspace-pilot-host.mjs', 'scripts/workspace-pilot-client.mjs',
   'scripts/doctor.mjs', 'scripts/demo-proof.mjs', 'scripts/mcp-client.mjs', 'scripts/prepare-release.mjs',
   'scripts/verify-source.mjs', 'scripts/audit.mjs', 'scripts/check-isolation.mjs', 'scripts/company-acceptance.mjs',
   'scripts/serve.mjs', 'scripts/verify.mjs', 'scripts/verify-assistant-evidence.mjs',
@@ -25,6 +27,8 @@ const sharedDocuments = ['docs/STUDY_LAB.md', 'docs/STUDY_RESULTS.md', 'docs/WOR
   'docs/contracts/STUDY_V1.md', 'docs/contracts/WORLD_V1.md', 'evidence/study-v1',
   'docs/TOPOLOGY_LAB.md', 'docs/TOPOLOGY_RESULTS.md', 'docs/contracts/TOPOLOGY_V2.md', 'evidence/topology-v2',
   'docs/DEFENSE_LAB.md', 'docs/OSS_REVIEW_GUIDE.md', 'docs/contracts/DEFENSE_GOVERNANCE_V1.md', 'evidence/defense-v1',
+  'docs/WORKSPACE_LAB.md', 'docs/DEFENSE_PILOT_RESULTS.md', 'docs/contracts/ORDERS_WORKSPACE_V1.md',
+  'evidence/workspace-pilot-v1', 'evidence/defense-pilot-v1',
   'media/study-evidence.png', 'media/study-trace.png', 'media/topology-evidence.png', 'media/topology-observer.png'];
 const targets = {
   amazon: { name: 'dungeonq-amazon', description: 'Synthetic assistant governance, persistent abstract worlds and consent-based causal studies with local MCP and replayable evidence.' },
