@@ -30,7 +30,7 @@ const sharedDocuments = ['docs/STUDY_LAB.md', 'docs/STUDY_RESULTS.md', 'docs/WOR
   'docs/DEFENSE_LAB.md', 'docs/OSS_REVIEW_GUIDE.md', 'docs/contracts/DEFENSE_GOVERNANCE_V1.md', 'evidence/defense-v1',
   'docs/WORKSPACE_LAB.md', 'docs/DEFENSE_PILOT_RESULTS.md', 'docs/contracts/ORDERS_WORKSPACE_V1.md',
   'evidence/workspace-pilot-v1', 'evidence/defense-pilot-v1',
-  'docs/EMAIL_NOTIFICATIONS.md', 'evidence/email-v1',
+  'docs/EMAIL_NOTIFICATIONS.md', 'docs/START_HERE.zh-TW.md', 'evidence/email-v1',
   'media/study-evidence.png', 'media/study-trace.png', 'media/topology-evidence.png', 'media/topology-observer.png'];
 const targets = {
   amazon: { name: 'dungeonq-amazon', description: 'Synthetic assistant governance, persistent abstract worlds and consent-based causal studies with local MCP and replayable evidence.' },

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "dungeonq.source-release/v1",
   "profile": "SYNTHETIC_ONLY",
-  "generatedAt": "2026-09-17T08:16:13.887Z",
+  "generatedAt": "2026-09-17T08:41:46.815Z",
   "privateHistoryIncluded": false,
   "entries": [
     {
@@ -76,8 +76,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 6368,
-      "sha256": "d309ad7afab2cd27f25f193143633458573eaf7992d713f917824265cee5b717"
+      "bytes": 6723,
+      "sha256": "f8fb87eb56895bae27e499c38376af19a07d07a332e6db5d200d577831a464bf"
     },
     {
       "path": "cli/run.mjs",
@@ -161,8 +161,8 @@
     },
     {
       "path": "docs/EMAIL_NOTIFICATIONS.md",
-      "bytes": 8153,
-      "sha256": "da169f4948b9f8e7193641ea4ae4a8a535e167596c2526ad51efd5211ffe8602"
+      "bytes": 13220,
+      "sha256": "96093539456195d4124c0d0461b8f3ff0413ad6205717af5147b271194c2733b"
     },
     {
       "path": "docs/EXTERNAL_AGENT.md",
@@ -186,8 +186,8 @@
     },
     {
       "path": "docs/OSS_REVIEW_GUIDE.md",
-      "bytes": 5059,
-      "sha256": "bb3ebe76f4bf8432a0b6b19c70d630db6a6d911f8f4d39a5bdb516747f0840aa"
+      "bytes": 5451,
+      "sha256": "ecb1fec8ee781d8bda3ac2b1dd94fb7373050125f13a59b51f1a00d161b38a2b"
     },
     {
       "path": "docs/PRODUCT_FEEDBACK.md",
@@ -208,6 +208,11 @@
       "path": "docs/SCENARIO_PACK.md",
       "bytes": 4273,
       "sha256": "00d44c7b8aadc99753371cefcb4bdc1e7a9704b958412e3a054984c696bb0d1d"
+    },
+    {
+      "path": "docs/START_HERE.zh-TW.md",
+      "bytes": 7648,
+      "sha256": "405e173d9e404c135ae6c0a6d22071014600c9603eda597afbb46740be165355"
     },
     {
       "path": "docs/STUDY_LAB.md",
@@ -241,8 +246,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 7200,
-      "sha256": "49e38c70abdd7f4daab2b7373aedb325d4142aafe766cf1589bc6c19abbff734"
+      "bytes": 7678,
+      "sha256": "7029086e482ec487322ce7fcf7071f7eb4989dad59dea84aac44fdd16d1c94ed"
     },
     {
       "path": "docs/WORKSPACE_LAB.md",
@@ -701,13 +706,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 16825,
-      "sha256": "dab7e590bd110ca0771500d6642a6aa3ebef428a13f4ff15d9d4d70942ddf7f0"
+      "bytes": 17400,
+      "sha256": "c992bd3ae8d33e5d9f87f06cfefcc4d4ef924c98d28c9a194a05eccc28586235"
     },
     {
       "path": "SBOM.cdx.json",
       "bytes": 212281,
-      "sha256": "c6e4a5a095e8d944b134b6968561b448c11c5aee58bd84ca3ed0dd9b3df8988e"
+      "sha256": "417d9c836937911e204cdb85de7bc84cdf805d50ae8c3442e612a2a8670117a9"
     },
     {
       "path": "scripts/amazon.mjs",
@@ -771,8 +776,8 @@
     },
     {
       "path": "scripts/lib/distribution-export.mjs",
-      "bytes": 7507,
-      "sha256": "61fa7476b8efdcc42900a177d4d8000c8572efb9f97d464ea983df21ef309764"
+      "bytes": 7535,
+      "sha256": "8be521c11de9673dd42fb176c0b34980daa14dfbbffadceff4b6dbf91d019679"
     },
     {
       "path": "scripts/lib/doctor.mjs",
@@ -1241,8 +1246,8 @@
     },
     {
       "path": "tests/release-packaging.test.mjs",
-      "bytes": 9696,
-      "sha256": "1fb034ff0ca42d3c2cb9b43c733e972033543e2f527a4ced6597b1f93e9a32e2"
+      "bytes": 9747,
+      "sha256": "939e092a013ad79d6d87f2fedd37fe10e0a3edca3284054be1a3d36307cd7b6b"
     },
     {
       "path": "tests/response-governance.test.mjs",

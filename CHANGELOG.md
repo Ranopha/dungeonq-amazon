@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — documentation after 0.10.0
+
+- Add a Traditional Chinese entry point and direct evidence/CI links.
+- Clarify fixed-directory restart, first-contact notification timing, optional OAuth/SMTP configuration and provider-versus-manual verification.
+- Preserve v0.10.0 artifacts and model evidence; no runtime or production-capability change.
+
 ## 0.10.0 — 2026-09-17
 
 - Verified Owner email binding and login alias; fresh reauthentication and single-use verification.

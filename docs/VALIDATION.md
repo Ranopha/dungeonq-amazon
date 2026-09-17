@@ -4,6 +4,8 @@
 
 Both clean public distributions subsequently passed **386/386 tests**, all three goldens, audit, typecheck, build and source-manifest verification locally. The email proof contains nine passing checks. Remote GitHub CI and publishing remain separately recorded release gates.
 
+Publication was subsequently verified: [v0.10.0 source release](https://github.com/Ranopha/dungeonq-amazon/releases/tag/v0.10.0), source commit `a6b4ce22175e2a139fa64873f8c68fc04d96fd38`, and [tag CI 35198999465](https://github.com/Ranopha/dungeonq-amazon/actions/runs/35198999465) passed on Ubuntu 24.04 and macOS 14. Later `main` documentation clarifies installation and recovery; it does not rewrite this tag, certify Alexa integration or retroactively rerun a model study.
+
 The integrated source covers 386 tests including notification, identity, TLS transport and HTTP boundaries. The first full run found one export-test fixture missing the newly added document; the fixture was corrected and all eight affected packaging checks passed. Remaining 385 full-run tests passed. Three goldens, audit, typecheck and build passed. The nine-check email proof runs actual local HTTPS and restart with a simulated mailbox, not external delivery. Google JWTs and GitHub replies in tests are fixtures; no real OAuth application is configured. Public-distribution checks and CI are separate release records.
 
 ## v0.9.0 — 2026-09-17 source checkpoint
