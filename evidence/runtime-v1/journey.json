@@ -1,0 +1,285 @@
+{
+  "schemaVersion": "dungeonq.runtime-public-journey/v1",
+  "evidenceClass": "RECORDED_REFERENCE_OBSERVATIONS",
+  "source": {
+    "version": "0.11.0",
+    "runtimeDigest": "5bcfb673a50d50771d6831522d0b50c74ac4905a44852c6b815f6ada1c99e455"
+  },
+  "sourceScope": "SHARED_RUNTIME_CODE",
+  "observedAt": "2026-09-18T03:00:35.737Z",
+  "provenance": {
+    "primary": {
+      "reportId": "owned-reference-2026-09-18T030034Z",
+      "reportSha256": "f6ec502bcd13e64c2c6123616183f8425efb15be73cdc09e28ca74efc69178d6",
+      "startedAt": "2026-09-18T03:00:34.514Z",
+      "finishedAt": "2026-09-18T03:00:35.737Z",
+      "scope": "OWNED_REFERENCE_ACCEPTANCE",
+      "publication": "SANITIZED_EXTRACT",
+      "fullReportPublished": false,
+      "recordReferenceFormat": "JSON pointers into the retained primary report; labels are not public download links.",
+      "detail": "One controlled acceptance run with a planned restart, followed by explicitly separate negative checks. Source references describe the passing procedure; they do not replace recorded observations."
+    },
+    "corroboration": [
+      {
+        "repository": "Ranopha/dungeonq-amazon",
+        "version": "0.11.0",
+        "runUrl": "https://github.com/Ranopha/dungeonq-amazon/actions/runs/35303213743",
+        "artifactReport": "dq-runtime-proof.json",
+        "reportSha256": "cc4e01e2d77f79cd6fbb62cc6da231a9ad272ae18c46ca33d5c619745d9d9570",
+        "startedAt": "2026-09-18T03:27:25.702Z",
+        "finishedAt": "2026-09-18T03:27:27.979Z",
+        "passed": 11,
+        "total": 11,
+        "scope": "SEPARATE_PUBLIC_CI_ACCEPTANCE",
+        "detail": "Separate runs corroborate the 11 acceptance checks. They are not the source of the primary run counters below."
+      },
+      {
+        "repository": "Ranopha/dungeonq-astra",
+        "version": "0.11.0",
+        "runUrl": "https://github.com/Ranopha/dungeonq-astra/actions/runs/35303213740",
+        "artifactReport": "dq-runtime-proof.json",
+        "reportSha256": "9449625800f68a352db1319e1987a36dd9811311709ee9f29f98cecb5ceb6586",
+        "startedAt": "2026-09-18T03:27:27.107Z",
+        "finishedAt": "2026-09-18T03:27:29.659Z",
+        "passed": 11,
+        "total": 11,
+        "scope": "SEPARATE_PUBLIC_CI_ACCEPTANCE",
+        "detail": "Separate runs corroborate the 11 acceptance checks. They are not the source of the primary run counters below."
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "route",
+      "title": "Two sessions, two destinations",
+      "summary": "The ordinary session reached the artificial origin. The designated diverted session received synthetic-world results through the gateway.",
+      "observedDuring": "PRIMARY_ACCEPTANCE",
+      "observations": [
+        {
+          "label": "Diverted requests served by the synthetic world",
+          "value": "15"
+        },
+        {
+          "label": "Ordinary requests served by the artificial origin",
+          "value": "1"
+        },
+        {
+          "label": "Recorded route outcomes",
+          "value": "16 of 16 SERVED"
+        },
+        {
+          "label": "Synthetic route families",
+          "value": "http, mcp, ssh, postgres, host"
+        }
+      ],
+      "recordRefs": [
+        "/details/evidence/events",
+        "/details/evidence/scope/witness"
+      ],
+      "evidenceRefs": [
+        "summary.json",
+        "https://github.com/Ranopha/dungeonq-astra/blob/v0.11.0/runtime/rehearsal.mjs#L45",
+        "Primary retained report /details/evidence/events",
+        "Primary retained report /details/evidence/scope/witness"
+      ]
+    },
+    {
+      "id": "ticket",
+      "title": "A ticket that works inside the world",
+      "summary": "A Wrong Ticket issued through SSH was used through the bounded PostgreSQL interface in the synthetic world. A later negative check in the same run rejected a world ticket at the artificial origin.",
+      "observedDuring": "PRIMARY_ACCEPTANCE_AND_LATER_NEGATIVE_CHECK",
+      "observations": [
+        {
+          "label": "Recorded cross-protocol use",
+          "value": "SSH to PostgreSQL"
+        },
+        {
+          "label": "Ticket consumption persisted",
+          "value": "true"
+        },
+        {
+          "label": "Exact request replay after restart",
+          "value": "true"
+        },
+        {
+          "label": "Later origin-boundary check",
+          "value": "synthetic-to-origin: rejected; recorded after the main witness snapshot"
+        }
+      ],
+      "recordRefs": [
+        "/details/wrong-ticket",
+        "/details/adversarial/cases"
+      ],
+      "evidenceRefs": [
+        "summary.json",
+        "https://github.com/Ranopha/dungeonq-astra/blob/v0.11.0/runtime/rehearsal.mjs#L61",
+        "Primary retained report /details/wrong-ticket",
+        "Primary retained report /details/adversarial/cases"
+      ]
+    },
+    {
+      "id": "persistence",
+      "title": "The world survives a restart",
+      "summary": "After the services restarted, the acceptance procedure found the stored synthetic record at revision 2. Retrying the same ticket-use request returned its previous result without a second change.",
+      "observedDuring": "PRIMARY_ACCEPTANCE",
+      "observations": [
+        {
+          "label": "Restart completed",
+          "value": "true"
+        },
+        {
+          "label": "World revision after restart",
+          "value": "2"
+        },
+        {
+          "label": "Retry without a second effect",
+          "value": "true"
+        },
+        {
+          "label": "Scope",
+          "value": "Same disposable installation reopened during this run"
+        }
+      ],
+      "recordRefs": [
+        "/details/persistence",
+        "/details/wrong-ticket"
+      ],
+      "evidenceRefs": [
+        "summary.json",
+        "https://github.com/Ranopha/dungeonq-astra/blob/v0.11.0/runtime/rehearsal.mjs#L94",
+        "Primary retained report /details/persistence",
+        "Primary retained report /details/wrong-ticket"
+      ]
+    },
+    {
+      "id": "observation",
+      "title": "Activity leaves a trace",
+      "summary": "The stored activity record linked a ticket-use event to a later follow-up change. Local journal replay verified 34 events against persisted state.",
+      "observedDuring": "PRIMARY_ACCEPTANCE",
+      "observations": [
+        {
+          "label": "Observed action",
+          "value": "Ticket use at journal event 27"
+        },
+        {
+          "label": "Linked observation",
+          "value": "obs-27"
+        },
+        {
+          "label": "Follow-up event",
+          "value": "29"
+        },
+        {
+          "label": "Local journal verification",
+          "value": "VERIFIED"
+        },
+        {
+          "label": "Verified journal events",
+          "value": "34"
+        }
+      ],
+      "recordRefs": [
+        "/details/evidence/canonical/events/26",
+        "/details/evidence/canonical/events/28",
+        "/details/evidence/canonical/verifier"
+      ],
+      "evidenceRefs": [
+        "summary.json",
+        "https://github.com/Ranopha/dungeonq-astra/blob/v0.11.0/runtime/rehearsal.mjs#L89",
+        "Primary retained report /details/evidence/canonical/events/26",
+        "Primary retained report /details/evidence/canonical/events/28",
+        "Primary retained report /details/evidence/canonical/verifier"
+      ]
+    },
+    {
+      "id": "adaptation",
+      "title": "One change within an approved limit",
+      "summary": "The owner preview/apply flow granted a bounded policy before ticket use triggered the follow-up template. This run recorded one world change against an allowance of eight.",
+      "observedDuring": "PRIMARY_ACCEPTANCE",
+      "observations": [
+        {
+          "label": "Approval flow",
+          "value": "owner preview/apply"
+        },
+        {
+          "label": "Policy grant event",
+          "value": "24"
+        },
+        {
+          "label": "Allowed changes",
+          "value": "8"
+        },
+        {
+          "label": "Recorded changes",
+          "value": "1"
+        },
+        {
+          "label": "Template",
+          "value": "follow-up"
+        }
+      ],
+      "recordRefs": [
+        "/details/mutation",
+        "/details/evidence/canonical/events/23",
+        "/details/evidence/canonical/events/28"
+      ],
+      "evidenceRefs": [
+        "summary.json",
+        "https://github.com/Ranopha/dungeonq-astra/blob/v0.11.0/runtime/rehearsal.mjs#L85",
+        "Primary retained report /details/mutation",
+        "Primary retained report /details/evidence/canonical/events/23",
+        "Primary retained report /details/evidence/canonical/events/28"
+      ]
+    },
+    {
+      "id": "origin",
+      "title": "Check the artificial origin separately",
+      "summary": "At the main evidence snapshot after restart, the artificial origin had admitted the ordinary session once and no diverted session. Its data and configuration matched the pre-dispatch baseline.",
+      "observedDuring": "PRIMARY_ACCEPTANCE",
+      "observations": [
+        {
+          "label": "Ordinary origin admissions",
+          "value": "1"
+        },
+        {
+          "label": "Diverted origin admissions",
+          "value": "0"
+        },
+        {
+          "label": "Evidence checks",
+          "value": "7 of 7 PASS"
+        },
+        {
+          "label": "Origin resource",
+          "value": "artificial-origin"
+        },
+        {
+          "label": "Witness infrastructure",
+          "value": "Separate process in the local reference; not independent infrastructure"
+        }
+      ],
+      "recordRefs": [
+        "/details/origin-untouched",
+        "/details/evidence/scope/witness",
+        "/details/evidence/checks"
+      ],
+      "evidenceRefs": [
+        "summary.json",
+        "https://github.com/Ranopha/dungeonq-astra/blob/v0.11.0/runtime/rehearsal.mjs#L97",
+        "Primary retained report /details/origin-untouched",
+        "Primary retained report /details/evidence/scope/witness",
+        "Primary retained report /details/evidence/checks"
+      ]
+    }
+  ],
+  "limitations": [
+    "These are six explanatory checkpoints from one controlled reference run using artificial resources. They are not an observed attacker incident or a live runtime on this page.",
+    "Chapter order is explanatory, not chronological: the approved change occurred before restart. The primary route and origin counts come from the post-restart snapshot, before the later negative checks.",
+    "The ticket-to-origin rejection is a later negative check. It is not included in the earlier origin witness snapshot, which recorded one accepted ordinary request and zero rejected requests.",
+    "The retained primary report is published here only as a sanitized extract. Its SHA-256 pins the source bytes; record labels identify fields in that report and do not claim public access to the full report or independent attestation.",
+    "The two public CI runs are separate corroboration. Their retained artifacts contain the 11-check report; a v0.11.0 artifact-path mismatch omitted the detailed report. Their results are not substituted for the primary run counters.",
+    "Observation and adaptation here used recorded operations and an owner-approved finite template. No live model, automatic attacker classification, unrestricted self-modification or measured deception efficacy is demonstrated.",
+    "The origin witness covers an artificial registered resource in a local reference. Local journal verification and separate processes do not establish production-wide isolation or attest a real protected system.",
+    "Ticket values, credentials, installation paths and private source identifiers are omitted. This artifact grants no capability and changes no runtime state."
+  ]
+}

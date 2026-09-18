@@ -1,8 +1,8 @@
 {
   "name": "dungeonq-amazon",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "private": true,
-  "description": "Persistent synthetic deception runtime, assistant governance and causal studies with bounded protocol adapters and replayable evidence.",
+  "description": "A defensive deception runtime: divert designated sessions into persistent synthetic worlds, observe their activity and verify the origin boundary.",
   "license": "Apache-2.0",
   "author": "DungeonQ contributors",
   "repository": {

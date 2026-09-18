@@ -1,62 +1,63 @@
-# DungeonQ Runtime — Amazon profile
+# DungeonQ — Deception Runtime
 
-**One core. Five real adapters. Persistent synthetic worlds.** DungeonQ is an Apache-2.0 deception runtime for human operators and AI clients. The v0.11 reference routes explicitly provisioned contexts through HTTP, MCP, SSH, a PostgreSQL protocol profile and a private workload broker into the same governed state.
+**Divert a suspicious session into a persistent synthetic world. Observe what it does. Adapt within an approved policy.**
 
-A **Wrong Ticket** is useful inside its issuing synthetic world: it grants a bounded read, survives restart and cannot authorize access to the independent artificial origin. Observations persist. A separately authenticated operator can preview and approve finite follow-up mutations or fence a context; imported text and models cannot grant that authority.
+DungeonQ is open-source infrastructure for security teams and developers handling human- or AI-driven suspicious sessions. At a designated entry point, its trusted gateway routes an admitted session into a separate synthetic world. The participant can read records, save changes and use a useful **Wrong Ticket** there. The operator retains the activity history and checks the protected origin through independent evidence.
 
-**SYNTHETIC_ONLY · owned reference implementation · no production protection or general deception-efficacy claim.** The network clients, storage, signatures and container checks are real. The records, contexts and protected origin are artificial. Context disposition is provisioned by trusted setup; this is not a general attack detector or transparent OS interceptor.
+The current self-hosted reference makes that sequence inspectable with real HTTP, MCP, SSH, a bounded PostgreSQL protocol and a private Unix workload broker. Trusted setup explicitly provisions which contexts are diverted; the protected origin and all records are artificial.
 
-## Start with the runtime
+[**Follow the recorded diversion**](docs/JUDGE_ROUTE.md) · [**Operate your own reference**](#run-the-reference) · [Acceptance evidence](docs/RUNTIME_ACCEPTANCE.md)
 
-Use Node.js **24.15.0+**, npm and the platform prerequisites in [the operation guide](docs/RUNTIME.md). In the extracted source directory:
+## What happens after DIVERT
+
+| Step | Participant experience | Operator evidence and control |
+| --- | --- | --- |
+| Enter | A real client request reaches its designated synthetic world. | Authenticated routing is correlated with canonical and collector records. |
+| Work | Read and write persistent records; use a Wrong Ticket for a bounded world-only read. | A ticket never supplies origin authority; state and ticket consumption survive restart. |
+| Continue | Revisit the same world across supported adapters. | Observe stored requests, operations and world revisions across the session. |
+| Adapt | Approved follow-up records can appear after a first-time ticket use. | A finite operator grant controls the template, context, expiry and mutation budget. |
+| Verify | Synthetic success remains within that world. | Check the separate artificial-origin witness and route census; fence the context when required. |
+
+A Wrong Ticket is deliberately useful, rather than an inert fake credential. Its signed scope permits work inside its issuing world. Approved adaptation extends that world with bounded records; participant instructions cannot authorize it. Transport failure never causes a diverted request to fall back to origin.
+
+## Run the reference
+
+Use Node.js **24.15.0+**, npm and the prerequisites in [the operation guide](docs/RUNTIME.md):
 
 ```sh
 npm ci --ignore-scripts
 npm run runtime -- --data-dir ../dungeonq-runtime-lab
 ```
 
-Open the printed **Control room** URL. Keep the private credential file outside Git and AI context; give a participant client only its actor token. The separate owner token is a reference capability, not an enterprise account system or proof of human presence. Reuse the same private data directory to resume; do not reset an uncertain installation.
+Open the printed **Control room** URL. Keep the private credential file outside Git and AI context. Give a participant only its actor token; keep operator authority separate. Follow the [evaluator route](docs/JUDGE_ROUTE.md) to send a real request, consume a ticket, authorize one finite policy and inspect retained state after restart. Reuse the same private data directory to resume.
 
-1. Inspect contexts, worlds and adapter readiness in the English control room.
-2. Connect a participant through a documented adapter or the Node/Python SDK. Read, write with an expected revision, issue a ticket and consume it in the same synthetic world.
-3. Preview a mutation grant, review its exact scope and digest, then explicitly apply. Subsequent first-time ticket consumption can append a bounded, observed record. Fence invalidates outstanding authority.
-4. Inspect canonical replay, route events and the independent artificial-origin census. Missing or unknown evidence remains unverified.
+The [client guide](docs/RUNTIME.md) covers all five adapters, the CLI and Node/Python SDKs. The [container profile](deploy/runtime-reference/README.md) adds measured network and file separation. The recorded website and older browser rehearsal are presentations; running the source provides the actual server roles.
 
-[Operator and client guide](docs/RUNTIME.md) · [Versioned contract](docs/contracts/RUNTIME_V1.md) · [Recorded acceptance and remaining gates](docs/RUNTIME_ACCEPTANCE.md) · [Container isolation profile](deploy/runtime-reference/README.md) · [Public evidence summary](evidence/runtime-v1/summary.json)
+## Evidence you can inspect
 
-## What the evidence establishes
+The **September 18 v0.11.0 Amazon distribution** passed **460/460 tests**. Its [public CI run](https://github.com/Ranopha/dungeonq-amazon/actions/runs/35303213743) passed Ubuntu, macOS and source-bound runtime acceptance: **11/11 required rows and 16/16 container checks**. The earlier reference also recorded restart continuity and an inconclusive result when infrastructure was stopped. These are dated observations; the [validation record](docs/VALIDATION.md) identifies each tested source.
 
-The September 18 runtime baseline recorded **11/11 acceptance checks**, **16/16 container checks before and after restart**, preserved state/evidence across new container IDs, and rejection when infrastructure was stopped. The repository baseline passed **448 tests** before release-packaging additions; use the versioned validation record for the final distribution count. These are engineering observations, not new live-model results or independent certification.
+[Six recorded checkpoints](evidence/runtime-v1/journey.json) · [Evidence summary](evidence/runtime-v1/summary.json) · [Versioned runtime contract](docs/contracts/RUNTIME_V1.md). The checkpoints group one recorded reference acceptance run by capability, with source pointers and timing; public CI is separate corroboration.
 
-The local process profile shares an OS user. The container profile adds measured network and file separation; Docker administration, the shared VM kernel and the trusted gateway remain trusted. “Origin untouched” covers the independently witnessed artificial origin in the measured interval, never a production system. SSH and PostgreSQL accept finite operations only; the workload broker is explicit mediation.
+For fresh acceptance, follow the container guide and run the documented `runtime:proof` and `runtime:gate` commands against the exact clean candidate. Missing or stale evidence, unknown outcomes and failed checks prevent full admission. Public CI does not by itself establish protected-branch enforcement.
 
-For fresh acceptance, follow the container guide, retain its current source-matching isolation report, then run `runtime:proof` with that report and an output path outside the checkout. Run `runtime:gate` against the exact clean candidate. Missing isolation, stale evidence, failed checks or dirty source cannot yield full admission. A local gate and a CI template do not establish remote branch protection; consult [validation](docs/VALIDATION.md) for actual release checks.
+## Scope and open questions
 
-## One product, distinct profiles
+This is an **owned reference using artificial resources**, with explicitly provisioned contexts. It does not yet classify arbitrary attacks, transparently intercept host activity or certify production protection. SSH and PostgreSQL accept finite operations; the Unix broker mediates an explicitly connected workload. Local processes share an OS user, while the measured container profile still trusts Docker administration, the shared kernel and the gateway.
 
-| Profile | Purpose | Evidence boundary |
-| --- | --- | --- |
-| Runtime v1 | Real local ingress, persistent worlds, scoped tickets, observations and approved adaptation | Artificial resources; no general detector or production acceptance |
-| Governed assistant / Astra | Model or assistant proposal → separate review → bounded effect → receipt | Retained original model record; optional API use is separately paid |
-| Defense / Orders Workspace | Single-incident rotation, local alerts and administrator-bound notification | Separate owner account profile; SMTP/OAuth need owner configuration |
-| World / Study / Topology | Reproducible synthetic exploration and causal research | All positive and negative results retained; no general efficacy claim |
-| Public browser rehearsal | Learn the approval flow and inspect saved artifacts | Browser-simulated reviewer; no live backend, model call or hosted runtime |
+“Origin untouched” means the named artificial data/configuration and admission interval were checked; audit records change to record that measurement. Real deployment requires a named authorized connector, detection/identity integration, legitimate-traffic continuity, recovery and environment-specific acceptance.
 
-These profiles share DungeonQ's authority and evidence principles. The runtime owner token does not inherit the legacy account/email workflow. Optional Google/GitHub and TLS SMTP adapters do not prove live provider login or inbox delivery; Apple remains unavailable in the loopback profile.
+Engineering success also does not establish deception efficacy. The complete research record retains **0/2** wrong-high-confidence study outcomes, **0/4** unsupported completion claims and the earlier **0/3** defense pilot. Later workspace participants accepted decoy values while explicitly qualifying their synthetic, common-source evidence. [Study](docs/STUDY_RESULTS.md) · [Topology](docs/TOPOLOGY_RESULTS.md) · [Defense pilot](docs/DEFENSE_PILOT_RESULTS.md) · [Workspace](docs/WORKSPACE_LAB.md).
 
-## Evaluate the limits, too
+## One core, reusable capabilities
 
-Prior research remains visible: **0/2** wrong-high-confidence study outcomes, **0/4** unsupported publishing-completion claims, and the earlier **0/3** defense pilot. Both later workspace participants accepted decoy quantities but explicitly qualified their conclusions as synthetic-interface, common-source evidence. This does not establish sustained origin misbelief. Exact pilot model identities were not independently attested.
+The Proof Kernel and separate approval boundary support the runtime's decisions and evidence. The governed-assistant/Astra profiles exercise bounded clients; Defense and Orders Workspace retain incident response, notifications and account workflows; World, Study and Topology retain research instruments and their original results. These are supporting profiles of DungeonQ, not separate product definitions. Legacy account/email features do not automatically apply to the runtime's reference owner token.
 
-[Study results](docs/STUDY_RESULTS.md) · [Topology results](docs/TOPOLOGY_RESULTS.md) · [Defense pilot](docs/DEFENSE_PILOT_RESULTS.md) · [Workspace method and caveat](docs/WORKSPACE_LAB.md) · [Email setup](docs/EMAIL_NOTIFICATIONS.md)
+## Amazon contribution
 
-Real deployment still needs a named authorized host connector, legitimate-traffic continuity, rollback, enterprise identities, operational recovery and environment-specific acceptance. No paid model call was needed for the new runtime evidence. The earlier WebMCP repository, site, submission and evidence remain unchanged.
+The retained **Alexa+ simulation** lets an assistant investigate through real local MCP while a separate reviewer controls bounded effects. DungeonQ's defensive deception runtime is the product; the assistant workflow demonstrates how a client can participate without acquiring operator authority.
 
-## Retained Amazon workflow and film
-
-[Historical v0.2 governed-assistant film](https://youtu.be/ezX7cOF2s0s) · [Amazon-specific contribution](docs/DELTA.md) · [Current submission copy](docs/SUBMISSION.md) · [External MCP client](docs/EXTERNAL_AGENT.md)
-
-The Alexa-style assistant remains a deterministic simulator with real local MCP transport. No Alexa service, Echo integration, AWS deployment or Amazon certification is claimed. The historical film is **not a capture of Runtime v1**.
+This entry retains **Alexa+ primary + Open Source Mini**. [Contribution and reused foundations](docs/DELTA.md) · [Current submission copy](docs/SUBMISSION.md) · [External MCP client](docs/EXTERNAL_AGENT.md). The assistant is a deterministic Alexa-style simulation, with no Alexa service, Echo integration or AWS deployment claim. The [original v0.2 film](https://youtu.be/ezX7cOF2s0s) demonstrates that earlier workflow, not Runtime v1.
 
 ## Verify and contribute
 
@@ -65,7 +66,7 @@ npm run check
 npm run verify:source
 ```
 
-The source manifest checks file integrity, not an independent signature or trusted timestamp. [Testing](docs/TESTING.md) · [Validation](docs/VALIDATION.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Release history](CHANGELOG.md). Apache-2.0: preserve [LICENSE](LICENSE), [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md).
+[Open-source review route](docs/OSS_REVIEW_GUIDE.md) · [Testing](docs/TESTING.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Release history](CHANGELOG.md). Apache-2.0: preserve [LICENSE](LICENSE), [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md). Source manifests check integrity, not independent certification. The earlier WebMCP repository, site, submission and evidence remain frozen.
 
 <details>
 <summary>Historical v0.10 and earlier profile walkthroughs</summary>

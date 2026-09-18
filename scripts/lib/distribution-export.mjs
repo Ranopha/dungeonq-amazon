@@ -28,15 +28,15 @@ export const PUBLIC_SOURCE_PATHS = Object.freeze([
 const sharedDocuments = ['docs/STUDY_LAB.md', 'docs/STUDY_RESULTS.md', 'docs/WORLD_LAB.md',
   'docs/contracts/STUDY_V1.md', 'docs/contracts/WORLD_V1.md', 'evidence/study-v1',
   'docs/TOPOLOGY_LAB.md', 'docs/TOPOLOGY_RESULTS.md', 'docs/contracts/TOPOLOGY_V2.md', 'evidence/topology-v2',
-  'docs/DEFENSE_LAB.md', 'docs/OSS_REVIEW_GUIDE.md', 'docs/contracts/DEFENSE_GOVERNANCE_V1.md', 'evidence/defense-v1',
+  'docs/DEFENSE_LAB.md', 'docs/OSS_REVIEW_GUIDE.md', 'docs/JUDGE_ROUTE.md', 'docs/contracts/DEFENSE_GOVERNANCE_V1.md', 'evidence/defense-v1',
   'docs/WORKSPACE_LAB.md', 'docs/DEFENSE_PILOT_RESULTS.md', 'docs/contracts/ORDERS_WORKSPACE_V1.md',
   'evidence/workspace-pilot-v1', 'evidence/defense-pilot-v1',
   'docs/EMAIL_NOTIFICATIONS.md', 'docs/START_HERE.zh-TW.md', 'evidence/email-v1',
   'docs/RUNTIME.md', 'docs/RUNTIME_ACCEPTANCE.md', 'docs/contracts/RUNTIME_V1.md', 'evidence/runtime-v1',
   'media/study-evidence.png', 'media/study-trace.png', 'media/topology-evidence.png', 'media/topology-observer.png'];
 const targets = {
-  amazon: { name: 'dungeonq-amazon', description: 'Persistent synthetic deception runtime, assistant governance and causal studies with bounded protocol adapters and replayable evidence.' },
-  astra: { name: 'dungeonq-astra', description: 'Persistent synthetic deception runtime and Astra governance rehearsal with separate authority, bounded protocol adapters and replayable evidence.' },
+  amazon: { name: 'dungeonq-amazon', description: 'A defensive deception runtime: divert designated sessions into persistent synthetic worlds, observe their activity and verify the origin boundary.' },
+  astra: { name: 'dungeonq-astra', description: 'A defensive deception runtime: divert designated sessions into persistent synthetic worlds, with bounded adaptation and inspectable origin evidence.' },
 };
 
 export async function exportDistribution({ root, output, target }) {

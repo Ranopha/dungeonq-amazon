@@ -1,48 +1,65 @@
-# Amazon submission — v0.11 runtime update
+# Amazon submission — defensive deception runtime
 
 ## Name
 
-DungeonQ — Governed Assistant Lab
+DungeonQ — Deception Runtime
+
+Update the display name on the existing entry; keep its submission identity and track selections. Governed Assistant Lab remains the retained Alexa-style profile name.
 
 ## Elevator pitch
 
-A governed runtime for people and AI: five real local adapters, persistent synthetic worlds, scoped tickets and inspectable evidence. Assistants propose; separate authority controls effects.
+Divert designated suspicious sessions into persistent worlds. Human or AI clients use world-only tickets; operators observe, approve bounded adaptation and check the artificial-origin boundary.
 
 ## Inspiration
 
-A fluent answer, a successful tool call and an authorized effect are different facts. DungeonQ makes those differences observable in an owned artificial environment, with durable state and independent readback.
+A suspicious session is a sequence of actions, not a single request. It can switch tools, return later and treat a successful local action as progress toward another goal. Security teams need a controlled place for that interaction: one that stays coherent, exposes what happened and does not turn synthetic progress into authority over the protected resource.
+
+DungeonQ makes that defensive deception mechanism inspectable. Approval and signed evidence support the boundary; the product is the persistent diversion runtime.
 
 ## What it does
 
-The v0.11 runtime routes explicitly provisioned contexts through HTTP, MCP, bounded SSH and PostgreSQL protocol profiles, and a private workload broker into one canonical synthetic world. Its Wrong Ticket is a useful bounded read capability that cannot authorize the independent artificial origin. Records, ticket consumption and observations survive restart.
+At a designated ingress, a trusted gateway routes a provisioned DIVERT context into its synthetic world. Real HTTP, MCP, bounded SSH/PostgreSQL and private Unix-broker clients share the same records. The participant can read, write and return after restart. A **Wrong Ticket** performs a useful scoped read inside the issuing world, but cannot authorize the independent artificial origin.
 
-The English operator control room separates observation, preview, exact review, explicit apply and evidence. An approved finite grant allows observation-linked synthetic follow-up mutations; fencing advances the context epoch and invalidates outstanding authority. Node and Python SDKs use the same API. Models and imported text cannot choose a tenant, an origin route or their own approval.
+The operator observes recorded activity and can approve a finite adaptation policy. Successful first-time ticket consumption can then append an observation-linked follow-up record, within the approved context, expiry and budget. Fencing invalidates outstanding context authority. Canonical history, gateway events, a separate collector and origin witnesses provide independent readbacks of the reference path.
 
-The original Alexa-style governed-assistant profile remains available: real local MCP investigation, independent reviewer reauthentication, one bounded synthetic effect and a signed receipt. The Alexa-style assistant is deterministic. No actual Alexa service, Echo integration, AWS deployment or Amazon certification is claimed.
+The current reference uses explicitly provisioned suspicious/ordinary contexts and artificial assets. It demonstrates the mechanism with real local clients; it is not a general attack classifier, transparent host interceptor or production deployment.
+
+## Alexa+ and Open Source contribution
+
+The existing **Alexa+ simulation** remains a working client profile: a deterministic Alexa-style assistant investigates through real local MCP, requests a bounded synthetic response, and hands review to a separately authenticated operator. It has no approval tool. The profile retains MCP 2025-11-25 over Streamable HTTP, persistent request binding and signed effect receipts. No actual Alexa service, Echo integration, AWS deployment or Amazon certification is claimed.
+
+This is an existing project significantly updated during the hackathon. The [Amazon delta](DELTA.md) separates reused foundations from the new MCP assistant integration and later runtime work. **Open Source Mini** contributes the Apache-2.0 source, protocol adapters, persistent-world implementation, tests and reproducible evidence. GitHub username: **Ranopha**. Use the existing [public repository](https://github.com/Ranopha/dungeonq-amazon) and the release/commit actually published for this update. Retain Alexa+ primary + Open Source Mini; no AWS Builder contribution is asserted.
 
 ## How we built it
 
-Node.js, the official MCP SDK, SQLite, authenticated operation envelopes and finite protocol adapters share a canonical runtime. Separate facade, artificial-origin and collector roles retain correlated evidence. A container profile measures actual network membership, mount boundaries, positive read controls, direct-access denials and continuity across restart. The gateway, Docker administrator and shared VM kernel remain trusted.
+Node.js, the official MCP SDK, SQLite, authenticated operation envelopes and finite protocol adapters share canonical state. The gateway, synthetic facade, artificial origin and evidence collector have separate roles. The container reference checks actual network/file separation and continuity across restart. Docker administration, the shared kernel and the trusted gateway remain in scope as trusted components.
+
+The hard engineering work is keeping routing, ticket authority, history and finite policy consistent across different clients, retries and restarts. A lost reply must remain visible as uncertainty. A successful synthetic operation must never become a fallback route to origin.
 
 ## What reviewers can verify
 
-[Recorded acceptance](RUNTIME_ACCEPTANCE.md) and the [public evidence summary](../evidence/runtime-v1/summary.json) identify the shared source version and its scope. The runtime baseline recorded 11/11 acceptance checks, 16/16 container checks before and after restart, and an inconclusive result with infrastructure stopped. The original 448-test development baseline is distinct from the final distribution's [validation record](VALIDATION.md).
+Start with [six recorded checkpoints](JUDGE_ROUTE.md): DIVERT, useful Wrong Ticket, persistence, observation, bounded adaptation and origin checks. They group one actual reference acceptance run by capability; the checkpoint order is not a chronological incident transcript. Then operate the same mechanism locally:
 
-Install with `npm ci --ignore-scripts`, run `npm run runtime`, then follow the [operator/client guide](RUNTIME.md). Fresh full acceptance requires current container evidence and a clean candidate; missing, stale or failed evidence cannot become PASS. The static website presents recorded files and browser simulations. It does not host this integration.
+```sh
+npm ci --ignore-scripts
+npm run runtime -- --data-dir ../dungeonq-runtime-review
+```
 
-## Challenges and learning
+The [evaluator route](JUDGE_ROUTE.md) uses the existing CLI and Control room. The [operation guide](RUNTIME.md) documents all adapters and the [container guide](../deploy/runtime-reference/README.md) reproduces isolation checks. A recorded website is not the self-hosted runtime.
 
-The difficult boundary is continuity across identities, transport changes, restarts, replay and uncertain dispatch. A useful local capability must stay local. Evidence must not disappear when an operation's reply is lost. Approval must bind the exact current context and scope. Tests establish these mechanisms within the owned reference; they do not establish a universal deception effect.
+The September 18 **v0.11.0 Amazon** distribution passed **460/460 tests** and [public Ubuntu/macOS/runtime CI](https://github.com/Ranopha/dungeonq-amazon/actions/runs/35303213743), including 11/11 required runtime rows and 16/16 container checks. These dated results are bound to the source in [VALIDATION.md](VALIDATION.md); they are not a new test result for a later presentation edit.
 
-The research record remains complete: 0/2 wrong-high-confidence study outcomes, 0/4 unsupported publishing-completion claims and the earlier 0/3 defense pilot. Later workspace participants used decoy quantities while explicitly qualifying common-source synthetic evidence. That is not proof of sustained origin misbelief or general human/LLM efficacy.
+## What we learned
+
+A world can behave consistently without proving that a person or model believes it is the real target. We retain the complete negative record: 0/2 wrong-high-confidence study outcomes, 0/4 unsupported publishing-completion claims and the earlier 0/3 defense pilot. Later participants accepted decoy quantities while explicitly qualifying the synthetic, common-source evidence. This supports bounded mechanism observations, not general deception efficacy.
 
 ## Impact and next steps
 
-Developers and evaluators can exercise human/AI authority boundaries without real enterprise data or a paid model call. This is one product with replaceable runtime, assistant and research profiles, not separate claims of production deployment. Next acceptance gates include a named authorized host connector, ordinary-traffic continuity, rollback, enterprise identity, backup/recovery and environment-specific operations evidence. Context disposition remains provisioned; no general detector or transparent host interception is claimed.
+Security engineers, open-source reviewers and AI-client developers can inspect and adapt the same diversion, state, ticket and observation contracts. The immediate outcome is a reproducible defensive deception reference with independently checked artificial-origin boundaries. Production work still requires a named authorized host connector, detection and identity integration, legitimate-traffic continuity, rollback and operational recovery.
 
-## Track, media and status
+## Media and publication record
 
-Retain the existing Alexa+ and Open Source Mini entry identity; no AWS Builder integration is claimed. The Amazon-specific contribution and reused foundations are documented in [DELTA.md](DELTA.md). The original [v0.2 film](https://youtu.be/ezX7cOF2s0s) remains historical and is **not a Runtime v1 capture**. This copy does not establish that an external form was saved or accepted. The earlier WebMCP repository, site, submission and evidence remain frozen.
+The [original v0.2 film](https://youtu.be/ezX7cOF2s0s) demonstrates the retained Alexa-style assistant workflow; it is **not a Runtime v1 recording**. All original model records and earlier materials below remain intact. Saved external fields and publication status must be read back separately. The original WebMCP repository, site, submission and evidence remain frozen.
 
 <details>
 <summary>Historical submission wording through v0.10</summary>

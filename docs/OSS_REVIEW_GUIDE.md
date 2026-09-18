@@ -1,3 +1,43 @@
+# Review DungeonQ's defensive deception runtime
+
+DungeonQ gives security engineers and AI-client developers a reproducible way to divert designated suspicious sessions into persistent synthetic worlds, observe their activity and authorize bounded adaptation. Useful world-only tickets let the participant continue working while independent artificial-origin checks measure the routing boundary.
+
+The [Amazon](https://github.com/Ranopha/dungeonq-amazon) and [Astra](https://github.com/Ranopha/dungeonq-astra) distributions share this core. Their assistant integrations and original model records are supporting profiles, not different product definitions. The source is Apache-2.0.
+
+## First minute: understand the mechanism
+
+Follow [six recorded checkpoints](JUDGE_ROUTE.md): DIVERT, Wrong Ticket, persistence, observation, adaptation and origin checks. Each links retained evidence from one recorded reference acceptance run; checkpoint order is explanatory rather than chronological. The runtime handles real HTTP, MCP, bounded SSH/PostgreSQL and private Unix-broker clients; trusted setup explicitly provisions which contexts are diverted.
+
+The immediate outcome is an inspectable defensive deception mechanism using artificial resources. The records do not establish automatic attack classification, arbitrary OS interception or production protection.
+
+## Next: run and inspect it
+
+From an extracted release with Node 24.15.0+ and npm:
+
+```sh
+npm ci --ignore-scripts
+npm run runtime -- --data-dir ../dungeonq-runtime-review
+```
+
+Use [the evaluator route](JUDGE_ROUTE.md) to connect separate operator/participant roles, send a request through the existing CLI, consume a useful ticket, approve a finite mutation policy and revisit preserved state. Keep the full credential file out of AI context; provide only the actor capability to the participant. The [operation guide](RUNTIME.md) documents protocol contracts, Node/Python clients and recovery behavior.
+
+For automated mechanism checks, run `npm run test:runtime`. For fresh full acceptance, follow the [container profile](../deploy/runtime-reference/README.md) and documented `runtime:proof` / `runtime:gate` commands. Full admission requires complete current evidence bound to the exact clean source. The [validation record](VALIDATION.md) distinguishes dated distribution tests, public CI and measured container results.
+
+## Then: evaluate the evidence, including failures
+
+Inspect the versioned [runtime contract](contracts/RUNTIME_V1.md), [acceptance and remaining gates](RUNTIME_ACCEPTANCE.md), code and tests. The container profile measures specific network/file boundaries while trusting the gateway, Docker administration and shared kernel. Its artificial-origin census is a defined measurement, not independent certification or a production claim.
+
+Keep research outcomes separate from engineering acceptance: [0/2 wrong-high-confidence study outcomes](STUDY_RESULTS.md), [0/4 unsupported completion claims](TOPOLOGY_RESULTS.md), [the 0/3 defense pilot](DEFENSE_PILOT_RESULTS.md), and [later qualified decoy-data acceptance](WORKSPACE_LAB.md). Original model records remain available; passing protocol tests do not establish general deception efficacy.
+
+The Proof Kernel, assistant/Astra integrations, notification/rotation workflows and research instruments remain reusable parts of the same product. They retain their own authority and evidence boundaries. The static website presents recorded observations; operating the independent server roles requires self-hosting.
+
+[Contributing](../CONTRIBUTING.md) · [Security](../SECURITY.md) · [License](../LICENSE) · [Notices](../NOTICE) · [Release history](../CHANGELOG.md). A source update does not show that an external reviewer refreshed an existing OSS application. Keep the existing application; no duplicate is needed.
+
+<details>
+<summary>Earlier review route and profile history</summary>
+
+The earlier route below preserves its dated incident-response focus, original commands and evidence limits. Use the runtime route above for the current product entry point.
+
 # A three-minute open-source review
 
 Public source: [Astra edition](https://github.com/Ranopha/dungeonq-astra) · [Amazon edition](https://github.com/Ranopha/dungeonq-amazon). [繁體中文入門／文件索引](START_HERE.zh-TW.md) includes credential-free setup and a capability/status matrix. Both editions share the runtime and retained synthetic core; their challenge-specific workflows and retained model records remain separately identified.
@@ -40,3 +80,5 @@ The defense reference is one fixed synthetic A with one rotation, finite B/C/D w
 The [v0.7 pilot](TOPOLOGY_RESULTS.md) retains **2/2** procedural-memo local-chain following versus **0/2** controls, but **0/4** unsupported completion claims; all four ultimately verified the actual goal. The [v0.6 study](STUDY_RESULTS.md) retains **0/2** wrong-high-confidence induction. Its 48 reference-learner conditions are not 48 subjects. No general deception efficacy is claimed, and exact pilot model identities were not independently attested. The Astra edition's earlier live API record is separate and unchanged.
 
 Read the source [README](../README.md), [security policy](../SECURITY.md), [contribution guide](../CONTRIBUTING.md), [changelog](../CHANGELOG.md), [license](../LICENSE) and [notices](../NOTICE). The static website displays saved engineering/research evidence; self-hosting is required to operate the actual separate server roles. A new source version does not prove that an external reviewer has refreshed an earlier application, and does not require a duplicate application.
+
+</details>

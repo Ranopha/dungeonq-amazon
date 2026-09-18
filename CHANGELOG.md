@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.11.1 — 2026-09-18
+
+- Restore the product narrative around actual reference diversion, persistent synthetic reality, world-only tickets, observation, bounded adaptation and independent origin readback. Approval and Proof Kernel evidence support that story.
+- Add a six-checkpoint recorded journey and a shared judge route; retain all earlier studies, negative results and historical videos.
+- Correct the CI artifact path so future runtime jobs retain their detailed acceptance report alongside the summary.
+- Presentation and evidence packaging update; no new runtime capability, live attack detection, production acceptance or general deception-efficacy result.
+
 ## 0.11.0 — 2026-09-18
 
 - Add the shared persistent Deception Runtime with bounded HTTP, official-SDK MCP, SSH, PostgreSQL-profile and managed-workload interfaces; JavaScript and Python clients share one contract.

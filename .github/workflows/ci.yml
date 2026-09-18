@@ -112,7 +112,7 @@ jobs:
           name: runtime-reference-evidence
           path: |
             ${{ runner.temp }}/dq-runtime-proof.json
-            ${{ runner.temp }}/dq-runtime-proof.details.json
+            ${{ runner.temp }}/dq-runtime-proof.json.details.json
             ${{ runner.temp }}/dq-runtime-reference/isolation-result.json
           retention-days: 14
           if-no-files-found: ignore

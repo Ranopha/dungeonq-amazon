@@ -37,7 +37,7 @@ async function exportFixture(t) {
     'deploy/runtime-reference/compose.yml', 'deploy/runtime-reference/Dockerfile', 'deploy/runtime-ci.template.yml',
     'scripts/build-astra-site.mjs', 'docs/SCENARIO_AUTHORING.md']) await file(source, path, 'synthetic fixture');
   for (const target of ['amazon', 'astra']) await file(source, `${target}-release/README.md`, `Synthetic ${target}`);
-  for (const path of ['STUDY_LAB.md', 'STUDY_RESULTS.md', 'WORLD_LAB.md', 'contracts/STUDY_V1.md', 'contracts/WORLD_V1.md', 'TOPOLOGY_LAB.md', 'TOPOLOGY_RESULTS.md', 'contracts/TOPOLOGY_V2.md', 'DEFENSE_LAB.md', 'OSS_REVIEW_GUIDE.md', 'contracts/DEFENSE_GOVERNANCE_V1.md', 'WORKSPACE_LAB.md', 'DEFENSE_PILOT_RESULTS.md', 'contracts/ORDERS_WORKSPACE_V1.md', 'EMAIL_NOTIFICATIONS.md', 'START_HERE.zh-TW.md', 'RUNTIME.md', 'RUNTIME_ACCEPTANCE.md', 'contracts/RUNTIME_V1.md']) {
+  for (const path of ['STUDY_LAB.md', 'STUDY_RESULTS.md', 'WORLD_LAB.md', 'contracts/STUDY_V1.md', 'contracts/WORLD_V1.md', 'TOPOLOGY_LAB.md', 'TOPOLOGY_RESULTS.md', 'contracts/TOPOLOGY_V2.md', 'DEFENSE_LAB.md', 'OSS_REVIEW_GUIDE.md', 'JUDGE_ROUTE.md', 'contracts/DEFENSE_GOVERNANCE_V1.md', 'WORKSPACE_LAB.md', 'DEFENSE_PILOT_RESULTS.md', 'contracts/ORDERS_WORKSPACE_V1.md', 'EMAIL_NOTIFICATIONS.md', 'START_HERE.zh-TW.md', 'RUNTIME.md', 'RUNTIME_ACCEPTANCE.md', 'contracts/RUNTIME_V1.md']) {
     await file(source, `release-study/docs/${path}`, 'Synthetic public documentation');
   }
   await file(source, 'release-study/evidence/study-v1/reference-proof.json', '{"profile":"SYNTHETIC_CAUSAL_STUDY"}');

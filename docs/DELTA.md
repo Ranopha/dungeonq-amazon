@@ -1,5 +1,9 @@
 # New work and provenance
 
+## v0.11.1 presentation correction — September 18, 2026
+
+The entry now leads with DungeonQ as a defensive deception runtime: follow the diverted reference session before inspecting the approval and evidence mechanisms that support it. The shared [judge route](JUDGE_ROUTE.md) and sanitized recorded journey make the existing integration observable. This revision adds no runtime capability or model result. It also fixes the runtime CI detailed-report artifact filename; historical artifacts and studies are not rewritten.
+
 ## v0.11.0 additions — September 18, 2026
 
 Adds the shared Deception Runtime: real bounded HTTP, MCP, SSH, PostgreSQL-profile and managed-workload entry points; persistent synthetic worlds; scoped Wrong Tickets; observations and exact owner-approved finite mutation. JavaScript and Python SDKs make the same contract reusable by people and AI clients. Protocol availability is not certification of every client or a general-purpose SSH/SQL server.

@@ -1,13 +1,13 @@
 {
   "schemaVersion": "dungeonq.source-release/v1",
   "profile": "SYNTHETIC_ONLY",
-  "generatedAt": "2026-09-18T03:25:53.151Z",
+  "generatedAt": "2026-09-18T04:05:02.025Z",
   "privateHistoryIncluded": false,
   "entries": [
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 5181,
-      "sha256": "c0b85cf9f67fdbd7d421b6da0cd759a14ca6d576104e470045bba260b93e5511"
+      "bytes": 5186,
+      "sha256": "7c8ef284e9809cabfcfe441dfbad7c31005b2dff5e6c2ad88ed7cc55b16fc692"
     },
     {
       "path": ".gitignore",
@@ -76,8 +76,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 7571,
-      "sha256": "9c6d8881c376210703d7518e0e4ceddcc24e3240f1a621685d1bc7d12c3230c4"
+      "bytes": 8242,
+      "sha256": "ebac4d43d0bad326f0b7d2d6676400e032f63d42fc2ba6bca2c1cd23112d6eb0"
     },
     {
       "path": "cli/run.mjs",
@@ -181,8 +181,8 @@
     },
     {
       "path": "docs/DELTA.md",
-      "bytes": 6985,
-      "sha256": "9eb79ee1f93d87bf4e0b5cfd7dff695e2d4b5d66f41ab2edc8be6bd5433335bc"
+      "bytes": 7511,
+      "sha256": "349f5e36686d9a59bd5c8bad75c2c52d8923162b2db6b7bf13685d46df2d0fdc"
     },
     {
       "path": "docs/DEMO_SCRIPT.md",
@@ -210,14 +210,19 @@
       "sha256": "855817ef0e16748cf697af0b5e9c5766059ca64874d5e0fb43d529b017750e88"
     },
     {
+      "path": "docs/JUDGE_ROUTE.md",
+      "bytes": 7466,
+      "sha256": "e0ce187dbc0131ffdf4b155eded3f033f61cb648873b617f473296bfcd46d97b"
+    },
+    {
       "path": "docs/MCP.md",
       "bytes": 3308,
       "sha256": "9fc1fe6a4a4a686b43e9acb9dad142e61cd9d43963881cf381b4bb174650630c"
     },
     {
       "path": "docs/OSS_REVIEW_GUIDE.md",
-      "bytes": 6118,
-      "sha256": "0d4e2a7395791215f79d5360f46a3903bcee29c0df197bbf6a7f6022d1defcf6"
+      "bytes": 10219,
+      "sha256": "c48b55e25cafb3a87e01375372e837d3e91a6adba42d2482f894e390e3ddf075"
     },
     {
       "path": "docs/PRODUCT_FEEDBACK.md",
@@ -266,8 +271,8 @@
     },
     {
       "path": "docs/SUBMISSION.md",
-      "bytes": 13320,
-      "sha256": "aa66bcbd59acb447d90b8901f690e64b6f5733acaf3c65149b2d14f8f7f562a0"
+      "bytes": 14940,
+      "sha256": "149ea19951d0cf756e4fc84dbbe26adc3c3ec869f9364945363d2dd1393d9712"
     },
     {
       "path": "docs/TESTING.md",
@@ -286,8 +291,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 9460,
-      "sha256": "c86c333ee27f5b39f27f6fa8b69251870f8d2229ace42f875f4cc4866ef0d3ad"
+      "bytes": 10621,
+      "sha256": "83e9eb04874a8515308e404ac4fb74b1ba9f4e6382a5b9a661102032310f5218"
     },
     {
       "path": "docs/WORKSPACE_LAB.md",
@@ -378,6 +383,11 @@
       "path": "evidence/email-v1/proof.json",
       "bytes": 3449,
       "sha256": "5ffb4ea28186344204be428d52f30d8ae59aec54071a818bff9d1d06649a5708"
+    },
+    {
+      "path": "evidence/runtime-v1/journey.json",
+      "bytes": 11708,
+      "sha256": "c7f8a616c1baa9ce0ce235592de0290d38e3baf35442d97c6a13d0fd5b846c74"
     },
     {
       "path": "evidence/runtime-v1/summary.json",
@@ -562,12 +572,12 @@
     {
       "path": "package-lock.json",
       "bytes": 183765,
-      "sha256": "d8727416cb5af2c247f5f1485e0f063406e509cd8d64dc5f4fb9eb4b8bc7638b"
+      "sha256": "ba34aa146dfe6bd978ecbde9ba2b2963514186be6877bc78c63378f92bbde3c7"
     },
     {
       "path": "package.json",
-      "bytes": 4096,
-      "sha256": "9e8ba1b042b0cb904fba41f946b1fa1cc5ff58f480e2ddd4b8262739bc914ee0"
+      "bytes": 4107,
+      "sha256": "51db3995ecc8cef250a97867566a65359288e4cf4033f566553ce08c40596b01"
     },
     {
       "path": "public/assets/app.mjs",
@@ -766,8 +776,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 24245,
-      "sha256": "c10a0ab67c1502880939068201878328b1da9b0e8639758d9daaa54daf00d715"
+      "bytes": 24500,
+      "sha256": "4b2b9cf2d172e852aadd7d055ba84df1790350fc315404205ddf22c1730a5471"
     },
     {
       "path": "runtime/auxiliary.mjs",
@@ -836,8 +846,8 @@
     },
     {
       "path": "SBOM.cdx.json",
-      "bytes": 224844,
-      "sha256": "2fa700c6e2c6046090cd906239ecba47501de3a98341ca428066bc8db0fde2f6"
+      "bytes": 224855,
+      "sha256": "e393b71d183028da165a54165ecb2bd14ec1a778870b6ffda81a1509cd70144e"
     },
     {
       "path": "scripts/amazon.mjs",
@@ -901,8 +911,8 @@
     },
     {
       "path": "scripts/lib/distribution-export.mjs",
-      "bytes": 8177,
-      "sha256": "ffde63cd682e7a28636203ad4276470816e3a27d0ec176dfeab60e5244cc0f9e"
+      "bytes": 8214,
+      "sha256": "b1e77e43cdbfe5e9d61bc557b9f8999ab77254bc860bc62c583e2c5a4278996d"
     },
     {
       "path": "scripts/lib/doctor.mjs",
@@ -1401,8 +1411,8 @@
     },
     {
       "path": "tests/release-packaging.test.mjs",
-      "bytes": 14519,
-      "sha256": "8a63a3500c929204a604dd449f78d49b931481fcb3b94fc76075e07907cbb6aa"
+      "bytes": 14537,
+      "sha256": "e372e2a1c987afcae4809434240769f28ae31d6ce63ea1e15a8809e427b62f90"
     },
     {
       "path": "tests/response-governance.test.mjs",

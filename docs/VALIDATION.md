@@ -1,3 +1,13 @@
+# v0.11.1 presentation validation — September 18, 2026
+
+The updated clean Amazon distribution passed **460/460 tests**, three deterministic scenarios, zero-finding source audit, typecheck and build. The Astra site's seven focused checks additionally exercise recorded chapter selection, unavailable-evidence handling, complete static packaging and local asset links. Desktop and mobile readback verified the new journey and access to retained historical profiles.
+
+This release restores DungeonQ's diversion-first narrative, adds a sanitized six-checkpoint extract of the existing reference run and fixes the CI detailed-report artifact filename. It changes no runtime implementation and adds no model-efficacy or production result. The journey preserves its original v0.11.0 source/version/time; its public CI corroboration is separately attributed.
+
+Remote checks are generated for the exact published candidate. Consult [Actions](https://github.com/Ranopha/dungeonq-amazon/actions) and the v0.11.1 release for their result; the local checks above do not predeclare remote acceptance. Required branch protection remains a separate repository setting.
+
+---
+
 # v0.11.0 local distribution validation — September 18, 2026
 
 The clean Amazon distribution passed **460/460 tests**, three deterministic scenarios, zero-finding source audit, typecheck, build and source-manifest verification. Both public profiles additionally passed all16 targeted runtime integration/proof/gate/isolation-contract tests. These tests use disposable artificial resources; they do not establish production acceptance or general deception efficacy.
