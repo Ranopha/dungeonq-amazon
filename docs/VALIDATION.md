@@ -4,6 +4,8 @@ The clean Amazon distribution passed **460/460 tests**, three deterministic scen
 
 The public workflow adds `runtime-acceptance` on a dedicated ephemeral Linux Docker context, alongside Ubuntu/macOS acceptance. It builds and inspects the candidate's actual container reference, produces11 required source-bound result rows and rejects incomplete evidence. Consult the repository Actions run for the exact commit; this document does not predeclare remote success. Required branch protection is a separate repository setting.
 
+Published v0.11.0 source `1ce468368b2e54699e59f734171bf5c43eb511dc` subsequently passed [remote CI](https://github.com/Ranopha/dungeonq-amazon/actions/runs/35303213743): Ubuntu24.04, macOS14 and the dedicated runtime job. Downloaded artifacts confirmed a clean candidate,11/11 required result rows and16/16 actual container checks. Release assets and checksums were read back. A later documentation correction clarifies that public CI is active; the immutable v0.11.0 archive retains its original wording in the contract's CI paragraph. No runtime behavior changed.
+
 The [runtime record](RUNTIME_ACCEPTANCE.md) retains the earlier448-test development baseline and16/16 before/after-restart container observations. It is not substituted for a fresh distribution-specific isolation report. Historical studies, videos and earlier release results below remain unchanged.
 
 ---

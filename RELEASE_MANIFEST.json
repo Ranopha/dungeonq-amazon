@@ -151,8 +151,8 @@
     },
     {
       "path": "docs/contracts/RUNTIME_V1.md",
-      "bytes": 14143,
-      "sha256": "12038f257aaa3745960bbdeec0778250114e132d82020a1ef27cf8dc51f4d66e"
+      "bytes": 14198,
+      "sha256": "0f3118368ed0047ccd87d7512f83585a8e01a4c9e65479ab9819b8d91337f1a0"
     },
     {
       "path": "docs/contracts/STUDY_V1.md",
@@ -286,8 +286,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 8893,
-      "sha256": "d2c23162dcebd2cca4a799140f772b7cceecdc674f83bff5b732bf2bda179888"
+      "bytes": 9460,
+      "sha256": "c86c333ee27f5b39f27f6fa8b69251870f8d2229ace42f875f4cc4866ef0d3ad"
     },
     {
       "path": "docs/WORKSPACE_LAB.md",

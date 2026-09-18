@@ -99,7 +99,7 @@ These are bounded invalid-input fixtures in an owned environment. No exploit, au
 
 `dungeonq.runtime-acceptance/v1` binds candidate commit/tree, clean-worktree assertion, content digest, start/finish time and exactly eleven mandatory results: http, mcp, ssh, postgres, host, wrong-ticket, persistence, mutation, origin-untouched, adversarial, isolation. Each requires `PASS` and nonempty evidence references. Missing, duplicate, unexpected, stale candidate or inconclusive entries reject. Reduced check sets are explicitly scoped and cannot be called full acceptance.
 
-The producer runs actual clients and validates a fresh current-source infrastructure report. The gate validates the report contract; it does not authenticate third-party evidence independently. The CI template is deliberately outside active workflows. The private repository's disabled-CI boundary and public submission freeze remain in effect. A real PR/merge gate requires a provisioned runner, trusted artifact handling, activation and independently read-back required checks/rulesets. None is inferred from a green local run.
+The producer runs actual clients and validates a fresh current-source infrastructure report. The gate validates the report contract; it does not authenticate third-party evidence independently. The public distributions run the gate in their active `runtime-acceptance` workflow job on an ephemeral Linux runner. The retained deployment template is optional. Required-check/ruleset enforcement remains a separate repository setting and must be independently read back; workflow success alone does not establish merge enforcement. The separately submitted WebMCP profile remains frozen.
 
 ## Limits, ownership and future admission
 
