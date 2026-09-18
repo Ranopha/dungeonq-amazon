@@ -1,7 +1,7 @@
 import { readFile, readdir, lstat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
-import { isPublicSourcePath } from './release-paths.mjs';
+import { isPublicSourcePath, isPythonCachePath } from './release-paths.mjs';
 
 const excluded = new Set(['.git', 'node_modules', 'dist', '.vinext', '.next', '.wrangler', '.DS_Store',
   'tsconfig.tsbuildinfo', 'next-env.d.ts']);
@@ -15,6 +15,7 @@ export async function verifySource(root) {
     for (const entry of await readdir(directory, { withFileTypes: true })) {
       if (excluded.has(entry.name) || (prefix === '' && entry.name === 'RELEASE_MANIFEST.json')) continue;
       const path = prefix + entry.name;
+      if (isPythonCachePath(path)) continue;
       if (entry.isSymbolicLink()) findings.push({ path, code: 'SYMLINK_DENIED' });
       else if (entry.isDirectory()) await walk(join(directory, entry.name), path + '/');
       else if (entry.isFile()) files.set(path, join(directory, entry.name));

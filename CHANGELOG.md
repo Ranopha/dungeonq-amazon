@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.11.0 — 2026-09-18
+
+- Add the shared persistent Deception Runtime with bounded HTTP, official-SDK MCP, SSH, PostgreSQL-profile and managed-workload interfaces; JavaScript and Python clients share one contract.
+- Persist synthetic worlds, scoped Wrong Tickets, observations and finite owner-approved mutations. Independent artificial-origin witnesses and container checks qualify the acceptance scope.
+- Ship source-bound runtime proof/gate tools and a dedicated Linux reference CI job alongside existing Ubuntu/macOS checks.
+- Publish English operator and acceptance guides, sanitized recorded evidence and updated contest/OSS materials. Preserve all earlier model records, negative findings and historical videos.
+- Real production integration, broad attack detection, universal AI deception and enforced branch protection are not claimed.
+
 ## Unreleased — documentation after 0.10.0
 
 - Add a Traditional Chinese entry point and direct evidence/CI links.

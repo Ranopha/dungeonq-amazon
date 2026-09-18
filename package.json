@@ -1,8 +1,8 @@
 {
   "name": "dungeonq-amazon",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "private": true,
-  "description": "Synthetic assistant governance, persistent abstract worlds and consent-based causal studies with local MCP and replayable evidence.",
+  "description": "Persistent synthetic deception runtime, assistant governance and causal studies with bounded protocol adapters and replayable evidence.",
   "license": "Apache-2.0",
   "author": "DungeonQ contributors",
   "repository": {
@@ -68,15 +68,22 @@
     "typecheck": "tsc --noEmit",
     "check": "npm test && npm run verify && npm run audit && npm run typecheck && npm run build",
     "simulate": "node cli/run.mjs",
-    "serve": "node scripts/serve.mjs"
+    "serve": "node scripts/serve.mjs",
+    "runtime": "node scripts/runtime.mjs",
+    "runtime:proof": "node scripts/runtime-proof.mjs",
+    "runtime:gate": "node scripts/runtime-gate.mjs",
+    "runtime:isolation": "node scripts/runtime-isolation.mjs",
+    "test:runtime": "node --test tests/runtime-*.test.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",
     "jose": "6.2.12",
     "nodemailer": "10.0.10",
+    "pg-gateway": "0.3.0-beta.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-server-dom-webpack": "19.2.8",
+    "ssh2": "1.17.0",
     "vinext": "1.0.0-beta.8"
   },
   "devDependencies": {
@@ -88,6 +95,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.2",
     "@vitejs/plugin-rsc": "0.5.34",
+    "pg": "8.23.0",
     "typescript": "5.9.3",
     "vite": "8.2.2",
     "wrangler": "4.131.1"

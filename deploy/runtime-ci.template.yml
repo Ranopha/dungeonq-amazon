@@ -1,0 +1,54 @@
+# DISABLED TEMPLATE ONLY. This file is not a GitHub Actions workflow.
+# Do not copy it into .github/workflows or change repository settings without
+# separate owner authorization. Required-check rules must be configured and
+# independently read back before claiming that PR merging is protected.
+# The private development repository's CI-disabled boundary remains unchanged.
+#
+# Integration prerequisites:
+# - The exact candidate is clean and has no generated outputs in its checkout.
+# - The proof producer and all local adapters are available on the chosen runner.
+# - A real isolated-runtime verifier report is provisioned at the runner-private
+#   DQ_ISOLATION_REPORT path and bound to this same commit/tree. The producer
+#   validates that report. Do not substitute an isolation-plan JSON or a fixture.
+# Without this report the local proof marks isolation INCONCLUSIVE and the full
+# gate fails. This template does not claim remotely accepted runner readiness.
+name: DungeonQ runtime acceptance
+on:
+  pull_request:
+  merge_group:
+permissions:
+  contents: read
+concurrency:
+  group: runtime-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  runtime-acceptance:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.15.0
+      - run: npm ci --ignore-scripts
+      - name: Capture the candidate identity
+        run: |
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "DQ_CANDIDATE_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "DQ_CANDIDATE_TREE=$(git rev-parse HEAD^{tree})" >> "$GITHUB_ENV"
+      - name: Generate candidate-bound acceptance evidence
+        run: |
+          if [ -n "${DQ_ISOLATION_REPORT:-}" ]; then
+            npm run runtime:proof -- --out "$RUNNER_TEMP/runtime-acceptance.json" --commit "$DQ_CANDIDATE_COMMIT" --tree "$DQ_CANDIDATE_TREE" --isolation-report "$DQ_ISOLATION_REPORT"
+          else
+            npm run runtime:proof -- --out "$RUNNER_TEMP/runtime-acceptance.json" --commit "$DQ_CANDIDATE_COMMIT" --tree "$DQ_CANDIDATE_TREE"
+          fi
+      - name: Require every reference acceptance check
+        if: always()
+        run: |
+          node scripts/runtime-gate.mjs --report "$RUNNER_TEMP/runtime-acceptance.json" --commit "$DQ_CANDIDATE_COMMIT" --tree "$DQ_CANDIDATE_TREE"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          test "$(git rev-parse HEAD)" = "$DQ_CANDIDATE_COMMIT"
+          test "$(git rev-parse HEAD^{tree})" = "$DQ_CANDIDATE_TREE"

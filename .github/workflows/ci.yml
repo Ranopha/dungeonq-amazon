@@ -3,6 +3,7 @@ name: Synthetic acceptance
 on:
   push:
   pull_request:
+  merge_group:
   workflow_dispatch:
 
 permissions:
@@ -69,5 +70,49 @@ jobs:
             ${{ runner.temp }}/dq-topology/proof.json
             ${{ runner.temp }}/dq-topology/treatment.json
             ${{ runner.temp }}/dq-topology/control.json
+          retention-days: 14
+          if-no-files-found: ignore
+
+  runtime-acceptance:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CI: true
+      DUNGEONQ_DOCKER_CONTEXT: dungeonq-ci
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.15.0
+      - run: npm ci --ignore-scripts
+      - name: Create a dedicated context on this disposable runner
+        run: docker context create dungeonq-ci --docker host=unix:///var/run/docker.sock
+      - name: Build and inspect the isolated artificial reference
+        run: |
+          node scripts/runtime-isolation.mjs prepare --directory "$RUNNER_TEMP/dq-runtime-reference"
+          node scripts/runtime-isolation.mjs build --directory "$RUNNER_TEMP/dq-runtime-reference"
+          node scripts/runtime-isolation.mjs up --directory "$RUNNER_TEMP/dq-runtime-reference"
+          node scripts/runtime-isolation.mjs verify --directory "$RUNNER_TEMP/dq-runtime-reference"
+      - name: Require complete source-bound runtime evidence
+        run: |
+          node scripts/runtime-proof.mjs --out "$RUNNER_TEMP/dq-runtime-proof.json" --isolation-report "$RUNNER_TEMP/dq-runtime-reference/isolation-result.json"
+          node scripts/runtime-gate.mjs --report "$RUNNER_TEMP/dq-runtime-proof.json" --commit "$(git rev-parse HEAD)" --tree "$(git rev-parse HEAD^{tree})"
+      - name: Stop only this generated reference project
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/dq-runtime-reference/reference.json" ]; then
+            node scripts/runtime-isolation.mjs down --directory "$RUNNER_TEMP/dq-runtime-reference"
+          fi
+      - name: Retain only bounded acceptance reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: runtime-reference-evidence
+          path: |
+            ${{ runner.temp }}/dq-runtime-proof.json
+            ${{ runner.temp }}/dq-runtime-proof.details.json
+            ${{ runner.temp }}/dq-runtime-reference/isolation-result.json
           retention-days: 14
           if-no-files-found: ignore

@@ -1,8 +1,76 @@
-# DungeonQ — Governed Assistant Lab
+# DungeonQ Runtime — Amazon profile
 
-[繁體中文入門／文件索引](docs/START_HERE.zh-TW.md) · [Email and identity setup](docs/EMAIL_NOTIFICATIONS.md) · [Owner walkthrough](docs/DEFENSE_LAB.md) · [OSS reviewer guide](docs/OSS_REVIEW_GUIDE.md) · [Validation and CI](docs/VALIDATION.md)
+**One core. Five real adapters. Persistent synthetic worlds.** DungeonQ is an Apache-2.0 deception runtime for human operators and AI clients. The v0.11 reference routes explicitly provisioned contexts through HTTP, MCP, SSH, a PostgreSQL protocol profile and a private workload broker into the same governed state.
 
-New here? Start with the guides above. Current `main` includes documentation clarifications after v0.10.0; the original versioned release and recorded evidence are unchanged. Use a fixed private `--data-dir` when restarting the lab. The chronological sections below preserve the history and limits of each profile.
+A **Wrong Ticket** is useful inside its issuing synthetic world: it grants a bounded read, survives restart and cannot authorize access to the independent artificial origin. Observations persist. A separately authenticated operator can preview and approve finite follow-up mutations or fence a context; imported text and models cannot grant that authority.
+
+**SYNTHETIC_ONLY · owned reference implementation · no production protection or general deception-efficacy claim.** The network clients, storage, signatures and container checks are real. The records, contexts and protected origin are artificial. Context disposition is provisioned by trusted setup; this is not a general attack detector or transparent OS interceptor.
+
+## Start with the runtime
+
+Use Node.js **24.15.0+**, npm and the platform prerequisites in [the operation guide](docs/RUNTIME.md). In the extracted source directory:
+
+```sh
+npm ci --ignore-scripts
+npm run runtime -- --data-dir ../dungeonq-runtime-lab
+```
+
+Open the printed **Control room** URL. Keep the private credential file outside Git and AI context; give a participant client only its actor token. The separate owner token is a reference capability, not an enterprise account system or proof of human presence. Reuse the same private data directory to resume; do not reset an uncertain installation.
+
+1. Inspect contexts, worlds and adapter readiness in the English control room.
+2. Connect a participant through a documented adapter or the Node/Python SDK. Read, write with an expected revision, issue a ticket and consume it in the same synthetic world.
+3. Preview a mutation grant, review its exact scope and digest, then explicitly apply. Subsequent first-time ticket consumption can append a bounded, observed record. Fence invalidates outstanding authority.
+4. Inspect canonical replay, route events and the independent artificial-origin census. Missing or unknown evidence remains unverified.
+
+[Operator and client guide](docs/RUNTIME.md) · [Versioned contract](docs/contracts/RUNTIME_V1.md) · [Recorded acceptance and remaining gates](docs/RUNTIME_ACCEPTANCE.md) · [Container isolation profile](deploy/runtime-reference/README.md) · [Public evidence summary](evidence/runtime-v1/summary.json)
+
+## What the evidence establishes
+
+The September 18 runtime baseline recorded **11/11 acceptance checks**, **16/16 container checks before and after restart**, preserved state/evidence across new container IDs, and rejection when infrastructure was stopped. The repository baseline passed **448 tests** before release-packaging additions; use the versioned validation record for the final distribution count. These are engineering observations, not new live-model results or independent certification.
+
+The local process profile shares an OS user. The container profile adds measured network and file separation; Docker administration, the shared VM kernel and the trusted gateway remain trusted. “Origin untouched” covers the independently witnessed artificial origin in the measured interval, never a production system. SSH and PostgreSQL accept finite operations only; the workload broker is explicit mediation.
+
+For fresh acceptance, follow the container guide, retain its current source-matching isolation report, then run `runtime:proof` with that report and an output path outside the checkout. Run `runtime:gate` against the exact clean candidate. Missing isolation, stale evidence, failed checks or dirty source cannot yield full admission. A local gate and a CI template do not establish remote branch protection; consult [validation](docs/VALIDATION.md) for actual release checks.
+
+## One product, distinct profiles
+
+| Profile | Purpose | Evidence boundary |
+| --- | --- | --- |
+| Runtime v1 | Real local ingress, persistent worlds, scoped tickets, observations and approved adaptation | Artificial resources; no general detector or production acceptance |
+| Governed assistant / Astra | Model or assistant proposal → separate review → bounded effect → receipt | Retained original model record; optional API use is separately paid |
+| Defense / Orders Workspace | Single-incident rotation, local alerts and administrator-bound notification | Separate owner account profile; SMTP/OAuth need owner configuration |
+| World / Study / Topology | Reproducible synthetic exploration and causal research | All positive and negative results retained; no general efficacy claim |
+| Public browser rehearsal | Learn the approval flow and inspect saved artifacts | Browser-simulated reviewer; no live backend, model call or hosted runtime |
+
+These profiles share DungeonQ's authority and evidence principles. The runtime owner token does not inherit the legacy account/email workflow. Optional Google/GitHub and TLS SMTP adapters do not prove live provider login or inbox delivery; Apple remains unavailable in the loopback profile.
+
+## Evaluate the limits, too
+
+Prior research remains visible: **0/2** wrong-high-confidence study outcomes, **0/4** unsupported publishing-completion claims, and the earlier **0/3** defense pilot. Both later workspace participants accepted decoy quantities but explicitly qualified their conclusions as synthetic-interface, common-source evidence. This does not establish sustained origin misbelief. Exact pilot model identities were not independently attested.
+
+[Study results](docs/STUDY_RESULTS.md) · [Topology results](docs/TOPOLOGY_RESULTS.md) · [Defense pilot](docs/DEFENSE_PILOT_RESULTS.md) · [Workspace method and caveat](docs/WORKSPACE_LAB.md) · [Email setup](docs/EMAIL_NOTIFICATIONS.md)
+
+Real deployment still needs a named authorized host connector, legitimate-traffic continuity, rollback, enterprise identities, operational recovery and environment-specific acceptance. No paid model call was needed for the new runtime evidence. The earlier WebMCP repository, site, submission and evidence remain unchanged.
+
+## Retained Amazon workflow and film
+
+[Historical v0.2 governed-assistant film](https://youtu.be/ezX7cOF2s0s) · [Amazon-specific contribution](docs/DELTA.md) · [Current submission copy](docs/SUBMISSION.md) · [External MCP client](docs/EXTERNAL_AGENT.md)
+
+The Alexa-style assistant remains a deterministic simulator with real local MCP transport. No Alexa service, Echo integration, AWS deployment or Amazon certification is claimed. The historical film is **not a capture of Runtime v1**.
+
+## Verify and contribute
+
+```sh
+npm run check
+npm run verify:source
+```
+
+The source manifest checks file integrity, not an independent signature or trusted timestamp. [Testing](docs/TESTING.md) · [Validation](docs/VALIDATION.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Release history](CHANGELOG.md). Apache-2.0: preserve [LICENSE](LICENSE), [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md).
+
+<details>
+<summary>Historical v0.10 and earlier profile walkthroughs</summary>
+
+The following dated sections preserve prior workflows, counts and launch statements. They are historical context, not fresh release or remote-submission confirmations.
 
 ## v0.10.0: the alert belongs to the administrator
 
@@ -181,3 +249,5 @@ npm run verify:source
 Prepared for **Build, Ship, Shape: Amazon Developer Hackathon — Alexa+ + Open Source Mini Challenge**. The older WebMCP entry is separate and unchanged. Public availability and passing local tests do not imply contest acceptance, OpenAI endorsement or production readiness.
 
 Apache-2.0: [LICENSE](LICENSE), [NOTICE](NOTICE), [third-party notices](THIRD_PARTY_NOTICES.md), [SBOM](SBOM.cdx.json). The package is intentionally private to prevent accidental npm publishing; the GitHub source is open source.
+
+</details>

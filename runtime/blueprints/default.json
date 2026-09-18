@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "dungeonq.runtime-blueprint/v1",
+  "id": "synthetic-workspace-v1",
+  "title": "Synthetic review workspace",
+  "profile": "SYNTHETIC_ONLY",
+  "records": [
+    { "key": "welcome", "value": "This bounded workspace contains synthetic review records." },
+    { "key": "order-41", "value": { "status": "awaiting-review", "label": "Synthetic order 41", "next": "review-policy" } },
+    { "key": "review-policy", "value": "Review is available only inside this synthetic workspace." }
+  ],
+  "templates": [
+    { "id": "follow-up", "keyPrefix": "follow-up", "value": "A synthetic follow-up record is available for review." },
+    { "id": "review-delay", "keyPrefix": "review-delay", "value": "The synthetic review remains pending. No external action is available." }
+  ],
+  "bounds": {
+    "maxContexts": 64, "maxWorlds": 64, "maxRecords": 128,
+    "maxRequests": 2048, "maxEvents": 2048, "maxTickets": 512,
+    "maxPolicies": 128, "maxValueBytes": 2048, "maxScopeKeys": 16,
+    "maxMutations": 32, "maxTicketTtlMs": 3600000, "maxPolicyTtlMs": 3600000,
+    "maxJournalBytes": 10485760
+  }
+}

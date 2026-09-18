@@ -7,6 +7,9 @@ DungeonQ's deterministic core under `public/src/` has no runtime package depende
 | Package | Pinned version | Declared license | Purpose |
 |---|---:|---|---|
 | @modelcontextprotocol/sdk | 1.30.0 | MIT | Actual MCP client/server and Streamable HTTP transport |
+| ssh2 | 1.17.0 | MIT | Bounded loopback SSH server and real test client |
+| pg-gateway | 0.3.0-beta.4 | MIT | Bounded PostgreSQL wire profile; prerelease, no SQL engine |
+| pg | 8.23.0 | MIT | Development-only PostgreSQL protocol acceptance client |
 | Nodemailer | 10.0.10 | MIT-0 | Explicitly configured, TLS-verified administrator notification transport |
 | jose | 6.2.12 | MIT | Google OpenID Connect signature, issuer, audience and nonce verification |
 | React | 19.2.8 | MIT | Sites application shell |

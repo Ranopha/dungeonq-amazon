@@ -1,3 +1,54 @@
+# Amazon submission — v0.11 runtime update
+
+## Name
+
+DungeonQ — Governed Assistant Lab
+
+## Elevator pitch
+
+A governed runtime for people and AI: five real local adapters, persistent synthetic worlds, scoped tickets and inspectable evidence. Assistants propose; separate authority controls effects.
+
+## Inspiration
+
+A fluent answer, a successful tool call and an authorized effect are different facts. DungeonQ makes those differences observable in an owned artificial environment, with durable state and independent readback.
+
+## What it does
+
+The v0.11 runtime routes explicitly provisioned contexts through HTTP, MCP, bounded SSH and PostgreSQL protocol profiles, and a private workload broker into one canonical synthetic world. Its Wrong Ticket is a useful bounded read capability that cannot authorize the independent artificial origin. Records, ticket consumption and observations survive restart.
+
+The English operator control room separates observation, preview, exact review, explicit apply and evidence. An approved finite grant allows observation-linked synthetic follow-up mutations; fencing advances the context epoch and invalidates outstanding authority. Node and Python SDKs use the same API. Models and imported text cannot choose a tenant, an origin route or their own approval.
+
+The original Alexa-style governed-assistant profile remains available: real local MCP investigation, independent reviewer reauthentication, one bounded synthetic effect and a signed receipt. The Alexa-style assistant is deterministic. No actual Alexa service, Echo integration, AWS deployment or Amazon certification is claimed.
+
+## How we built it
+
+Node.js, the official MCP SDK, SQLite, authenticated operation envelopes and finite protocol adapters share a canonical runtime. Separate facade, artificial-origin and collector roles retain correlated evidence. A container profile measures actual network membership, mount boundaries, positive read controls, direct-access denials and continuity across restart. The gateway, Docker administrator and shared VM kernel remain trusted.
+
+## What reviewers can verify
+
+[Recorded acceptance](RUNTIME_ACCEPTANCE.md) and the [public evidence summary](../evidence/runtime-v1/summary.json) identify the shared source version and its scope. The runtime baseline recorded 11/11 acceptance checks, 16/16 container checks before and after restart, and an inconclusive result with infrastructure stopped. The original 448-test development baseline is distinct from the final distribution's [validation record](VALIDATION.md).
+
+Install with `npm ci --ignore-scripts`, run `npm run runtime`, then follow the [operator/client guide](RUNTIME.md). Fresh full acceptance requires current container evidence and a clean candidate; missing, stale or failed evidence cannot become PASS. The static website presents recorded files and browser simulations. It does not host this integration.
+
+## Challenges and learning
+
+The difficult boundary is continuity across identities, transport changes, restarts, replay and uncertain dispatch. A useful local capability must stay local. Evidence must not disappear when an operation's reply is lost. Approval must bind the exact current context and scope. Tests establish these mechanisms within the owned reference; they do not establish a universal deception effect.
+
+The research record remains complete: 0/2 wrong-high-confidence study outcomes, 0/4 unsupported publishing-completion claims and the earlier 0/3 defense pilot. Later workspace participants used decoy quantities while explicitly qualifying common-source synthetic evidence. That is not proof of sustained origin misbelief or general human/LLM efficacy.
+
+## Impact and next steps
+
+Developers and evaluators can exercise human/AI authority boundaries without real enterprise data or a paid model call. This is one product with replaceable runtime, assistant and research profiles, not separate claims of production deployment. Next acceptance gates include a named authorized host connector, ordinary-traffic continuity, rollback, enterprise identity, backup/recovery and environment-specific operations evidence. Context disposition remains provisioned; no general detector or transparent host interception is claimed.
+
+## Track, media and status
+
+Retain the existing Alexa+ and Open Source Mini entry identity; no AWS Builder integration is claimed. The Amazon-specific contribution and reused foundations are documented in [DELTA.md](DELTA.md). The original [v0.2 film](https://youtu.be/ezX7cOF2s0s) remains historical and is **not a Runtime v1 capture**. This copy does not establish that an external form was saved or accepted. The earlier WebMCP repository, site, submission and evidence remain frozen.
+
+<details>
+<summary>Historical submission wording through v0.10</summary>
+
+The following preserves earlier workflow descriptions and historical counts, not the current release or submission state.
+
 # Submission copy
 
 ## Current v0.10.0 update — administrator-bound notifications
@@ -65,3 +116,5 @@ Next steps are accessibility/user testing, independently managed signing and a s
 ## Track / Open Source
 
 Primary: Alexa+. Mini: Open Source. Not entering AWS Builder; no AWS integration is claimed. GitHub username: Ranopha. Contribution: the separately licensed source distribution and new MCP-governed workflow; provide its actual repository/commit URL only after publishing. The optional testing link should point to the README's reproducible local instructions, not to the frozen earlier website.
+
+</details>

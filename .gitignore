@@ -17,3 +17,6 @@ local-instance.json
 study-installation.json
 world-installation.json
 topology-installation.json
+
+__pycache__/
+*.pyc

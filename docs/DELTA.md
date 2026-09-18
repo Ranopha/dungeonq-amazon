@@ -1,5 +1,11 @@
 # New work and provenance
 
+## v0.11.0 additions — September 18, 2026
+
+Adds the shared Deception Runtime: real bounded HTTP, MCP, SSH, PostgreSQL-profile and managed-workload entry points; persistent synthetic worlds; scoped Wrong Tickets; observations and exact owner-approved finite mutation. JavaScript and Python SDKs make the same contract reusable by people and AI clients. Protocol availability is not certification of every client or a general-purpose SSH/SQL server.
+
+Recorded owned-reference acceptance has11 required rows and16 container checks before/after restart. Public CI generates fresh source-bound acceptance for the published candidate. The independent witness is an artificial protected origin; no production system was accessed and no production-isolation result is claimed. Existing-project work began after August31 and preserves the earlier governed Alexa-style simulation and its historical video. Actual Alexa-service integration remains untested. See [runtime operation](RUNTIME.md) and [acceptance boundaries](RUNTIME_ACCEPTANCE.md).
+
 ## v0.10.0 additions — September 17, 2026
 
 Adds administrator-bound alert email, single-use verification, a login alias, durable encrypted recipient-versioned outbox, explicit local capture and optional TLS SMTP. Optional Google/GitHub adapters link an existing Owner using a verified provider email; Apple is unavailable. New identity/notification tests cover wrong roles, tenants, state, cookies, replay, restart, mode changes, timeouts and unknown delivery. Nine scripted HTTPS checks can be reproduced without a provider or paid call. There is no live OAuth or inbox-delivery acceptance claim.

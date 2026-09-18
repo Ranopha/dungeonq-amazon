@@ -1,3 +1,13 @@
+# v0.11.0 local distribution validation — September 18, 2026
+
+The clean Amazon distribution passed **460/460 tests**, three deterministic scenarios, zero-finding source audit, typecheck, build and source-manifest verification. Both public profiles additionally passed all16 targeted runtime integration/proof/gate/isolation-contract tests. These tests use disposable artificial resources; they do not establish production acceptance or general deception efficacy.
+
+The public workflow adds `runtime-acceptance` on a dedicated ephemeral Linux Docker context, alongside Ubuntu/macOS acceptance. It builds and inspects the candidate's actual container reference, produces11 required source-bound result rows and rejects incomplete evidence. Consult the repository Actions run for the exact commit; this document does not predeclare remote success. Required branch protection is a separate repository setting.
+
+The [runtime record](RUNTIME_ACCEPTANCE.md) retains the earlier448-test development baseline and16/16 before/after-restart container observations. It is not substituted for a fresh distribution-specific isolation report. Historical studies, videos and earlier release results below remain unchanged.
+
+---
+
 # Versioned validation record
 
 ## v0.10.0 — 2026-09-17 source checkpoint

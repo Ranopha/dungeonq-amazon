@@ -48,7 +48,7 @@ for (const file of files) {
     findings.push({ path, code: "CREDENTIAL_PATTERN" });
   }
 
-  if (path === "public/index.html" || path.startsWith("public/assets/") || path.startsWith("public/world/") || path.startsWith("public/defense-world/") || path.startsWith("public/study/") || path.startsWith("public/topology/")) {
+  if (path === "public/index.html" || path.startsWith("public/assets/") || path.startsWith("public/runtime/") || path.startsWith("public/world/") || path.startsWith("public/defense-world/") || path.startsWith("public/study/") || path.startsWith("public/topology/")) {
     if (/\bhttps?:\/\//iu.test(content)) findings.push({ path, code: "BROWSER_REMOTE_REFERENCE" });
     if (/(?:\.innerHTML\b|\.outerHTML\b|document\.write\s*\(|\beval\s*\(|new\s+Function\s*\()/u.test(content)) {
       findings.push({ path, code: "UNSAFE_BROWSER_SINK" });

@@ -1,0 +1,92 @@
+name: ${DUNGEONQ_PROJECT:?Run the private reference preparer first}
+
+x-hardened: &hardened
+  image: dungeonq-runtime-reference:${DUNGEONQ_PROJECT:?}
+  user: "${DUNGEONQ_UID:?}:${DUNGEONQ_GID:?}"
+  read_only: true
+  init: true
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  pids_limit: 64
+  mem_limit: 160m
+  cpus: 0.25
+  restart: "no"
+  tmpfs: ["/tmp:rw,noexec,nosuid,nodev,size=16777216,mode=1777"]
+
+services:
+  gateway:
+    <<: *hardened
+    mem_limit: 512m
+    cpus: 0.75
+    command:
+      - node
+      - --input-type=module
+      - -e
+      - >-
+        import {readFileSync,lstatSync} from 'node:fs';
+        import {startRuntimeGateway} from './runtime/server.mjs';
+        const path='/run/dungeonq/gateway.json';
+        const mode=lstatSync(path);
+        if(!mode.isFile()||mode.isSymbolicLink()||(mode.mode&0o077))throw new Error('PRIVATE_CONFIG_REQUIRED');
+        const gateway=await startRuntimeGateway(JSON.parse(readFileSync(path,'utf8')));
+        console.log(JSON.stringify({ready:true,role:'gateway'}));
+        let stopping=false;
+        async function stop(){if(stopping)return;stopping=true;await gateway.close();}
+        process.once('SIGTERM',stop);process.once('SIGINT',stop);
+    volumes:
+      - type: volume
+        source: gateway-config
+        target: /run/dungeonq
+        read_only: true
+      - gateway-state:/state
+    networks: [world, origin, evidence]
+  facade:
+    <<: *hardened
+    command: [node, runtime/service-process.mjs, /run/dungeonq/facade.json]
+    volumes:
+      - type: volume
+        source: facade-config
+        target: /run/dungeonq
+        read_only: true
+    networks: [world]
+  origin:
+    <<: *hardened
+    command: [node, runtime/service-process.mjs, /run/dungeonq/origin.json]
+    volumes:
+      - type: volume
+        source: origin-config
+        target: /run/dungeonq
+        read_only: true
+      - origin-state:/state
+    networks: [origin]
+  collector:
+    <<: *hardened
+    command: [node, runtime/service-process.mjs, /run/dungeonq/collector.json]
+    volumes:
+      - type: volume
+        source: collector-config
+        target: /run/dungeonq
+        read_only: true
+      - collector-state:/state
+    networks: [evidence]
+
+networks:
+  world: {internal: true}
+  origin: {internal: true}
+  evidence: {internal: true}
+volumes:
+  gateway-config:
+    external: true
+    name: ${DUNGEONQ_PROJECT:?}_gateway-config
+  facade-config:
+    external: true
+    name: ${DUNGEONQ_PROJECT:?}_facade-config
+  origin-config:
+    external: true
+    name: ${DUNGEONQ_PROJECT:?}_origin-config
+  collector-config:
+    external: true
+    name: ${DUNGEONQ_PROJECT:?}_collector-config
+  gateway-state: {}
+  origin-state: {}
+  collector-state: {}

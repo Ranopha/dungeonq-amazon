@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "dungeonq.runtime-public-summary/v1",
+  "source": {
+    "version": "0.11.0",
+    "runtimeDigest": "5bcfb673a50d50771d6831522d0b50c74ac4905a44852c6b815f6ada1c99e455"
+  },
+  "sourceScope": "SHARED_RUNTIME_CODE",
+  "observedAt": "2026-09-18T03:00:35.793Z",
+  "profile": "OWNED_REFERENCE_ACCEPTANCE",
+  "evidenceClass": "RECORDED_REFERENCE_ACCEPTANCE",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "http",
+      "status": "PASS"
+    },
+    {
+      "id": "mcp",
+      "status": "PASS"
+    },
+    {
+      "id": "ssh",
+      "status": "PASS"
+    },
+    {
+      "id": "postgres",
+      "status": "PASS"
+    },
+    {
+      "id": "host",
+      "status": "PASS"
+    },
+    {
+      "id": "wrong-ticket",
+      "status": "PASS"
+    },
+    {
+      "id": "persistence",
+      "status": "PASS"
+    },
+    {
+      "id": "mutation",
+      "status": "PASS"
+    },
+    {
+      "id": "origin-untouched",
+      "status": "PASS"
+    },
+    {
+      "id": "adversarial",
+      "status": "PASS"
+    },
+    {
+      "id": "isolation",
+      "status": "PASS"
+    }
+  ],
+  "isolation": {
+    "beforeRestart": {
+      "passed": 16,
+      "total": 16
+    },
+    "afterRestart": {
+      "passed": 16,
+      "total": 16
+    },
+    "continuity": "PASS"
+  },
+  "suite": {
+    "passed": 448,
+    "total": 448
+  },
+  "limitations": [
+    "Recorded engineering acceptance of shared runtime code; this page does not run the host integration.",
+    "Real HTTP, MCP, SSH, bounded PostgreSQL and managed-workload requests used artificial resources.",
+    "Container network/file separation was measured inside one shared-kernel VM; not a container-escape assessment.",
+    "No production connector, paid model call or general deception-efficacy claim.",
+    "Public release CI and candidate identity are checked separately; this is not remote attestation.",
+    "Branch protection and remote required-check enforcement are not inferred from this report."
+  ]
+}

@@ -10,6 +10,7 @@ import { promisify } from 'node:util';
 import { exportDistribution, PUBLIC_SOURCE_PATHS } from '../scripts/lib/distribution-export.mjs';
 import { prepareRelease } from '../scripts/lib/release-builder.mjs';
 import { verifySource } from '../scripts/lib/source-manifest.mjs';
+import { hasReleaseSecret, isPublicSourcePath } from '../scripts/lib/release-paths.mjs';
 
 const exec = promisify(execFile);
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -24,16 +25,19 @@ async function writeMetadata(root, name) {
 }
 async function exportFixture(t) {
   const base = await temp(t); const source = join(base, 'source'); await mkdir(source);
-  const directories = new Set(['app', 'assistant', 'astra', 'cli', 'deploy', 'public', 'server', 'tests', 'workbench', 'world', 'study', 'scripts/lib']);
+  const directories = new Set(['app', 'assistant', 'astra', 'cli', 'deploy', 'public', 'server', 'tests', 'workbench', 'world', 'study', 'runtime', 'sdk', 'scripts/lib']);
   for (const path of PUBLIC_SOURCE_PATHS) {
     if (directories.has(path)) await file(source, `${path}/synthetic.txt`, 'synthetic fixture');
     else await file(source, path, 'synthetic fixture');
   }
   await writeMetadata(source, 'dungeonq');
   for (const path of ['world/kernel.mjs', 'study/experiment.mjs', 'study/designs/archive.json', 'astra-site/index.html',
+    'tests/astra-site-runtime.test.mjs',
+    'runtime/reference.mjs', 'runtime/server.mjs', 'runtime/blueprints/default.json', 'sdk/runtime-client.mjs', 'sdk/runtime-client.py',
+    'deploy/runtime-reference/compose.yml', 'deploy/runtime-reference/Dockerfile', 'deploy/runtime-ci.template.yml',
     'scripts/build-astra-site.mjs', 'docs/SCENARIO_AUTHORING.md']) await file(source, path, 'synthetic fixture');
   for (const target of ['amazon', 'astra']) await file(source, `${target}-release/README.md`, `Synthetic ${target}`);
-  for (const path of ['STUDY_LAB.md', 'STUDY_RESULTS.md', 'WORLD_LAB.md', 'contracts/STUDY_V1.md', 'contracts/WORLD_V1.md', 'TOPOLOGY_LAB.md', 'TOPOLOGY_RESULTS.md', 'contracts/TOPOLOGY_V2.md', 'DEFENSE_LAB.md', 'OSS_REVIEW_GUIDE.md', 'contracts/DEFENSE_GOVERNANCE_V1.md', 'WORKSPACE_LAB.md', 'DEFENSE_PILOT_RESULTS.md', 'contracts/ORDERS_WORKSPACE_V1.md', 'EMAIL_NOTIFICATIONS.md', 'START_HERE.zh-TW.md']) {
+  for (const path of ['STUDY_LAB.md', 'STUDY_RESULTS.md', 'WORLD_LAB.md', 'contracts/STUDY_V1.md', 'contracts/WORLD_V1.md', 'TOPOLOGY_LAB.md', 'TOPOLOGY_RESULTS.md', 'contracts/TOPOLOGY_V2.md', 'DEFENSE_LAB.md', 'OSS_REVIEW_GUIDE.md', 'contracts/DEFENSE_GOVERNANCE_V1.md', 'WORKSPACE_LAB.md', 'DEFENSE_PILOT_RESULTS.md', 'contracts/ORDERS_WORKSPACE_V1.md', 'EMAIL_NOTIFICATIONS.md', 'START_HERE.zh-TW.md', 'RUNTIME.md', 'RUNTIME_ACCEPTANCE.md', 'contracts/RUNTIME_V1.md']) {
     await file(source, `release-study/docs/${path}`, 'Synthetic public documentation');
   }
   await file(source, 'release-study/evidence/study-v1/reference-proof.json', '{"profile":"SYNTHETIC_CAUSAL_STUDY"}');
@@ -42,6 +46,7 @@ async function exportFixture(t) {
   await file(source, 'release-study/evidence/workspace-pilot-v1/protocol.json', '{"profile":"SYNTHETIC_ONLY"}');
   await file(source, 'release-study/evidence/defense-pilot-v1/protocol.json', '{"profile":"SYNTHETIC_ONLY"}');
   await file(source, 'release-study/evidence/email-v1/proof.json', '{"profile":"SYNTHETIC_ONLY"}');
+  await file(source, 'release-study/evidence/runtime-v1/summary.json', '{"profile":"LOCAL_INTEGRATION_REFERENCE"}');
   for (const path of ['study-evidence.png', 'study-trace.png', 'topology-evidence.png', 'topology-observer.png']) await file(source, `release-study/media/${path}`, 'synthetic media fixture');
   return { base, source };
 }
@@ -58,7 +63,11 @@ test('兩種乾淨匯出皆含world/study及英文證據；Amazon不宣告Astra�
       'media/study-evidence.png', 'media/study-trace.png', 'scripts/topology.mjs', 'scripts/topology-proof.mjs',
       'docs/TOPOLOGY_LAB.md', 'docs/TOPOLOGY_RESULTS.md', 'docs/contracts/TOPOLOGY_V2.md', 'evidence/topology-v2/proof.json',
       'scripts/defense.mjs', 'scripts/defense-proof.mjs', 'docs/DEFENSE_LAB.md', 'docs/contracts/DEFENSE_GOVERNANCE_V1.md', 'evidence/defense-v1/proof.json',
-      'scripts/email-proof.mjs', 'docs/EMAIL_NOTIFICATIONS.md', 'docs/START_HERE.zh-TW.md', 'evidence/email-v1/proof.json']) {
+      'scripts/email-proof.mjs', 'docs/EMAIL_NOTIFICATIONS.md', 'docs/START_HERE.zh-TW.md', 'evidence/email-v1/proof.json',
+      'runtime/reference.mjs', 'runtime/server.mjs', 'runtime/blueprints/default.json', 'sdk/runtime-client.mjs', 'sdk/runtime-client.py',
+      'scripts/runtime.mjs', 'scripts/runtime-proof.mjs', 'scripts/runtime-gate.mjs', 'scripts/runtime-isolation.mjs',
+      'deploy/runtime-reference/compose.yml', 'deploy/runtime-reference/Dockerfile', 'deploy/runtime-ci.template.yml',
+      'docs/RUNTIME.md', 'docs/RUNTIME_ACCEPTANCE.md', 'docs/contracts/RUNTIME_V1.md', 'evidence/runtime-v1/summary.json']) {
       assert.equal((await lstat(join(output, path))).isFile(), true, path);
     }
     const pkg = JSON.parse(await readFile(join(output, 'package.json'))); assert.equal(pkg.name, `dungeonq-${target}`); assert.equal(pkg.version, '0.6.0');
@@ -67,10 +76,59 @@ test('兩種乾淨匯出皆含world/study及英文證據；Amazon不宣告Astra�
     assert.ok(sbom.dependencies.some(row => row.ref === `${pkg.name}@0.6.0`));
     if (target === 'amazon') {
       assert.equal(pkg.scripts['astra:site'], undefined); await assert.rejects(lstat(join(output, 'scripts/build-astra-site.mjs')), { code: 'ENOENT' });
-    } else assert.equal((await lstat(join(output, 'scripts/build-astra-site.mjs'))).isFile(), true);
+      await assert.rejects(lstat(join(output, 'tests/astra-site-runtime.test.mjs')), { code: 'ENOENT' });
+    } else {
+      assert.equal((await lstat(join(output, 'scripts/build-astra-site.mjs'))).isFile(), true);
+      assert.equal((await lstat(join(output, 'tests/astra-site-runtime.test.mjs'))).isFile(), true);
+    }
     assert.ok(!(await readdir(output)).includes('.git')); assert.ok(!(await readdir(output)).includes('release-study'));
     await assert.rejects(exportDistribution({ root: source, output, target }), /EXPORT_REQUIRES_EMPTY_EXTERNAL_DIRECTORY/);
   }
+});
+
+test('runtime exports use public documents and exclude generated Python caches without hiding private files', async t => {
+  const { base, source } = await exportFixture(t);
+  await file(source, 'sdk/__pycache__/runtime-client.cpython-314.pyc', 'local generated bytecode');
+  await file(source, 'sdk/runtime-client.pyc', 'older generated bytecode');
+  await file(source, 'docs/RUNTIME.md', 'PRIVATE SOURCE DOCUMENT MUST NOT EXPORT');
+  await file(source, 'docs/history/README-before-runtime.md', 'PRIVATE HISTORY MUST NOT EXPORT');
+  await file(source, 'reports/runtime-proof.json', 'PRIVATE REPORT MUST NOT EXPORT');
+  for (const target of ['amazon', 'astra']) {
+    const output = join(base, `${target}-runtime`); await mkdir(output);
+    await exportDistribution({ root: source, output, target });
+    assert.equal(await readFile(join(output, 'docs/RUNTIME.md'), 'utf8'), 'Synthetic public documentation');
+    const manifest = JSON.parse(await readFile(join(output, 'RELEASE_MANIFEST.json'), 'utf8'));
+    assert.ok(manifest.entries.every(entry => isPublicSourcePath(entry.path)));
+    assert.ok(!manifest.entries.some(entry => /__pycache__|\.pyc$|(?:^|\/)(?:reports|history)\//u.test(entry.path)));
+    await assert.rejects(lstat(join(output, 'sdk/__pycache__')), { code: 'ENOENT' });
+    // Running the published Python SDK may create ignored caches; source verification still checks the actual sources.
+    await file(output, 'sdk/__pycache__/runtime-client.cpython-314.pyc', 'regenerated bytecode');
+    assert.equal((await verifySource(output)).passed, true);
+    await file(output, 'sdk/credentials.json', '{}');
+    assert.equal((await verifySource(output)).passed, false);
+  }
+});
+
+test('runtime installation credentials reports and history fail closed before any export output', async t => {
+  for (const path of ['runtime/runtime-installation.json', 'runtime/reference.json', 'runtime/ssh-host.json',
+    'runtime/credentials.json', 'runtime/runtime.sqlite.ticket-key', 'runtime/compose.env',
+    'runtime/reports/acceptance.json', 'sdk/history/client.py']) await t.test(path, async t => {
+    const { base, source } = await exportFixture(t); const output = join(base, 'out'); await mkdir(output);
+    await file(source, path, '{}');
+    await assert.rejects(exportDistribution({ root: source, output, target: 'amazon' }), /NON_SOURCE_EXPORT_DENIED/);
+    assert.deepEqual(await readdir(output), []);
+  });
+});
+
+test('runtime credential fields are rejected even under an innocuous source filename', async t => {
+  const { base, source } = await exportFixture(t); const output = join(base, 'out'); await mkdir(output);
+  for (const field of ['normalToken', 'witnessToken', 'producerToken', 'readerToken', 'sealKey', 'ownerToken']) {
+    assert.equal(hasReleaseSecret(JSON.stringify({ [field]: 'synthetic-private-capability' })), true, field);
+  }
+  const privateConfiguration = JSON.stringify({ credentials: { owner: 'x'.repeat(43), actor: 'y'.repeat(43) } });
+  await file(source, 'runtime/accidental.json', privateConfiguration);
+  await assert.rejects(exportDistribution({ root: source, output, target: 'astra' }), /EXPORT_SECRET_PATTERN_DENIED/);
+  assert.deepEqual(await readdir(output), []);
 });
 
 test('來源匯出遇本機安裝／token／symlink即拒絕，輸出保持空白', async t => {
@@ -97,8 +155,10 @@ test('public release重建拒絕已追蹤的study安裝紀錄，不寫輸出', a
 
 test('即使manifest摘要吻合，私人安裝／DB／憑證路徑仍不算合格公開來源', async t => {
   const base = await temp(t);
-  for (const path of ['study-installation.json', 'world-installation.json', 'topology-installation.json', 'defense-installation.json', 'smtp-config.json', 'identity-config.json', 'oauth-config.json', 'world.sqlite', 'study.sqlite-wal', 'tokens.json', '.env.local']) {
-    const directory = join(base, path.replaceAll('.', '_')); await mkdir(directory); const data = Buffer.from('{}');
+  for (const path of ['study-installation.json', 'world-installation.json', 'topology-installation.json', 'defense-installation.json', 'smtp-config.json', 'identity-config.json', 'oauth-config.json', 'world.sqlite', 'study.sqlite-wal', 'tokens.json', '.env.local',
+    'runtime-installation.json', 'reference.json', 'ssh-host.json', 'runtime.sqlite.ticket-key', 'compose.env', 'client.pyc', 'client.pyo',
+    'sdk/__pycache__/client.pyc', 'reports/acceptance.json', 'docs/history/previous.md']) {
+    const directory = join(base, path.replaceAll('.', '_').replaceAll('/', '_')); await mkdir(directory); const data = Buffer.from('{}');
     await file(directory, path, data);
     await file(directory, 'RELEASE_MANIFEST.json', JSON.stringify({ schemaVersion: 'dungeonq.source-release/v1', profile: 'SYNTHETIC_ONLY', privateHistoryIncluded: false,
       entries: [{ path, bytes: data.length, sha256: createHash('sha256').update(data).digest('hex') }] }));
