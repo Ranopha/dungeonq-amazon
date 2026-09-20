@@ -4,6 +4,12 @@ DungeonQ is a defensive deception runtime for security teams building controlled
 
 The current reference uses explicitly provisioned contexts and an artificial origin. It demonstrates the routing and state mechanisms with real clients, without claiming an automatic attack detector or protection of a production host.
 
+
+## One-command companion for Amazon judges
+
+For a short first pass, run `node scripts/judge-demo.mjs /absolute/path/new-report.json` after dependency installation. It demonstrates real MCP/HTTP operations, persistent records, world-only ticket use, a separate scripted owner grant, restart and independent artificial-origin readbacks. It needs no API key and stops its own temporary reference. [Exact scope and reproduction](AMAZON_JUDGE_DEMO.md). This is a reproducible walkthrough, not a substitute for full container acceptance or independent human review.
+
+
 ## First: inspect six recorded checkpoints
 
 Open the [recorded journey](../evidence/runtime-v1/journey.json), then follow its evidence references into the [runtime acceptance record](RUNTIME_ACCEPTANCE.md) and [source-bound summary](../evidence/runtime-v1/summary.json). These six checkpoints group one recorded owned-reference acceptance run by capability, rather than chronological order. Public CI corroboration is labeled separately. The ticket-to-origin rejection is a later negative check after the main origin-witness snapshot; inspect the record pointers for each claim.

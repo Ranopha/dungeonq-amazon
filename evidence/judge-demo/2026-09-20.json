@@ -1,0 +1,179 @@
+{
+  "schemaVersion": "dungeonq.judge-demo/v1",
+  "sourceVersion": "0.11.1",
+  "mode": "LOCAL_ARTIFICIAL_REFERENCE",
+  "scenes": [
+    {
+      "id": "connect",
+      "observedAt": "2026-09-20T10:48:39.658Z",
+      "command": "MCP initialize + tools/list",
+      "result": {
+        "transport": "Streamable HTTP",
+        "tools": [
+          "dungeonq_snapshot",
+          "dungeonq_read",
+          "dungeonq_write",
+          "dungeonq_issue_ticket",
+          "dungeonq_use_ticket"
+        ]
+      }
+    },
+    {
+      "id": "divert",
+      "observedAt": "2026-09-20T10:48:39.682Z",
+      "command": "MCP dungeonq_snapshot",
+      "result": {
+        "revision": 0,
+        "route": {
+          "contextId": "diverted",
+          "family": "mcp",
+          "destination": "SYNTHETIC",
+          "requestId": "judge-mcp-snapshot",
+          "proofVerified": true
+        }
+      }
+    },
+    {
+      "id": "work",
+      "observedAt": "2026-09-20T10:48:39.698Z",
+      "command": "MCP write -> HTTP read (same world)",
+      "result": {
+        "value": "Case 42: review the synthetic shipping record.",
+        "revision": 1,
+        "route": {
+          "contextId": "diverted",
+          "family": "http",
+          "destination": "SYNTHETIC",
+          "requestId": "judge-1",
+          "proofVerified": true
+        }
+      }
+    },
+    {
+      "id": "authorize",
+      "observedAt": "2026-09-20T10:48:39.702Z",
+      "command": "Separate owner: preview -> explicit APPLY",
+      "result": {
+        "state": "APPLIED",
+        "context": "diverted",
+        "policy": "GRANT_MUTATION",
+        "authority": "operator fixture; never a participant tool"
+      }
+    },
+    {
+      "id": "ticket",
+      "observedAt": "2026-09-20T10:48:39.721Z",
+      "command": "MCP issue-ticket -> HTTP use-ticket",
+      "result": {
+        "value": "Case 42: review the synthetic shipping record.",
+        "adaptation": {
+          "policyId": "5d59c596-a382-405f-b691-8de55bdd2272",
+          "contextId": "diverted",
+          "observationId": "obs-13",
+          "template": "follow-up",
+          "key": "follow-up-1036d0d1d31a5e487dfa37b0",
+          "value": "A synthetic follow-up record is available for review.",
+          "revision": 2,
+          "uses": 1,
+          "remaining": 7,
+          "replayed": false
+        },
+        "route": {
+          "contextId": "diverted",
+          "family": "http",
+          "destination": "SYNTHETIC",
+          "requestId": "judge-consume-once",
+          "proofVerified": true
+        },
+        "ticket": "[ephemeral credential omitted]"
+      }
+    },
+    {
+      "id": "restart",
+      "observedAt": "2026-09-20T10:48:39.991Z",
+      "command": "Stop services -> reopen same database -> retry",
+      "result": {
+        "revision": 2,
+        "records": [
+          {
+            "key": "welcome",
+            "value": "Case 42: review the synthetic shipping record.",
+            "revision": 1
+          },
+          {
+            "key": "order-41",
+            "value": {
+              "status": "awaiting-review",
+              "label": "Synthetic order 41",
+              "next": "review-policy"
+            },
+            "revision": 0
+          },
+          {
+            "key": "review-policy",
+            "value": "Review is available only inside this synthetic workspace.",
+            "revision": 0
+          },
+          {
+            "key": "follow-up-1036d0d1d31a5e487dfa37b0",
+            "value": "A synthetic follow-up record is available for review.",
+            "revision": 2
+          }
+        ],
+        "exactRetryReplayed": true
+      }
+    },
+    {
+      "id": "boundary",
+      "observedAt": "2026-09-20T10:48:39.996Z",
+      "command": "Independent artificial-origin + collector readback",
+      "result": {
+        "status": "PASS",
+        "checks": [
+          {
+            "id": "canonical-replay",
+            "status": "PASS",
+            "detail": "Canonical journal replay and persisted state verification."
+          },
+          {
+            "id": "origin-state-unchanged",
+            "status": "PASS",
+            "detail": "Artificial protected data/configuration digest compared with the pre-dispatch baseline."
+          },
+          {
+            "id": "no-diverted-origin-admission",
+            "status": "PASS",
+            "detail": "Origin admission interval is contiguous and preserves the baseline checkpoint."
+          },
+          {
+            "id": "independent-route-census",
+            "status": "PASS",
+            "detail": "Every gateway attempt has a matching separate-process collector event."
+          },
+          {
+            "id": "ordinary-admission-census",
+            "status": "PASS",
+            "detail": "Every ordinary origin admission matches a served gateway attempt."
+          },
+          {
+            "id": "dispatch-outcomes-known",
+            "status": "PASS",
+            "detail": "Unfinished or unknown dispatches prevent acceptance; automatic reconciliation is not implemented."
+          },
+          {
+            "id": "real-diversion-observed",
+            "status": "PASS",
+            "detail": "At least one actual canonical result passed through the synthetic facade."
+          }
+        ],
+        "scope": "Artificial origin only. Same-user local processes; not production isolation."
+      }
+    }
+  ],
+  "limitations": [
+    "Deterministic MCP client, not a live AI or Alexa service.",
+    "Owner fixture supplies a separate explicit approval; this recording is not evidence of an independent human reviewer.",
+    "No automatic attack classification, production integration, or general deception-efficacy claim.",
+    "Command outputs are recorded and may be reformatted for presentation; no recreated product UI."
+  ]
+}
