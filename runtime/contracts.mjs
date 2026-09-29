@@ -55,7 +55,7 @@ export function runtimeFamily(value) { runtimeCheck(RUNTIME_FAMILIES.includes(va
 export function runtimeValue(value, maxBytes) {
   const copy = runtimeJson(value, maxBytes, 8);
   function inspect(item) {
-    if (typeof item === 'string') runtimeCheck(!/[\u0000-\u001f\u007f]|<\/?[A-Za-z]|[A-Za-z][A-Za-z0-9+.-]*:\/\/|(?:file|data|javascript):|-----BEGIN/iu.test(item), 'VALUE_NOT_PASSIVE');
+    if (typeof item === 'string') runtimeCheck(!/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]|<\/?[A-Za-z]|[A-Za-z][A-Za-z0-9+.-]*:\/\/|(?:file|data|javascript):|-----BEGIN/iu.test(item), 'VALUE_NOT_PASSIVE');
     else if (item && typeof item === 'object') for (const entry of Object.values(item)) inspect(entry);
   }
   inspect(copy); return copy;

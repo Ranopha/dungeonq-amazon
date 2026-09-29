@@ -1,3 +1,11 @@
+# Start with one AI-agent workflow
+
+**v0.12.0 hands-on route:** [Open the participant and operator working views](RUNTIME.md#try-a-complete-participant-task-v0120). The participant completes a shipping review in a persistent world; the operator inspects records, observations, route evidence and finite adaptation. Both use the actual HTTP runtime. No model key is needed for this manual fixture.
+
+**Automated judge route:** [Reproduce ten real MCP/HTTP checkpoints](AMAZON_JUDGE_DEMO.md), including positive origin reachability, refusal, scoped ticket denial and restart. This is engineering evidence with deterministic clients. For a model study, use a separately specified participant brief and control; the manual page discloses its artificial nature.
+
+The remaining guide retains the earlier recorded tour and protocol-level operations. Dates and source scopes remain explicit.
+
 # Follow the diversion
 
 DungeonQ is a defensive deception runtime for security teams building controlled responses to suspicious human or AI sessions. A designated entry point diverts an admitted session into a persistent synthetic world. The participant can do useful work there; the operator can observe it and authorize bounded changes while checking the separate protected origin.

@@ -1,3 +1,15 @@
+# v0.12.0 working-view and outcome validation — September 29, 2026
+
+The integrated development candidate passed **489/489 tests**, three fixed-seed scenario checks, a zero-finding source audit, typecheck and build on Node 24.15.0. Focused regressions include a write committed before response loss, unsigned/misbound refusal rejection, multiline persistence, participant HTTP write/readback and operator cross-context/adapter correlation. These use owned artificial fixtures and deterministic clients.
+
+Chrome readback confirmed a participant multiline save and separate server read, the same operator-visible record, exact preview/apply with persisted policy readback, a follow-up record, a visible rejected attempt, seven scoped evidence checks, and private-state clearing on disconnect/reload. The [September 29 report](../evidence/judge-demo-v2/report.json) records ten real MCP/HTTP checkpoints including an ordinary-origin positive control and ticket-origin rejection before the final witness. Screenshots are recorded UI, not live hosted execution or model-efficacy evidence.
+
+Public source verification and CI are separate from this integrated local result. Consult the exact published commit's Actions run. Historical v0.11 container PASS results below do **not** certify this changed runtime; fresh source-bound isolation/runtime acceptance is required for full gate admission. Production protection and model deception remain unassessed by these engineering checks. The retained Vinext route-classification warning does not prevent the build.
+
+The clean Amazon distribution also passed **482/482 tests**, scenario verification, audit, typecheck, build and source-manifest verification locally. Remote CI and container acceptance are reported separately for the published commit.
+
+---
+
 # v0.11.1 presentation validation — September 18, 2026
 
 The updated clean Amazon distribution passed **460/460 tests**, three deterministic scenarios, zero-finding source audit, typecheck and build. The Astra site's seven focused checks additionally exercise recorded chapter selection, unavailable-evidence handling, complete static packaging and local asset links. Desktop and mobile readback verified the new journey and access to retained historical profiles.

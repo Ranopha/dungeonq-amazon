@@ -8,6 +8,26 @@ The private `credentials.json` contains separate `owner`, `actor`, `other`, `ord
 
 Keep the installation directory private (0700, files0600). Keep its SQLite files, WAL state, signing key and configuration together when stopped. Start with the same `--data-dir` to resume. Existing incomplete, altered or unknown canonical/auxiliary storage fails closed. No destructive reset or automatic migration is offered.
 
+## Try a complete participant task (v0.12.0)
+
+Use a **new private directory** for `participant-v1`. Existing diagnostic installations keep their blueprint and must not be converted in place.
+
+```sh
+npm run runtime -- --data-dir ../dungeonq-review-012 --presentation participant-v1
+```
+
+Open the printed **Participant workspace** URL and connect with only the `actor` token. Read `order-41` and `review-policy`, save a multiline `review-findings` note, and inspect the separate server readback. Issue a ticket for that record and use it for a bounded read. The ticket stays in memory and is never displayed. This page is an explicitly disclosed manual fixture, not a blinded AI experiment.
+
+In a separate tab, open **Control room** with the `owner` token. Select `diverted`: world records, successful canonical observations and the route timeline come from authenticated server reads. The timeline joins canonical and collector routes by context, request ID **and adapter family**. Observations lacking a family remain a separate list; the UI does not guess a match. Refresh and read evidence after participant work.
+
+Preview **Grant mutation**, review the exact proposal and explicitly apply. Then issue and consume a fresh participant ticket; refresh the snapshot to see the follow-up record. Stop and restart with the same directory and presentation to confirm the note persists. Browser reload clears credentials; reconnect for a fresh read. None of this approves shipping or changes an external system.
+
+A stale revision requires a new snapshot before another write. A lost or uncertain response pauses operations and retains the exact request for an explicit retry; it never generates a replacement write automatically. An exact retry can recover a canonical result, but it does not erase a previously unknown route outcome. Disconnect discards the page's in-memory pending request; preserve the request ID before disconnecting when investigating uncertainty.
+
+The operator shows **REFUSED** only for an authenticated canonical refusal proving no new canonical effect from that attempt, with an unchanged independently replayed checkpoint. Storage failures, unsigned errors, mismatched proofs and response loss remain **UNKNOWN**, including when the write actually committed. Historical **FAILED** records remain unconfirmed. Any such unresolved result prevents clean acceptance. This is HMAC authentication within the trusted gateway/kernel, not third-party attestation.
+
+Plain note values accept LF, CRLF and TAB without rewriting them. Other control characters, active markup, URL-like executable content, secret-shaped text and the original size/depth bounds remain restricted.
+
 ## Operator workflow
 
 1. Open the printed Control room URL and enter the owner token.
@@ -40,7 +60,7 @@ Python: load `sdk/runtime-client.py`, instantiate `RuntimeClient(runtime_origin,
 
 The CLI uses `DUNGEONQ_RUNTIME_URL` and either `DUNGEONQ_OPERATOR_TOKEN` or `DUNGEONQ_CONTEXT_TOKEN`; run `node cli/runtime.mjs` for usage. Never put tokens in a URL or a committed command example.
 
-MCP uses Streamable HTTP at the printed `/mcp` endpoint with a Bearer actor token. Its five `dungeonq_*` tools expose only participant operations; arguments are `{requestId,args}`. The standard MCP SDK is exercised by acceptance. This does not certify every AI vendor or model. No live model was run in this implementation.
+MCP uses Streamable HTTP at the printed `/mcp` endpoint with a Bearer actor token. Its five `dungeonq_*` tools expose only participant operations; arguments are `{requestId,args}`. The standard MCP SDK is exercised by acceptance. This does not certify every AI vendor or model. Adapter acceptance uses deterministic clients. Model identity and behavioral conclusions require a separate experiment record.
 
 SSH authenticates user `dungeonq` with the actor token and a pinned installation host key. The supported exec request is `dq <JSON operation envelope>`; `snapshot` and `read <key>` are convenience forms. PTY, shell, forwarding and subsystems are denied.
 

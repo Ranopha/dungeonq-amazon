@@ -38,7 +38,11 @@
       <div id="private-state" hidden>
         <h3>Contexts</h3><p class="help">The server binds each context to its tenant, world and current authority.</p>
         <div class="table-wrap" tabindex="0" role="region" aria-label="Context state table"><table><thead><tr><th scope="col">Context</th><th scope="col">Tenant / world</th><th scope="col">Epoch</th><th scope="col">Disposition</th><th scope="col">State</th></tr></thead><tbody id="contexts"></tbody></table></div>
-        <div class="subheading"><h3>Worlds</h3><span class="help">Persisted server observations</span></div><div id="worlds" class="world-list"></div>
+        <div class="inspection-filter"><label for="inspect-context">Inspect a context</label><select id="inspect-context" disabled><option value="">All contexts</option></select><p class="help">This filters observations only. It does not select a policy target or change authority.</p></div>
+        <div class="subheading"><h3>World records</h3><span class="help">Current server readback, not an operation-by-operation diff</span></div><div id="worlds" class="world-list"></div>
+        <div class="subheading"><h3>Participant activity</h3><span id="observation-count" class="help">No observations read</span></div>
+        <p class="help">Canonical observations retain the operation, context, epoch and world revision. A repeated request may reuse an earlier result.</p>
+        <ol id="observations" class="observation-list"></ol>
         <ul id="runtime-limitations" class="limitations"></ul>
       </div>
       <p id="locked-state" class="empty">Connect to read private contexts, worlds and route evidence.</p>
@@ -49,7 +53,7 @@
       <form id="preview-form" class="policy-form">
         <div><label for="context">Context</label><select id="context" required disabled><option value="">Connect to load contexts</option></select></div>
         <div><label for="action">Policy action</label><select id="action" disabled><option value="FENCE">Fence context</option><option value="GRANT_MUTATION">Grant mutation</option></select></div>
-        <div class="reason-field"><label for="reason">Reason <span class="optional">(optional)</span></label><input id="reason" maxlength="240" autocomplete="off" disabled></div>
+        <div class="reason-field"><label for="reason">Reason <span class="optional">(optional)</span></label><input id="reason" maxlength="180" autocomplete="off" disabled></div>
         <button id="preview" type="submit" disabled>Preview change</button>
       </form>
       <div id="proposal" class="proposal" hidden aria-labelledby="proposal-title">
@@ -63,7 +67,7 @@
     <section id="evidence" class="workspace-section" aria-labelledby="evidence-title">
       <div class="section-heading"><div><p class="eyebrow">03 / READ EVIDENCE</p><h2 id="evidence-title">What is actually established?</h2></div><button id="read-evidence" class="quiet" disabled>Read evidence</button></div>
       <div class="evidence-summary"><strong id="evidence-state" class="badge" data-state="INCONCLUSIVE">Not verified</strong><p id="evidence-summary">No evidence has been read in this session.</p></div>
-      <ul id="checks" class="check-list"></ul><div id="evidence-details" hidden><h3>Observed scope</h3><pre id="evidence-scope"></pre><h3>Route and execution events</h3><div id="events" class="event-list"></div><ul id="evidence-limitations" class="limitations"></ul></div>
+      <ul id="checks" class="check-list"></ul><div id="evidence-details" hidden><h3>Request timeline</h3><p class="help">Requests are grouped only when context, request ID and transport all match. Latest collector order appears first; canonical-only records follow. This is a reading aid, not an additional integrity check.</p><p id="timeline-count" class="help"></p><div id="events" class="event-list"></div><details class="scope-details"><summary>Origin scope and source details</summary><pre id="evidence-scope"></pre></details><ul id="evidence-limitations" class="limitations"></ul></div>
     </section>
     <footer>DungeonQ Runtime · Local integration reference · Verification is limited to the checks and scope shown.</footer>
   </main>

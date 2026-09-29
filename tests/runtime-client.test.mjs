@@ -134,9 +134,9 @@ test('Python SDK uses the same HTTP contract, reconnect and redacted error seman
   assert.equal(f.requests[2].authorization, 'Bearer python-second-owner'); assert.equal(f.requests.length, 4);
 });
 
-async function panelFixture() {
+async function panelFixture({ panelStatus = status, panelEvidence = evidence } = {}) {
   const source = await readFile(new URL('../public/runtime/app.mjs', import.meta.url), 'utf8');
-  const elements = new Map(); const requests = []; let loseApply = false;
+  const elements = new Map(); const requests = []; let loseApply = false; const failures = new Map();
   const create = tag => ({ tagName: tag, textContent: '', children: [], dataset: {}, hidden: false, disabled: false, value: '', checked: false,
     listeners: new Map(), append(...items) { this.children.push(...items); }, replaceChildren(...items) { this.children = items; },
     addEventListener(name, handler) { this.listeners.set(name, handler); }, focus() { this.focused = true; } });
@@ -144,7 +144,8 @@ async function panelFixture() {
   const fetcher = async (url, options) => {
     const path = new URL(url).pathname; const body = options.body ? JSON.parse(options.body) : undefined; requests.push({ path, body });
     if (path === '/api/policy/apply' && loseApply) throw Error('synthetic lost reply');
-    return Response.json(path === '/api/status' ? status : path === '/api/evidence' ? evidence : path === '/api/policy/preview'
+    if (failures.has(path)) { const failed = failures.get(path); failures.delete(path); return Response.json({ error: { code: failed.code } }, { status: failed.status }); }
+    return Response.json(path === '/api/status' ? panelStatus : path === '/api/evidence' ? panelEvidence : path === '/api/policy/preview'
       ? { ...body, proposalId: 'proposal-one', digest: 'a'.repeat(64), expiresAt: Date.now() + 60000, changes: ['Fence context'], warnings: [] }
       : path === '/api/policy/apply' ? { proposalId: body.proposalId, state: 'APPLIED', readback: { state: 'FENCED' } } : { capabilities: [] });
   };
@@ -155,7 +156,11 @@ async function panelFixture() {
     Date, JSON, Number, String, Array, Math, setTimeout, clearTimeout,
   });
   const dispatch = async (id, event = 'click') => { element(id).listeners.get(event)({ preventDefault() {} }); await new Promise(resolve => setImmediate(resolve)); };
-  return { element, requests, dispatch, loseReply() { loseApply = true; }, close() { window.listeners.get('pagehide')(); } };
+  const rendered = item => [item.textContent, ...item.children.map(rendered)].join('\n');
+  return { element, requests, dispatch, rendered: id => rendered(element(id)), loseReply() { loseApply = true; },
+    failNext(path, code, status = 503) { failures.set(path, { code, status }); },
+    setStatus(value) { panelStatus = value; }, setEvidence(value) { panelEvidence = value; },
+    close() { window.listeners.get('pagehide')(); } };
 }
 
 test('operator panel requires preview then explicit confirmation; lost apply reply is not resent and disconnect clears views', async t => {
@@ -170,9 +175,81 @@ test('operator panel requires preview then explicit confirmation; lost apply rep
   ui.loseReply(); await ui.dispatch('apply-form', 'submit'); await ui.dispatch('apply-form', 'submit');
   assert.equal(ui.requests.filter(row => row.path === '/api/policy/apply').length, 1);
   assert.match(ui.element('message').textContent, /uncertain/); assert.equal(ui.element('apply').disabled, true);
+  assert.equal(ui.element('private-state').hidden, true); assert.equal(ui.element('worlds').children.length, 0);
+  assert.equal(ui.element('preview').disabled, true);
   await ui.dispatch('read-evidence'); assert.equal(ui.element('evidence-state').textContent, 'Verified within scope');
   await ui.dispatch('disconnect'); assert.equal(ui.element('private-state').hidden, true);
   assert.equal(ui.element('evidence-state').textContent, 'Not verified'); assert.equal(ui.element('contexts').children.length, 0);
+});
+
+test('operator reads actual records and observations, filters tenant/world exactly, and keeps the policy target independent', async t => {
+  const panelStatus = { ...status, contexts: [
+    { ...status.contexts[0], tenantId: 'tenant-one', worldId: 'shared-name' },
+    { ...status.contexts[0], contextId: 'ctx-two', tenantId: 'tenant-two', worldId: 'shared-name' },
+  ], worlds: [
+    { tenantId: 'tenant-one', worldId: 'shared-name', revision: 2, records: [
+      { key: 'review', revision: 2, value: 'First line\nSecond line <img src=x onerror=alert(1)>' },
+      { key: 'metadata', revision: 1, value: { note: 'visible note', token: 'do-not-render-token' } },
+      { key: 'private-key-secret', revision: 1, value: 'do-not-render-secret' },
+    ] },
+    { tenantId: 'tenant-two', worldId: 'shared-name', revision: 7, records: [{ key: 'other', revision: 7, value: 'Other tenant record' }] },
+  ], observations: [
+    { observationId: 'obs-one', contextId: 'ctx-one', requestId: 'request-one', operation: 'write', epoch: 1, worldRevision: 2 },
+    { observationId: 'obs-two', contextId: 'ctx-two', requestId: 'request-two', operation: 'use-ticket', epoch: 2, worldRevision: 7, usedBy: 'mutation-two' },
+  ] };
+  const ui = await panelFixture({ panelStatus }); t.after(() => ui.close());
+  ui.element('operator-token').value = fixtureToken; await ui.dispatch('connect-form', 'submit');
+  assert.match(ui.rendered('worlds'), /First line\nSecond line <img/);
+  assert.match(ui.rendered('worlds'), /Record revision 2/); assert.match(ui.rendered('worlds'), /visible note/);
+  assert.doesNotMatch(ui.rendered('worlds'), /do-not-render/);
+  ui.element('context').value = 'ctx-two'; ui.element('inspect-context').value = 'ctx-one'; await ui.dispatch('inspect-context', 'change');
+  assert.equal(ui.element('context').value, 'ctx-two'); assert.match(ui.rendered('worlds'), /First line/);
+  assert.doesNotMatch(ui.rendered('worlds'), /Other tenant record/);
+  assert.match(ui.rendered('observations'), /World revision 2/); assert.doesNotMatch(ui.rendered('observations'), /request-two/);
+  assert.equal(ui.requests.filter(row => row.path === '/api/policy/apply').length, 0);
+  await ui.dispatch('disconnect');
+  for (const id of ['worlds', 'observations', 'events']) assert.equal(ui.element(id).children.length, 0);
+  assert.equal(ui.element('inspect-context').disabled, true);
+});
+
+test('operator correlates complete request identities only and preserves refused, unknown, historical and missing evidence states', async t => {
+  const canonical = (contextId, requestId, family, operation = 'write') => ({ sequence: 1, at: 12345, kind: 'EXECUTE', contextId, requestId, family, operation });
+  const route = (contextId, requestId, family, outcome = 'SERVED') => ({ eventId: `${contextId}-${family}`, contextId, requestId, family, destination: 'SYNTHETIC', outcome });
+  const panelEvidence = { ...evidence, status: 'FAIL', checks: [{ id: 'known', status: 'FAIL', detail: 'Unknown attempt retained.' }],
+    canonical: { events: [canonical('ctx-one', 'same', 'http'), canonical('ctx-one', 'canonical-only', 'ssh'),
+      { contextId: 'ctx-one', requestId: 'incomplete', kind: 'EXECUTE', sequence: 3, operation: 'read' }] },
+    events: [route('ctx-one', 'same', 'http', 'REFUSED'), route('ctx-two', 'same', 'http'), route('ctx-one', 'same', 'mcp'),
+      route('ctx-one', 'unknown', 'http', 'UNKNOWN'), route('ctx-one', 'historical', 'http', 'FAILED'),
+      { contextId: 'ctx-one', requestId: 'incomplete', outcome: 'SERVED' }] };
+  const ui = await panelFixture({ panelEvidence }); t.after(() => ui.close());
+  ui.element('operator-token').value = fixtureToken; await ui.dispatch('connect-form', 'submit'); await ui.dispatch('read-evidence');
+  const displayed = ui.rendered('events');
+  assert.equal(displayed.match(/Shared request identity in both sources/g)?.length, 1);
+  assert.match(displayed, /Refused without new effect \(server reported\)/);
+  assert.match(displayed, /Outcome unknown — do not repeat the change/);
+  assert.match(displayed, /Historical failure — effect not established/);
+  assert.match(displayed, /Collector destination: SYNTHETIC/);
+  assert.match(displayed, /Canonical record missing/); assert.match(displayed, /No collector record paired/);
+  assert.equal(displayed.match(/No complete context \/ request \/ transport identity/g)?.length, 2);
+  assert.equal(ui.element('evidence-state').textContent, 'Failed checks');
+  ui.element('inspect-context').value = 'ctx-one'; await ui.dispatch('inspect-context', 'change');
+  assert.doesNotMatch(ui.rendered('events'), /ctx-two/); assert.match(ui.rendered('events'), /ctx-one \/ same \/ mcp/);
+});
+
+test('operator clears stale private readbacks and verification after read failure or lost access, then requires fresh state', async t => {
+  const ui = await panelFixture({ panelStatus: { ...status, observations: [{ contextId: 'ctx-one', requestId: 'retained', operation: 'read', worldRevision: 0 }] } });
+  t.after(() => ui.close());
+  ui.element('operator-token').value = fixtureToken; await ui.dispatch('connect-form', 'submit'); await ui.dispatch('read-evidence');
+  assert.equal(ui.element('evidence-state').textContent, 'Verified within scope');
+  ui.failNext('/api/evidence', 'EVIDENCE_UNAVAILABLE'); await ui.dispatch('refresh');
+  assert.equal(ui.element('evidence-state').textContent, 'Not verified');
+  assert.equal(ui.element('private-state').hidden, true); assert.equal(ui.element('evidence-details').hidden, true);
+  for (const id of ['worlds', 'observations', 'events', 'contexts']) assert.equal(ui.element(id).children.length, 0);
+  assert.equal(ui.element('preview').disabled, true); assert.equal(ui.element('refresh').disabled, false);
+  await ui.dispatch('refresh'); assert.equal(ui.element('private-state').hidden, false);
+  ui.failNext('/api/status', 'AUTH_REQUIRED', 401); await ui.dispatch('refresh');
+  assert.equal(ui.element('connection-state').textContent, 'Disconnected'); assert.equal(ui.element('refresh').disabled, true);
+  assert.equal(ui.element('observations').children.length, 0); assert.equal(ui.element('evidence-state').textContent, 'Not verified');
 });
 
 test('runtime panel has labeled keyboard controls and uses no credential persistence or HTML injection sinks', async () => {

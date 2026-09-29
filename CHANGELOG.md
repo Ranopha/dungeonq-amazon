@@ -1,3 +1,12 @@
+# v0.12.0 — September 29, 2026
+
+- Add a self-hosted English participant workspace using the real HTTP runtime; a saved review is independently read back.
+- Show actual world records, canonical observations and context/request/adapter-correlated operator evidence.
+- Permit passive multiline notes; retain control-character, active-content and size restrictions.
+- Authenticate known no-new-effect refusals; storage errors, unsigned/mismatched proofs and lost responses remain UNKNOWN.
+- Add a ten-checkpoint MCP/HTTP walkthrough with origin reachability, stale-write rejection, ticket-origin denial and restart.
+- Keep old films, source-bound container reports and model results explicitly historical. No new live model or production-efficacy claim.
+
 # Changelog
 
 ## 0.11.1 — 2026-09-18

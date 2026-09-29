@@ -1,138 +1,90 @@
-# Amazon submission — current judge narrative
+# Amazon submission — v0.12.0
 
-## A world for suspicious sessions
+## Name
 
-A suspicious human or AI session can keep working, switch tools, and return later. **DungeonQ lets security teams route a designated session into a persistent decoy world, observe its activity, and check that its progress stays inside that world.**
+DungeonQ — Defensive Deception for AI-Agent Workflows
 
-Imagine a client reading a shipping record. It can save a note, obtain a useful world-only ticket, and come back after a restart. The operator sees the history and can approve a limited follow-up. None of those actions grants authority over the protected origin.
+## Elevator pitch
 
-## See the mechanism working
+Give suspicious AI-agent sessions a persistent synthetic world to work in, while operators observe activity, approve bounded changes, and verify the artificial origin separately.
 
-[Updated 2m45s English runtime film](https://youtu.be/ttlfnyuuTIs).
+## Inspiration
 
-The updated English film shows actual outputs from a fresh local run, reformatted for readability:
+An AI agent can keep working across tools, retries, and sessions. For security teams investigating suspicious behavior, a useful defensive environment needs to preserve that continuity and show what actually happened.
 
-1. A real MCP client connects and discovers five bounded tools.
+DungeonQ explores that problem through a persistent synthetic world. A designated session can perform useful, bounded work there while a separate operator follows its activity and controls any adaptation. The objective is an inspectable defensive mechanism for AI-agent workflows, with concrete evidence for each claimed boundary.
+
+## What it does
+
+Start with a shipping-record review. A participant reads the record, saves a review note, obtains a world-scoped ticket, and returns after a restart. The note stays available across supported clients. The English Participant workspace saves multiline findings and reads them back through a separate HTTP request. In the separate Control room, the operator sees the same records, canonical observations and a request timeline, approves a finite follow-up policy and checks the artificial origin. Neither interface stores runtime authority in browser storage.
+
+DungeonQ provides real HTTP, MCP, bounded SSH and PostgreSQL interfaces, plus a private managed-workload broker. They reach the same persistent synthetic world. The trusted setup determines which contexts are diverted; the participant cannot choose its own route or grant itself operator authority.
+
+A **Wrong Ticket** is useful inside its issuing world: it permits a scoped read with expiry and a durable use count. It grants no authority over the protected origin. After a separate operator grant, first-time ticket use can trigger a bounded follow-up record. An exact retry returns its previous canonical result without consuming the ticket again. An earlier uncertain route outcome remains visible and prevents clean acceptance.
+
+## Watch one task cross the system
+
+[Watch the September 20 English runtime film](https://youtu.be/ttlfnyuuTIs), approximately 2 minutes 45 seconds.
+
+The recorded walkthrough shows:
+
+1. A real MCP client connects and discovers five bounded participant tools.
 2. A designated request reaches the synthetic world.
-3. MCP writes a shipping note; HTTP reads the same server-side record.
-4. A separate operator fixture previews and explicitly approves a finite adaptation policy.
-5. A Wrong Ticket reads the note and triggers one permitted follow-up record.
-6. Services restart. The records remain, and an exact retry produces no second effect.
-7. Independent origin and collector readbacks check the boundary.
+3. MCP writes a shipping-review note; HTTP reads that same server-side record.
+4. A separate owner fixture previews and explicitly applies a finite adaptation grant.
+5. A world-scoped ticket reads the note and triggers one permitted follow-up.
+6. The services restart; records remain, and the exact retry returns the prior result.
+7. Artificial-origin and collector readbacks independently check the recorded activity.
 
-These are real local protocol operations and persisted state, not browser-local state or a routing label presented as integration. The recording uses a deterministic client and a scripted operator fixture; it does not establish an independent human review or a live AI result.
+The film presents actual command outputs reformatted for readability. It uses deterministic clients and a scripted owner fixture, rather than a live model or an independent human reviewer. Its [recorded evidence and reproduction guide](https://github.com/Ranopha/dungeonq-amazon/blob/main/docs/AMAZON_JUDGE_DEMO.md) identify that scope.
 
-## Why this belongs in Alexa+
+## How we built it
 
-An assistant ecosystem needs useful tools with an explicit boundary around what those tools can do. DungeonQ contributes a self-hosted MCP server using **MCP 2025-11-25 over Streamable HTTP**, plus a retained Alexa-style simulated assistant profile. The runtime client can read, write and use scoped world tickets. Operator approval is absent from its tool list.
+Node.js, SQLite, and the official MCP SDK support a shared runtime. The MCP server implements **MCP 2025-11-25 over Streamable HTTP**. Participant operations are limited to snapshot, read, write, issue-ticket, and use-ticket. Operator approval is absent from that tool surface.
 
-The [original Alexa-style demonstration](https://youtu.be/ezX7cOF2s0s) remains available: a deterministic assistant investigates through real MCP and hands a bounded response to a separately authenticated operator. We claim neither actual Alexa/Echo integration nor Amazon certification, AWS deployment, or live-model behavior in this new film.
+The gateway, synthetic facade, canonical state, artificial origin, and evidence collector have distinct responsibilities. Writes check the expected revision. Ticket authority is bound to its context, world, scope, epoch, expiry, and use budget. Durable records preserve state and exact retries across restart.
 
-## How we built it and what changed
+Operator changes follow preview, review of the exact proposal, explicit apply, and persisted readback. A failed synthetic transport does not fall back to the origin. Authenticated canonical refusals now distinguish a known rejected attempt with no new effect from UNKNOWN transport or response-loss outcomes. A stale write cannot overwrite a newer record. Even if a write committed before its response was lost, the outcome stays UNKNOWN and prevents a clean acceptance claim; an unsigned error string cannot make it pass.
 
-Node.js, the official MCP SDK and SQLite support a shared runtime across HTTP, MCP, bounded SSH/PostgreSQL and a private Unix workload broker. The gateway, synthetic facade, artificial origin and evidence collector have separate roles. Signed and correlated records support inspection.
+## Why Alexa+ and Open Source
 
-This existing project was significantly updated during the hackathon. The [development delta](https://github.com/Ranopha/dungeonq-amazon/blob/main/docs/DELTA.md) identifies the new server-side MCP assistant integration, durable request binding, and subsequent persistent runtime, adapters, tickets and finite adaptation. The new film demonstrates the current runtime additions; the original film preserves the earlier assistant workflow.
+An assistant ecosystem needs useful tools with a clear limit on their authority. DungeonQ contributes a self-hosted MCP runtime that developers can run and inspect through real clients. A retained Alexa-style simulated assistant profile also demonstrates the earlier governed investigation and separate approval workflow.
 
-The difficult part is continuity: a lost reply, retry or restart must not silently create a second effect or turn a synthetic success into origin authority.
+This entry does not depend on the gated Alexa+ preview tools. It claims a working MCP server and an inspectable local reference, not an integration with the actual Alexa service or an Echo device.
 
-## Reproduce it without an API key
+The project existed before this hackathon. The [development delta](https://github.com/Ranopha/dungeonq-amazon/blob/main/docs/DELTA.md) separates reused WebMCP foundations from work added during the submission window: server-side MCP integration, durable request binding, persistent worlds, protocol adapters, scoped tickets, finite adaptation, tests, and reproduction guides. The September 20 companion adds a concrete cross-protocol task and film. The September 29 v0.12.0 contribution adds the participant/operator working views, multiline notes, authenticated refusal handling and ten reproducible checkpoints with positive and negative controls.
 
-Use Node.js 24.15.0 or newer, then run:
+**Primary track:** Alexa+
+**Mini challenge:** Open Source
+**GitHub username:** Ranopha
+**Repository and contribution:** [Ranopha/dungeonq-amazon](https://github.com/Ranopha/dungeonq-amazon), Apache-2.0.
+**AWS Builder:** No AWS integration is claimed.
+
+## Challenges and what we learned
+
+The difficult part is preserving meaning when a client changes tools, a response is lost, or a process restarts. A successful synthetic action must remain scoped to that world. An exact retry must retrieve the previous outcome without silently repeating the effect. The operator needs recorded evidence beyond the participant's explanation.
+
+We also learned to separate engineering results from behavioral conclusions. A coherent world and a working ticket demonstrate mechanisms. They do not establish that an attacker or AI believes the world is real. Earlier negative study results remain available rather than being replaced by a broader success claim.
+
+## Reproduce the walkthrough
+
+With Node.js 24.15.0 or newer, clone the public repository and run:
 
 ```sh
 npm ci --ignore-scripts
 node scripts/judge-demo.mjs /absolute/path/new-report.json
 ```
 
-This creates a fresh artificial fixture, runs real local MCP and HTTP requests, records assertions and independent readbacks, then stops the services. No model subscription or production credentials are needed. The output path must be new.
+Choose a new output filename. The script creates its own artificial fixture, exercises real local MCP and HTTP requests, checks retained state and independent readbacks, and stops its services. No model subscription or production credential is required.
 
-For manual operation, follow the [judge route](https://github.com/Ranopha/dungeonq-amazon/blob/main/docs/JUDGE_ROUTE.md). The [container guide](https://github.com/Ranopha/dungeonq-amazon/blob/main/deploy/runtime-reference/README.md) separately reproduces the stronger container checks. [Versioned validation](https://github.com/Ranopha/dungeonq-amazon/blob/main/docs/VALIDATION.md) identifies the sources and scope of prior complete acceptance runs.
+The current v0.12.0 command reproduces ten checkpoints, including an ordinary authorized-origin reachability control, a stale-write refusal and a world-ticket denial before the final origin witness. The ordinary control establishes reachability; it is not an unprotected-attacker or deception-efficacy comparison. The September 20 film retains the earlier seven-scene walkthrough and does not depict the new working views or added checks.
 
-## Open Source contribution
+For manual operation, follow the [judge route](https://github.com/Ranopha/dungeonq-amazon/blob/main/docs/JUDGE_ROUTE.md). The [container guide](https://github.com/Ranopha/dungeonq-amazon/blob/main/deploy/runtime-reference/README.md) covers the separate isolation profile. The walkthrough alone is not a full container acceptance run; [versioned validation](https://github.com/Ranopha/dungeonq-amazon/blob/main/docs/VALIDATION.md) identifies the source and scope of broader checks.
 
-GitHub username: **Ranopha**. The [Apache-2.0 public contribution](https://github.com/Ranopha/dungeonq-amazon) includes the independently reusable server-side MCP integration, persistent-world implementation, finite adapters, tests and reproduction guides. These let other developers inspect and reuse the mechanism. Primary track: Alexa+. Mini challenge: Open Source. No AWS Builder contribution is asserted.
+## Scope and next steps
 
-## Honest limits and next steps
+The verified scope is an owned reference with artificial resources and explicitly provisioned contexts. Local processes share an OS user; the container profile has a separate measured boundary that still trusts Docker administration and the shared kernel. SSH and PostgreSQL expose finite operations, not a general shell or SQL engine.
 
-This is an owned reference with artificial resources and explicitly provisioned contexts. The fresh film checks an artificial origin; local processes share an OS user. Production host integration, automatic attack classification, legitimate-traffic continuity and operational acceptance remain future work.
+The next product work is to evaluate selected model/client sessions with controlled comparisons and implement specifically authorized host integrations. Real deployment requires an authorized connector, detection and identity integration, legitimate-traffic continuity, recovery, and environment-specific acceptance.
 
-Consistent world behavior does not prove that a person or AI mistakes it for a real target. All prior negative studies remain available, including 0/2 wrong-high-confidence outcomes, 0/4 unsupported completion claims and the 0/3 defense pilot. We preserve those limits while making the underlying mechanism reproducible.
-
-The original WebMCP competition version remains frozen. All prior videos and evidence are retained.
-
-
-<details>
-<summary>Historical submission wording through v0.10</summary>
-
-The following preserves earlier workflow descriptions and historical counts, not the current release or submission state.
-
-# Submission copy
-
-## Current v0.10.0 update — administrator-bound notifications
-
-The self-hosted synthetic lab now routes a new honey-contact alert to the administrator's verified login email, through a durable encrypted outbox with binding-version checks, bounded retries and no blind resend after an unknown outcome. The Actor and MCP cannot pick the recipient or approve rotation. Google / GitHub adapters can link an existing Owner after fresh reauthentication; they require the deployment owner's registered applications. Apple remains unavailable in this local profile.
-
-The default local simulated mailbox works without a provider, API key or charge. Optional SMTP requires explicit private configuration and verified TLS. Recorded evidence contains nine scripted HTTPS/restart checks, not real inbox delivery or live OAuth acceptance. All earlier model records and the original video are retained with their limits.
-
-Current reviewer route: `npm run defense:workspace` and `npm run email:proof`; [email setup and boundary](EMAIL_NOTIFICATIONS.md), [recorded proof](../evidence/email-v1/proof.json), and [v0.10.0 release](https://github.com/Ranopha/dungeonq-amazon/releases/tag/v0.10.0). The historical copy below is not the current release status. External form saving is tracked separately.
-
-Version 0.7.0 update copy. Editing this source does not itself update the submitted entry. The original video remains the 0.2.0 governed MCP recording; new workflow evidence is separately labeled and links self-hosted reproduction.
-
-## September 17 workflow update
-
-Version 0.7.0 adds an original six-desk synthetic publishing task. Notes, editions, previews and queue packets persist; a fixed worker leaves delivery/read/decision/local-write lineage. A separate deposit/index path establishes the actual visitor catalogue. The English Actor and separate-process Observer share bounded HTTP/MCP, causal replay, restart recovery and honest completion checks.
-
-In the frozen four-session Codex pilot, both procedural-memo participants followed the full local branch, while neither early-explanation control did. No participant falsely claimed completion (0/4); all ultimately verified the true goal. Route following is not proof of a false belief. Exact pilot model identities were not independently attested. All outcomes and the earlier v1 0/2 result are retained. This update improves the runnable research instrument, not an unsupported efficacy claim.
-
-Reproduce with `npm run topology` or `npm run topology:proof`; see [methods/results](TOPOLOGY_RESULTS.md) and the [two-minute English route](TOPOLOGY_LAB.md). The original Alexa-style governed assistant, MCP 2025-11-25 transport and Open Source Mini entry remain intact. There is no real Alexa-service integration or production security claim.
-
-## Name
-
-DungeonQ — Governed Assistant Lab
-
-## Elevator pitch
-
-An Alexa-style rehearsal lab: assistants investigate through real MCP, humans authorize bounded changes, and signed receipts prove what happened. Bring your own synthetic scenario.
-
-## Inspiration
-
-An assistant that understands a request is not automatically entitled to execute it. An operator also needs to see precisely what will change and verify what actually happened. We wanted a safe place to rehearse that boundary before involving real systems.
-
-## What it does
-
-DungeonQ presents an artificial after-hours incident. A guided Alexa-style assistant analyzes it through real MCP tools, requests a bounded response and waits. Applying before approval is rejected. A human reviews the exact target, expiry, one-effect budget and digest, then reauthenticates in a separate review surface. The worker can execute only that approved synthetic containment. A signed receipt records the actual database read-back; a modified copy fails verification, an identical retry does not repeat the effect, and records survive restart.
-
-Evaluators can supply their own synthetic Scenario Packs for analysis or start an independent installed lab. Unsupported mappings, unknown fields and over-budget inputs are refused. No real infrastructure, live scans, real credentials or production effects are involved.
-
-## How we built it
-
-Node.js, the official MCP SDK, Streamable HTTP (2025-11-25), SQLite, Ed25519 and a dependency-free operator interface. Both analysis surfaces use the same admission and deterministic engine. Durable requests bind a worker and observation to an exact human-approved grant. Human session cookies and reauthentication secrets never enter the MCP assistant. The six-tool surface contains no approval tool.
-
-This entry uses a deterministic Alexa-style simulator, not an LLM or the actual Alexa service. It does not claim Echo integration, Amazon certification or production readiness. It includes a real working MCP server in addition to the simulated experience.
-
-## Challenges and learning
-
-The hard part was preserving the authorization boundary across adapters, restarts, request retries and failure states. A green screenshot is not evidence of enforcement. We test rejection before approval, wrong identities and digests, revocation, expiry, duplicate claims, tampering, migrations and actual read-back. We also distinguish deterministic scenario output from intentionally different live signing keys and timestamps.
-
-## What is new
-
-Version 0.6.0 preserves the same governed MCP workflow and adds a persistent abstract world plus a finite two-feature causal study. Participants consent, save predictions before actions, see fixed-rule outcomes, reflect separately, and can withdraw for a debrief. An independent process/database Observer records the sequence and reruns its causal rules. UI and bounded MCP tools share the runtime. This is synthetic feature learning, not real vulnerabilities, attack chains or a hosted production service.
-
-We retain a transparent learner's 48 condition units—not 48 subjects—and the full two-session Codex pilot, including the negative result: 0/2 wrong-high-confidence induction. Exact model identity was not independently attested. The data does not establish general human or LLM deception efficacy. The English results/operation guides, original JSON, actual gallery captures and local replay commands let reviewers examine that limitation directly. Static hosting only presents recorded evidence; the independent Observer is self-hosted.
-
-Version 0.4.0 additionally lets reviewers run their own synthetic file through the complete proof, with explicit approved-effect, policy-blocked and unsupported-mapping outcomes. It adds a separately running MCP client, an optional Codex configuration example, seven new regression tests (122 total locally), public Ubuntu/macOS CI and a public-source-only release builder. The recorded 0.2.0 interactive video remains accurate; no new live-model or cloud-deployment claim is attached to it.
-
-This is an existing project significantly updated during the hackathon. The Amazon-specific work adds the server-side MCP integration, durable response-request binding, English assistant/human handoff, persistent installer, custom-scenario route, tool trace, signed-receipt workflow and corresponding regression tests. Earlier WebMCP assets stay frozen. See DELTA.md for the boundary between reused foundations and new work.
-
-## Impact and next steps
-
-The immediate audience is developers and reviewers testing consequential assistant workflows without access to real enterprise systems. They can replay the happy path, supply counterexamples and inspect the same source that executed the decision. This demonstrates a reusable evaluation pattern; it does not claim customer adoption, measured incident reduction or commercial deployment.
-
-Next steps are accessibility/user testing, independently managed signing and a separately authorized real Alexa+ integration. Real enterprise deployment would require additional identity, isolation, recovery and operational acceptance.
-
-## Track / Open Source
-
-Primary: Alexa+. Mini: Open Source. Not entering AWS Builder; no AWS integration is claimed. GitHub username: Ranopha. Contribution: the separately licensed source distribution and new MCP-governed workflow; provide its actual repository/commit URL only after publishing. The optional testing link should point to the README's reproducible local instructions, not to the frozen earlier website.
-
-</details>
+DungeonQ does not claim general production protection, automatic attack classification, unrestricted self-adaptation, or established deception efficacy. The original WebMCP submission, prior films, and historical evidence remain preserved.

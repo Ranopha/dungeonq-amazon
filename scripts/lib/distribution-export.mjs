@@ -16,7 +16,7 @@ export const PUBLIC_SOURCE_PATHS = Object.freeze([
   'scripts/world.mjs', 'scripts/world-proof.mjs', 'scripts/study.mjs', 'scripts/study-proof.mjs',
   'scripts/topology.mjs', 'scripts/topology-proof.mjs',
   'scripts/defense.mjs', 'scripts/defense-proof.mjs',
-  'scripts/email-proof.mjs',
+  'scripts/email-proof.mjs', 'scripts/judge-demo.mjs',
   'scripts/runtime.mjs', 'scripts/runtime-proof.mjs', 'scripts/runtime-gate.mjs', 'scripts/runtime-isolation.mjs',
   'scripts/workspace-pilot-verify.mjs', 'scripts/defense-pilot-verify.mjs',
   'scripts/workspace-pilot-host.mjs', 'scripts/workspace-pilot-client.mjs',
@@ -31,8 +31,8 @@ const sharedDocuments = ['docs/STUDY_LAB.md', 'docs/STUDY_RESULTS.md', 'docs/WOR
   'docs/DEFENSE_LAB.md', 'docs/OSS_REVIEW_GUIDE.md', 'docs/JUDGE_ROUTE.md', 'docs/contracts/DEFENSE_GOVERNANCE_V1.md', 'evidence/defense-v1',
   'docs/WORKSPACE_LAB.md', 'docs/DEFENSE_PILOT_RESULTS.md', 'docs/contracts/ORDERS_WORKSPACE_V1.md',
   'evidence/workspace-pilot-v1', 'evidence/defense-pilot-v1',
-  'docs/EMAIL_NOTIFICATIONS.md', 'docs/START_HERE.zh-TW.md', 'evidence/email-v1',
-  'docs/RUNTIME.md', 'docs/RUNTIME_ACCEPTANCE.md', 'docs/contracts/RUNTIME_V1.md', 'evidence/runtime-v1',
+  'docs/EMAIL_NOTIFICATIONS.md', 'docs/AMAZON_JUDGE_DEMO.md', 'docs/START_HERE.zh-TW.md', 'evidence/email-v1',
+  'docs/RUNTIME.md', 'docs/RUNTIME_ACCEPTANCE.md', 'docs/contracts/RUNTIME_V1.md', 'evidence/runtime-v1', 'evidence/judge-demo-v2',
   'media/study-evidence.png', 'media/study-trace.png', 'media/topology-evidence.png', 'media/topology-observer.png'];
 const targets = {
   amazon: { name: 'dungeonq-amazon', description: 'A defensive deception runtime: divert designated sessions into persistent synthetic worlds, observe their activity and verify the origin boundary.' },

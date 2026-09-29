@@ -37,7 +37,7 @@ async function exportFixture(t) {
     'deploy/runtime-reference/compose.yml', 'deploy/runtime-reference/Dockerfile', 'deploy/runtime-ci.template.yml',
     'scripts/build-astra-site.mjs', 'docs/SCENARIO_AUTHORING.md']) await file(source, path, 'synthetic fixture');
   for (const target of ['amazon', 'astra']) await file(source, `${target}-release/README.md`, `Synthetic ${target}`);
-  for (const path of ['STUDY_LAB.md', 'STUDY_RESULTS.md', 'WORLD_LAB.md', 'contracts/STUDY_V1.md', 'contracts/WORLD_V1.md', 'TOPOLOGY_LAB.md', 'TOPOLOGY_RESULTS.md', 'contracts/TOPOLOGY_V2.md', 'DEFENSE_LAB.md', 'OSS_REVIEW_GUIDE.md', 'JUDGE_ROUTE.md', 'contracts/DEFENSE_GOVERNANCE_V1.md', 'WORKSPACE_LAB.md', 'DEFENSE_PILOT_RESULTS.md', 'contracts/ORDERS_WORKSPACE_V1.md', 'EMAIL_NOTIFICATIONS.md', 'START_HERE.zh-TW.md', 'RUNTIME.md', 'RUNTIME_ACCEPTANCE.md', 'contracts/RUNTIME_V1.md']) {
+  for (const path of ['STUDY_LAB.md', 'STUDY_RESULTS.md', 'WORLD_LAB.md', 'contracts/STUDY_V1.md', 'contracts/WORLD_V1.md', 'TOPOLOGY_LAB.md', 'TOPOLOGY_RESULTS.md', 'contracts/TOPOLOGY_V2.md', 'DEFENSE_LAB.md', 'OSS_REVIEW_GUIDE.md', 'JUDGE_ROUTE.md', 'contracts/DEFENSE_GOVERNANCE_V1.md', 'WORKSPACE_LAB.md', 'DEFENSE_PILOT_RESULTS.md', 'contracts/ORDERS_WORKSPACE_V1.md', 'EMAIL_NOTIFICATIONS.md', 'AMAZON_JUDGE_DEMO.md', 'START_HERE.zh-TW.md', 'RUNTIME.md', 'RUNTIME_ACCEPTANCE.md', 'contracts/RUNTIME_V1.md']) {
     await file(source, `release-study/docs/${path}`, 'Synthetic public documentation');
   }
   await file(source, 'release-study/evidence/study-v1/reference-proof.json', '{"profile":"SYNTHETIC_CAUSAL_STUDY"}');
@@ -47,6 +47,7 @@ async function exportFixture(t) {
   await file(source, 'release-study/evidence/defense-pilot-v1/protocol.json', '{"profile":"SYNTHETIC_ONLY"}');
   await file(source, 'release-study/evidence/email-v1/proof.json', '{"profile":"SYNTHETIC_ONLY"}');
   await file(source, 'release-study/evidence/runtime-v1/summary.json', '{"profile":"LOCAL_INTEGRATION_REFERENCE"}');
+  await file(source, 'release-study/evidence/judge-demo-v2/report.json', '{"mode":"LOCAL_ARTIFICIAL_REFERENCE"}');
   for (const path of ['study-evidence.png', 'study-trace.png', 'topology-evidence.png', 'topology-observer.png']) await file(source, `release-study/media/${path}`, 'synthetic media fixture');
   return { base, source };
 }
@@ -63,11 +64,11 @@ test('兩種乾淨匯出皆含world/study及英文證據；Amazon不宣告Astra�
       'media/study-evidence.png', 'media/study-trace.png', 'scripts/topology.mjs', 'scripts/topology-proof.mjs',
       'docs/TOPOLOGY_LAB.md', 'docs/TOPOLOGY_RESULTS.md', 'docs/contracts/TOPOLOGY_V2.md', 'evidence/topology-v2/proof.json',
       'scripts/defense.mjs', 'scripts/defense-proof.mjs', 'docs/DEFENSE_LAB.md', 'docs/contracts/DEFENSE_GOVERNANCE_V1.md', 'evidence/defense-v1/proof.json',
-      'scripts/email-proof.mjs', 'docs/EMAIL_NOTIFICATIONS.md', 'docs/START_HERE.zh-TW.md', 'evidence/email-v1/proof.json',
+      'scripts/judge-demo.mjs', 'docs/AMAZON_JUDGE_DEMO.md', 'scripts/email-proof.mjs', 'docs/EMAIL_NOTIFICATIONS.md', 'docs/START_HERE.zh-TW.md', 'evidence/email-v1/proof.json',
       'runtime/reference.mjs', 'runtime/server.mjs', 'runtime/blueprints/default.json', 'sdk/runtime-client.mjs', 'sdk/runtime-client.py',
       'scripts/runtime.mjs', 'scripts/runtime-proof.mjs', 'scripts/runtime-gate.mjs', 'scripts/runtime-isolation.mjs',
       'deploy/runtime-reference/compose.yml', 'deploy/runtime-reference/Dockerfile', 'deploy/runtime-ci.template.yml',
-      'docs/RUNTIME.md', 'docs/RUNTIME_ACCEPTANCE.md', 'docs/contracts/RUNTIME_V1.md', 'evidence/runtime-v1/summary.json']) {
+      'docs/RUNTIME.md', 'docs/RUNTIME_ACCEPTANCE.md', 'docs/contracts/RUNTIME_V1.md', 'evidence/runtime-v1/summary.json', 'evidence/judge-demo-v2/report.json']) {
       assert.equal((await lstat(join(output, path))).isFile(), true, path);
     }
     const pkg = JSON.parse(await readFile(join(output, 'package.json'))); assert.equal(pkg.name, `dungeonq-${target}`); assert.equal(pkg.version, '0.6.0');

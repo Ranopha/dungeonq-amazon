@@ -26,7 +26,7 @@ async function startChild(role, options) {
   } catch(e) {await close();throw e;}
 }
 
-export async function openRuntimeReference({ directory, port=0, mcpPort=0, sshPort=0, postgresPort=0, network=true, hostBroker=true }={}) {
+export async function openRuntimeReference({ directory, port=0, mcpPort=0, sshPort=0, postgresPort=0, network=true, hostBroker=true, presentation='diagnostic-v1' }={}) {
   directory ??= mkdtempSync(join(tmpdir(),'dq-runtime-'));
   insist(isAbsolute(directory), 'ABSOLUTE_DIRECTORY_REQUIRED'); mkdirSync(directory,{recursive:true,mode:0o700});
   const mode=lstatSync(directory);insist(mode.isDirectory()&&!mode.isSymbolicLink()&&!(mode.mode&0o077),'PRIVATE_DIRECTORY_REQUIRED');
@@ -36,7 +36,7 @@ export async function openRuntimeReference({ directory, port=0, mcpPort=0, sshPo
   try {
     const origin=await startChild('origin',{path:join(directory,'origin.sqlite'),normalToken:credentials.ordinary,witnessToken:credentials.witness});children.push(origin);
     const collector=await startChild('collector',{path:join(directory,'collector.sqlite'),producerToken:credentials.producer,readerToken:credentials.reader});children.push(collector);
-    gateway=await startRuntimeGateway({directory,credentials,originOrigin:origin.origin,collectorOrigin:collector.origin,port,mcpPort,sshPort,postgresPort,network,hostBroker,
+    gateway=await startRuntimeGateway({directory,credentials,originOrigin:origin.origin,collectorOrigin:collector.origin,port,mcpPort,sshPort,postgresPort,network,hostBroker,presentation,
       facadeFactory:async stateOrigin=>{const facade=await startChild('facade',{stateOrigin});children.push(facade);return facade;}});
     return {...gateway,directory,credentials,originService:origin,collectorService:collector,facadeService:children.find(c=>c!==origin&&c!==collector),close};
   }catch(e){await close();throw e;}

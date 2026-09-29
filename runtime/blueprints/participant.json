@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "dungeonq.runtime-blueprint/v1",
+  "id": "review-workspace-participant-v1",
+  "title": "Review workspace",
+  "profile": "SYNTHETIC_ONLY",
+  "records": [
+    {
+      "key": "welcome",
+      "value": "Review the available records and save your findings here."
+    },
+    {
+      "key": "order-41",
+      "value": {
+        "status": "awaiting-review",
+        "label": "Order 41",
+        "next": "review-policy"
+      }
+    },
+    {
+      "key": "review-policy",
+      "value": "Record your review findings. Shipping approval is a separate process."
+    }
+  ],
+  "templates": [
+    {
+      "id": "follow-up",
+      "keyPrefix": "follow-up",
+      "value": "A follow-up record is available for review."
+    },
+    {
+      "id": "review-delay",
+      "keyPrefix": "review-delay",
+      "value": "The review remains pending. No external action is available."
+    }
+  ],
+  "bounds": {
+    "maxContexts": 64,
+    "maxWorlds": 64,
+    "maxRecords": 128,
+    "maxRequests": 2048,
+    "maxEvents": 2048,
+    "maxTickets": 512,
+    "maxPolicies": 128,
+    "maxValueBytes": 2048,
+    "maxScopeKeys": 16,
+    "maxMutations": 32,
+    "maxTicketTtlMs": 3600000,
+    "maxPolicyTtlMs": 3600000,
+    "maxJournalBytes": 10485760
+  }
+}

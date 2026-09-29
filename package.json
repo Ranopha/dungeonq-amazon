@@ -1,6 +1,6 @@
 {
   "name": "dungeonq-amazon",
-  "version": "0.11.1",
+  "version": "0.12.0",
   "private": true,
   "description": "A defensive deception runtime: divert designated sessions into persistent synthetic worlds, observe their activity and verify the origin boundary.",
   "license": "Apache-2.0",

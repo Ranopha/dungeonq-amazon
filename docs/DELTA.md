@@ -1,3 +1,9 @@
+# v0.12.0 contribution — September 29, 2026
+
+This update makes one AI-agent workflow directly operable through separate participant and operator views of the same real runtime. It adds multiline review notes, independently read-back writes, a contextual evidence timeline and authenticated no-new-effect refusals. New regressions preserve UNKNOWN when a response is lost after a committed effect, when an error is unsigned or when its proof is misbound.
+
+The reproducible ten-checkpoint MCP/HTTP companion adds a positive authorized-origin read, a stale-write refusal and a ticket-to-origin denial before final evidence. All use artificial resources and deterministic clients. These are substantive code/test/documentation changes during the competition window, not a new claim of Alexa integration, AI deception or production defense. The original film remains the September 20 seven-scene record.
+
 # New work and provenance
 
 ## v0.11.1 presentation correction — September 18, 2026

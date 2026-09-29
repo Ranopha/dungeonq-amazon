@@ -230,7 +230,7 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
       envelope(input, ['contextId', 'requestId', 'family', 'destination', 'outcome']);
       id(input.requestId, 'REQUEST_ID_INVALID'); family(input.family);
       const context = active(state, input.contextId);
-      check(['SYNTHETIC', 'ORIGIN'].includes(input.destination) && ['SERVED', 'FAILED', 'UNKNOWN'].includes(input.outcome), 'ROUTE_INVALID');
+      check(['SYNTHETIC', 'ORIGIN'].includes(input.destination) && ['SERVED', 'REFUSED', 'FAILED', 'UNKNOWN'].includes(input.outcome), 'ROUTE_INVALID');
       check(input.destination === (context.disposition === 'DIVERT' ? 'SYNTHETIC' : 'ORIGIN'), 'ROUTE_CROSSING_DENIED');
       result = { ...clone(input), tenantId: context.tenantId, worldId: context.worldId, epoch: context.epoch };
       state.routes.push(result);
@@ -338,7 +338,7 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
       mutate(input) { envelope(input, ['policyId', 'contextId', 'observationId', 'requestId', 'expectedRevision', 'template']); return apply({ kind: 'MUTATE', input: clone(input) }); },
       fence(input) { envelope(input, ['contextId', 'reason']); return apply({ kind: 'FENCE', input: clone(input) }); },
       snapshot() { return observe(({ state }) => ({ schemaVersion: 'dungeonq.runtime-snapshot/v1', profile: RUNTIME_PROFILE,
-        contexts: state.contexts.map(safeContext), worlds: clone(state.worlds), policies: clone(state.policies),
+        contexts: state.contexts.map(safeContext), worlds: clone(state.worlds), policies: clone(state.policies), observations: clone(state.observations),
         bounds: { ...clone(bounds), reservedFenceEvents: bounds.maxContexts, reservedFenceBytes: bounds.maxContexts * FENCE_RESERVE_BYTES },
         blueprint: { id: pack.id, digest: worldDigest(pack), allowedTemplates: pack.templates.map(item => item.id) } })); },
       evidence() {
@@ -353,6 +353,22 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
           }),
           verifier: { status: 'VERIFIED', version: RUNTIME_VERSION, method: 'AUTHENTICATED_JOURNAL_REPLAY', eventCount: events.length,
             head, stateDigest: worldDigest(state), scope: 'LOCAL_CANONICAL_STATE', independentWitness: false } }));
+      },
+      // Trusted presentation adapter only. Handles do not grant or widen canonical authority.
+      participantTicket(wire) {
+        check(typeof wire === 'string' && wire.length <= 4096, 'TICKET_INVALID');
+        return createHmac('sha256', secret).update('participant-ticket-v1\0' + wire).digest('base64url');
+      },
+      resolveParticipantTicket(handle, contextId) {
+        check(typeof handle === 'string' && /^[A-Za-z0-9_-]{43}$/.test(handle), 'TICKET_INVALID');
+        return observe(({ state }) => {
+          active(state, contextId, true);
+          const ticket = state.tickets.find(item => item.body.contextId === contextId
+            && timingSafeEqual(Buffer.from(handle), Buffer.from(createHmac('sha256', secret)
+              .update('participant-ticket-v1\0' + encodeTicket(item.body)).digest('base64url'))));
+          check(ticket, 'TICKET_INVALID');
+          return encodeTicket(ticket.body);
+        });
       },
       close() { if (!closed) { db.close(); secret.fill(0); closed = true; } },
     });

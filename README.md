@@ -8,6 +8,14 @@ The current self-hosted reference makes that sequence inspectable with real HTTP
 
 [**Follow the recorded diversion**](docs/JUDGE_ROUTE.md) · [**Operate your own reference**](#run-the-reference) · [Acceptance evidence](docs/RUNTIME_ACCEPTANCE.md)
 
+## A task you can operate (v0.12.0)
+
+For developers securing **AI-agent tool workflows**: open the Participant workspace and the separate operator Control room. Read a shipping record, save a multiline review note, read it back from the server, and use a world-only ticket. The operator sees the same persisted world, successful observations and a request timeline tied to independent route evidence. An explicitly approved policy can add a bounded follow-up record. Restart the services and continue from the saved state.
+
+[Step-by-step working views](docs/RUNTIME.md#try-a-complete-participant-task-v0120) · [Reproduce ten checkpoints](docs/AMAZON_JUDGE_DEMO.md)
+
+The new walkthrough adds an ordinary authorized-origin reachability control, a verified stale-write refusal and a ticket-to-origin denial **before** its final witness read. It uses real MCP/HTTP clients and artificial resources, not a live model. The September 20 film records the earlier seven-scene command-output version; it does not show these new interfaces or checks. Historical container evidence does not certify this changed source.
+
 ## What happens after DIVERT
 
 | Step | Participant experience | Operator evidence and control |
@@ -26,10 +34,10 @@ Use Node.js **24.15.0+**, npm and the prerequisites in [the operation guide](doc
 
 ```sh
 npm ci --ignore-scripts
-npm run runtime -- --data-dir ../dungeonq-runtime-lab
+npm run runtime -- --data-dir ../dungeonq-review-012 --presentation participant-v1
 ```
 
-Open the printed **Control room** URL. Keep the private credential file outside Git and AI context. Give a participant only its actor token; keep operator authority separate. Follow the [evaluator route](docs/JUDGE_ROUTE.md) to send a real request, consume a ticket, authorize one finite policy and inspect retained state after restart. Reuse the same private data directory to resume.
+Open the printed **Participant workspace** and **Control room** URLs in separate tabs. Keep the private credential file outside Git and AI context. Give a participant only its actor token; keep operator authority separate. Follow the [evaluator route](docs/JUDGE_ROUTE.md) to send a real request, consume a ticket, authorize one finite policy and inspect retained state after restart. Reuse the same private data directory to resume.
 
 The [client guide](docs/RUNTIME.md) covers all five adapters, the CLI and Node/Python SDKs. The [container profile](deploy/runtime-reference/README.md) adds measured network and file separation. The recorded website and older browser rehearsal are presentations; running the source provides the actual server roles.
 

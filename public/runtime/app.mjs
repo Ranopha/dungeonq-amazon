@@ -7,6 +7,9 @@ let busy = false;
 let proposal = null;
 let session = 0;
 let proposalTimer;
+let observedStatus = null;
+let observedEvidence = null;
+const DISPLAY_LIMIT = 80;
 const list = value => Array.isArray(value) ? value : [];
 const text = value => value === null || value === undefined ? 'Not reported' : String(value);
 function node(tag, content, className) {
@@ -31,17 +34,32 @@ function resetProposal() {
 function controls() {
   el('connect').disabled = busy;
   el('disconnect').disabled = !connected && !busy;
-  for (const id of ['refresh', 'read-evidence', 'context', 'action', 'reason', 'preview']) el(id).disabled = !connected || busy;
+  for (const id of ['refresh', 'read-evidence']) el(id).disabled = !connected || busy;
+  for (const id of ['context', 'action', 'reason', 'preview', 'inspect-context']) el(id).disabled = !connected || busy || !observedStatus;
   el('apply').disabled = !connected || busy || !proposal || !el('confirm').checked;
+}
+function clearEvidence() {
+  observedEvidence = null;
+  el('checks').replaceChildren(); el('events').replaceChildren(); el('evidence-details').hidden = true;
+  el('evidence-scope').textContent = ''; el('timeline-count').textContent = '';
+  lines('evidence-limitations', []);
+  el('evidence-state').textContent = 'Not verified'; el('evidence-state').dataset.state = 'INCONCLUSIVE';
+  el('evidence-summary').textContent = 'Read evidence for the current observations. No previous verification is carried forward.';
+}
+function clearReadbacks() {
+  observedStatus = null;
+  resetProposal(); el('private-state').hidden = true; el('locked-state').hidden = false;
+  el('contexts').replaceChildren(); el('worlds').replaceChildren(); el('context').replaceChildren(node('option', 'Connect to load contexts'));
+  el('observations').replaceChildren(); el('observation-count').textContent = 'No observations read';
+  const option = node('option', 'All contexts'); option.value = ''; el('inspect-context').replaceChildren(option); el('inspect-context').value = '';
+  clearEvidence(); el('readback-section').hidden = true; el('policy-readback').textContent = '';
+  el('proposal-facts').replaceChildren(); lines('proposal-changes', []); lines('proposal-warnings', []);
+  lines('runtime-limitations', []); el('reason').value = '';
+  el('read-time').textContent = 'No private state loaded'; controls();
 }
 function clearPrivate() {
   connected = false; session++; client.disconnect(); el('operator-token').value = '';
-  resetProposal(); el('private-state').hidden = true; el('locked-state').hidden = false;
-  el('contexts').replaceChildren(); el('worlds').replaceChildren(); el('context').replaceChildren(node('option', 'Connect to load contexts'));
-  el('checks').replaceChildren(); el('events').replaceChildren(); el('evidence-details').hidden = true;
-  el('evidence-scope').textContent = ''; el('readback-section').hidden = true; el('policy-readback').textContent = '';
-  el('proposal-facts').replaceChildren(); lines('proposal-changes', []); lines('proposal-warnings', []);
-  lines('runtime-limitations', []); lines('evidence-limitations', []); el('reason').value = '';
+  clearReadbacks();
   el('connection-state').textContent = 'Disconnected'; el('read-time').textContent = 'No private state loaded';
   el('evidence-state').textContent = 'Not verified'; el('evidence-state').dataset.state = 'INCONCLUSIVE';
   el('evidence-summary').textContent = 'No evidence has been read in this session.'; controls();
@@ -50,9 +68,11 @@ function failure(error) {
   const code = error?.code ?? 'REQUEST_UNAVAILABLE';
   if (error?.status === 401 || error?.status === 403) {
     clearPrivate(); message(`${code}. Management access was not confirmed. Reconnect with an operator token.`, true);
-  } else if (error?.uncertain) {
-    resetProposal(); message(`${code}. The result is uncertain. Refresh state and evidence; this page will not repeat the change.`, true);
-  } else message(`${code}. No successful result was confirmed. Check the runtime and try reading its state again.`, true);
+  } else {
+    clearReadbacks();
+    message(error?.uncertain ? `${code}. The result is uncertain. Previous private views were cleared. Refresh state and evidence; this page will not repeat the change.`
+      : `${code}. No successful result was confirmed. Previous private views were cleared. Refresh state and evidence before continuing.`, true);
+  }
 }
 async function run(action) {
   if (busy) return;
@@ -70,7 +90,114 @@ function capabilities(value) {
   }));
   if (!items.length) el('capabilities').append(node('li', 'No capability readiness was reported.'));
 }
+function inContext(item) { return !el('inspect-context').value || item.contextId === el('inspect-context').value; }
+function sourceDetails(label, value) {
+  const details = node('details'); details.append(node('summary', label), node('pre', redacted(value))); return details;
+}
+function renderWorlds() {
+  const contexts = list(observedStatus?.contexts);
+  const selected = contexts.find(context => context.contextId === el('inspect-context').value);
+  const worlds = list(observedStatus?.worlds).filter(world => !el('inspect-context').value
+    || (selected && world.worldId === selected.worldId && world.tenantId === selected.tenantId));
+  el('worlds').replaceChildren(...worlds.map(world => {
+    const section = node('section', undefined, 'world-records');
+    const header = node('div', undefined, 'world-row');
+    header.append(node('strong', world.worldId), node('span', `Tenant ${text(world.tenantId)} · Revision ${text(world.revision)}`));
+    section.append(header);
+    if (!Array.isArray(world.records)) section.append(node('p', 'Record contents were not supplied by this readback.', 'help'));
+    else if (!world.records.length) section.append(node('p', 'This world has no records.', 'help'));
+    else {
+      const records = node('dl', undefined, 'record-list');
+      for (const record of world.records) {
+        const term = node('dt', record.key); term.append(node('small', `Record revision ${text(record.revision)}`));
+        const value = /(?:token|password|secret|credential|authorization|cookie|^ticket$)/i.test(text(record.key))
+          ? '[redacted]' : typeof record.value === 'string' ? record.value : redacted(record.value);
+        records.append(term, node('dd', value));
+      }
+      section.append(records);
+    }
+    return section;
+  }));
+  if (!worlds.length) el('worlds').append(node('p', 'No world records are available for this context in the current readback.', 'empty'));
+  const observations = list(observedStatus?.observations).filter(inContext);
+  el('observation-count').textContent = `${observations.length} observations · latest ${Math.min(DISPLAY_LIMIT, observations.length)} shown`;
+  el('observations').replaceChildren(...observations.slice(-DISPLAY_LIMIT).reverse().map(observation => {
+    const row = node('li');
+    row.append(node('strong', text(observation.operation).replaceAll('-', ' ')),
+      node('p', `Context ${text(observation.contextId)} · Request ${text(observation.requestId)}`, 'request-identity'),
+      node('p', `Epoch ${text(observation.epoch)} · World revision ${text(observation.worldRevision)}`, 'help'));
+    if (observation.usedBy) row.append(node('p', `Used by bounded adaptation ${text(observation.usedBy)}.`, 'help'));
+    row.append(sourceDetails('Observation source', observation)); return row;
+  }));
+  if (!observations.length) el('observations').append(node('li', 'No canonical participant observations were supplied for this view.', 'empty'));
+}
+function requestIdentity(event) {
+  return ['contextId', 'requestId', 'family'].every(key => typeof event[key] === 'string' && event[key].length > 0)
+    ? JSON.stringify([event.contextId, event.requestId, event.family]) : null;
+}
+function outcomeLabel(value) {
+  const labels = { SERVED: 'Served', REFUSED: 'Refused without new effect (server reported)',
+    FAILED: 'Historical failure — effect not established', UNKNOWN: 'Outcome unknown — do not repeat the change' };
+  return Object.hasOwn(labels, value) ? labels[value] : 'Outcome not established';
+}
+function eventTime(value) {
+  if (typeof value !== 'number' && typeof value !== 'string') return 'Time not reported';
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) ? date.toLocaleString('en-GB') : 'Time not established';
+}
+function renderTimeline() {
+  if (!observedEvidence) return;
+  const groups = new Map();
+  const add = (event, source, index) => {
+    if (!inContext(event)) return;
+    const identity = requestIdentity(event);
+    const key = identity ?? `${source}-unmatched-${index}`;
+    if (!groups.has(key)) groups.set(key, { identity, reference: event, canonical: [], collector: [], collectorIndex: -1, canonicalIndex: -1 });
+    const group = groups.get(key); group[source].push(event); group[`${source}Index`] = index;
+  };
+  list(observedEvidence.canonical?.events).forEach((event, index) => add(event, 'canonical', index));
+  list(observedEvidence.events).forEach((event, index) => add(event, 'collector', index));
+  const ordered = [...groups.values()].sort((a, b) => b.collectorIndex - a.collectorIndex || b.canonicalIndex - a.canonicalIndex);
+  el('timeline-count').textContent = `${ordered.length} request or governance groups · ${Math.min(DISPLAY_LIMIT, ordered.length)} shown. Observations and evidence are separate server reads.`;
+  el('events').replaceChildren(...ordered.slice(0, DISPLAY_LIMIT).map(group => {
+    const row = node('article', undefined, 'request-event');
+    const operations = [...new Set(group.canonical.map(event => event.operation).filter(value => typeof value === 'string'))];
+    const operation = operations.length === 1 ? operations[0].replaceAll('-', ' ') : operations.length > 1 ? 'Multiple operations — inspect source'
+      : group.identity ? 'Operation not supplied' : 'Canonical governance record';
+    const heading = node('div', undefined, 'event-heading');
+    heading.append(node('h4', operation));
+    const outcomes = [...new Set(group.collector.map(event => event.outcome))];
+    if (outcomes.length === 1) { const state = badge(outcomeLabel(outcomes[0])); state.dataset.state = text(outcomes[0]); heading.append(state); }
+    else heading.append(badge(outcomes.length ? 'Mixed outcomes — inspect attempts' : 'No collector outcome'));
+    row.append(heading, node('p', group.identity
+      ? `${text(group.reference.contextId)} / ${text(group.reference.requestId)} / ${text(group.reference.family)}`
+      : 'No complete context / request / transport identity. This record is not paired.', 'request-identity'));
+    const matched = group.identity && group.canonical.length > 0 && group.collector.length > 0;
+    const correlation = matched ? 'Shared request identity in both sources. Inspect the checks above for verification.'
+      : !group.canonical.length ? 'Canonical record missing. No operation or effect is inferred from this route record.'
+      : !group.collector.length ? 'No collector record paired. This may be a governance event or an evidence gap; no route is inferred.'
+      : 'Incomplete identity. Sources remain unpaired.';
+    row.append(node('p', correlation, matched ? 'correlation' : 'correlation missing'),
+      node('p', `${group.collector.length} collector attempts · ${group.canonical.length} canonical events`, 'help'));
+    const destinations = [...new Set(group.collector.map(event => event.destination).filter(value => typeof value === 'string'))];
+    row.append(node('p', destinations.length ? `Collector destination: ${destinations.join(', ')}` : 'No collector destination supplied.', 'help'));
+    if (group.canonical.length) {
+      const steps = node('ol', undefined, 'canonical-steps');
+      for (const event of group.canonical) steps.append(node('li', `#${text(event.sequence)} ${text(event.kind)} · ${eventTime(event.at)}${event.outcome ? ` · ${outcomeLabel(event.outcome)}` : ''}`));
+      row.append(steps);
+    }
+    if (outcomes.length > 1) {
+      const attempts = node('ul', undefined, 'canonical-steps');
+      for (const event of group.collector) attempts.append(node('li', `${outcomeLabel(event.outcome)} · ${text(event.destination)}`));
+      row.append(attempts);
+    }
+    row.append(sourceDetails('Canonical and collector source records', { canonical: group.canonical, collector: group.collector }));
+    return row;
+  }));
+  if (!ordered.length) el('events').append(node('p', 'No request or governance records were supplied for this view.', 'empty'));
+}
 function status(value) {
+  observedStatus = value; clearEvidence();
   capabilities(value);
   const contexts = list(value.contexts); const previous = el('context').value;
   el('contexts').replaceChildren(...contexts.map(context => {
@@ -82,17 +209,17 @@ function status(value) {
   const placeholder = node('option', 'Choose a context'); placeholder.value = '';
   el('context').replaceChildren(placeholder, ...contexts.map(context => { const option = node('option', context.contextId); option.value = text(context.contextId); return option; }));
   if (contexts.some(context => context.contextId === previous)) el('context').value = previous;
-  el('worlds').replaceChildren(...list(value.worlds).map(world => {
-    const row = node('div', undefined, 'world-row');
-    const count = Array.isArray(world.records) ? world.records.length : Number.isInteger(world.records) ? world.records : 'not reported';
-    row.append(node('strong', world.worldId), node('span', `Revision ${text(world.revision)} · Records ${count}`)); return row;
-  }));
-  if (!list(value.worlds).length) el('worlds').append(node('p', 'No worlds were reported.', 'empty'));
+  const inspected = el('inspect-context').value;
+  const all = node('option', 'All contexts'); all.value = '';
+  el('inspect-context').replaceChildren(all, ...contexts.map(context => { const option = node('option', context.contextId); option.value = text(context.contextId); return option; }));
+  el('inspect-context').value = contexts.some(context => context.contextId === inspected) ? inspected : '';
+  renderWorlds();
   lines('runtime-limitations', value.limitations);
   el('private-state').hidden = false; el('locked-state').hidden = true;
   el('read-time').textContent = `Read at ${new Date().toLocaleTimeString('en-GB')}`;
 }
 function evidence(value) {
+  observedEvidence = value;
   const state = evidenceState(value);
   el('evidence-state').textContent = { PASS: 'Verified within scope', FAIL: 'Failed checks', INCONCLUSIVE: 'Inconclusive' }[state];
   el('evidence-state').dataset.state = state;
@@ -107,10 +234,7 @@ function evidence(value) {
   }));
   if (!list(value.checks).length) el('checks').append(node('li', 'No individual checks were supplied.'));
   el('evidence-scope').textContent = redacted(value.scope ?? { state: 'NOT_REPORTED' });
-  el('events').replaceChildren(...list(value.events).map((event, index) => {
-    const details = node('details'); details.append(node('summary', `${index + 1}. ${text(event.kind ?? event.type ?? event.operation ?? 'Observed event')}`), node('pre', redacted(event))); return details;
-  }));
-  if (!list(value.events).length) el('events').append(node('p', 'No route or execution events were reported.', 'empty'));
+  renderTimeline();
   lines('evidence-limitations', value.limitations); el('evidence-details').hidden = false;
 }
 async function readState() {
@@ -133,6 +257,7 @@ el('connect-form').addEventListener('submit', event => {
 el('disconnect').addEventListener('click', () => { clearPrivate(); message('Disconnected. Private views and the in-memory credential have been cleared.'); el('operator-token').focus(); });
 el('refresh').addEventListener('click', () => void run(async () => { resetProposal(); await readState(); await readEvidence(); message('State and evidence refreshed. Review a new preview before another policy change.'); }));
 el('read-evidence').addEventListener('click', () => void run(readEvidence));
+el('inspect-context').addEventListener('change', () => { renderWorlds(); renderTimeline(); });
 for (const id of ['context', 'action', 'reason']) el(id).addEventListener('input', resetProposal);
 el('confirm').addEventListener('change', controls);
 el('preview-form').addEventListener('submit', event => {

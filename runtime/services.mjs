@@ -52,9 +52,11 @@ export async function startCollector({ path, producerToken, readerToken, host, p
     }
     insist(req.url === '/event' && req.method === 'POST', 'NOT_FOUND');
     insist(equalToken(bearer(req), producerToken), 'UNAUTHORIZED');
-    const event = await body(req, 8192); exact(event, ['eventId', 'contextId', 'requestId', 'family', 'destination', 'outcome', 'resultDigest']);
+    const event = await body(req, 8192); exact(event, ['eventId', 'contextId', 'requestId', 'family', 'destination', 'outcome', 'resultDigest'], ['refusal']);
     insist(['http', 'mcp', 'ssh', 'postgres', 'host'].includes(event.family), 'FAMILY_DENIED');
-    insist(['SYNTHETIC', 'ORIGIN'].includes(event.destination) && ['SERVED', 'FAILED', 'UNKNOWN'].includes(event.outcome), 'EVENT_INVALID');
+    insist(['SYNTHETIC', 'ORIGIN'].includes(event.destination) && ['SERVED', 'REFUSED', 'FAILED', 'UNKNOWN'].includes(event.outcome), 'EVENT_INVALID');
+    insist(event.outcome !== 'REFUSED' || event.destination === 'SYNTHETIC' && event.refusal?.body?.outcome === 'REFUSED', 'EVENT_INVALID');
+    insist(!event.refusal || event.outcome === 'REFUSED', 'EVENT_INVALID');
     for (const key of ['eventId', 'contextId', 'requestId']) insist(typeof event[key] === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(event[key]), 'EVENT_INVALID');
     insist(typeof event.resultDigest === 'string' && /^[a-f0-9]{64}$/.test(event.resultDigest), 'EVENT_INVALID');
     db.exec('BEGIN IMMEDIATE');

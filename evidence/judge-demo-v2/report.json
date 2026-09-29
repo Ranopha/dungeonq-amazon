@@ -1,0 +1,256 @@
+{
+  "schemaVersion": "dungeonq.judge-demo/v2",
+  "sourceVersion": "0.12.0",
+  "mode": "LOCAL_ARTIFICIAL_REFERENCE",
+  "presentation": "participant-v1",
+  "scenes": [
+    {
+      "id": "connect",
+      "observedAt": "2026-09-29T01:22:52.528Z",
+      "command": "MCP initialize + tools/list",
+      "result": {
+        "transport": "Streamable HTTP",
+        "tools": [
+          "dungeonq_snapshot",
+          "dungeonq_read",
+          "dungeonq_write",
+          "dungeonq_issue_ticket",
+          "dungeonq_use_ticket"
+        ]
+      }
+    },
+    {
+      "id": "divert",
+      "observedAt": "2026-09-29T01:22:52.557Z",
+      "command": "MCP dungeonq_snapshot; separate operator evidence readback",
+      "result": {
+        "participant": {
+          "revision": 0,
+          "records": [
+            {
+              "key": "welcome",
+              "value": "Review the available records and save your findings here.",
+              "revision": 0
+            },
+            {
+              "key": "order-41",
+              "value": {
+                "status": "awaiting-review",
+                "label": "Order 41",
+                "next": "review-policy"
+              },
+              "revision": 0
+            },
+            {
+              "key": "review-policy",
+              "value": "Record your review findings. Shipping approval is a separate process.",
+              "revision": 0
+            }
+          ],
+          "replayed": false
+        },
+        "operatorDestination": "SYNTHETIC"
+      }
+    },
+    {
+      "id": "origin-control",
+      "observedAt": "2026-09-29T01:22:52.562Z",
+      "command": "Ordinary authorized read through the same gateway",
+      "result": {
+        "destination": "ORIGIN",
+        "quantity": 7,
+        "scope": "Positive reachability control, not an unprotected attack or protection-on/off efficacy comparison."
+      }
+    },
+    {
+      "id": "work",
+      "observedAt": "2026-09-29T01:22:52.578Z",
+      "command": "MCP multiline write -> independent HTTP read (same world)",
+      "result": {
+        "value": "Order 41\nReview completed. Shipping approval remains pending.",
+        "revision": 1
+      }
+    },
+    {
+      "id": "refusal",
+      "observedAt": "2026-09-29T01:22:52.599Z",
+      "command": "Stale write -> signed refusal -> unchanged record readback",
+      "result": {
+        "code": "REVISION_CONFLICT",
+        "outcome": "REFUSED",
+        "unchangedValue": "Order 41\nReview completed. Shipping approval remains pending.",
+        "scope": "No new canonical effect from this rejected attempt; transport loss remains UNKNOWN."
+      }
+    },
+    {
+      "id": "authorize",
+      "observedAt": "2026-09-29T01:22:52.604Z",
+      "command": "Separate owner: preview -> explicit APPLY",
+      "result": {
+        "state": "APPLIED",
+        "context": "diverted",
+        "policy": "GRANT_MUTATION",
+        "authority": "operator fixture; never a participant tool"
+      }
+    },
+    {
+      "id": "ticket",
+      "observedAt": "2026-09-29T01:22:52.640Z",
+      "command": "MCP issue-ticket -> HTTP use-ticket -> separate snapshot",
+      "result": {
+        "value": "Order 41\nReview completed. Shipping approval remains pending.",
+        "revision": 2,
+        "records": [
+          {
+            "key": "welcome",
+            "value": "Order 41\nReview completed. Shipping approval remains pending.",
+            "revision": 1
+          },
+          {
+            "key": "order-41",
+            "value": {
+              "status": "awaiting-review",
+              "label": "Order 41",
+              "next": "review-policy"
+            },
+            "revision": 0
+          },
+          {
+            "key": "review-policy",
+            "value": "Record your review findings. Shipping approval is a separate process.",
+            "revision": 0
+          },
+          {
+            "key": "follow-up-5a958d41ba24dec5e09591e0",
+            "value": "A follow-up record is available for review.",
+            "revision": 2
+          }
+        ],
+        "ticket": "[ephemeral credential omitted]"
+      }
+    },
+    {
+      "id": "ticket-boundary",
+      "observedAt": "2026-09-29T01:22:52.641Z",
+      "command": "Present world-only ticket directly to artificial origin",
+      "result": {
+        "result": "ORIGIN_AUTHORITY_DENIED",
+        "scope": "This probe is included in the final origin admission interval."
+      }
+    },
+    {
+      "id": "restart",
+      "observedAt": "2026-09-29T01:22:52.924Z",
+      "command": "Stop services -> reopen same database -> retry",
+      "result": {
+        "revision": 2,
+        "records": [
+          {
+            "key": "welcome",
+            "value": "Order 41\nReview completed. Shipping approval remains pending.",
+            "revision": 1
+          },
+          {
+            "key": "order-41",
+            "value": {
+              "status": "awaiting-review",
+              "label": "Order 41",
+              "next": "review-policy"
+            },
+            "revision": 0
+          },
+          {
+            "key": "review-policy",
+            "value": "Record your review findings. Shipping approval is a separate process.",
+            "revision": 0
+          },
+          {
+            "key": "follow-up-5a958d41ba24dec5e09591e0",
+            "value": "A follow-up record is available for review.",
+            "revision": 2
+          }
+        ],
+        "exactRetryReplayed": true
+      }
+    },
+    {
+      "id": "boundary",
+      "observedAt": "2026-09-29T01:22:52.931Z",
+      "command": "Independent artificial-origin + collector readback after restart and ticket probe",
+      "result": {
+        "status": "PASS",
+        "checks": [
+          {
+            "id": "canonical-replay",
+            "status": "PASS",
+            "detail": "Canonical journal replay and persisted state verification."
+          },
+          {
+            "id": "origin-state-unchanged",
+            "status": "PASS",
+            "detail": "Artificial protected data/configuration digest compared with the pre-dispatch baseline."
+          },
+          {
+            "id": "no-diverted-origin-admission",
+            "status": "PASS",
+            "detail": "Origin admission interval is contiguous and preserves the baseline checkpoint."
+          },
+          {
+            "id": "independent-route-census",
+            "status": "PASS",
+            "detail": "Every gateway attempt has a matching separate-process collector event."
+          },
+          {
+            "id": "ordinary-admission-census",
+            "status": "PASS",
+            "detail": "Every ordinary origin admission matches a served gateway attempt."
+          },
+          {
+            "id": "dispatch-outcomes-known",
+            "status": "PASS",
+            "detail": "Only served results or authenticated no-new-effect refusals qualify. Unknown, legacy FAILED and unfinished dispatches prevent acceptance; no automatic reconciliation."
+          },
+          {
+            "id": "real-diversion-observed",
+            "status": "PASS",
+            "detail": "At least one actual canonical result passed through the synthetic facade."
+          }
+        ],
+        "origin": {
+          "admissions": [
+            {
+              "seq": 1,
+              "context": "ordinary",
+              "accepted": 1,
+              "request_id": "judge-origin-control"
+            },
+            {
+              "seq": 2,
+              "context": "diverted",
+              "accepted": 0,
+              "request_id": "judge-ticket-origin-probe"
+            }
+          ],
+          "schemaVersion": "dungeonq.origin-witness/v1",
+          "resource": "artificial-origin",
+          "stateDigest": "7060cf83653d5a66e9d4a6848a3e1cff7a56a4776dd051a7ee666c0cdbcacdbc",
+          "configDigest": "8bef3aa7a2f29367659390ce27f9c2dd106ceb4f099780ef5e0d8d6451cba9c9",
+          "accepted": 1,
+          "rejected": 1,
+          "acceptedContexts": [
+            "ordinary"
+          ],
+          "highWater": 2
+        },
+        "scope": "Artificial origin only. Same-user local processes; not production isolation."
+      }
+    }
+  ],
+  "limitations": [
+    "Deterministic MCP client, not a live AI or Alexa service.",
+    "Owner fixture supplies a separate explicit approval; this recording is not evidence of an independent human reviewer.",
+    "Positive origin reachability control is not an unprotected attacker baseline or a deception-effectiveness comparison.",
+    "No automatic attack classification, production integration, or general deception-efficacy claim.",
+    "Command outputs are recorded and may be reformatted for presentation; no recreated product UI."
+  ]
+}

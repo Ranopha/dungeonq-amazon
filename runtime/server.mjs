@@ -1,7 +1,9 @@
+import { executeOutcome, verifyRefusal } from './outcomes.mjs';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID, generateKeyPairSync } from 'node:crypto';
+import { participantResult } from './participant-view.mjs';
 import { openAuxiliary } from './auxiliary.mjs';
 import { runtimeJson } from './contracts.mjs';
 import { openRuntimeStore } from './store.mjs';
@@ -17,8 +19,11 @@ const RESULT_DOMAIN = 'dungeonq.canonical-result/v1';
 
 export async function startRuntimeGateway({ directory, credentials, facadeOrigin, facadeFactory, originOrigin, collectorOrigin,
   host = '127.0.0.1', port = 0, stateHost = '127.0.0.1', statePort = 0, mcpPort = 0,
-  sshPort = 0, postgresPort = 0, network = true, hostBroker = true }) {
-  const store = openRuntimeStore({ path: join(directory, 'runtime.sqlite') });
+  sshPort = 0, postgresPort = 0, network = true, hostBroker = true, presentation = 'diagnostic-v1' }) {
+  insist(['diagnostic-v1', 'participant-v1'].includes(presentation), 'PRESENTATION_INVALID');
+  const participant = presentation === 'participant-v1';
+  const blueprint = participant ? JSON.parse(readFileSync(new URL('./blueprints/participant.json', import.meta.url), 'utf8')) : undefined;
+  const store = openRuntimeStore({ path: join(directory, 'runtime.sqlite'), ...(blueprint ? { blueprint } : {}) });
   let journal;
   try { journal = openAuxiliary(join(directory, 'gateway.sqlite'), 'CREATE TABLE IF NOT EXISTS gateway_meta(id INTEGER PRIMARY KEY,config TEXT NOT NULL,baseline TEXT); CREATE TABLE IF NOT EXISTS gateway_attempts(event_id TEXT PRIMARY KEY,payload TEXT NOT NULL,acknowledged INTEGER NOT NULL); CREATE TABLE IF NOT EXISTS gateway_pending(event_id TEXT PRIMARY KEY,input_digest TEXT NOT NULL); CREATE TABLE IF NOT EXISTS gateway_previews(id TEXT PRIMARY KEY,body TEXT NOT NULL,digest TEXT NOT NULL,result TEXT);', 'gateway_meta'); } catch(e) { store.close(); throw e; }
   const running = []; let closed = false;
@@ -67,16 +72,24 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
     insist(typeof requestId === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(requestId), 'REQUEST_ID_INVALID');
     insist(operationNames.includes(operation), 'OPERATION_DENIED');
     const decision = authenticate(token, family);
+    if (participant && operation === 'use-ticket' && decision.disposition === 'DIVERT') {
+      exact(args, ['ticket'], ['key']);
+      args = { ...args, ticket: store.resolveParticipantTicket(args.ticket, decision.contextId) };
+    }
     await ensureBaseline(); await flush();
     const eventId = randomUUID(); const destination = decision.disposition === 'DIVERT' ? 'SYNTHETIC' : 'ORIGIN';
     insist(journal.prepare('SELECT (SELECT count(*) FROM gateway_attempts)+(SELECT count(*) FROM gateway_pending) AS n').get().n < 20000, 'JOURNAL_CAPACITY_LIMIT');
     // Reserve a durable attempt before any external effect. Crash gaps can never produce a green report.
     journal.prepare('INSERT INTO gateway_pending VALUES(?,?)').run(eventId,digest({contextId:decision.contextId,family,requestId,operation,args}));
-    let result; let outcome = 'UNKNOWN';
+    let result; let refusal; let outcome = 'UNKNOWN';
     try {
       if (destination === 'SYNTHETIC') {
         const admitted = { contextId: decision.contextId, epoch: decision.epoch, family, requestId, operation, args, expiresAt: Date.now() + 5000 };
         const response = await request(facadeOrigin, '/effect', undefined, seal(admitted, credentials.seal, CAP_DOMAIN));
+        if (response?.body?.outcome === 'REFUSED') {
+          const rejected = verifyRefusal(response, credentials.seal, { ...admitted, inputDigest: digest(admitted) });
+          refusal = response; outcome = 'REFUSED'; throw failure(rejected.code);
+        }
         const verified = unseal(response, credentials.seal, RESULT_DOMAIN);
         insist(verified.inputDigest === digest(admitted), 'PROJECTION_MISMATCH'); result = verified.result;
       } else {
@@ -85,7 +98,7 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
       outcome = 'SERVED';
     } catch (error) {
       // A transport failure can occur after a durable effect. Retain UNKNOWN and use the same operation identity.
-      append({ eventId, contextId: decision.contextId, requestId, family, destination, outcome, resultDigest: digest({ code: error.code ?? 'TRANSPORT_UNKNOWN' }) });
+      append({ eventId, contextId: decision.contextId, requestId, family, destination, outcome, resultDigest: refusal ? digest(refusal.body) : digest({ code: error.code ?? 'TRANSPORT_UNKNOWN' }), ...(refusal ? { refusal } : {}) });
       store.recordRoute({ contextId: decision.contextId, requestId, family, destination, outcome });
       try { await flush(); } catch { /* Durable pending event remains visible; no origin fallback. */ }
       throw error.code ? error : failure('DISPATCH_UNKNOWN');
@@ -103,6 +116,7 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
         catch (e) { if (!['OBSERVATION_CONSUMED', 'OBSERVATION_STALE', 'IDEMPOTENCY_CONFLICT', 'REVISION_CONFLICT', 'MUTATION_BUDGET_EXHAUSTED', 'MUTATION_POLICY_EXPIRED'].includes(e.code)) throw e; }
       }
     }
+    if (participant && destination === 'SYNTHETIC') return participantResult(operation, result, ticket => store.participantTicket(ticket));
     return { ...result, _route: { contextId: decision.contextId, family, destination, requestId, proofVerified: destination === 'SYNTHETIC' } };
   }
   const capabilities = () => [
@@ -113,8 +127,8 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
     { id: 'host', family: 'managed-workload', state: hostBroker ? 'AVAILABLE' : 'DISABLED', reason: 'Private authenticated local workload broker; not general OS interception.' }
   ];
   const limitations = ['Artificial registered origin and disposable credentials only.', 'Local process separation is not production or infrastructure isolation.',
-    'Owner bearer is a reference machine capability, not attestation of human presence.', 'No live model run, production connector or competition update.'];
-  const status = () => ({ ...store.snapshot(), schemaVersion: 'dungeonq.runtime-status/v1', profile: 'LOCAL_INTEGRATION_REFERENCE', capabilities: capabilities(), limitations });
+    'Owner bearer is a reference machine capability, not attestation of human presence.', 'This evidence endpoint measures runtime behavior only; model identity and deception efficacy require a separate experiment record.'];
+  const status = () => ({ ...store.snapshot(), schemaVersion: 'dungeonq.runtime-status/v1', profile: 'LOCAL_INTEGRATION_REFERENCE', presentation, capabilities: capabilities(), limitations });
   async function evidence() {
     const checks = []; let witness; let observed; let canonical;
     const add = (id, pass, detail) => checks.push({ id, status: pass === null ? 'INCONCLUSIVE' : pass ? 'PASS' : 'FAIL', detail });
@@ -137,7 +151,7 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
         const routed=expected.filter(e=>e.destination==='ORIGIN' && e.outcome==='SERVED').map(e=>e.requestId).sort();
         add('ordinary-admission-census',digest(actual)===digest(routed),'Every ordinary origin admission matches a served gateway attempt.');
       }
-      add('dispatch-outcomes-known', pending === 0 && expected.every(e => e.outcome === 'SERVED'), 'Unfinished or unknown dispatches prevent acceptance; automatic reconciliation is not implemented.');
+      add('dispatch-outcomes-known', pending === 0 && expected.every(e => e.outcome === 'SERVED' || e.outcome === 'REFUSED' && e.destination === 'SYNTHETIC' && (() => { try { return digest(verifyRefusal(e.refusal, credentials.seal, e)) === e.resultDigest; } catch { return false; } })()), 'Only served results or authenticated no-new-effect refusals qualify. Unknown, legacy FAILED and unfinished dispatches prevent acceptance; no automatic reconciliation.');
       add('real-diversion-observed', expected.some(e => e.destination === 'SYNTHETIC' && e.outcome === 'SERVED'), 'At least one actual canonical result passed through the synthetic facade.');
     } catch { add('independent-route-census', null, 'Collector unavailable or incomplete.'); }
     return { schemaVersion: 'dungeonq.runtime-evidence/v1', status: checks.some(c => c.status === 'FAIL') ? 'FAIL' : checks.every(c => c.status === 'PASS') ? 'PASS' : 'INCONCLUSIVE',
@@ -158,20 +172,26 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
       const current = store.snapshot().contexts.find(c => c.contextId === input.contextId);
       insist(current?.state === 'ACTIVE' && current.epoch === input.epoch && current.disposition === 'DIVERT', 'CONTEXT_FENCED');
       const { contextId, family, requestId, operation, args } = input;
-      const result = store.execute({ contextId,family,requestId,operation,args });
-      send(res,200,seal({ inputDigest: digest(input), result },credentials.seal,RESULT_DOMAIN));
+      const outcome = executeOutcome(store, { contextId,family,requestId,operation,args }, input, credentials.seal);
+      send(res,200,outcome.refusal ?? seal({ inputDigest: digest(input), result: outcome.result },credentials.seal,RESULT_DOMAIN));
     }, {host:stateHost,port:statePort}); running.push(state);
     if (!facadeOrigin) { insist(typeof facadeFactory === 'function', 'FACADE_REQUIRED'); const facade = await facadeFactory(state.origin); facadeOrigin = facade.origin; running.push(facade); }
     const staticFiles = new Map([
       ['/runtime/', ['public/runtime/index.html','text/html']], ['/runtime/app.mjs',['public/runtime/app.mjs','text/javascript']],
-      ['/runtime/styles.css',['public/runtime/styles.css','text/css']], ['/runtime/client.mjs',['sdk/runtime-client.mjs','text/javascript']]
+      ['/runtime/styles.css',['public/runtime/styles.css','text/css']],
+      ['/runtime/participant.html',['public/runtime/participant.html','text/html']],
+      ['/runtime/participant.mjs',['public/runtime/participant.mjs','text/javascript']],
+      ['/runtime/participant.css',['public/runtime/participant.css','text/css']], ['/runtime/client.mjs',['sdk/runtime-client.mjs','text/javascript']]
     ]);
     const http = await serve(async (req,res) => {
       if (req.method==='GET' && req.url==='/') { headers(res); res.writeHead(302,{Location:'/runtime/'}); return res.end(); }
       if (req.method==='GET' && staticFiles.has(req.url)) {
         const [path,type]=staticFiles.get(req.url); headers(res);res.writeHead(200,{'Content-Type':type+'; charset=utf-8'});return res.end(readFileSync(join(root,path)));
       }
-      if(req.method==='GET' && req.url==='/api/capabilities') return send(res,200,{schemaVersion:'dungeonq.capability-catalogue/v1',capabilities:capabilities(),limitations});
+      if(req.method==='GET' && req.url==='/api/capabilities') {
+        if (participant) return send(res,200,{schemaVersion:'workspace.capabilities/v1',capabilities:capabilities().map(({id,state})=>({id,state}))});
+        return send(res,200,{schemaVersion:'dungeonq.capability-catalogue/v1',capabilities:capabilities(),limitations});
+      }
       if(req.method==='POST' && req.url==='/api/operate') {
         const input=await body(req);exact(input,['requestId','operation','args']);return send(res,200,await dispatch({...input,token:bearer(req),family:'http'}));
       }
