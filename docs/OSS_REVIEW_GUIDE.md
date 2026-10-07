@@ -1,37 +1,37 @@
 # Review DungeonQ's defensive deception runtime
 
-DungeonQ gives security engineers and AI-client developers a reproducible way to divert designated suspicious sessions into persistent synthetic worlds, observe their activity and authorize bounded adaptation. Useful world-only tickets let the participant continue working while independent artificial-origin checks measure the routing boundary.
+DungeonQ is an Apache-2.0 runtime for developers securing AI-agent tool workflows. It gives designated suspicious sessions a persistent synthetic world to work in while people and authorized defender agents observe activity and prepare a bounded response. Creating response time and separation is the design goal; measured delay, production protection and general deception efficacy remain unestablished.
 
-The [Amazon](https://github.com/Ranopha/dungeonq-amazon) and [Astra](https://github.com/Ranopha/dungeonq-astra) distributions share this core. Their assistant integrations and original model records are supporting profiles, not different product definitions. The source is Apache-2.0.
+[Amazon](https://github.com/Ranopha/dungeonq-amazon) and [Astra](https://github.com/Ranopha/dungeonq-astra) are two public profiles of the same core. The current **v0.13.0** emphasizes independent client integration and maintainability. Read [VALIDATION](VALIDATION.md) for the exact source and completed release gates; a candidate label or document edit is not publication evidence.
 
-## First minute: understand the mechanism
+## First: inspect the reusable boundary
 
-Follow [six recorded checkpoints](JUDGE_ROUTE.md): DIVERT, Wrong Ticket, persistence, observation, adaptation and origin checks. Each links retained evidence from one recorded reference acceptance run; checkpoint order is explanatory rather than chronological. The runtime handles real HTTP, MCP, bounded SSH/PostgreSQL and private Unix-broker clients; trusted setup explicitly provisions which contexts are diverted.
+Start with [the independent integration guide](EXTERNAL_INTEGRATION.md) and [standalone shipping consumer](../examples/mcp-shipping-consumer/README.md). The consumer uses public MCP/HTTP with actor-only authority. Separate harness roles inspect operator observations and the artificial origin. The example demonstrates how another application can integrate; it is maintainer-authored scripted evidence, not outside adoption or a model-efficacy trial.
 
-The immediate outcome is an inspectable defensive deception mechanism using artificial resources. The records do not establish automatic attack classification, arbitrary OS interception or production protection.
+A Wrong Ticket grants useful bounded work inside its issuing world. It does not grant origin access. Operator preview/apply controls finite adaptation. Participant instructions, model output and defender-agent proposals cannot approve themselves. Unknown outcomes remain visible and prevent clean admission.
 
-## Next: run and inspect it
+## Then: run it
 
-From an extracted release with Node 24.15.0+ and npm:
+From a pinned source checkout with Node.js 24.15.0+:
 
 ```sh
 npm ci --ignore-scripts
-npm run runtime -- --data-dir ../dungeonq-runtime-review
+npm run oss:demo -- /absolute/path/new-oss-report.json
 ```
 
-Use [the evaluator route](JUDGE_ROUTE.md) to connect separate operator/participant roles, send a request through the existing CLI, consume a useful ticket, approve a finite mutation policy and revisit preserved state. Keep the full credential file out of AI context; provide only the actor capability to the participant. The [operation guide](RUNTIME.md) documents protocol contracts, Node/Python clients and recovery behavior.
+Choose a new filename outside the checkout. Inspect the actual report, named positive and negative checks and exit status. Use [the manual route](JUDGE_ROUTE.md) to operate the Participant workspace and separate Control room. [INSTALL](INSTALL.md) covers prerequisites and recovery; [RUNTIME](RUNTIME.md) covers protocol contracts and Node/Python clients.
 
-For automated mechanism checks, run `npm run test:runtime`. For fresh full acceptance, follow the [container profile](../deploy/runtime-reference/README.md) and documented `runtime:proof` / `runtime:gate` commands. Full admission requires complete current evidence bound to the exact clean source. The [validation record](VALIDATION.md) distinguishes dated distribution tests, public CI and measured container results.
+For broader checks, run `npm run test:runtime` and the release checkpoint `npm run check`. Full runtime admission also needs fresh [container evidence](../deploy/runtime-reference/README.md), `runtime:proof` and `runtime:gate` for the exact clean candidate. Missing, stale, uncertain or mismatched evidence cannot become PASS. Public CI is separate from branch-protection settings.
 
-## Then: evaluate the evidence, including failures
+## Evaluate maintenance and honest limits
 
-Inspect the versioned [runtime contract](contracts/RUNTIME_V1.md), [acceptance and remaining gates](RUNTIME_ACCEPTANCE.md), code and tests. The container profile measures specific network/file boundaries while trusting the gateway, Docker administration and shared kernel. Its artificial-origin census is a defined measurement, not independent certification or a production claim.
+The [maintenance plan](MAINTAINER_PLAN.md) identifies actual maintainer responsibility, concrete contribution directions, trial feedback and how Codex resources would support upkeep. [CONTRIBUTING](../CONTRIBUTING.md) explains one-change PRs, evidence, AI disclosure and safe reporting. There is no established external adoption, and no community size, downstream use or incoming issue volume is claimed.
 
-Keep research outcomes separate from engineering acceptance: [0/2 wrong-high-confidence study outcomes](STUDY_RESULTS.md), [0/4 unsupported completion claims](TOPOLOGY_RESULTS.md), [the 0/3 defense pilot](DEFENSE_PILOT_RESULTS.md), and [later qualified decoy-data acceptance](WORKSPACE_LAB.md). Original model records remain available; passing protocol tests do not establish general deception efficacy.
+The container reference measures specified network/file boundaries while trusting the gateway, Docker administrator and shared kernel. The origin witness covers a named artificial resource and interval, not every asset on a host. Real deployment needs an explicitly authorized integration and environment-specific acceptance.
 
-The Proof Kernel, assistant/Astra integrations, notification/rotation workflows and research instruments remain reusable parts of the same product. They retain their own authority and evidence boundaries. The static website presents recorded observations; operating the independent server roles requires self-hosting.
+Retained research includes [0/2 wrong-high-confidence study outcomes](STUDY_RESULTS.md), [0/4 unsupported completion claims](TOPOLOGY_RESULTS.md), [the 0/3 defense pilot](DEFENSE_PILOT_RESULTS.md) and [qualified decoy-data acceptance](WORKSPACE_LAB.md). Engineering checks are not evidence of sustained false belief. Original studies, challenge snapshots and films remain available with their source/date boundaries.
 
-[Contributing](../CONTRIBUTING.md) · [Security](../SECURITY.md) · [License](../LICENSE) · [Notices](../NOTICE) · [Release history](../CHANGELOG.md). A source update does not show that an external reviewer refreshed an existing OSS application. Keep the existing application; no duplicate is needed.
+[Security](../SECURITY.md) · [License](../LICENSE) · [Notices](../NOTICE) · [Release policy](RELEASE.md) · [Release history](../CHANGELOG.md) · [繁體中文入門](START_HERE.zh-TW.md). Updating this source does not update an external grant application or prove selection. Application state must be confirmed separately by the maintainer.
 
 <details>
 <summary>Earlier review route and profile history</summary>

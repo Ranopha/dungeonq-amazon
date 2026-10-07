@@ -1,29 +1,27 @@
 # Contributing to DungeonQ
 
-DungeonQ is an early-stage Apache-2.0 reference lab. Help make its governance boundary easier to reproduce and harder to misunderstand.
+DungeonQ is an early-stage Apache-2.0 defensive deception runtime for AI-agent workflows. Contributions should make an independent client easier to connect, strengthen an actual boundary, or make a result reproducible. The maintainer uses AI assistance and remains responsible for design, review and releases. There is no established external adoption yet.
 
-Useful contributions include a synthetic regression, reproducible setup bug, clearer expected result, strict Scenario Pack example or adapter conformance test. Do not manufacture issues or PR activity for a grant or contest.
+## Start with one observable problem
 
-## Development loop
+Use [the integration guide](docs/EXTERNAL_INTEGRATION.md) and [standalone consumer](examples/mcp-shipping-consumer/README.md) to try the public MCP/HTTP contract. Useful first contributions include a reproducible setup failure, a client compatibility example, a missing denial/retry regression, or an unclear report field. The [maintenance plan](docs/MAINTAINER_PLAN.md) lists concrete directions and a trial-feedback template; it does not imply assigned contributors or promised delivery dates.
 
-1. Fork/clone the public repository and branch from current release/main.
-2. Run `npm ci --ignore-scripts` and `npm run doctor`.
-3. Make one scoped change. Run affected Node tests first, then `npm run check` before a release.
-4. For proof changes, run `node --test tests/reviewer-tools.test.mjs` and inspect fresh artifacts. For UI changes, exercise the actual visible workflow; API tests do not replace it.
-5. Explain problem, change, tests and claim scope in the PR. List what remains untested.
+## Development and validation
 
-Keep approval out of MCP; preserve closed schemas, scope/expiry/revocation, idempotency and negative tests. Annotations are not authorization. New effects, transports or real connectors require design/security review and versioned contracts. Do not add arbitrary shell/SQL, production targets, credentials, public tunnels or automatic deployment.
+1. Fork or clone [the public repository](https://github.com/Ranopha/dungeonq-amazon) and branch from the intended `main` commit. State that commit or release in your report.
+2. Use Node.js 24.15.0+, run `npm ci --ignore-scripts` and `npm run doctor`, and follow [installation](docs/INSTALL.md).
+3. Make one scoped change with artificial inputs and new private fixture/output paths. Run affected tests first. For the consumer path, run `npm run oss:demo -- /absolute/path/new-report.json`; inspect its checks and failure status, not only its exit message.
+4. Run `npm run check` for a release checkpoint. UI changes also require operating the visible workflow. Protocol, authority or isolation changes need the relevant negative tests and fresh source-bound acceptance; a previous version's report is not transferable.
+5. Explain the problem, change, exact commands/results and remaining limits in the PR. Disclose AI assistance and confirm that you understand the diff, licenses and tests.
 
-Existing lab directories are user data: never overwrite, reset or delete unknown ones to make tests pass. Do not disable TLS verification; pin a fixture certificate only in that test's client.
+Keep participant and operator authority separate. Preserve closed schemas, scope, expiry, revocation, request identity, idempotency and UNKNOWN outcomes. A defender agent may propose changes but cannot approve its own proposal. New effects, transports or real connectors need a versioned design and security review. Do not add arbitrary shell/SQL, production targets, public tunnels, automatic deployment or credentials.
 
-## Report bugs safely
+Existing lab directories are user data: never overwrite or reset them to make a test pass. Keep fixture credentials out of issues and reports; never disable TLS verification as a setup fix. Paid model calls or real provider integrations need explicit configuration and spending authority.
 
-Open an [issue](https://github.com/Ranopha/dungeonq-amazon/issues) with release/commit, environment, small synthetic reproduction, exact command, expected/actual results, exit code and redacted output. Say whether a fresh lab reproduces it.
+## Report problems safely
 
-Potential vulnerabilities belong under [SECURITY.md](SECURITY.md), never a public post containing secrets, real incident data or a third-party exploit.
+Open a [non-sensitive issue](https://github.com/Ranopha/dungeonq-amazon/issues) with release/commit, OS/Node/client versions, a minimal artificial reproduction, expected/actual result, exit code and redacted output. The template in [MAINTAINER_PLAN](docs/MAINTAINER_PLAN.md#trial-feedback-template) is suitable for a first trial. No stars, issues, PRs or testimonials should be created merely to support an application.
 
-## AI-assisted contributions
+Potential vulnerabilities follow [SECURITY.md](SECURITY.md). Do not post secrets, real incident data, private installations or third-party exploit material. No external attack is required to evaluate this reference.
 
-AI assistance is welcome when disclosed. Submitters remain responsible for understanding the diff, licenses and tests. Model output is a proposal, not a security authority. Neither AI review nor passing tests is independent certification.
-
-Keep contributions Apache-2.0-compatible and preserve attribution/notices. No separate CLA or response-time guarantee is promised. Maintainer review and release notes record what actually shipped.
+Contributions must remain Apache-2.0-compatible and preserve attribution/notices. No separate CLA, response-time, acceptance guarantee or production SLA is promised. Passing tests and AI review are not independent certification. The maintainer records what actually shipped in [CHANGELOG](CHANGELOG.md) and [VALIDATION](docs/VALIDATION.md).

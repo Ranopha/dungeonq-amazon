@@ -1,20 +1,33 @@
-# DungeonQ — Deception Runtime
+# DungeonQ — Defensive Deception Runtime
 
-**Divert a suspicious session into a persistent synthetic world. Observe what it does. Adapt within an approved policy.**
+**Give suspicious AI-agent sessions a bounded world to work in, so people and defender agents have time and space to respond.**
 
-DungeonQ is open-source infrastructure for security teams and developers handling human- or AI-driven suspicious sessions. At a designated entry point, its trusted gateway routes an admitted session into a separate synthetic world. The participant can read records, save changes and use a useful **Wrong Ticket** there. The operator retains the activity history and checks the protected origin through independent evidence.
+DungeonQ is an Apache-2.0 defensive deception runtime for developers securing AI-agent tool workflows. Its design goal is to create response time and separation for human operators and authorized defender agents; measured delay or defensive efficacy has not yet been established. At a designated entry point, its trusted gateway routes an admitted session into a separate synthetic world. The participant can read records, save changes and use a useful **Wrong Ticket** there. The operator retains the activity history and checks the protected origin through independent evidence.
 
 The current self-hosted reference makes that sequence inspectable with real HTTP, MCP, SSH, a bounded PostgreSQL protocol and a private Unix workload broker. Trusted setup explicitly provisions which contexts are diverted; the protected origin and all records are artificial.
 
 [**Follow the recorded diversion**](docs/JUDGE_ROUTE.md) · [**Operate your own reference**](#run-the-reference) · [Acceptance evidence](docs/RUNTIME_ACCEPTANCE.md)
 
-## A task you can operate (v0.12.0)
+## A task you can operate
 
 For developers securing **AI-agent tool workflows**: open the Participant workspace and the separate operator Control room. Read a shipping record, save a multiline review note, read it back from the server, and use a world-only ticket. The operator sees the same persisted world, successful observations and a request timeline tied to independent route evidence. An explicitly approved policy can add a bounded follow-up record. Restart the services and continue from the saved state.
 
 [Step-by-step working views](docs/RUNTIME.md#try-a-complete-participant-task-v0120) · [Reproduce ten checkpoints](docs/AMAZON_JUDGE_DEMO.md)
 
 The new walkthrough adds an ordinary authorized-origin reachability control, a verified stale-write refusal and a ticket-to-origin denial **before** its final witness read. It uses real MCP/HTTP clients and artificial resources, not a live model. The September 20 film records the earlier seven-scene command-output version; it does not show these new interfaces or checks. Historical container evidence does not certify this changed source.
+
+## Integrate a separate consumer (v0.13.0)
+
+The [standalone MCP shipping consumer](examples/mcp-shipping-consumer/README.md) has its own package and talks only to the public MCP/HTTP interfaces. It receives the actor endpoint and token; operator and artificial-origin checks run separately. A deterministic client exercises integration, not third-party adoption or a live-model evaluation.
+
+```sh
+npm ci --ignore-scripts
+npm run oss:demo -- /absolute/path/new-oss-report.json
+```
+
+Use a new report filename outside the checkout. Read [external integration and report interpretation](docs/EXTERNAL_INTEGRATION.md) before connecting your own client. For human-operated work, use the Participant workspace and Control room below. A defender agent may inspect permitted evidence or propose an action; it does not gain approval authority.
+
+**Release status:** use the [v0.13.0 release record](https://github.com/Ranopha/dungeonq-amazon/releases/tag/v0.13.0) for the final tag, CI and download checksums; [VALIDATION](docs/VALIDATION.md) explains their scope. The maintained [release policy](docs/RELEASE.md) distinguishes source on `main` from an immutable release.
 
 ## What happens after DIVERT
 
@@ -34,7 +47,7 @@ Use Node.js **24.15.0+**, npm and the prerequisites in [the operation guide](doc
 
 ```sh
 npm ci --ignore-scripts
-npm run runtime -- --data-dir ../dungeonq-review-012 --presentation participant-v1
+npm run runtime -- --data-dir ../dungeonq-review-013 --presentation participant-v1
 ```
 
 Open the printed **Participant workspace** and **Control room** URLs in separate tabs. Keep the private credential file outside Git and AI context. Give a participant only its actor token; keep operator authority separate. Follow the [evaluator route](docs/JUDGE_ROUTE.md) to send a real request, consume a ticket, authorize one finite policy and inspect retained state after restart. Reuse the same private data directory to resume.
@@ -43,11 +56,20 @@ The [client guide](docs/RUNTIME.md) covers all five adapters, the CLI and Node/P
 
 ## Evidence you can inspect
 
+Use [the current validation record](docs/VALIDATION.md) for this candidate's local checks, independent consumer result, public CI and source-bound container acceptance. The [integration guide](docs/EXTERNAL_INTEGRATION.md) explains which observations come from the actor, operator and artificial origin. Missing, stale or unknown evidence cannot become a pass.
+
+<details>
+<summary>Historical v0.11 reference evidence</summary>
+
+## Evidence you can inspect
+
 The **September 18 v0.11.0 Amazon distribution** passed **460/460 tests**. Its [public CI run](https://github.com/Ranopha/dungeonq-amazon/actions/runs/35303213743) passed Ubuntu, macOS and source-bound runtime acceptance: **11/11 required rows and 16/16 container checks**. The earlier reference also recorded restart continuity and an inconclusive result when infrastructure was stopped. These are dated observations; the [validation record](docs/VALIDATION.md) identifies each tested source.
 
 [Six recorded checkpoints](evidence/runtime-v1/journey.json) · [Evidence summary](evidence/runtime-v1/summary.json) · [Versioned runtime contract](docs/contracts/RUNTIME_V1.md). The checkpoints group one recorded reference acceptance run by capability, with source pointers and timing; public CI is separate corroboration.
 
 For fresh acceptance, follow the container guide and run the documented `runtime:proof` and `runtime:gate` commands against the exact clean candidate. Missing or stale evidence, unknown outcomes and failed checks prevent full admission. Public CI does not by itself establish protected-branch enforcement.
+
+</details>
 
 ## Scope and open questions
 
@@ -74,7 +96,7 @@ npm run check
 npm run verify:source
 ```
 
-[Open-source review route](docs/OSS_REVIEW_GUIDE.md) · [Testing](docs/TESTING.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Release history](CHANGELOG.md). Apache-2.0: preserve [LICENSE](LICENSE), [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md). Source manifests check integrity, not independent certification. The earlier WebMCP repository, site, submission and evidence remain frozen.
+[Open-source review route](docs/OSS_REVIEW_GUIDE.md) · [Maintenance plan](docs/MAINTAINER_PLAN.md) · [External integration](docs/EXTERNAL_INTEGRATION.md) · [Testing](docs/TESTING.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Release history](CHANGELOG.md). Apache-2.0: preserve [LICENSE](LICENSE), [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md). Source manifests check integrity, not independent certification. The earlier WebMCP repository, site, submission and evidence remain frozen.
 
 <details>
 <summary>Historical v0.10 and earlier profile walkthroughs</summary>

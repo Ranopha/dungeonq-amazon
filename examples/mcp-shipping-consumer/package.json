@@ -1,0 +1,11 @@
+{
+  "name": "dungeonq-mcp-shipping-consumer-example",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Independent scripted MCP consumer for a synthetic shipping review",
+  "license": "Apache-2.0",
+  "engines": { "node": ">=24.15.0" },
+  "scripts": { "start": "node cli.mjs" },
+  "dependencies": { "@modelcontextprotocol/sdk": "1.32.1" }
+}

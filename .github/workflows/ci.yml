@@ -33,6 +33,14 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run doctor -- --skip-ports
       - run: npm run check
+      - name: Install the standalone MCP consumer outside the checkout
+        run: |
+          cp -R examples/mcp-shipping-consumer "$RUNNER_TEMP/dq-mcp-shipping-consumer"
+          npm --prefix "$RUNNER_TEMP/dq-mcp-shipping-consumer" ci --ignore-scripts
+      - name: Audit the standalone consumer dependency lockfile
+        run: npm --prefix "$RUNNER_TEMP/dq-mcp-shipping-consumer" audit --omit=dev --audit-level=low --json > "$RUNNER_TEMP/dq-oss-consumer-audit.json"
+      - name: Reproduce the independent MCP integration
+        run: npm run oss:demo -- "$RUNNER_TEMP/dq-oss-integration.json"
       - name: Persistent publishing workflow and causal replay
         run: |
           npm run topology:proof -- --out "$RUNNER_TEMP/dq-topology"
@@ -70,6 +78,8 @@ jobs:
             ${{ runner.temp }}/dq-topology/proof.json
             ${{ runner.temp }}/dq-topology/treatment.json
             ${{ runner.temp }}/dq-topology/control.json
+            ${{ runner.temp }}/dq-oss-integration.json
+            ${{ runner.temp }}/dq-oss-consumer-audit.json
           retention-days: 14
           if-no-files-found: ignore
 

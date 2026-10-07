@@ -1,3 +1,26 @@
+# Reproducible testing — v0.13.0
+
+Use a pinned public source checkout, Node.js 24.15.0+ and the prerequisites in [INSTALL](INSTALL.md). The [current validation record](VALIDATION.md) binds observed results to source and environment. A command below describes what to run; it is not a predeclared PASS or a substitute for source-bound acceptance.
+
+| Command or route | Scope |
+| --- | --- |
+| `npm ci --ignore-scripts` then `npm run doctor` | Locked dependency installation and local prerequisite checks |
+| `npm run oss:demo -- /absolute/path/new-report.json` | Independent public MCP/HTTP consumer, actor-only authority, separate scripted operator/origin checks; use a new output filename |
+| `npm run test:runtime` | Runtime protocol, state, authority and failure-path regressions |
+| `npm run check` | Complete source checkpoint, scenario verification, audit, typecheck and build |
+| `npm run verify:source` | Intact distribution inventory and digest check; edited source needs release preparation |
+| [Container reference](../deploy/runtime-reference/README.md) plus `runtime:proof` / `runtime:gate` | Fresh full runtime admission against the exact clean source and current isolation evidence |
+| [Manual participant/operator route](JUDGE_ROUTE.md) | Actual visible task, separate readback, operator evidence, finite grant and restart |
+
+The [standalone consumer guide](EXTERNAL_INTEGRATION.md) explains each role and report field. Root installation is sufficient for the harness; a separately copied consumer package has its own installation step. Its scripted protocol checks do not test service restart or measure model deception, response delay, external adoption or human presence. Use the manual route and dedicated runtime acceptance for restart claims.
+
+Treat a named expected denial differently from an unexpected failure. Preserve the report and examine its authenticated outcome; UNKNOWN, missing checks, source mismatch and stale isolation evidence cannot become PASS. Never delete a fixture or reset credentials to hide a failed run. Keep all outputs synthetic and credentials/private installation data out of reports.
+
+UI changes need actual visible workflow review. Model experiments require a separately stated hypothesis, controls, budget and stopping rule; no paid call is needed for the default integration or source checks. The current runtime and retained assistant/Astra/research profiles have different authority and evidence contracts.
+
+<details>
+<summary>Historical profile-specific test maps</summary>
+
 # Reproducible testing
 
 ## Reviewer entry points (0.4.0)
@@ -46,3 +69,5 @@ Do not compare complete live signed receipts across separate lab installations: 
 ## Manual acceptance
 
 Use the README judge route on desktop and a narrow viewport. Check visible result text, exact human manifest, unchanged unrelated asset, trace and exported JSON. Request/approval expires after five minutes: request a fresh one if it expires, and never edit timestamps or disable checks for filming. Restart and authenticate again before asserting persistence. Verify the original receipt and a mutated copy independently. These are local synthetic claims only.
+
+</details>

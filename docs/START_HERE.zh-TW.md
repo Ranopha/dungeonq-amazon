@@ -1,3 +1,52 @@
+# DungeonQ：防禦誘餌 Runtime 入門
+
+目前文件對應 **v0.13.0 候選版**。是否已通過本機驗證、公開 CI、tag／release／下載包及影片讀回，以 [VALIDATION](VALIDATION.md) 的當前紀錄為準；下方舊版本數字不會自動成為新版證據。
+
+## 這個產品解決什麼問題？
+
+DungeonQ 面向使用 AI agent 工具流程的開發者與防守方。已指定的可疑 session 在持續存在的合成世界中讀寫、使用世界限定票券；人類或獲授權的防守 agent 可查看活動、準備處置，由獨立權限核准有限的世界變化。產品目標是爭取處置時間與空間，**尚未實測證明能拖延多久、普遍欺騙模型或保護正式環境**。
+
+目前可執行的是自有人工資源的參考 runtime，使用真正的 HTTP、MCP 及其他有界轉接器。分流情境由可信設定預先指定，不是任意流量自動辨識或全主機攔截。模型沒有自我核准權；誘餌票券不會取得原站權限。
+
+## 先跑一個獨立 client，不需要付費模型
+
+兩個公開庫共用同一核心：[Amazon](https://github.com/Ranopha/dungeonq-amazon)／[Astra](https://github.com/Ranopha/dungeonq-astra)，授權為 Apache-2.0。從指定 commit／release 取得來源，使用 Node.js 24.15.0+：
+
+```sh
+npm ci --ignore-scripts
+npm run doctor
+npm run oss:demo -- /absolute/path/new-oss-report.json
+```
+
+輸出必須是 checkout 以外的新檔名。[獨立 consumer](../examples/mcp-shipping-consumer/README.md) 有自己的 package，只拿 actor endpoint／token，透過公開 MCP／HTTP 做事；harness 在分開角色執行 operator 與人工 origin 讀回。這是維護者撰寫的整合範例，**不是外部使用者採用，也不是真實模型測試**。確切參數、安裝與報告判讀見 [EXTERNAL_INTEGRATION](EXTERNAL_INTEGRATION.md)。非零退出、UNKNOWN、缺少或過期證據都不算通過。
+
+## 自己操作工作面
+
+```sh
+npm run runtime -- --data-dir ../dungeonq-runtime-013 --presentation participant-v1
+```
+
+開啟終端印出的 Participant workspace 與 Control room。參與者只拿 actor token；完整憑證檔、owner token 與 origin 能力分開保管。按照 [JUDGE_ROUTE](JUDGE_ROUTE.md) 完成讀取、保存、獨立讀回、票券及有限核准。結束用 Ctrl+C；重啟沿用相同資料目錄及 presentation，才能驗證原狀態延續。
+
+不要覆寫既有安裝、為通過測試重設憑證，或把私人資料目錄上傳到 issue。升級前停止程序、保留完整私人安裝備份，不能只複製資料庫而遺漏 keys／WAL。完整說明見 [INSTALL](INSTALL.md) 與 [RUNTIME](RUNTIME.md)。本機同帳號程序不是隔離驗收；完整 admission 還需目前來源相符的 container 與 runtime 證據。
+
+## 文件索引與參與方式
+
+| 要做的事 | 入口 |
+| --- | --- |
+| 連接自己的 MCP／HTTP client | [外部整合](EXTERNAL_INTEGRATION.md) |
+| 安裝、停止、重啟、保留資料 | [INSTALL](INSTALL.md)／[RUNTIME](RUNTIME.md) |
+| 了解架構與權限界線 | [ARCHITECTURE](ARCHITECTURE.md) |
+| 查新版驗收與發布狀態 | [VALIDATION](VALIDATION.md)／[RELEASE](RELEASE.md) |
+| 提交可重現問題或小範圍 PR | [CONTRIBUTING](../CONTRIBUTING.md) |
+| 了解維護責任與試用回饋格式 | [MAINTAINER_PLAN](MAINTAINER_PLAN.md) |
+| 查舊模型實驗、負結果與成熟度 | [OSS_REVIEW_GUIDE](OSS_REVIEW_GUIDE.md) |
+
+目前尚無已建立的外部採用。歡迎提供真實試用與可重現問題；不製造 stars、issues、PR 或推薦語。舊 Astra 模型流程、Orders Workspace、通知與輪換仍保留各自契約，不把舊帳號／信箱功能自動視為 runtime 的登入功能。公開網站呈現保存證據，真正的 server 角色需要自架。
+
+<details>
+<summary>歷史 v0.10 入門：帳號、信箱、通知與輪換工作面</summary>
+
 # DungeonQ：中文入門與文件索引
 
 適用：v0.10.0 合成實驗室。此頁是後續文件補強；既有 v0.10.0 tag、下載包與原始實驗紀錄保持不變。最新文件以公開庫 `main` 為準。
@@ -83,3 +132,5 @@ Google／GitHub 登入不會自動提供寄信服務，也不索取 Gmail 寄信
 | 安全回報、貢獻、版本變更 | [SECURITY](../SECURITY.md) · [CONTRIBUTING](../CONTRIBUTING.md) · [CHANGELOG](../CHANGELOG.md) |
 
 升級前先安全備份完整私有安裝，包含資料庫、keys與相關狀態；不要公開該目錄。Schema v7 不應降版，不復活已撤銷憑證。真實企業 connector、正式隔離與商用驗收是獨立工作，不由本機合成結果代替。
+
+</details>

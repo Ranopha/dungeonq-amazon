@@ -11,12 +11,12 @@ const exec = promisify(execFile);
 export const PUBLIC_SOURCE_PATHS = Object.freeze([
   '.gitignore', 'LICENSE', 'NOTICE', 'THIRD_PARTY_NOTICES.md', 'package.json', 'package-lock.json',
   'tsconfig.json', 'vite.config.ts', 'next.config.ts', 'app', 'assistant', 'astra', 'cli', 'deploy',
-  'public', 'server', 'tests', 'workbench', 'world', 'study', 'runtime', 'sdk', 'scripts/lib',
+  'public', 'server', 'examples', 'tests', 'workbench', 'world', 'study', 'runtime', 'sdk', 'scripts/lib',
   'scripts/amazon.mjs', 'scripts/astra.mjs', 'scripts/astra-proof.mjs',
   'scripts/world.mjs', 'scripts/world-proof.mjs', 'scripts/study.mjs', 'scripts/study-proof.mjs',
   'scripts/topology.mjs', 'scripts/topology-proof.mjs',
   'scripts/defense.mjs', 'scripts/defense-proof.mjs',
-  'scripts/email-proof.mjs', 'scripts/judge-demo.mjs',
+  'scripts/email-proof.mjs', 'scripts/judge-demo.mjs', 'scripts/oss-integration-demo.mjs',
   'scripts/runtime.mjs', 'scripts/runtime-proof.mjs', 'scripts/runtime-gate.mjs', 'scripts/runtime-isolation.mjs',
   'scripts/workspace-pilot-verify.mjs', 'scripts/defense-pilot-verify.mjs',
   'scripts/workspace-pilot-host.mjs', 'scripts/workspace-pilot-client.mjs',
@@ -28,6 +28,7 @@ export const PUBLIC_SOURCE_PATHS = Object.freeze([
 const sharedDocuments = ['docs/STUDY_LAB.md', 'docs/STUDY_RESULTS.md', 'docs/WORLD_LAB.md',
   'docs/contracts/STUDY_V1.md', 'docs/contracts/WORLD_V1.md', 'evidence/study-v1',
   'docs/TOPOLOGY_LAB.md', 'docs/TOPOLOGY_RESULTS.md', 'docs/contracts/TOPOLOGY_V2.md', 'evidence/topology-v2',
+  'docs/EXTERNAL_INTEGRATION.md', 'docs/MAINTAINER_PLAN.md', 'evidence/oss-integration-v1',
   'docs/DEFENSE_LAB.md', 'docs/OSS_REVIEW_GUIDE.md', 'docs/JUDGE_ROUTE.md', 'docs/contracts/DEFENSE_GOVERNANCE_V1.md', 'evidence/defense-v1',
   'docs/WORKSPACE_LAB.md', 'docs/DEFENSE_PILOT_RESULTS.md', 'docs/contracts/ORDERS_WORKSPACE_V1.md',
   'evidence/workspace-pilot-v1', 'evidence/defense-pilot-v1',
@@ -82,6 +83,7 @@ export async function exportDistribution({ root, output, target }) {
   for (const path of PUBLIC_SOURCE_PATHS) await copy(path);
   if (target === 'astra') for (const path of ['astra-site', 'scripts/build-astra-site.mjs']) await copy(path);
   await copy('docs/SCENARIO_AUTHORING.md', 'docs/SCENARIO_PACK.md');
+  await copy('docs/contracts/OSS_INTEGRATION_V1.md', 'docs/contracts/OSS_INTEGRATION_V1.md');
   for (const name of (await readdir(join(root, `${target}-release`))).sort()) await copy(posix.join(`${target}-release`, name), name);
   // This one shared reviewer guide intentionally supersedes the older branded guide.
   files.delete('docs/OSS_REVIEW_GUIDE.md');

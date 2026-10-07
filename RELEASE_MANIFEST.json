@@ -1,13 +1,13 @@
 {
   "schemaVersion": "dungeonq.source-release/v1",
   "profile": "SYNTHETIC_ONLY",
-  "generatedAt": "2026-09-29T01:33:24.226Z",
+  "generatedAt": "2026-10-07T09:03:31.307Z",
   "privateHistoryIncluded": false,
   "entries": [
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 5186,
-      "sha256": "7c8ef284e9809cabfcfe441dfbad7c31005b2dff5e6c2ad88ed7cc55b16fc692"
+      "bytes": 5899,
+      "sha256": "18c663b8fd976b4600214267eedb6c7a6f00b8524f51df6567947b193a25b7e9"
     },
     {
       "path": ".gitignore",
@@ -76,8 +76,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 8995,
-      "sha256": "259a70e1a270fe941ff5d18ace17a3fb981df5eea85629adb8b6afcdb008fe0b"
+      "bytes": 9842,
+      "sha256": "75cd015883fbd36d130765769e423809ee7cd9fec7280e97be6d5d538351c9e5"
     },
     {
       "path": "cli/run.mjs",
@@ -106,8 +106,8 @@
     },
     {
       "path": "CONTRIBUTING.md",
-      "bytes": 2337,
-      "sha256": "25c9f347d6957ec93a038e4b72e595fd0f70d639b51c67ee17100454c4a7000d"
+      "bytes": 3661,
+      "sha256": "6b099f64f1b5b373603a41cd97a5feed38c59260a1ec860814fea8f981c5b472"
     },
     {
       "path": "deploy/lab-isolation.json",
@@ -141,8 +141,8 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "bytes": 4244,
-      "sha256": "04de3074de9e0fc5d189a1a35b8c881e4bbfc9e35838016013116e789619bbc0"
+      "bytes": 8291,
+      "sha256": "0aac202a8faa959c7a35b05749c642727092d2d5e0df39945cb450ae8b0ff4cf"
     },
     {
       "path": "docs/contracts/DEFENSE_GOVERNANCE_V1.md",
@@ -153,6 +153,11 @@
       "path": "docs/contracts/ORDERS_WORKSPACE_V1.md",
       "bytes": 3032,
       "sha256": "5b59931f142d2808dde6173f83fb8f2b86df392a73f2abf2b2cf578f169e87eb"
+    },
+    {
+      "path": "docs/contracts/OSS_INTEGRATION_V1.md",
+      "bytes": 2189,
+      "sha256": "932a13a926f24aeec8147f2ecde3fbfb15101e6850f89360f13a1ebefe11eac2"
     },
     {
       "path": "docs/contracts/RUNTIME_V1.md",
@@ -186,8 +191,8 @@
     },
     {
       "path": "docs/DELTA.md",
-      "bytes": 8413,
-      "sha256": "99347357da620729db1eba17a6f3db1fffbaa3c56490e95ef669d06568b565ca"
+      "bytes": 10241,
+      "sha256": "e00232b66db3ad9baaa70f40592ddf5bd57143af296384dbd22da2a5c14670a2"
     },
     {
       "path": "docs/DEMO_SCRIPT.md",
@@ -205,19 +210,29 @@
       "sha256": "23f0a1ac7edca02c80f5fbaa7189a52d034779b0ac6a53ae2113d7c0fb3a7d17"
     },
     {
+      "path": "docs/EXTERNAL_INTEGRATION.md",
+      "bytes": 7072,
+      "sha256": "f8075a636e3b7ac4a009bbdf99186afb0d3c9ab13e464f940d06a25afb62d37a"
+    },
+    {
       "path": "docs/GOVERNANCE.md",
       "bytes": 3922,
       "sha256": "aed4e57df2c767542c123efd15edc0ae19f5e2427a1c4faa9af463dcbc831402"
     },
     {
       "path": "docs/INSTALL.md",
-      "bytes": 5406,
-      "sha256": "855817ef0e16748cf697af0b5e9c5766059ca64874d5e0fb43d529b017750e88"
+      "bytes": 10417,
+      "sha256": "d7b30351f47ae4244ab675f34bb706521fc55551284b73a6264c5555ba3b6b17"
     },
     {
       "path": "docs/JUDGE_ROUTE.md",
-      "bytes": 8913,
-      "sha256": "ffd01ae0f30ed174bb3cc931b2dedfa8b4afb147114baeca7854588914bcc44d"
+      "bytes": 10201,
+      "sha256": "4842393cca34baf7cdbae457f402dde3329134c2bf06bbf8e94c3b3597b133e2"
+    },
+    {
+      "path": "docs/MAINTAINER_PLAN.md",
+      "bytes": 5920,
+      "sha256": "cd52ffc58e9e6a227f42c6815d08fae6608a65c8eb611dcb2345eabfbc7f7237"
     },
     {
       "path": "docs/MCP.md",
@@ -226,8 +241,8 @@
     },
     {
       "path": "docs/OSS_REVIEW_GUIDE.md",
-      "bytes": 10219,
-      "sha256": "c48b55e25cafb3a87e01375372e837d3e91a6adba42d2482f894e390e3ddf075"
+      "bytes": 10458,
+      "sha256": "15f432b4f54c9072e4af3cbae3fea9a2d654611b6a27ed5403f9d709dc6a3626"
     },
     {
       "path": "docs/PRODUCT_FEEDBACK.md",
@@ -236,8 +251,8 @@
     },
     {
       "path": "docs/RELEASE.md",
-      "bytes": 3947,
-      "sha256": "82d634a9711c4baccc6340c946c32e3b98e2ef3e050e59df5b73e0063a056773"
+      "bytes": 8107,
+      "sha256": "4e8f20368a6183254be2c592badd3dceae7f622be26e5f7785b7843ddb402f3b"
     },
     {
       "path": "docs/REVIEWER_GUIDE.md",
@@ -261,8 +276,8 @@
     },
     {
       "path": "docs/START_HERE.zh-TW.md",
-      "bytes": 7648,
-      "sha256": "405e173d9e404c135ae6c0a6d22071014600c9603eda597afbb46740be165355"
+      "bytes": 11546,
+      "sha256": "bd290481e0e8dff0dfd828ccbaeb0adf8ba1760944cade9dd6017307dbc891ab"
     },
     {
       "path": "docs/STUDY_LAB.md",
@@ -276,13 +291,13 @@
     },
     {
       "path": "docs/SUBMISSION.md",
-      "bytes": 8817,
-      "sha256": "d9864b2739ce1c61f665c4a8adae82963936908b134a14a49d1d1fdcee5e5b84"
+      "bytes": 10607,
+      "sha256": "9b4449bc556e80d83f59af25e29e7a62160bb07f0aedc72b6532b465c4e073fa"
     },
     {
       "path": "docs/TESTING.md",
-      "bytes": 5498,
-      "sha256": "d174de6fb3089fdf956bed308d5356d613c3dcc22f39529b2b49700b77ec5a2d"
+      "bytes": 8045,
+      "sha256": "fec12be012b2910db1b27584fa00a60a29b27c802afa849051f7c763d3b39467"
     },
     {
       "path": "docs/TOPOLOGY_LAB.md",
@@ -296,8 +311,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 13585,
-      "sha256": "c7467b717ca8e17a2378450fdb962670824afa6c968cc4e917b8473c2c860fd6"
+      "bytes": 16878,
+      "sha256": "900ccb910bc33baaba76ffa9bc42751ebad87a5b7838cd0e0aa555a75b510269"
     },
     {
       "path": "docs/WORKSPACE_LAB.md",
@@ -398,6 +413,16 @@
       "path": "evidence/judge-demo/2026-09-20.json",
       "bytes": 5780,
       "sha256": "6ce8d62cd5edc5c5e15ff6d8034308cd36cd030cc4091cafec7feaac19a3521c"
+    },
+    {
+      "path": "evidence/oss-integration-v1/README.md",
+      "bytes": 1052,
+      "sha256": "6b52b7df45d69c7cab4ed2dacf0be840447051000e725496d7a0604fbf163e01"
+    },
+    {
+      "path": "evidence/oss-integration-v1/report.json",
+      "bytes": 8146,
+      "sha256": "90069a5282cad6c5f2c0bf9ca10a50e7cb32ec3af38c613f78e5c038c103ca71"
     },
     {
       "path": "evidence/runtime-v1/journey.json",
@@ -550,6 +575,36 @@
       "sha256": "61edc401b14fd5fa99cf4b5130a7eb1ff3888ee475f2e310d8bd42521beb2fb7"
     },
     {
+      "path": "examples/mcp-shipping-consumer/.gitignore",
+      "bytes": 20,
+      "sha256": "295aa1f18923880afebb2e08aa70a8c4f285cc52baea238b8d2864d10e45d825"
+    },
+    {
+      "path": "examples/mcp-shipping-consumer/cli.mjs",
+      "bytes": 1703,
+      "sha256": "9b59a94ea5df7f5689cbbea2a9bdd6c51386c46dbf5b1354e80d447c3d74d35f"
+    },
+    {
+      "path": "examples/mcp-shipping-consumer/client.mjs",
+      "bytes": 6584,
+      "sha256": "ebe593bb7a8daf1884102b3d3604ce0df945734b24fbf493cfd0b465b8f9e570"
+    },
+    {
+      "path": "examples/mcp-shipping-consumer/package-lock.json",
+      "bytes": 42460,
+      "sha256": "00ed11789ac17a29ad2f08355c62adb3e8ddc2a8bb08f601ade8e86b9ac8db77"
+    },
+    {
+      "path": "examples/mcp-shipping-consumer/package.json",
+      "bytes": 370,
+      "sha256": "9a71d9cd5f1693d356c3834280a14d31dcf8f0c1e006b32e06b8944e874ab41f"
+    },
+    {
+      "path": "examples/mcp-shipping-consumer/README.md",
+      "bytes": 4609,
+      "sha256": "d52a420d6e1e7cd28a7f4fb706b9aa4f23068f929a133f9b679ac365e6620423"
+    },
+    {
       "path": "LICENSE",
       "bytes": 11358,
       "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
@@ -586,13 +641,13 @@
     },
     {
       "path": "package-lock.json",
-      "bytes": 183765,
-      "sha256": "d8805899dc5aab7878ca0cf82e496a98238900f059bbbce035728ed02d6dae78"
+      "bytes": 183746,
+      "sha256": "eb7575cafea882761603a326a43505568207a7af1b6f53f102eafd69e0698ab2"
     },
     {
       "path": "package.json",
-      "bytes": 4107,
-      "sha256": "35fdbe9fa4efcf8eb84f8fb66fd113d48ad5b0d145a596c118992ae304b59780"
+      "bytes": 4275,
+      "sha256": "558500e67288548996476bc2caede28ee02cc50f153c762d19c8d2492eaad0cf"
     },
     {
       "path": "public/assets/app.mjs",
@@ -806,8 +861,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 25687,
-      "sha256": "6031d4060601fc538469a51ced969fcbf2322f24655a88e6fbe76908cb51ad46"
+      "bytes": 27584,
+      "sha256": "5410e7a9e0a0b3faf98438fb438d0f38248d5dbc8c351e7beaba85f2d1fdaddd"
     },
     {
       "path": "runtime/auxiliary.mjs",
@@ -891,8 +946,8 @@
     },
     {
       "path": "SBOM.cdx.json",
-      "bytes": 224855,
-      "sha256": "d7f97af523ba0b255af80c95d44217f6829d56bcbeffea7ff443ca36b6fdb6b3"
+      "bytes": 223704,
+      "sha256": "3f5a0fcdae0cf501a9b4491d6128e6958bf405bb1fd535beb7e2567510887fc1"
     },
     {
       "path": "scripts/amazon.mjs",
@@ -961,8 +1016,8 @@
     },
     {
       "path": "scripts/lib/distribution-export.mjs",
-      "bytes": 8295,
-      "sha256": "1047b0fc7328a4f45bb06257ad5d25cd26a47eab22ebc6f3de14694e4fa54463"
+      "bytes": 8529,
+      "sha256": "9d9db32fb1e7c6742767cdcc546e43a6c303b8262c6cddafe13371f3aed562fa"
     },
     {
       "path": "scripts/lib/doctor.mjs",
@@ -1008,6 +1063,11 @@
       "path": "scripts/mcp-client.mjs",
       "bytes": 1810,
       "sha256": "6bc4055f32612db2ff1feca39245e5c1b620e77004bc61350f2a1b8a96760891"
+    },
+    {
+      "path": "scripts/oss-integration-demo.mjs",
+      "bytes": 15133,
+      "sha256": "650e3c737f16f7d2f9d3f04a2e6e770ef12f2cb1bb713e5342b79aa1aa953d87"
     },
     {
       "path": "scripts/prepare-release.mjs",
@@ -1121,8 +1181,8 @@
     },
     {
       "path": "SECURITY.md",
-      "bytes": 2807,
-      "sha256": "f5650477419ae0d5530ff2ac7368c86add131e385398cf299679660f6f2386f9"
+      "bytes": 4108,
+      "sha256": "57e0ba792fb5be007ec58f3600af21bcb343f4a3fabc94bc1ab8ef772386d200"
     },
     {
       "path": "server/amazon-lab.mjs",
@@ -1455,14 +1515,19 @@
       "sha256": "341702bba88926a20c71a72c1e06176e0f5db7ab54ced56e677778b3005815d8"
     },
     {
+      "path": "tests/oss-integration.test.mjs",
+      "bytes": 8397,
+      "sha256": "5f8a1b46200e6b81600b8f79ff57b4eac6c8c6cb9b3e47e5ca69265685405b7c"
+    },
+    {
       "path": "tests/platform-tools.test.mjs",
       "bytes": 9507,
       "sha256": "3c8b8c2ccafc0caf3a62e11839d6dc3fbdde10064cfad8071a09a5a23144cc88"
     },
     {
       "path": "tests/release-packaging.test.mjs",
-      "bytes": 14769,
-      "sha256": "bc4b2a3c6b3a2ac6a0d7ddb6145a9c525531baa1afbe03be933ed960e2869b0f"
+      "bytes": 15941,
+      "sha256": "f811600ea53fcb0faf0196b099f4f68e824b194ad9cc7ca992c7d6fea08f6311"
     },
     {
       "path": "tests/response-governance.test.mjs",

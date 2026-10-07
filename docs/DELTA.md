@@ -1,3 +1,16 @@
+# v0.13.0 contribution — October 7, 2026
+
+This candidate adds an independently packaged consumer of the public MCP/HTTP contract and makes the open-source maintenance path reviewable. The goal remains defensive deception for AI-agent workflows: useful bounded work in a persistent synthetic world gives people and authorized defender agents a place to observe and prepare a response. Actual delay and protection efficacy remain unmeasured.
+
+| Contribution | Reusable result | Evidence boundary |
+| --- | --- | --- |
+| Standalone shipping consumer | `examples/mcp-shipping-consumer/` with its own package; actor-only public-interface integration | Maintainer-authored client, not established third-party adoption or a live-model experiment |
+| Integration harness | `scripts/oss-integration-demo.mjs`, invoked with `npm run oss:demo`; separate operator and artificial-origin observations | Named checks and denial results must be read from the current report; no pending result is a pass |
+| Integration and collaboration contract | External integration guide, installation, feedback template, contribution scope and maintenance responsibilities | Documentation supports trial and review; it does not prove outside use |
+| Release consistency | v0.13.0 source, both profile docs and explicit validation/publication fields | Exact-source local checks, public CI, tag/archive/checksums and film readback remain separate gates |
+
+[External integration](EXTERNAL_INTEGRATION.md) · [Maintenance plan](MAINTAINER_PLAN.md) · [Current validation](VALIDATION.md). No stars, issues, PRs, downloads or adoption claims are manufactured. Existing licensed foundations and all earlier evidence below remain attributable to their original version. This document does not claim that a remote submission or release has already been updated.
+
 # v0.12.0 contribution — September 29, 2026
 
 This update makes one AI-agent workflow directly operable through separate participant and operator views of the same real runtime. It adds multiline review notes, independently read-back writes, a contextual evidence timeline and authenticated no-new-effect refusals. New regressions preserve UNKNOWN when a response is lost after a committed effect, when an error is unsigned or when its proof is misbound.

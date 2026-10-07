@@ -1,12 +1,25 @@
-# Start with one AI-agent workflow
+# Start with an independent AI-agent client integration
 
-**v0.12.0 hands-on route:** [Open the participant and operator working views](RUNTIME.md#try-a-complete-participant-task-v0120). The participant completes a shipping review in a persistent world; the operator inspects records, observations, route evidence and finite adaptation. Both use the actual HTTP runtime. No model key is needed for this manual fixture.
+**v0.13.0 candidate:** run the [standalone MCP shipping consumer](../examples/mcp-shipping-consumer/README.md) through [the external integration route](EXTERNAL_INTEGRATION.md). The purpose is to let a suspicious participant work within a persistent synthetic world while a person or authorized defender agent inspects the evidence and prepares a response. The example does not measure how much response time is gained.
+
+```sh
+npm ci --ignore-scripts
+npm run oss:demo -- /absolute/path/new-oss-report.json
+```
+
+Use a new report filename outside the checkout. The independent consumer receives only actor authority and uses public MCP/HTTP. Operator actions and artificial-origin checks are separate scripted roles. Inspect each named check and its role/source; a successful script is not a live-model experiment, proof of human presence or third-party adoption. Current acceptance/publication fields are in [VALIDATION](VALIDATION.md).
+
+For human-operated review, continue with the working views below. For a real client trial, record your environment and redacted outcome using [the feedback template](MAINTAINER_PLAN.md#trial-feedback-template). No model key or paid service is needed for these references.
+
+## Retained v0.12 working-view route
+
+**Hands-on route introduced in v0.12.0:** [Open the participant and operator working views](RUNTIME.md#try-a-complete-participant-task-v0120). The participant completes a shipping review in a persistent world; the operator inspects records, observations, route evidence and finite adaptation. Both use the actual HTTP runtime. No model key is needed for this manual fixture.
 
 **Automated judge route:** [Reproduce ten real MCP/HTTP checkpoints](AMAZON_JUDGE_DEMO.md), including positive origin reachability, refusal, scoped ticket denial and restart. This is engineering evidence with deterministic clients. For a model study, use a separately specified participant brief and control; the manual page discloses its artificial nature.
 
 The remaining guide retains the earlier recorded tour and protocol-level operations. Dates and source scopes remain explicit.
 
-# Follow the diversion
+## Follow the diversion
 
 DungeonQ is a defensive deception runtime for security teams building controlled responses to suspicious human or AI sessions. A designated entry point diverts an admitted session into a persistent synthetic world. The participant can do useful work there; the operator can observe it and authorize bounded changes while checking the separate protected origin.
 
@@ -39,7 +52,7 @@ Use Node.js 24.15.0+ and npm. From the extracted release directory:
 
 ```sh
 npm ci --ignore-scripts
-npm run runtime -- --data-dir ../dungeonq-runtime-review
+npm run runtime -- --data-dir ../dungeonq-runtime-review-013
 ```
 
 Open the printed **Control room** URL. The launcher also prints the MCP endpoint, SSH/PostgreSQL ports, Unix socket and private credential-file path. Keep that installation outside Git. Give a participant or AI client only the `actor` token; keep the `owner` token and the full credential file separate.

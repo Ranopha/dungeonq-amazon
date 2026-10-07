@@ -1,4 +1,14 @@
-# v0.12.0 — September 29, 2026
+# Changelog
+
+## 0.13.0 — release candidate, October 7, 2026
+
+- Add a separately packaged MCP shipping consumer and a bounded integration harness that exercise public interfaces with actor-only authority, separate operator observation and artificial-origin checks.
+- Make independent installation, trial feedback, contribution scope and maintainer responsibility explicit across both public profiles.
+- Align the current product entry with defensive deception for AI-agent workflows; response time is a design objective, not a measured efficacy result.
+- Preserve earlier films, challenge snapshots, model studies and negative results with their original dates and scopes.
+- Release checks, public CI, video and immutable publication are pending until recorded in `docs/VALIDATION.md`; no external adoption or new live-model result is claimed.
+
+## 0.12.0 — September 29, 2026 source update
 
 - Add a self-hosted English participant workspace using the real HTTP runtime; a saved review is independently read back.
 - Show actual world records, canonical observations and context/request/adapter-correlated operator evidence.
@@ -6,8 +16,6 @@
 - Authenticate known no-new-effect refusals; storage errors, unsigned/mismatched proofs and lost responses remain UNKNOWN.
 - Add a ten-checkpoint MCP/HTTP walkthrough with origin reachability, stale-write rejection, ticket-origin denial and restart.
 - Keep old films, source-bound container reports and model results explicitly historical. No new live model or production-efficacy claim.
-
-# Changelog
 
 ## 0.11.1 — 2026-09-18
 

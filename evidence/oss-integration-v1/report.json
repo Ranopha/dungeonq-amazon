@@ -1,0 +1,284 @@
+{
+  "schemaVersion": "dungeonq.oss-integration/v1",
+  "sourceVersion": "0.13.0",
+  "status": "PASS",
+  "mode": "LOCAL_ARTIFICIAL_REFERENCE",
+  "consumer": "INDEPENDENT_SCRIPTED_MCP_PROCESS",
+  "operator": "SCRIPTED_OPERATOR_FIXTURE",
+  "productionProtection": "NOT_ASSESSED",
+  "thirdPartyAdoption": "NOT_ESTABLISHED",
+  "scenes": [
+    {
+      "id": "authority-boundary",
+      "observedAt": "2026-10-07T08:53:29.746Z",
+      "result": {
+        "secretRead": "ERR_ACCESS_DENIED",
+        "operatorDenied": true,
+        "nodePermission": true,
+        "passedCredentials": [
+          "actorToken"
+        ],
+        "passedEndpoints": [
+          "MCP endpoint"
+        ],
+        "inheritedEnvironment": [
+          "PATH",
+          "NODE_NO_WARNINGS"
+        ]
+      }
+    },
+    {
+      "id": "consumer-connect",
+      "observedAt": "2026-10-07T08:53:29.904Z",
+      "result": {
+        "protocol": "MCP Streamable HTTP",
+        "client": "official MCP SDK",
+        "tools": [
+          "dungeonq_issue_ticket",
+          "dungeonq_read",
+          "dungeonq_snapshot",
+          "dungeonq_use_ticket",
+          "dungeonq_write"
+        ],
+        "authority": "actor only"
+      }
+    },
+    {
+      "id": "shipping-review",
+      "observedAt": "2026-10-07T08:53:29.944Z",
+      "result": {
+        "order": "Order 41",
+        "observedStatus": "awaiting-review",
+        "shippingApproval": "SEPARATE_PROCESS",
+        "initialRevision": 0
+      }
+    },
+    {
+      "id": "write-readback",
+      "observedAt": "2026-10-07T08:53:29.964Z",
+      "result": {
+        "value": "Order 41\nReview completed. Shipping approval remains pending.",
+        "revision": 1,
+        "persistedThrough": "separate MCP read request",
+        "shippingExecuted": false
+      }
+    },
+    {
+      "id": "operator-approval",
+      "observedAt": "2026-10-07T08:53:29.973Z",
+      "result": {
+        "state": "APPLIED",
+        "authority": "SCRIPTED_OPERATOR_FIXTURE",
+        "observedDestination": "SYNTHETIC",
+        "expectedRevision": 1,
+        "maxMutations": 8,
+        "validitySeconds": 3600,
+        "template": "follow-up",
+        "humanPresenceAttested": false
+      }
+    },
+    {
+      "id": "world-ticket",
+      "observedAt": "2026-10-07T08:53:30.019Z",
+      "result": {
+        "ticket": "[ephemeral capability omitted]",
+        "maxUses": 1,
+        "usesRemaining": 0,
+        "readbackMatches": true,
+        "revision": 2,
+        "newFollowUps": 1
+      }
+    },
+    {
+      "id": "origin-boundary",
+      "observedAt": "2026-10-07T08:53:30.025Z",
+      "result": {
+        "stateUnchanged": true,
+        "ordinaryAccepted": 1,
+        "ticketRejected": 1,
+        "ticketResult": "ORIGIN_AUTHORITY_DENIED",
+        "quantity": 7,
+        "authority": "separate artificial-origin witness",
+        "productionProtection": "NOT_ASSESSED"
+      }
+    },
+    {
+      "id": "final-evidence",
+      "observedAt": "2026-10-07T08:53:30.031Z",
+      "result": {
+        "status": "PASS",
+        "checks": [
+          {
+            "id": "canonical-replay",
+            "status": "PASS"
+          },
+          {
+            "id": "origin-state-unchanged",
+            "status": "PASS"
+          },
+          {
+            "id": "no-diverted-origin-admission",
+            "status": "PASS"
+          },
+          {
+            "id": "independent-route-census",
+            "status": "PASS"
+          },
+          {
+            "id": "ordinary-admission-census",
+            "status": "PASS"
+          },
+          {
+            "id": "dispatch-outcomes-known",
+            "status": "PASS"
+          },
+          {
+            "id": "real-diversion-observed",
+            "status": "PASS"
+          }
+        ],
+        "finalRevision": 2,
+        "actorRequests": 8,
+        "policyUses": 1,
+        "followUpCount": 1
+      }
+    }
+  ],
+  "evidence": {
+    "status": "PASS",
+    "checks": [
+      {
+        "id": "canonical-replay",
+        "status": "PASS",
+        "detail": "Canonical journal replay and persisted state verification."
+      },
+      {
+        "id": "origin-state-unchanged",
+        "status": "PASS",
+        "detail": "Artificial protected data/configuration digest compared with the pre-dispatch baseline."
+      },
+      {
+        "id": "no-diverted-origin-admission",
+        "status": "PASS",
+        "detail": "Origin admission interval is contiguous and preserves the baseline checkpoint."
+      },
+      {
+        "id": "independent-route-census",
+        "status": "PASS",
+        "detail": "Every gateway attempt has a matching separate-process collector event."
+      },
+      {
+        "id": "ordinary-admission-census",
+        "status": "PASS",
+        "detail": "Every ordinary origin admission matches a served gateway attempt."
+      },
+      {
+        "id": "dispatch-outcomes-known",
+        "status": "PASS",
+        "detail": "Only served results or authenticated no-new-effect refusals qualify. Unknown, legacy FAILED and unfinished dispatches prevent acceptance; no automatic reconciliation."
+      },
+      {
+        "id": "real-diversion-observed",
+        "status": "PASS",
+        "detail": "At least one actual canonical result passed through the synthetic facade."
+      }
+    ],
+    "events": [
+      {
+        "requestId": "oss-ordinary-control",
+        "family": "http",
+        "destination": "ORIGIN",
+        "outcome": "SERVED"
+      },
+      {
+        "requestId": "oss-shipping-snapshot",
+        "family": "mcp",
+        "destination": "SYNTHETIC",
+        "outcome": "SERVED"
+      },
+      {
+        "requestId": "oss-shipping-order",
+        "family": "mcp",
+        "destination": "SYNTHETIC",
+        "outcome": "SERVED"
+      },
+      {
+        "requestId": "oss-shipping-policy",
+        "family": "mcp",
+        "destination": "SYNTHETIC",
+        "outcome": "SERVED"
+      },
+      {
+        "requestId": "oss-shipping-write",
+        "family": "mcp",
+        "destination": "SYNTHETIC",
+        "outcome": "SERVED"
+      },
+      {
+        "requestId": "oss-shipping-readback",
+        "family": "mcp",
+        "destination": "SYNTHETIC",
+        "outcome": "SERVED"
+      },
+      {
+        "requestId": "oss-shipping-ticket",
+        "family": "mcp",
+        "destination": "SYNTHETIC",
+        "outcome": "SERVED"
+      },
+      {
+        "requestId": "oss-shipping-consume",
+        "family": "mcp",
+        "destination": "SYNTHETIC",
+        "outcome": "SERVED"
+      },
+      {
+        "requestId": "oss-shipping-after",
+        "family": "mcp",
+        "destination": "SYNTHETIC",
+        "outcome": "SERVED"
+      }
+    ],
+    "origin": {
+      "before": {
+        "stateDigest": "7060cf83653d5a66e9d4a6848a3e1cff7a56a4776dd051a7ee666c0cdbcacdbc",
+        "configDigest": "6cb7227bfed4afdd1e7e7bda0b9e77183c63bdbee9270718640c0dff37dbc49a",
+        "highWater": 0
+      },
+      "after": {
+        "stateDigest": "7060cf83653d5a66e9d4a6848a3e1cff7a56a4776dd051a7ee666c0cdbcacdbc",
+        "configDigest": "6cb7227bfed4afdd1e7e7bda0b9e77183c63bdbee9270718640c0dff37dbc49a",
+        "highWater": 2
+      },
+      "admissions": [
+        {
+          "seq": 1,
+          "context": "ordinary",
+          "accepted": 1,
+          "request_id": "oss-ordinary-control"
+        },
+        {
+          "seq": 2,
+          "context": "diverted",
+          "accepted": 0,
+          "request_id": "oss-ticket-origin-probe"
+        }
+      ]
+    },
+    "authorityChecks": {
+      "secretRead": "ERR_ACCESS_DENIED",
+      "operatorDenied": true
+    },
+    "policy": {
+      "maxMutations": 8,
+      "uses": 1,
+      "followUpCount": 1
+    }
+  },
+  "limitations": [
+    "Scripted consumer and scripted operator; no live AI, independent human approval, or third-party adoption.",
+    "Artificial origin with independently authenticated witness, not a production asset.",
+    "Node permission policy limits accidental access by this cooperative example; same-user host and dependency code remain trusted. This is not hostile-code isolation.",
+    "The separately scoped runtime isolation suite and research results are not replaced by this integration example."
+  ]
+}
