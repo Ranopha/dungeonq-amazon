@@ -1,4 +1,12 @@
-# Security policy — local synthetic profile
+# Security policy — synthetic reference profiles
+
+## Current deception runtime
+
+The runtime separates participant actor tokens from operator owner bearer authority. The Control room uses that owner bearer; it does not inherit the retained assistant profile's cookie login, CSRF or password reauthentication controls. Keep owner tokens and generated private configuration outside participant context, Git and uploads. Explicit trusted provisioning selects diverted contexts; no automatic attack classification or production-host protection is claimed. The standalone consumer walkthrough uses cooperative Node permissions, while the separate container reference measures bounded network and file isolation. See [RUNTIME](docs/RUNTIME.md) and [EXTERNAL_INTEGRATION](docs/EXTERNAL_INTEGRATION.md) for current operation and scope.
+
+## Retained governed-assistant profile
+
+The following HTTPS/cookie/reviewer controls describe the retained governed-assistant lab. They do not describe the current runtime Control room.
 
 DungeonQ accepts artificial scenarios only. No production credentials, company data, personal data, real hosts or real defensive effects are allowed. Scenario text is untrusted input, never authority. The runtime rejects unknown fields, active markup, URLs, file references, credential-like values, invalid references and excess scope/budget.
 
@@ -8,9 +16,13 @@ Both listeners are loopback-only. MCP HTTP uses a random bearer token and exact 
 
 SQLite requests and receipts survive restart. Ed25519 receipt verification proves protected receipt contents under a pinned local key, not sensor truth, full audit completeness, a trustworthy export envelope, external key custody or an uncompromised host. Existing browser-model evidence has weaker, explicitly modeled authority. No WORM, HSM, external checkpoint or commercial readiness is claimed.
 
+## Reporting findings
+
 For sensitive findings, use GitHub's private vulnerability-reporting option if it is available on this repository. If it is not available, open a minimal issue requesting a private contact channel without vulnerability details, proof-of-concept code or sensitive attachments. Do not assume that a normal issue or draft PR is private. No response-time or bounty commitment is offered.
 
 For non-sensitive defects, use Issues with the affected release/commit, OS/Node version and a minimal synthetic reproduction. Never include passwords, private keys, production data or third-party attack results. Ordinary release-pattern checks and dependency advisories are not independent security certification.
+
+## Historical proof driver
 
 The 0.3.0 proof driver creates its own disposable lab and controls both test-role fixtures, including authenticated reviewer requests. This is a test harness, not a runtime approval tool or evidence of human presence. It cannot attach to an existing lab through its CLI. Only synthetic receipts, a test report and a public key are retained; the fresh private fixture is removed on completion. Verify artifacts from others with a key obtained through an independent trusted channel, never merely the key supplied beside the receipt.
 

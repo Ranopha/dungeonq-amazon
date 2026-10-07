@@ -18,6 +18,8 @@ The new walkthrough adds an ordinary authorized-origin reachability control, a v
 
 ## Integrate a separate consumer (v0.13.0)
 
+[Watch the current English walkthrough](https://youtu.be/8h5yeKb2XzE) — a scripted public-interface consumer with separate operator and artificial-origin checks. It is not a new live-model attack study.
+
 The [standalone MCP shipping consumer](examples/mcp-shipping-consumer/README.md) has its own package and talks only to the public MCP/HTTP interfaces. It receives the actor endpoint and token; operator and artificial-origin checks run separately. A deterministic client exercises integration, not third-party adoption or a live-model evaluation.
 
 ```sh
@@ -56,7 +58,7 @@ The [client guide](docs/RUNTIME.md) covers all five adapters, the CLI and Node/P
 
 ## Evidence you can inspect
 
-Use [the current validation record](docs/VALIDATION.md) for this candidate's local checks, independent consumer result, public CI and source-bound container acceptance. The [integration guide](docs/EXTERNAL_INTEGRATION.md) explains which observations come from the actor, operator and artificial origin. Missing, stale or unknown evidence cannot become a pass.
+Use [the current validation record](docs/VALIDATION.md) for the v0.13.0 local checks, independent consumer result, public CI and source-bound container acceptance. The [integration guide](docs/EXTERNAL_INTEGRATION.md) explains which observations come from the actor, operator and artificial origin. Missing, stale or unknown evidence cannot become a pass.
 
 <details>
 <summary>Historical v0.11 reference evidence</summary>

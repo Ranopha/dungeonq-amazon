@@ -1,7 +1,7 @@
 {
   "schemaVersion": "dungeonq.source-release/v1",
   "profile": "SYNTHETIC_ONLY",
-  "generatedAt": "2026-10-07T09:03:31.307Z",
+  "generatedAt": "2026-10-07T09:18:15.032Z",
   "privateHistoryIncluded": false,
   "entries": [
     {
@@ -861,8 +861,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 27584,
-      "sha256": "5410e7a9e0a0b3faf98438fb438d0f38248d5dbc8c351e7beaba85f2d1fdaddd"
+      "bytes": 27785,
+      "sha256": "36d6c0f89361e6155a595e7637dc8ca180428ce8957047ebbb51379aa3b95626"
     },
     {
       "path": "runtime/auxiliary.mjs",
@@ -947,7 +947,7 @@
     {
       "path": "SBOM.cdx.json",
       "bytes": 223704,
-      "sha256": "3f5a0fcdae0cf501a9b4491d6128e6958bf405bb1fd535beb7e2567510887fc1"
+      "sha256": "9e34cbd413490fd4db594a0c18d8db4ebaedf4e985d1da243c86cd32fcff7be0"
     },
     {
       "path": "scripts/amazon.mjs",
@@ -1181,8 +1181,8 @@
     },
     {
       "path": "SECURITY.md",
-      "bytes": 4108,
-      "sha256": "57e0ba792fb5be007ec58f3600af21bcb343f4a3fabc94bc1ab8ef772386d200"
+      "bytes": 5129,
+      "sha256": "c7f4a035f69e188c9c7d142fabc92f00397f909a0aae12bc1695798dadc77143"
     },
     {
       "path": "server/amazon-lab.mjs",
