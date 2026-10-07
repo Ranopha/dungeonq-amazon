@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.13.1 — 2026-10-07
+
+- Remove the redirect-only Vinext wrapper and its unused React/Cloudflare/Vite build dependency chain, including the affected braces package. Preserve all public assets and persistent runtime functions.
+- Build the browser rehearsal as checked static assets with Node; keep development and built-output preview commands explicit and loopback-only.
+- Replace wrapper-only TypeScript checking with real JavaScript syntax checks and build/serve regression tests; update export, manifest and dependency documentation.
+- Retain v0.13.0 source, bound evidence and film as historical artifacts. This patch adds no live-model evaluation, external adoption or production-protection claim.
+
 ## 0.13.0 — release candidate, October 7, 2026
 
 - Add a separately packaged MCP shipping consumer and a bounded integration harness that exercise public interfaces with actor-only authority, separate operator observation and artificial-origin checks.

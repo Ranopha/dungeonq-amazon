@@ -1,4 +1,8 @@
-# Amazon submission copy — v0.13.0
+# Amazon submission copy — v0.13.1
+
+## v0.13.1 maintenance follow-up — October 7, 2026
+
+The latest patch removes a redirect-only framework wrapper and its vulnerable build dependency chain. The public browser assets and persistent runtime capabilities are retained; built static output and actual JavaScript modules have explicit checks. The English integration film remains labeled v0.13.0 because the demonstrated consumer flow is unchanged. Use [the release record](https://github.com/Ranopha/dungeonq-amazon/releases/tag/v0.13.1) for exact source, current CI and dependency evidence.
 
 ## Name
 

@@ -10,7 +10,7 @@ const exec = promisify(execFile);
 // Both distributions share the same tested dependency graph. Branding is an explicit document/metadata overlay.
 export const PUBLIC_SOURCE_PATHS = Object.freeze([
   '.gitignore', 'LICENSE', 'NOTICE', 'THIRD_PARTY_NOTICES.md', 'package.json', 'package-lock.json',
-  'tsconfig.json', 'vite.config.ts', 'next.config.ts', 'app', 'assistant', 'astra', 'cli', 'deploy',
+  'assistant', 'astra', 'cli', 'deploy',
   'public', 'server', 'examples', 'tests', 'workbench', 'world', 'study', 'runtime', 'sdk', 'scripts/lib',
   'scripts/amazon.mjs', 'scripts/astra.mjs', 'scripts/astra-proof.mjs',
   'scripts/world.mjs', 'scripts/world-proof.mjs', 'scripts/study.mjs', 'scripts/study-proof.mjs',
@@ -22,7 +22,7 @@ export const PUBLIC_SOURCE_PATHS = Object.freeze([
   'scripts/workspace-pilot-host.mjs', 'scripts/workspace-pilot-client.mjs',
   'scripts/doctor.mjs', 'scripts/demo-proof.mjs', 'scripts/mcp-client.mjs', 'scripts/prepare-release.mjs',
   'scripts/verify-source.mjs', 'scripts/audit.mjs', 'scripts/check-isolation.mjs', 'scripts/company-acceptance.mjs',
-  'scripts/serve.mjs', 'scripts/verify.mjs', 'scripts/verify-assistant-evidence.mjs',
+  'scripts/serve.mjs', 'scripts/build-static.mjs', 'scripts/syntax-check.mjs', 'scripts/verify.mjs', 'scripts/verify-assistant-evidence.mjs',
   'scripts/verify-company-report.mjs', 'scripts/workbench.mjs',
 ]);
 const sharedDocuments = ['docs/STUDY_LAB.md', 'docs/STUDY_RESULTS.md', 'docs/WORLD_LAB.md',

@@ -31,6 +31,8 @@ jobs:
         with:
           node-version: 24.15.0
       - run: npm ci --ignore-scripts
+      - name: Audit all root dependencies including build and development tools
+        run: npm audit --include=dev --audit-level=low --json > "$RUNNER_TEMP/dq-root-dependency-audit.json"
       - run: npm run doctor -- --skip-ports
       - run: npm run check
       - name: Install the standalone MCP consumer outside the checkout
@@ -80,6 +82,7 @@ jobs:
             ${{ runner.temp }}/dq-topology/control.json
             ${{ runner.temp }}/dq-oss-integration.json
             ${{ runner.temp }}/dq-oss-consumer-audit.json
+            ${{ runner.temp }}/dq-root-dependency-audit.json
           retention-days: 14
           if-no-files-found: ignore
 

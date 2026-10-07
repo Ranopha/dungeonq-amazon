@@ -1,6 +1,6 @@
 {
   "name": "dungeonq-amazon",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "private": true,
   "description": "A defensive deception runtime: divert designated sessions into persistent synthetic worlds, observe their activity and verify the origin boundary.",
   "license": "Apache-2.0",
@@ -54,9 +54,9 @@
     "amazon": "node scripts/amazon.mjs",
     "verify:assistant-evidence": "node scripts/verify-assistant-evidence.mjs",
     "test:amazon": "node --test tests/response-governance.test.mjs tests/mcp-server.test.mjs tests/assistant.test.mjs",
-    "dev": "vinext dev",
-    "build": "vinext build",
-    "start": "wrangler dev --config dist/server/wrangler.json",
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build-static.mjs",
+    "start": "node scripts/serve.mjs --built",
     "test": "node --test",
     "test:governance": "node --test tests/governance-core.test.mjs",
     "test:workbench": "node --test tests/workbench.test.mjs",
@@ -65,8 +65,7 @@
     "verify:company-report": "node scripts/verify-company-report.mjs",
     "verify": "node scripts/verify.mjs",
     "audit": "node scripts/audit.mjs",
-    "typecheck": "tsc --noEmit",
-    "check": "npm test && npm run verify && npm run audit && npm run typecheck && npm run build",
+    "check": "npm test && npm run verify && npm run audit && npm run syntaxcheck && npm run build",
     "simulate": "node cli/run.mjs",
     "serve": "node scripts/serve.mjs",
     "runtime": "node scripts/runtime.mjs",
@@ -74,39 +73,17 @@
     "runtime:gate": "node scripts/runtime-gate.mjs",
     "runtime:isolation": "node scripts/runtime-isolation.mjs",
     "test:runtime": "node --test tests/runtime-*.test.mjs",
-    "oss:demo": "node scripts/oss-integration-demo.mjs"
+    "oss:demo": "node scripts/oss-integration-demo.mjs",
+    "syntaxcheck": "node scripts/syntax-check.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",
     "jose": "6.2.12",
     "nodemailer": "10.0.10",
     "pg-gateway": "0.3.0-beta.4",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "react-server-dom-webpack": "19.2.8",
-    "ssh2": "1.17.0",
-    "vinext": "1.0.1"
+    "ssh2": "1.17.0"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "1.63.0",
-    "@cloudflare/workers-types": "5.20261007.1",
-    "@openai/sites-vite-plugin": "0.2.0",
-    "@types/node": "22.19.19",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "6.0.2",
-    "@vitejs/plugin-rsc": "0.5.34",
-    "pg": "8.23.0",
-    "typescript": "5.9.3",
-    "vite": "8.2.2",
-    "wrangler": "4.148.0"
-  },
-  "overrides": {
-    "satori": {
-      "fflate": "0.7.5"
-    },
-    "miniflare": {
-      "sharp": "0.35.5"
-    }
+    "pg": "8.23.0"
   }
 }

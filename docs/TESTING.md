@@ -1,4 +1,4 @@
-# Reproducible testing — v0.13.0
+# Reproducible testing — v0.13.1
 
 Use a pinned public source checkout, Node.js 24.15.0+ and the prerequisites in [INSTALL](INSTALL.md). The [current validation record](VALIDATION.md) binds observed results to source and environment. A command below describes what to run; it is not a predeclared PASS or a substitute for source-bound acceptance.
 
@@ -7,7 +7,7 @@ Use a pinned public source checkout, Node.js 24.15.0+ and the prerequisites in [
 | `npm ci --ignore-scripts` then `npm run doctor` | Locked dependency installation and local prerequisite checks |
 | `npm run oss:demo -- /absolute/path/new-report.json` | Independent public MCP/HTTP consumer, actor-only authority, separate scripted operator/origin checks; use a new output filename |
 | `npm run test:runtime` | Runtime protocol, state, authority and failure-path regressions |
-| `npm run check` | Complete source checkpoint, scenario verification, audit, typecheck and build |
+| `npm run check` | Complete source checkpoint, scenario verification, audit, actual JavaScript syntax checking and static asset build |
 | `npm run verify:source` | Intact distribution inventory and digest check; edited source needs release preparation |
 | [Container reference](../deploy/runtime-reference/README.md) plus `runtime:proof` / `runtime:gate` | Fresh full runtime admission against the exact clean source and current isolation evidence |
 | [Manual participant/operator route](JUDGE_ROUTE.md) | Actual visible task, separate readback, operator evidence, finite grant and restart |
@@ -17,6 +17,12 @@ The [standalone consumer guide](EXTERNAL_INTEGRATION.md) explains each role and 
 Treat a named expected denial differently from an unexpected failure. Preserve the report and examine its authenticated outcome; UNKNOWN, missing checks, source mismatch and stale isolation evidence cannot become PASS. Never delete a fixture or reset credentials to hide a failed run. Keep all outputs synthetic and credentials/private installation data out of reports.
 
 UI changes need actual visible workflow review. Model experiments require a separately stated hypothesis, controls, budget and stopping rule; no paid call is needed for the default integration or source checks. The current runtime and retained assistant/Astra/research profiles have different authority and evidence contracts.
+
+## Static toolchain checks
+
+`npm run syntaxcheck` runs `node --check` over the real exported JavaScript modules. Invalid syntax or an empty source set fails. It does not execute the modules or claim semantic TypeScript validation. The unused TypeScript/framework wrapper and `typecheck` command have been removed.
+
+`tests/static-build.test.mjs` exercises byte-for-byte public asset copying, the browser SDK path, MIME and relative imports, safe repeat builds, refusal of unknown/modified output, link and traversal denial, and actual invalid JavaScript. `npm run build` produces `dist/static`; `npm start` serves that output on loopback. Dedicated API-backed workspaces retain their own launch commands.
 
 <details>
 <summary>Historical profile-specific test maps</summary>

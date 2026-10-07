@@ -26,7 +26,13 @@ For non-sensitive defects, use Issues with the affected release/commit, OS/Node 
 
 The 0.3.0 proof driver creates its own disposable lab and controls both test-role fixtures, including authenticated reviewer requests. This is a test harness, not a runtime approval tool or evidence of human presence. It cannot attach to an existing lab through its CLI. Only synthetic receipts, a test report and a public key are retained; the fresh private fixture is removed on completion. Verify artifacts from others with a key obtained through an independent trusted channel, never merely the key supplied beside the receipt.
 
-## Dependency advisory status — October 7, 2026
+## Current dependency repair — v0.13.1
+
+The redirect-only Vinext wrapper and its unused build toolchain have been removed. The maintained browser rehearsal is built and served by Node using the existing public assets. The former Vinext → CommonJS → dynamic-import → fast-glob → micromatch → braces chain is absent from this release's dependency graph. This removes the affected dependency rather than marking its advisory ignored or overriding it to another affected version. The runtime services and their authorization boundaries are unchanged.
+
+[VALIDATION](docs/VALIDATION.md) and the release record provide the exact install/audit/build/test evidence. A zero-advisory dependency snapshot is not a guarantee that the product has no vulnerabilities; reports still follow the process above. Do not assume a patched current dependency graph changes the safety of an older release.
+
+## Historical dependency status — v0.13.0, October 7, 2026
 
 v0.13.0 updates the MCP SDK to 1.32.1 and refreshes the affected HTTP and build dependencies. Scoped lockfile overrides select patched `sharp@0.35.5` and `satori`'s `fflate@0.7.5`.
 

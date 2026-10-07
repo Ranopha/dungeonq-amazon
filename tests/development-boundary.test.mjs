@@ -25,8 +25,18 @@ test("開發工作樹沒有參賽 Sites 綁定或自動部署流程", async () =
   } else {
     await assert.rejects(access(new URL(".github/workflows", root)), { code: "ENOENT" });
   }
-  const config = await readFile(new URL("vite.config.ts", root), "utf8");
-  assert.doesNotMatch(config, /@openai\/sites-vite-plugin|\bsites\s*\(/u);
+  assert.equal(pkg.scripts.dev, 'node scripts/serve.mjs');
+  assert.equal(pkg.scripts.build, 'node scripts/build-static.mjs');
+  assert.equal(pkg.scripts.start, 'node scripts/serve.mjs --built');
+  assert.equal(pkg.scripts.syntaxcheck, 'node scripts/syntax-check.mjs');
+  assert.equal(pkg.scripts.typecheck, undefined);
+  const dependencies = { ...pkg.dependencies, ...pkg.devDependencies };
+  for (const name of ['vinext', 'react', 'react-dom', 'react-server-dom-webpack', 'vite', 'wrangler', '@cloudflare/vite-plugin', '@cloudflare/workers-types', '@openai/sites-vite-plugin']) {
+    assert.equal(dependencies[name], undefined, name);
+  }
+  for (const path of ['vite.config.ts', 'next.config.ts', 'tsconfig.json', 'app/page.tsx', 'app/layout.tsx']) {
+    await assert.rejects(access(new URL(path, root)), { code: 'ENOENT' });
+  }
   const ignore = await readFile(new URL(".gitignore", root), "utf8");
   assert.ok(ignore.split(/\r?\n/u).includes("/.openai/hosting.json"));
 });

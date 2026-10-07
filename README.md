@@ -16,6 +16,12 @@ For developers securing **AI-agent tool workflows**: open the Participant worksp
 
 The new walkthrough adds an ordinary authorized-origin reachability control, a verified stale-write refusal and a ticket-to-origin denial **before** its final witness read. It uses real MCP/HTTP clients and artificial resources, not a live model. The September 20 film records the earlier seven-scene command-output version; it does not show these new interfaces or checks. Historical container evidence does not certify this changed source.
 
+## v0.13.1 — dependency repair
+
+The local browser rehearsal now uses Node's static server and an explicit static build. The removed Vinext wrapper only redirected to that existing page; all persistent runtime services, APIs, SDKs and public assets are retained. Removing the unused wrapper removes its vulnerable `braces` dependency chain. `npm run check` now checks the actual JavaScript modules and built static artifacts; this is documented JavaScript syntax validation, not a semantic TypeScript check.
+
+The [v0.13.0 film](https://youtu.be/8h5yeKb2XzE) still describes the unchanged consumer flow. See [INSTALL](docs/INSTALL.md), [SECURITY](SECURITY.md), and [versioned validation](docs/VALIDATION.md) for build commands and exact evidence.
+
 ## Integrate a separate consumer (v0.13.0)
 
 [Watch the current English walkthrough](https://youtu.be/8h5yeKb2XzE) — a scripted public-interface consumer with separate operator and artificial-origin checks. It is not a new live-model attack study.
@@ -29,7 +35,7 @@ npm run oss:demo -- /absolute/path/new-oss-report.json
 
 Use a new report filename outside the checkout. Read [external integration and report interpretation](docs/EXTERNAL_INTEGRATION.md) before connecting your own client. For human-operated work, use the Participant workspace and Control room below. A defender agent may inspect permitted evidence or propose an action; it does not gain approval authority.
 
-**Release status:** use the [v0.13.0 release record](https://github.com/Ranopha/dungeonq-amazon/releases/tag/v0.13.0) for the final tag, CI and download checksums; [VALIDATION](docs/VALIDATION.md) explains their scope. The maintained [release policy](docs/RELEASE.md) distinguishes source on `main` from an immutable release.
+**Release status:** use the [v0.13.1 release record](https://github.com/Ranopha/dungeonq-amazon/releases/tag/v0.13.1) for the final tag, CI and download checksums; [VALIDATION](docs/VALIDATION.md) explains their scope. The maintained [release policy](docs/RELEASE.md) distinguishes source on `main` from an immutable release.
 
 ## What happens after DIVERT
 
@@ -58,7 +64,7 @@ The [client guide](docs/RUNTIME.md) covers all five adapters, the CLI and Node/P
 
 ## Evidence you can inspect
 
-Use [the current validation record](docs/VALIDATION.md) for the v0.13.0 local checks, independent consumer result, public CI and source-bound container acceptance. The [integration guide](docs/EXTERNAL_INTEGRATION.md) explains which observations come from the actor, operator and artificial origin. Missing, stale or unknown evidence cannot become a pass.
+Use [the current validation record](docs/VALIDATION.md) for the current local checks, independent consumer result, public CI and source-bound container acceptance. The [integration guide](docs/EXTERNAL_INTEGRATION.md) explains which observations come from the actor, operator and artificial origin. Missing, stale or unknown evidence cannot become a pass.
 
 <details>
 <summary>Historical v0.11 reference evidence</summary>

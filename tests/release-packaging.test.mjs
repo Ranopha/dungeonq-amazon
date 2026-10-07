@@ -17,7 +17,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 async function temp(t) { const path = await mkdtemp(join(tmpdir(), 'dungeonq-release-package-')); t.after(() => rm(path, { recursive: true, force: true })); return path; }
 async function file(root, path, content) { await mkdir(dirname(join(root, path)), { recursive: true }); await writeFile(join(root, path), content); }
 function metadata(name = 'dungeonq') { return { name, version: '0.6.0', private: true, license: 'Apache-2.0',
-  repository: { url: `git+https://github.com/Ranopha/${name}.git` }, scripts: { study: 'node scripts/study.mjs', world: 'node scripts/world.mjs', 'astra:site': 'node scripts/build-astra-site.mjs', 'oss:demo': 'node scripts/oss-integration-demo.mjs' } }; }
+  repository: { url: `git+https://github.com/Ranopha/${name}.git` }, scripts: { study: 'node scripts/study.mjs', world: 'node scripts/world.mjs', 'astra:site': 'node scripts/build-astra-site.mjs', 'oss:demo': 'node scripts/oss-integration-demo.mjs', build: 'node scripts/build-static.mjs', syntaxcheck: 'node scripts/syntax-check.mjs' } }; }
 async function writeMetadata(root, name) {
   const pkg = metadata(name); await file(root, 'package.json', JSON.stringify(pkg));
   await file(root, 'package-lock.json', JSON.stringify({ name: pkg.name, version: pkg.version, lockfileVersion: 3, requires: true,
@@ -25,7 +25,7 @@ async function writeMetadata(root, name) {
 }
 async function exportFixture(t) {
   const base = await temp(t); const source = join(base, 'source'); await mkdir(source);
-  const directories = new Set(['app', 'assistant', 'astra', 'cli', 'deploy', 'public', 'server', 'examples', 'tests', 'workbench', 'world', 'study', 'runtime', 'sdk', 'scripts/lib']);
+  const directories = new Set(['assistant', 'astra', 'cli', 'deploy', 'public', 'server', 'examples', 'tests', 'workbench', 'world', 'study', 'runtime', 'sdk', 'scripts/lib']);
   for (const path of PUBLIC_SOURCE_PATHS) {
     if (directories.has(path)) await file(source, `${path}/synthetic.txt`, 'synthetic fixture');
     else await file(source, path, 'synthetic fixture');
@@ -69,7 +69,7 @@ test('兩種乾淨匯出皆含world/study及英文證據；Amazon不宣告Astra�
       'docs/TOPOLOGY_LAB.md', 'docs/TOPOLOGY_RESULTS.md', 'docs/contracts/TOPOLOGY_V2.md', 'evidence/topology-v2/proof.json',
       'scripts/defense.mjs', 'scripts/defense-proof.mjs', 'docs/DEFENSE_LAB.md', 'docs/contracts/DEFENSE_GOVERNANCE_V1.md', 'evidence/defense-v1/proof.json',
       'scripts/judge-demo.mjs', 'docs/AMAZON_JUDGE_DEMO.md', 'scripts/email-proof.mjs', 'docs/EMAIL_NOTIFICATIONS.md', 'docs/START_HERE.zh-TW.md', 'evidence/email-v1/proof.json',
-      'scripts/oss-integration-demo.mjs', 'docs/EXTERNAL_INTEGRATION.md', 'docs/MAINTAINER_PLAN.md', 'docs/contracts/OSS_INTEGRATION_V1.md',
+      'scripts/build-static.mjs', 'scripts/syntax-check.mjs', 'scripts/oss-integration-demo.mjs', 'docs/EXTERNAL_INTEGRATION.md', 'docs/MAINTAINER_PLAN.md', 'docs/contracts/OSS_INTEGRATION_V1.md',
       'evidence/oss-integration-v1/report.json', 'examples/mcp-shipping-consumer/package.json', 'examples/mcp-shipping-consumer/package-lock.json',
       'examples/mcp-shipping-consumer/client.mjs', 'examples/mcp-shipping-consumer/cli.mjs', 'examples/mcp-shipping-consumer/README.md', 'examples/mcp-shipping-consumer/.gitignore',
       'runtime/reference.mjs', 'runtime/server.mjs', 'runtime/blueprints/default.json', 'sdk/runtime-client.mjs', 'sdk/runtime-client.py',
@@ -80,6 +80,9 @@ test('兩種乾淨匯出皆含world/study及英文證據；Amazon不宣告Astra�
     }
     const pkg = JSON.parse(await readFile(join(output, 'package.json'))); assert.equal(pkg.name, `dungeonq-${target}`); assert.equal(pkg.version, '0.6.0');
     assert.equal(pkg.scripts['oss:demo'], 'node scripts/oss-integration-demo.mjs');
+    assert.equal(pkg.scripts.build, 'node scripts/build-static.mjs');
+    assert.equal(pkg.scripts.syntaxcheck, 'node scripts/syntax-check.mjs');
+    for (const removed of ['app', 'vite.config.ts', 'next.config.ts', 'tsconfig.json']) await assert.rejects(lstat(join(output, removed)), { code: 'ENOENT' });
     const sbom = JSON.parse(await readFile(join(output, 'SBOM.cdx.json')));
     assert.equal(sbom.metadata.component.name, pkg.name); assert.equal(sbom.metadata.component.purl, `pkg:npm/${pkg.name}@0.6.0`);
     assert.ok(sbom.dependencies.some(row => row.ref === `${pkg.name}@0.6.0`));

@@ -1,4 +1,4 @@
-# Release and maintenance policy — v0.13.0
+# Release and maintenance policy — v0.13.1
 
 The distribution version identifies a source snapshot. Component contracts may retain their own versions. `main`, a tag, a release page, a source archive, CI and a film are separate artifacts; a change to one does not update the others. [VALIDATION](VALIDATION.md) records each status. A candidate is not a published release.
 
@@ -29,8 +29,8 @@ Publishing source does not submit a contest entry or grant application, and does
 From a clean committed checkout of the public repository:
 
 ```sh
-npm run release:prepare -- ../dungeonq-source-013
-npm run verify:source -- ../dungeonq-source-013
+npm run release:prepare -- ../dungeonq-source-0131
+npm run verify:source -- ../dungeonq-source-0131
 ```
 
 The new destination must be outside the checkout. The builder uses reviewed tracked source, rejects unsafe/private paths and dirty input, regenerates SBOM and a manifest, then verifies the output. It creates no tag, upload or deployment. Untracked contributions must be reviewed and committed first. Generated SBOM metadata can vary; compare source identity and per-file digests.
