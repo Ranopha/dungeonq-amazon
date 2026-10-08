@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "dungeonq.host-fixture-source/v1",
+  "runtimeVersion": "0.13.1",
+  "runtimeCommit": "17ba40cbd687ff08ff0a3f02bece4a2189db76f9",
+  "scope": "selected host integration only; no private OS, original target, credentials, state, logs, or git history",
+  "files": [
+    {
+      "path": "scripts/dungeonq-host/adversarial-integration-test.mjs",
+      "sha256": "bfbe19469d2cbe3b094235e997d38e582664db8cf2b00435df8fe05f7067fe37"
+    },
+    {
+      "path": "scripts/dungeonq-host/adversarial-lab.mjs",
+      "sha256": "235881e050ece4fe9b1d1418e57bae7734b7fd29e8ef8c40322abdf9d9b48a83"
+    },
+    {
+      "path": "scripts/dungeonq-host/adversarial-worker.mjs",
+      "sha256": "073212be37070742d0528780f6a82d927fb6cdc64f425a867b1bcecafa7f11ab"
+    },
+    {
+      "path": "scripts/dungeonq-host/adversarial.mjs",
+      "sha256": "3e92bf0fa8eeeb113d008d4a272cc3d6963d985eb481ce123322dd5f6eec1613"
+    },
+    {
+      "path": "scripts/dungeonq-host/mcp-client.mjs",
+      "sha256": "6b26e58cd5dc5291d0a8c3934715746db6f160884a155aa43514fa40806110ce"
+    },
+    {
+      "path": "scripts/dungeonq-host/recording-console.html",
+      "sha256": "ba008ba94a16ae351ee1e792c62b9520a29234df754e50c158b228c246f3fe6c"
+    },
+    {
+      "path": "scripts/dungeonq-host/recording-session.mjs",
+      "sha256": "892e8fb6d4dc0f72da731fb6241c0d5f2b5ddb179a2b73572d14e410144b1e00"
+    },
+    {
+      "path": "scripts/prepare-fixture.mjs",
+      "sha256": "557ace7c4d67baa699b2ebcd76281f7ac0a083517d33ae398b78436e1c69e2b8"
+    },
+    {
+      "path": "plugins/dungeonq-host-integration/src/contracts.ts",
+      "sha256": "cf5348fddb92baf568742de3ec7568446e2609afaa528ca7cdf4d41dd16c7ac3"
+    },
+    {
+      "path": "plugins/dungeonq-host-integration/src/file-origin.ts",
+      "sha256": "ebb05f924e145d96d3bca87c45f0bd7e3936cc8efee6b3a79bdc44de9b69952f"
+    },
+    {
+      "path": "plugins/dungeonq-host-integration/src/index.ts",
+      "sha256": "fd6d4b185f81c3be62a3a47789804ce44c020483700cff60781eaef9b1d2ce2a"
+    },
+    {
+      "path": "plugins/dungeonq-host-integration/src/runtime-bridge.ts",
+      "sha256": "fd3fdaef8102c15d1f73312735247747a2284dadc399a11f4e4db9aba3140b14"
+    },
+    {
+      "path": "plugins/dungeonq-host-integration/src/target-witness.ts",
+      "sha256": "031ac22e6e372916c641a21d10d19c4d6aa92640c95d9f77ac1d18a20f144c01"
+    }
+  ]
+}

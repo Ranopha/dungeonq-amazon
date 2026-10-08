@@ -57,7 +57,7 @@
     "dev": "node scripts/serve.mjs",
     "build": "node scripts/build-static.mjs",
     "start": "node scripts/serve.mjs --built",
-    "test": "node --test",
+    "test": "node --test tests/*.test.mjs",
     "test:governance": "node --test tests/governance-core.test.mjs",
     "test:workbench": "node --test tests/workbench.test.mjs",
     "workbench": "node scripts/workbench.mjs",
@@ -74,7 +74,8 @@
     "runtime:isolation": "node scripts/runtime-isolation.mjs",
     "test:runtime": "node --test tests/runtime-*.test.mjs",
     "oss:demo": "node scripts/oss-integration-demo.mjs",
-    "syntaxcheck": "node scripts/syntax-check.mjs"
+    "syntaxcheck": "node scripts/syntax-check.mjs",
+    "test:host": "npm test --prefix examples/initial-machine-host"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",

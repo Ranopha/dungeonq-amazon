@@ -16,6 +16,14 @@ For developers securing **AI-agent tool workflows**: open the Participant worksp
 
 The new walkthrough adds an ordinary authorized-origin reachability control, a verified stale-write refusal and a ticket-to-origin denial **before** its final witness read. It uses real MCP/HTTP clients and artificial resources, not a live model. The September 20 film records the earlier seven-scene command-output version; it does not show these new interfaces or checks. Historical container evidence does not certify this changed source.
 
+## Initial Machine: actual host-operation film (October 8)
+
+[Watch the 2:04 English film](https://youtu.be/uFvzFXfL2F0): real local MCP operations, a reachable artificial-file origin, a diverted persistent world, a useful world-only ticket rejected at the origin, and an actual restart. Astra max chooses its own calls in two routes; the featured pair completed all five tool stages with **3 source business reads for DIRECT and 0 for DIVERT**, matching note readbacks and an unchanged artificial target. The film separates actual operation footage from a labeled recorded-result summary.
+
+[Reproduce the selected host integration](examples/initial-machine-host/README.md) · [Procedure and evidence scope](docs/INITIAL_MACHINE_FILM.md) · [Recorded comparison](evidence/initial-machine-workflow/summary.json)
+
+This is an operator-provisioned, artificial-file workflow. It does not establish that a model was fooled or an autonomous attack was defeated. The standalone host slice is Apache-2.0; the private Initial Machine OS and original target are not distributed.
+
 ## v0.13.1 — dependency repair
 
 The local browser rehearsal now uses Node's static server and an explicit static build. The removed Vinext wrapper only redirected to that existing page; all persistent runtime services, APIs, SDKs and public assets are retained. Removing the unused wrapper removes its vulnerable `braces` dependency chain. `npm run check` now checks the actual JavaScript modules and built static artifacts; this is documented JavaScript syntax validation, not a semantic TypeScript check.
@@ -24,7 +32,7 @@ The [v0.13.0 film](https://youtu.be/8h5yeKb2XzE) still describes the unchanged c
 
 ## Integrate a separate consumer (v0.13.0)
 
-[Watch the current English walkthrough](https://youtu.be/8h5yeKb2XzE) — a scripted public-interface consumer with separate operator and artificial-origin checks. It is not a new live-model attack study.
+[Watch the retained v0.13.0 English walkthrough](https://youtu.be/8h5yeKb2XzE) — a scripted public-interface consumer with separate operator and artificial-origin checks. It is not a new live-model attack study.
 
 The [standalone MCP shipping consumer](examples/mcp-shipping-consumer/README.md) has its own package and talks only to the public MCP/HTTP interfaces. It receives the actor endpoint and token; operator and artificial-origin checks run separately. A deterministic client exercises integration, not third-party adoption or a live-model evaluation.
 

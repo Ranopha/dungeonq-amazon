@@ -27,3 +27,7 @@ This narrow walkthrough does not replace the full `runtime:gate`, container acce
 ## Preserved September 20 record and film
 
 The [165.167-second English film](https://youtu.be/ttlfnyuuTIs) retains the earlier seven-scene v0.11.1 command-output walkthrough. It is not a recording of the new participant/operator UI, nor of the new negative/control checkpoints. The Amazon distribution preserves its original JSON under `evidence/judge-demo`; no old report or film is rewritten or relabeled as v0.12.0.
+
+## October 8 actual host-operation film
+
+The [124.267-second English Initial Machine film](https://youtu.be/uFvzFXfL2F0) adds actual MCP client/runtime footage, a file-origin control, world-ticket denial, restart, and real Astra max workflow events. Follow [the host reproduction procedure and evidence scope](INITIAL_MACHINE_FILM.md). Model results are shown as a labeled recorded summary; the earlier walkthrough remains historical and is not relabeled.

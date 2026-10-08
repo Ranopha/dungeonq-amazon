@@ -76,3 +76,9 @@ The original public project supplied strict fixed-seed Scenario Packs, a determi
 This distribution intentionally excludes private Git history and local data. Source-file digests in `RELEASE_MANIFEST.json` identify the exported release content. Preserve that manifest, Apache-2.0 license and notices when inspecting provenance. It is a reproducibility record, not an external signature or timestamp authority.
 
 The version does not claim production connectors, actual Alexa-service integration, speech recognition, external key custody, fleet isolation or commercial acceptance. Its value is a working rehearsal boundary an evaluator can challenge with their own synthetic inputs.
+
+## October 8 host-operation addendum (runtime v0.13.1)
+
+Added the selected Initial Machine host fixture under Apache-2.0: an independent artificial-file origin, capability-bound MCP adapter, official SDK client, persistent-world/ticket/restart acceptance and optional actor-only Astra document workflows. The private Initial Machine OS is not included. Four successful model sessions (two per route) and one inconclusive setup attempt are preserved in a minimized comparison summary. A 124.267-second English film combines actual local operation footage with an explicitly labeled result summary. See [the full procedure](INITIAL_MACHINE_FILM.md).
+
+The root test command now selects the existing `tests/*.test.mjs` suite explicitly; the separately installed host suite runs in its own Ubuntu/macOS CI job. This prevents accidental discovery of downloaded vendor tests. Public release paths additionally reject `.local` and `vendor` input. The current local root check passes all 493 tests, three golden scenarios, the clean-room audit, JavaScript syntax check and static build. The independent host integration also passes. Historical tag and container evidence remain scoped to their original source.

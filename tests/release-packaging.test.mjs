@@ -169,7 +169,7 @@ test('即使manifest摘要吻合，私人安裝／DB／憑證路徑仍不算合�
   const base = await temp(t);
   for (const path of ['study-installation.json', 'world-installation.json', 'topology-installation.json', 'defense-installation.json', 'smtp-config.json', 'identity-config.json', 'oauth-config.json', 'world.sqlite', 'study.sqlite-wal', 'tokens.json', '.env.local',
     'runtime-installation.json', 'reference.json', 'ssh-host.json', 'runtime.sqlite.ticket-key', 'compose.env', 'client.pyc', 'client.pyo',
-    'sdk/__pycache__/client.pyc', 'reports/acceptance.json', 'docs/history/previous.md']) {
+    'sdk/__pycache__/client.pyc', 'examples/initial-machine-host/.local/target.txt', 'examples/initial-machine-host/vendor/package.json', 'reports/acceptance.json', 'docs/history/previous.md']) {
     const directory = join(base, path.replaceAll('.', '_').replaceAll('/', '_')); await mkdir(directory); const data = Buffer.from('{}');
     await file(directory, path, data);
     await file(directory, 'RELEASE_MANIFEST.json', JSON.stringify({ schemaVersion: 'dungeonq.source-release/v1', profile: 'SYNTHETIC_ONLY', privateHistoryIncluded: false,

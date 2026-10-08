@@ -129,3 +129,30 @@ jobs:
             ${{ runner.temp }}/dq-runtime-reference/isolation-result.json
           retention-days: 14
           if-no-files-found: ignore
+
+  real-mcp-host:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-14]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.15.0
+      - name: Install the selected host slice in an independent directory
+        run: |
+          cp -R examples/initial-machine-host "$RUNNER_TEMP/dq-host-fixture"
+          npm --prefix "$RUNNER_TEMP/dq-host-fixture" ci --ignore-scripts
+          git clone --branch v0.13.1 --depth 1 https://github.com/Ranopha/dungeonq-astra.git "$RUNNER_TEMP/dq-host-fixture/vendor/dungeonq-runtime"
+          npm --prefix "$RUNNER_TEMP/dq-host-fixture/vendor/dungeonq-runtime" ci --ignore-scripts
+      - name: Audit locked host and runtime dependencies
+        run: |
+          npm --prefix "$RUNNER_TEMP/dq-host-fixture" audit --include=dev --audit-level=low
+          npm --prefix "$RUNNER_TEMP/dq-host-fixture/vendor/dungeonq-runtime" audit --include=dev --audit-level=low
+      - name: Verify real MCP control, diversion, ticket denial and persistence
+        run: npm --prefix "$RUNNER_TEMP/dq-host-fixture" test
