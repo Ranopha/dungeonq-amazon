@@ -98,14 +98,20 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
       outcome = 'SERVED';
     } catch (error) {
       // A transport failure can occur after a durable effect. Retain UNKNOWN and use the same operation identity.
-      append({ eventId, contextId: decision.contextId, requestId, family, destination, outcome, resultDigest: refusal ? digest(refusal.body) : digest({ code: error.code ?? 'TRANSPORT_UNKNOWN' }), ...(refusal ? { refusal } : {}) });
-      store.recordRoute({ contextId: decision.contextId, requestId, family, destination, outcome, attemptId: eventId });
-      try { await flush(); } catch { /* Durable pending event remains visible; no origin fallback. */ }
-      throw error.code ? error : failure('DISPATCH_UNKNOWN');
+      try {
+        append({ eventId, contextId: decision.contextId, requestId, family, destination, outcome, resultDigest: refusal ? digest(refusal.body) : digest({ code: error.code ?? 'TRANSPORT_UNKNOWN' }), ...(refusal ? { refusal } : {}) });
+        store.recordRoute({ contextId: decision.contextId, requestId, family, destination, outcome, attemptId: eventId });
+        await flush();
+      } catch { /* The pending reservation or persisted attempt remains visible; no origin fallback. */ }
+      // Only an authenticated no-effect refusal may become a definite client rejection.
+      // An unsigned 4xx/proof/storage error says nothing about whether the write committed.
+      throw refusal ? error : failure('DISPATCH_UNKNOWN');
     }
     const event = { eventId, contextId: decision.contextId, requestId, family, destination, outcome, resultDigest: digest(result) };
-    append(event); store.recordRoute({ contextId: decision.contextId, requestId, family, destination, outcome, attemptId: eventId });
-    try { await flush(); } catch { throw failure('EVIDENCE_INCOMPLETE'); }
+    try {
+      append(event); store.recordRoute({ contextId: decision.contextId, requestId, family, destination, outcome, attemptId: eventId });
+      await flush();
+    } catch { throw failure('EVIDENCE_INCOMPLETE'); }
     if (destination === 'SYNTHETIC' && operation === 'use-ticket' && !result.replayed && result.observationId) {
       const snapshot = store.snapshot();
       const policy = snapshot.policies.find(p => p.contextId === decision.contextId && p.expiresAt > Date.now() && p.uses < p.maxMutations);
@@ -119,7 +125,7 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
     if (participant && destination === 'SYNTHETIC') return participantResult(operation, result, ticket => store.participantTicket(ticket));
     return { ...result, _route: { contextId: decision.contextId, family, destination, requestId, proofVerified: destination === 'SYNTHETIC' } };
   }
-  function inspectWrite({ contextId, family, requestId, operation, args }, participantView = false) {
+  function inspectWrite({ contextId, family, requestId, operation, args }, { participantView = false, operatorView = false } = {}) {
     runtimeJson({ contextId, family, requestId, operation, args }, 32768);
     const input = { contextId, family, requestId, operation, args };
     const current = store.writeStatus(input);
@@ -135,9 +141,11 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
       catch { return false; }
     })) state = 'NOT_COMMITTED';
     const response = { schemaVersion: 'dungeonq.write-status/v1', requestId, state,
-      commandDigest: current.commandDigest, checkpoint: current.checkpoint,
+      commandDigest: current.commandDigest,
       automaticRetryAllowed: false, method: 'AUTHENTICATED_JOURNAL_REPLAY' };
-    if (state === 'COMMITTED') Object.assign(response, { sequence: current.sequence, eventDigest: current.eventDigest,
+    // Global journal positions and moving digests reveal activity outside the actor's context.
+    if (operatorView) response.checkpoint = current.checkpoint;
+    if (state === 'COMMITTED') Object.assign(response, { ...(operatorView ? { sequence: current.sequence } : {}), eventDigest: current.eventDigest,
       result: participantView ? participantResult('write', current.result) : current.result });
     return response;
   }
@@ -145,7 +153,7 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
     exact(input, ['requestId', 'operation', 'args']);
     const decision = authenticate(token, family);
     insist(decision.disposition === 'DIVERT', 'SYNTHETIC_CONTEXT_REQUIRED');
-    return inspectWrite({ ...input, contextId: decision.contextId, family }, participant);
+    return inspectWrite({ ...input, contextId: decision.contextId, family }, { participantView: participant });
   }
   const capabilities = () => [
     { id: 'http', family: 'web-api', state: 'AVAILABLE', reason: 'Authenticated real request routing and canonical readback.' },
@@ -224,12 +232,13 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
         const input=await body(req);exact(input,['requestId','operation','args']);return send(res,200,await dispatch({...input,token:bearer(req),family:'http'}));
       }
       if(req.method==='POST' && req.url==='/api/write-status') {
-        const input=await body(req); return send(res,200,participantWriteStatus({...input,token:bearer(req),family:'http'}));
+        const input=await body(req); exact(input,['requestId','operation','args']);
+        return send(res,200,participantWriteStatus({...input,token:bearer(req),family:'http'}));
       }
       owner(req);
       if(req.method==='POST' && req.url==='/api/operator/write-status') {
         const input=await body(req);exact(input,['contextId','family','requestId','operation','args']);
-        return send(res,200,inspectWrite(input));
+        return send(res,200,inspectWrite(input, { operatorView: true }));
       }
       if(req.method==='GET' && req.url==='/api/status')return send(res,200,status());
       if(req.method==='GET' && req.url==='/api/evidence')return send(res,200,await evidence());

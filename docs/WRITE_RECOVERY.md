@@ -33,14 +33,20 @@ Actor HTTP: `POST /api/write-status` on the gateway. MCP actor: `POST /write-sta
 
 The server derives context and adapter from the credential and endpoint. The operator uses `POST /api/operator/write-status`, adding the original `contextId` and `family`, with owner authority. The original operation must match byte-equivalent canonical JSON, including expected revision; do not substitute the current revision. The Node client exposes `writeStatus(input)`, `inspectWrite(input)` and `writeWithRecovery(input)`. The last sends one write and at most one read-only lookup, returning `{result,recovered}` only for a matching proven result. Existing Python and CLI clients can call the documented endpoint explicitly; no new automatic behavior is claimed for them.
 
+Actor responses expose only the requested outcome, command digest and, for a proven commit, its original result and stable event digest. The moving global `checkpoint` and commit `sequence` are **operator-only**: returning them to an actor would reveal activity in other contexts. Both actor transports reject caller-supplied context, adapter, token and operator-view fields in the JSON body.
+
+After dispatch, an unsigned rejection or an invalid/misbound proof returns `DISPATCH_UNKNOWN` regardless of the upstream HTTP/error code. Failure to persist or deliver the gateway receipt after a verified result returns `EVIDENCE_INCOMPLETE`. Both remain uncertain for the SDK, which performs at most one read-only lookup. Only an authenticated canonical refusal preserves a definite rejection such as `REVISION_CONFLICT`. If lookup cannot prove the commit, the participant retains the original request and keeps new operations paused.
+
 | State | What the response establishes | Next step |
 | --- | --- | --- |
-| COMMITTED | Authenticated journal replay contains the exact successful command and original saved response, sequence and event digest. | Use the saved response, then read current state separately. Do not create another write. |
+| COMMITTED | Authenticated journal replay contains the exact successful command and original saved response and event digest. The operator additionally receives its global sequence and checkpoint. | Use the saved response, then read current state separately. Do not create another write. |
 | NOT_COMMITTED | At the returned checkpoint, all observed matching attempts are exact authenticated no-effect refusals and no matching dispatch is pending. | Inspect the refusal and current revision. This is not permission for an automatic retry or a promise about future calls. |
 | UNKNOWN | No conclusive commit/refusal, a pending dispatch, an unsigned error, response loss or missing evidence. Absence alone never means not committed. | Retain the request identity and investigate; automatic retry remains disabled. |
 | CONFLICT | This request identity was used with a different payload or adapter. | Recover the original request details; do not overwrite the identity. |
 
 Every response sets `automaticRetryAllowed: false`. Corrupt/unverifiable canonical storage fails instead of returning a commit. Actor tokens cannot inspect another context; fenced actors lose lookup access while the operator can inspect retained history. This is authentication within DungeonQ's trusted reference, not third-party attestation or a solution for arbitrary external public writes.
+
+See the [independent source review and security regressions](SECURITY_REVIEW_20261010.md) for confirmed findings, fixes and the remaining commercial deployment boundary.
 
 ## Historical walkthrough
 
