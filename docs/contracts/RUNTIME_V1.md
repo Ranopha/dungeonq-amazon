@@ -43,7 +43,7 @@ A context is server-registered with context, tenant, world, token digest, dispos
 9. Fence advances the context epoch, invalidates its tickets and persists. Dedicated canonical capacity remains reserved for fencing after event/byte budgets are exhausted.
 10. Origin authentication and witness storage are independent of participant assertions. Synthetic tickets cannot grant origin access.
 
-The gateway and canonical store are separate SQLite databases. Owner actions recover only an exact persisted canonical grant or proposal-bound fence if the gateway receipt was lost. Automatic dispatch-outcome reconciliation, distributed consensus and arbitrary schema migrations are not implemented. Do not erase history to make an uncertain installation pass.
+The gateway and canonical store are separate SQLite databases. Owner actions recover only an exact persisted canonical grant or proposal-bound fence if the gateway receipt was lost. v0.14.0 adds authenticated read-only inspection of exact write identities and recovery of a proven canonical response; see [WRITE_RECOVERY](../WRITE_RECOVERY.md) for the four-state contract and endpoints. It neither rewrites dispatch outcomes nor certifies an uncertain run. Automatic dispatch-outcome reconciliation, distributed consensus and arbitrary schema migrations are not implemented. Do not erase history to make an uncertain installation pass.
 
 ## Wrong Ticket
 

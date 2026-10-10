@@ -99,12 +99,12 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
     } catch (error) {
       // A transport failure can occur after a durable effect. Retain UNKNOWN and use the same operation identity.
       append({ eventId, contextId: decision.contextId, requestId, family, destination, outcome, resultDigest: refusal ? digest(refusal.body) : digest({ code: error.code ?? 'TRANSPORT_UNKNOWN' }), ...(refusal ? { refusal } : {}) });
-      store.recordRoute({ contextId: decision.contextId, requestId, family, destination, outcome });
+      store.recordRoute({ contextId: decision.contextId, requestId, family, destination, outcome, attemptId: eventId });
       try { await flush(); } catch { /* Durable pending event remains visible; no origin fallback. */ }
       throw error.code ? error : failure('DISPATCH_UNKNOWN');
     }
     const event = { eventId, contextId: decision.contextId, requestId, family, destination, outcome, resultDigest: digest(result) };
-    append(event); store.recordRoute({ contextId: decision.contextId, requestId, family, destination, outcome });
+    append(event); store.recordRoute({ contextId: decision.contextId, requestId, family, destination, outcome, attemptId: eventId });
     try { await flush(); } catch { throw failure('EVIDENCE_INCOMPLETE'); }
     if (destination === 'SYNTHETIC' && operation === 'use-ticket' && !result.replayed && result.observationId) {
       const snapshot = store.snapshot();
@@ -118,6 +118,34 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
     }
     if (participant && destination === 'SYNTHETIC') return participantResult(operation, result, ticket => store.participantTicket(ticket));
     return { ...result, _route: { contextId: decision.contextId, family, destination, requestId, proofVerified: destination === 'SYNTHETIC' } };
+  }
+  function inspectWrite({ contextId, family, requestId, operation, args }, participantView = false) {
+    runtimeJson({ contextId, family, requestId, operation, args }, 32768);
+    const input = { contextId, family, requestId, operation, args };
+    const current = store.writeStatus(input);
+    const attempts = journal.prepare('SELECT payload FROM gateway_attempts').all().map(row => JSON.parse(row.payload))
+      .filter(event => event.contextId === contextId && event.requestId === requestId);
+    const pending = journal.prepare('SELECT count(*) AS n FROM gateway_pending WHERE input_digest=?').get(digest(input)).n;
+    let state = current.state === 'NOT_OBSERVED' ? 'UNKNOWN' : current.state;
+    // Absence is not proof of non-execution: another admitted operation may still be in flight.
+    // Only exact authenticated refusals, with no uncertain sibling attempt, establish NOT_COMMITTED.
+    if (state === 'UNKNOWN' && pending === 0 && attempts.length > 0 && attempts.every(event => {
+      try { return event.outcome === 'REFUSED' && event.destination === 'SYNTHETIC'
+        && verifyRefusal(event.refusal, credentials.seal, event).commandDigest === current.commandDigest; }
+      catch { return false; }
+    })) state = 'NOT_COMMITTED';
+    const response = { schemaVersion: 'dungeonq.write-status/v1', requestId, state,
+      commandDigest: current.commandDigest, checkpoint: current.checkpoint,
+      automaticRetryAllowed: false, method: 'AUTHENTICATED_JOURNAL_REPLAY' };
+    if (state === 'COMMITTED') Object.assign(response, { sequence: current.sequence, eventDigest: current.eventDigest,
+      result: participantView ? participantResult('write', current.result) : current.result });
+    return response;
+  }
+  function participantWriteStatus({ token, family, ...input }) {
+    exact(input, ['requestId', 'operation', 'args']);
+    const decision = authenticate(token, family);
+    insist(decision.disposition === 'DIVERT', 'SYNTHETIC_CONTEXT_REQUIRED');
+    return inspectWrite({ ...input, contextId: decision.contextId, family }, participant);
   }
   const capabilities = () => [
     { id: 'http', family: 'web-api', state: 'AVAILABLE', reason: 'Authenticated real request routing and canonical readback.' },
@@ -195,7 +223,14 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
       if(req.method==='POST' && req.url==='/api/operate') {
         const input=await body(req);exact(input,['requestId','operation','args']);return send(res,200,await dispatch({...input,token:bearer(req),family:'http'}));
       }
+      if(req.method==='POST' && req.url==='/api/write-status') {
+        const input=await body(req); return send(res,200,participantWriteStatus({...input,token:bearer(req),family:'http'}));
+      }
       owner(req);
+      if(req.method==='POST' && req.url==='/api/operator/write-status') {
+        const input=await body(req);exact(input,['contextId','family','requestId','operation','args']);
+        return send(res,200,inspectWrite(input));
+      }
       if(req.method==='GET' && req.url==='/api/status')return send(res,200,status());
       if(req.method==='GET' && req.url==='/api/evidence')return send(res,200,await evidence());
       if(req.method==='POST' && req.url==='/api/policy/preview') {
@@ -238,7 +273,7 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
       }
       throw failure('NOT_FOUND');
     },{host,port,browser:true});running.push(http);
-    const mcp=await startRuntimeMcp({dispatch,authenticate,host,port:mcpPort});running.push(mcp);
+    const mcp=await startRuntimeMcp({dispatch,authenticate,writeStatus:participantWriteStatus,host,port:mcpPort});running.push(mcp);
     let protocols;
     if(network) {
       const keys=privateJson(join(directory,'ssh-host.json'),()=>({key:generateKeyPairSync('rsa',{modulusLength:2048,privateKeyEncoding:{type:'pkcs1',format:'pem'},publicKeyEncoding:{type:'spki',format:'pem'}}).privateKey}));

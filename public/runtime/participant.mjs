@@ -121,8 +121,11 @@ function inputFor(operation, args = {}) {
   return JSON.parse(JSON.stringify({ requestId: `ui-${crypto.randomUUID()}`, operation, args }));
 }
 async function execute(input, atSession) {
-  let value;
-  try { value = await client.operate(input); }
+  let value, recovered = false;
+  try {
+    if (input.operation === 'write') ({ result: value, recovered } = await client.writeWithRecovery(input));
+    else value = await client.operate(input);
+  }
   catch (error) {
     if (session !== atSession) return;
     if (error?.uncertain) {
@@ -147,7 +150,7 @@ async function execute(input, atSession) {
     renderRecord(value); message(`Read ${value.key} from the server at revision ${value.revision}.`);
   } else if (input.operation === 'write') {
     expectedReadback = { key: value.key, value: input.args.value, recordRevision: value.recordRevision };
-    el('save-result').hidden = false; el('save-state').textContent = 'Write acknowledged; readback pending';
+    el('save-result').hidden = false; el('save-state').textContent = recovered ? 'Commit recovered from journal; readback pending' : 'Write acknowledged; readback pending';
     el('save-state').dataset.state = ''; el('save-summary').textContent = `The server acknowledged ${value.key} at revision ${value.revision}. A separate read must confirm its value.`;
     el('save-readback').textContent = '';
     await execute(inputFor('read', { key: value.key }), atSession);

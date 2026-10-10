@@ -1,3 +1,16 @@
+# v0.14.0 recovery validation — October 10, 2026
+
+The current source adds read-only interrupted-write recovery. [Recorded proof](../evidence/write-recovery-v1/report.json) binds the relevant source bytes and six fault/recovery scenes. It is scripted local artificial-resource evidence, with no new model run.
+
+- Targeted outcome, participant and recovery suites: **22/22 passed** on Node 24.19.0 / Linux.
+- Full local suite: **496/500 passed**; two Unix-socket tests are blocked by this workspace's `EPERM` restriction and two isolation tests require a non-root runtime owner. These four results are environment-blocked, not local passes.
+- Fresh public Ubuntu/macOS CI and container acceptance for this changed source are required before an immutable release. See the exact current commit's [Actions runs](https://github.com/Ranopha/dungeonq-amazon/actions/workflows/ci.yml); an earlier passing release does not certify it.
+- The intentionally interrupted proof recovers the committed note once, retains the same event after restart, distinguishes authenticated refusal from UNKNOWN, and keeps the faulted installation's overall evidence **FAIL**. Recovery success does not erase transport uncertainty.
+
+The [new film](https://dungeonq-astra.kq7dn7jb6r.chatgpt.site/#write-recovery) presents these recorded results. The older films and source-bound release records below retain their original scope.
+
+---
+
 # v0.13.1 validation — October 7, 2026
 
 v0.13.1 removes the unused redirect-only framework build. The [release record](https://github.com/Ranopha/dungeonq-amazon/releases/tag/v0.13.1) binds the exact tag/commit/tree, CI run, downloaded runtime/container evidence and source/checksum assets. The v0.13.0 film and recorded consumer report keep their original version and scope.

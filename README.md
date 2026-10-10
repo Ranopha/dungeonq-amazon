@@ -8,6 +8,14 @@ The current self-hosted reference makes that sequence inspectable with real HTTP
 
 [**Follow the recorded diversion**](docs/JUDGE_ROUTE.md) · [**Operate your own reference**](#run-the-reference) · [Acceptance evidence](docs/RUNTIME_ACCEPTANCE.md)
 
+## v0.14.0 — interrupted writes, inspectable outcomes
+
+A missing client reply does not tell you whether a write committed. The current runtime adds an authenticated, **read-only write-status lookup** for the original context, adapter, request ID and exact payload. It returns **COMMITTED**, **NOT_COMMITTED**, **UNKNOWN** or **CONFLICT**. The participant and independent MCP consumer can recover a proven saved result without resending the write; the operator timeline also marks canonical commits. Missing evidence stays unknown, and transport history is preserved.
+
+[**View the recovery walkthrough and film**](https://dungeonq-astra.kq7dn7jb6r.chatgpt.site/#write-recovery) · [**Run the recovery example**](docs/WRITE_RECOVERY.md) · [Recorded machine-readable results](evidence/write-recovery-v1/report.json) · [Validation status](docs/VALIDATION.md)
+
+The new example actually closes the synthetic facade connection after a durable write, checks the same commit after restart, and contrasts an authenticated refusal with an unproven outcome. It is a scripted local fault-injection test using artificial resources, with no new model run. The October 8 Initial Machine film and its pinned v0.13.1 runtime remain historical; they do not include this update.
+
 ## A task you can operate
 
 For developers securing **AI-agent tool workflows**: open the Participant workspace and the separate operator Control room. Read a shipping record, save a multiline review note, read it back from the server, and use a world-only ticket. The operator sees the same persisted world, successful observations and a request timeline tied to independent route evidence. An explicitly approved policy can add a bounded follow-up record. Restart the services and continue from the saved state.

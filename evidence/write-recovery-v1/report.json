@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "dungeonq.interrupted-write-proof/v1",
+  "mode": "SCRIPTED_LOCAL_FAULT_INJECTION",
+  "sourceVersion": "0.14.0",
+  "recordedAt": "2026-10-10T01:37:07.911Z",
+  "status": "PASS",
+  "meaning": "All named recovery assertions passed. The faulted runtime evidence intentionally remains FAIL.",
+  "sourceHashes": {
+    "runtime/store.mjs": "2f1ec108935e9adba72c0c45ff139407f013c2100490b32675b1b1590fd7a16c",
+    "runtime/server.mjs": "2b3ba0b46cfab5b85b0f33e8221d2b6b923c4c9560931865570a42c809c66c61",
+    "runtime/mcp.mjs": "73f24c562120ddcfe1a696a8476c7ed701f62c101170d684e6b46dcd244fdef4",
+    "runtime/outcomes.mjs": "130a9024da19eb14dc088234ac7b1b8d3b1a39e84022d25d25837e6456ef7d41",
+    "sdk/runtime-client.mjs": "7cac18570c1917127578648816090f5fb3ecf0fdd64c0a1e8514566a9aab834d",
+    "examples/mcp-shipping-consumer/client.mjs": "4c9d3f0d63ad0376b63ce6dde7d2fdfce2114ac1e789ee5c649a39091a11efa0",
+    "scripts/lib/interrupted-write-fixture.mjs": "9a6c4bfdca4690ca0b0fd0c029911a32a5b27bbb3e999ef82a2fcf397e07b0a1",
+    "scripts/interrupted-write-demo.mjs": "1f2f7d982e49e50c1b0f89e04898c3bab4005f0f4e402f5a6f970e5ad0a5fc23"
+  },
+  "scenes": [
+    {
+      "id": "lost-response",
+      "result": {
+        "fault": "facade socket closed AFTER canonical transaction",
+        "clientInitiallyConfirmed": false,
+        "operatorState": "COMMITTED",
+        "commitSequence": 10,
+        "eventDigest": "7cf2e0f81beb741b6367a6b547bcea5dfb2c0cdebd24e9760eed1a55fc0d1491",
+        "revision": 1,
+        "automaticWriteRetries": 0,
+        "writeAttempts": 1
+      }
+    },
+    {
+      "id": "read-only-recovery",
+      "result": {
+        "clientStatus": "PASS",
+        "recoveryMethod": "read-only journal lookup",
+        "separateReadbackMatches": true,
+        "ticketReadbackMatches": true
+      }
+    },
+    {
+      "id": "restart",
+      "result": {
+        "operatorState": "COMMITTED",
+        "sameCommitDigest": true,
+        "revision": 1
+      }
+    },
+    {
+      "id": "confirmed-refusal",
+      "result": {
+        "operatorState": "NOT_COMMITTED",
+        "cause": "authenticated revision refusal before transaction",
+        "worldRevision": 1
+      }
+    },
+    {
+      "id": "unproven-outcome",
+      "result": {
+        "operatorState": "UNKNOWN",
+        "fault": "facade socket closed BEFORE canonical execution",
+        "unseenRequestState": "UNKNOWN",
+        "automaticWriteRetries": 0,
+        "reason": "absence at a checkpoint is not proof of a final failure"
+      }
+    },
+    {
+      "id": "retained-evidence",
+      "result": {
+        "overallEvidence": "FAIL",
+        "unknownAttemptsRetained": 2,
+        "canonicalWrites": 1,
+        "divertedOriginAdmissions": 0,
+        "historyRewritten": false
+      }
+    }
+  ],
+  "limitations": [
+    "Artificial reference resources only.",
+    "No new model run.",
+    "No automatic retry of a failed write.",
+    "Canonical commit proof does not restore missing transport evidence or certify production security.",
+    "NOT_COMMITTED applies to the exact authenticated refusal at its checkpoint, not every future retry."
+  ]
+}

@@ -1,3 +1,7 @@
+# Current candidate: v0.14.0
+
+The recovery source, [reproducible report](WRITE_RECOVERY.md) and updated public walkthrough are version 0.14.0. Final immutable publication still requires exact-source public CI and the runtime/container gate described below. Closed challenge snapshots and existing tags must remain unchanged. Historical v0.13.1 instructions and records follow.
+
 # Release and maintenance policy — v0.13.1
 
 The distribution version identifies a source snapshot. Component contracts may retain their own versions. `main`, a tag, a release page, a source archive, CI and a film are separate artifacts; a change to one does not update the others. [VALIDATION](VALIDATION.md) records each status. A candidate is not a published release.

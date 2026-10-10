@@ -80,7 +80,8 @@ export function createRuntimeClient({ origin, token = '', timeoutMs = 10000, fet
       if (!response.ok) {
         const code = safeCode(value.error?.code) ?? (response.status === 401 ? 'AUTH_REQUIRED'
           : response.status === 403 ? 'PERMISSION_DENIED' : 'REQUEST_REJECTED');
-        throw new RuntimeError(code, { status: response.status, uncertain: mutating && response.status >= 500,
+        throw new RuntimeError(code, { status: response.status, uncertain: mutating && (response.status >= 500
+          || ['EVIDENCE_INCOMPLETE', 'DISPATCH_UNKNOWN', 'RESPONSE_INVALID'].includes(code)),
           requestId: typeof value.requestId === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(value.requestId) ? value.requestId : undefined });
       }
       return value;
@@ -96,6 +97,25 @@ export function createRuntimeClient({ origin, token = '', timeoutMs = 10000, fet
     capabilities: () => request('/api/capabilities', undefined, false),
     status: () => request('/api/status'),
     evidence: () => request('/api/evidence'),
+    writeStatus: input => request('/api/write-status', input),
+    inspectWrite: input => request('/api/operator/write-status', input),
+    async writeWithRecovery(input) {
+      if (input?.operation !== 'write') throw new RuntimeError('WRITE_STATUS_ONLY');
+      const original = JSON.parse(JSON.stringify(input));
+      const atGeneration = generation;
+      try { return { result: await request('/api/operate', original), recovered: false }; }
+      catch (error) {
+        if (generation !== atGeneration || !credential || !error.uncertain || error.status === 401 || error.status === 403) throw error;
+        let status;
+        try { status = await request('/api/write-status', original); } catch { throw error; }
+        if (status.schemaVersion !== 'dungeonq.write-status/v1' || status.state !== 'COMMITTED'
+          || status.requestId !== original.requestId || status.result?.key !== original.args.key
+          || status.result.revision !== original.args.expectedRevision + 1
+          || status.result.recordRevision !== status.result.revision
+          || JSON.stringify(status.result.value) !== JSON.stringify(original.args.value)) throw error;
+        return { result: status.result, recovered: true };
+      }
+    },
     preview(input) { return request('/api/policy/preview', input); },
     apply({ proposalId, digest, confirmation } = {}) {
       if (confirmation !== 'APPLY') throw new RuntimeError('EXPLICIT_CONFIRMATION_REQUIRED');

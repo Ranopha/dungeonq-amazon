@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.14.0 — 2026-10-10
+
+- Add authenticated, read-only write outcome lookup with exact request/payload binding, verified canonical replay and restart continuity.
+- Recover a proven commit in the participant workspace and separate MCP consumer without resending the write. Keep UNKNOWN attempts and failed acceptance visible.
+- Preserve every transport attempt under its own route identity; reusing an exact write identity no longer conflicts with earlier route outcomes.
+- Add real after-commit and before-commit connection-loss tests, authenticated-refusal contrast, a reproducible evidence report and an updated film.
+- Keep the October 8 host/model comparison and its pinned runtime historical; no new model or production-protection claim.
+
 ## 0.13.1 — 2026-10-07
 
 - Remove the redirect-only Vinext wrapper and its unused React/Cloudflare/Vite build dependency chain, including the affected braces package. Preserve all public assets and persistent runtime functions.

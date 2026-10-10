@@ -23,7 +23,7 @@ export function executeOutcome(store, input, admitted, key) {
     if (digest(before) !== digest(after) || after.status !== 'VERIFIED') throw error;
     return { refusal: seal({ outcome: 'REFUSED', code: error.code,
       contextId: input.contextId, family: input.family, requestId: input.requestId,
-      operation: input.operation, inputDigest: digest(admitted),
+      operation: input.operation, inputDigest: digest(admitted), commandDigest: digest({ kind: 'EXECUTE', input }),
       checkpoint: { head: after.head, stateDigest: after.stateDigest, eventCount: after.eventCount }
     }, key, REFUSAL_DOMAIN) };
   }
@@ -31,7 +31,8 @@ export function executeOutcome(store, input, admitted, key) {
 
 export function verifyRefusal(proof, key, expected) {
   const value = unseal(proof, key, REFUSAL_DOMAIN);
-  exact(value, ['outcome', 'code', 'contextId', 'family', 'requestId', 'operation', 'inputDigest', 'checkpoint']);
+  exact(value, ['outcome', 'code', 'contextId', 'family', 'requestId', 'operation', 'inputDigest', 'checkpoint'], ['commandDigest']);
+  if (value.commandDigest !== undefined) insist(/^[a-f0-9]{64}$/.test(value.commandDigest), 'REFUSAL_INVALID');
   exact(value.checkpoint, ['head', 'stateDigest', 'eventCount']);
   insist(value.outcome === 'REFUSED' && refusals.has(value.code), 'REFUSAL_INVALID');
   for (const field of ['contextId', 'family', 'requestId']) insist(value[field] === expected[field], 'REFUSAL_MISMATCH');
