@@ -22,7 +22,7 @@ In a separate tab, open **Control room** with the `owner` token. Select `diverte
 
 Preview **Grant mutation**, review the exact proposal and explicitly apply. Then issue and consume a fresh participant ticket; refresh the snapshot to see the follow-up record. Stop and restart with the same directory and presentation to confirm the note persists. Browser reload clears credentials; reconnect for a fresh read. None of this approves shipping or changes an external system.
 
-A stale revision requires a new snapshot before another write. A lost or uncertain response pauses operations and retains the exact request for an explicit retry; it never generates a replacement write automatically. An exact retry can recover a canonical result, but it does not erase a previously unknown route outcome. Disconnect discards the page's in-memory pending request; preserve the request ID before disconnecting when investigating uncertainty.
+A stale revision requires a new snapshot before another write. For an uncertain write reply, v0.14.0 first makes one authenticated read-only status query. A matching proven commit recovers the saved result and proceeds to separate readback; otherwise operations pause with the exact request retained. No replacement write is generated automatically. See [write recovery](WRITE_RECOVERY.md). An exact retry can recover a canonical result, but it does not erase a previously unknown route outcome. Disconnect discards the page's in-memory pending request; preserve the request ID before disconnecting when investigating uncertainty.
 
 The operator shows **REFUSED** only for an authenticated canonical refusal proving no new canonical effect from that attempt, with an unchanged independently replayed checkpoint. Storage failures, unsigned errors, mismatched proofs and response loss remain **UNKNOWN**, including when the write actually committed. Historical **FAILED** records remain unconfirmed. Any such unresolved result prevents clean acceptance. This is HMAC authentication within the trusted gateway/kernel, not third-party attestation.
 
@@ -39,7 +39,7 @@ Plain note values accept LF, CRLF and TAB without rewriting them. Other control 
 
 A mutation grant permits at most eight follow-up records for one hour, only in the approved synthetic context/epoch. Ticket use supplies a recorded observation. Each mutation consumes budget, checks the current revision, appends a deterministic record and preserves history. Fencing advances the epoch, persists across restart and invalidates outstanding authority. There is no participant unfence tool.
 
-If an operation response is lost, keep its request ID. An exact retry may retrieve its previous canonical result without repeating an effect. Changed input under the same identity is rejected. An uncertain route remains in evidence; automatic reconciliation to a clean acceptance report is **not implemented**. Stop claiming acceptance and inspect the preserved records.
+If a write response is lost, keep its request ID and exact payload. Use the [read-only write-status lookup](WRITE_RECOVERY.md) before considering any retry. An exact retry may retrieve its previous canonical result without repeating an effect. Changed input under the same identity is rejected. An uncertain route remains in evidence; automatic reconciliation to a clean acceptance report is **not implemented**. Stop claiming acceptance and inspect the preserved records.
 
 ## Human and AI interfaces
 

@@ -1,12 +1,17 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
-import { bearer, body, exact, insist, serve } from './transport.mjs';
+import { bearer, body, exact, insist, send, serve } from './transport.mjs';
 
 const operations = ['snapshot', 'read', 'write', 'issue-ticket', 'use-ticket'];
 const toolName = op => 'dungeonq_' + op.replaceAll('-', '_');
-export async function startRuntimeMcp({ dispatch, authenticate, host, port }) {
+export async function startRuntimeMcp({ dispatch, authenticate, writeStatus, host, port }) {
   return serve(async (req, res) => {
+    if (req.method === 'POST' && req.url === '/write-status' && writeStatus) {
+      const token = bearer(req); authenticate(token, 'mcp');
+      const input = await body(req); exact(input, ['requestId', 'operation', 'args']);
+      return send(res, 200, writeStatus({ ...input, token, family: 'mcp' }));
+    }
     insist(req.method === 'POST' && req.url === '/mcp', 'NOT_FOUND');
     const token = bearer(req); authenticate(token, 'mcp');
     const payload = await body(req);

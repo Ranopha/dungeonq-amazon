@@ -57,7 +57,35 @@ export async function runShippingReview(configuration, { onScene = () => {}, bef
     requireCondition(order.value?.status === 'awaiting-review' && order.value?.next === 'review-policy'
       && typeof policy.value === 'string' && policy.value.includes('Shipping approval is a separate process.'), 'SHIPPING_FIXTURE_REQUIRED');
     show('shipping-review', { order: 'Order 41', observedStatus: order.value.status, shippingApproval: 'SEPARATE_PROCESS', initialRevision: initial.revision });
-    const written = await call('write', { key: 'welcome', value: REVIEW_NOTE, expectedRevision: initial.revision }, 'write');
+    const writeArgs = { key: 'welcome', value: REVIEW_NOTE, expectedRevision: initial.revision };
+    let written;
+    try { written = await call('write', writeArgs, 'write'); }
+    catch (originalError) {
+      // One authenticated, read-only query. Never re-send the write after an ambiguous failure.
+      try {
+        const response = await fetch(new URL('/write-status', config.endpoint), {
+          method: 'POST', redirect: 'error', signal: AbortSignal.timeout(8000),
+          headers: { Authorization: `Bearer ${config.actorToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ requestId: `${config.requestPrefix}-write`, operation: 'write', args: writeArgs })
+        });
+        requireCondition(response.ok, 'WRITE_STATUS_UNAVAILABLE');
+        const reader = response.body.getReader(); const chunks = []; let size = 0;
+        try {
+          for (;;) {
+            const { done, value } = await reader.read(); if (done) break;
+            size += value.byteLength; requireCondition(size <= 32768, 'WRITE_STATUS_TOO_LARGE'); chunks.push(value);
+          }
+        } finally { await reader.cancel().catch(() => {}); reader.releaseLock(); }
+        const raw = Buffer.concat(chunks).toString('utf8');
+        const status = JSON.parse(raw);
+        requireCondition(status.schemaVersion === 'dungeonq.write-status/v1' && status.state === 'COMMITTED'
+          && status.requestId === `${config.requestPrefix}-write` && status.result?.key === 'welcome'
+          && status.result.value === REVIEW_NOTE && status.result.revision === initial.revision + 1
+          && status.result.recordRevision === status.result.revision, 'WRITE_NOT_VERIFIED');
+        written = status.result;
+        show('write-recovered', { state: 'COMMITTED', method: 'read-only journal lookup', writeResent: false, revision: written.revision });
+      } catch { throw originalError; }
+    }
     const readback = await call('read', { key: 'welcome' }, 'readback');
     requireCondition(written.revision === initial.revision + 1 && readback.value === REVIEW_NOTE && readback.revision === written.revision, 'WRITE_READBACK_MISMATCH');
     show('write-readback', { value: readback.value, revision: readback.revision, persistedThrough: 'separate MCP read request', shippingExecuted: false });

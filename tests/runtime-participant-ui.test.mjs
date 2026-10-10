@@ -54,7 +54,10 @@ async function fixture(t, { origin = 'http://127.0.0.1:1', reply, fetcher } = {}
   };
   const server = fakeServer();
   const transport = async (url, options) => {
-    const input = JSON.parse(options.body); calls.push({ path: new URL(url).pathname, input, serialized: options.body });
+    const input = JSON.parse(options.body);
+    // This fixture exercises explicit retry when the new read-only lookup is unavailable.
+    if (new URL(url).pathname === '/api/write-status') return Response.json({ state: 'UNKNOWN' });
+    calls.push({ path: new URL(url).pathname, input, serialized: options.body });
     if (fetcher) return fetcher(url, options, input);
     const result = await (reply ? reply(input, server) : server.reply(input));
     return Response.json(result, { status: result.error ? 400 : 200 });

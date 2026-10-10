@@ -131,7 +131,7 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
     if (command.kind === 'REGISTER') return `register:${input.contextId}`;
     if (command.kind === 'GRANT') return `grant:${input.policyId}`;
     if (command.kind === 'FENCE') return `fence:${input.contextId}`;
-    return `${command.kind}:${input.contextId}:${input.requestId}${command.kind === 'ROUTE' ? `:${input.family}` : ''}`;
+    return `${command.kind}:${input.contextId}:${input.requestId}${command.kind === 'ROUTE' ? `:${input.family}${input.attemptId ? `:${input.attemptId}` : ''}` : ''}`;
   };
 
   function transition(state, command, at, sequence) {
@@ -227,7 +227,8 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
       result = { policyId: policy.policyId, contextId: context.contextId, observationId: input.observationId, template: template.id,
         key, value: clone(template.value), revision: world.revision, uses: policy.uses, remaining: policy.maxMutations - policy.uses };
     } else if (command.kind === 'ROUTE') {
-      envelope(input, ['contextId', 'requestId', 'family', 'destination', 'outcome']);
+      envelope(input, ['contextId', 'requestId', 'family', 'destination', 'outcome'], ['attemptId']);
+      if (input.attemptId !== undefined) id(input.attemptId);
       id(input.requestId, 'REQUEST_ID_INVALID'); family(input.family);
       const context = active(state, input.contextId);
       check(['SYNTHETIC', 'ORIGIN'].includes(input.destination) && ['SERVED', 'REFUSED', 'FAILED', 'UNKNOWN'].includes(input.outcome), 'ROUTE_INVALID');
@@ -330,7 +331,27 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
         });
       },
       execute(input) { envelope(input, ['contextId', 'family', 'requestId', 'operation', 'args']); return apply({ kind: 'EXECUTE', input: clone(input) }); },
-      recordRoute(input) { envelope(input, ['contextId', 'requestId', 'family', 'destination', 'outcome']); return apply({ kind: 'ROUTE', input: clone(input) }); },
+      recordRoute(input) { envelope(input, ['contextId', 'requestId', 'family', 'destination', 'outcome'], ['attemptId']); return apply({ kind: 'ROUTE', input: clone(input) }); },
+      // A verified, read-only lookup of the exact original command, never a retry.
+      writeStatus(input) {
+        envelope(input, ['contextId', 'family', 'requestId', 'operation', 'args']);
+        id(input.contextId); id(input.requestId); family(input.family);
+        check(input.operation === 'write', 'WRITE_STATUS_ONLY');
+        const command = { kind: 'EXECUTE', input: clone(input) };
+        return observe(({ state, events, head }) => {
+          const context = state.contexts.find(item => item.contextId === input.contextId);
+          check(context?.disposition === 'DIVERT', 'SYNTHETIC_CONTEXT_REQUIRED');
+          const commandDigest = worldDigest(command);
+          const saved = state.requests.find(item => item.key === commandKey(command));
+          const checkpoint = { head, eventCount: events.length, stateDigest: worldDigest(state) };
+          if (!saved) return { state: 'NOT_OBSERVED', commandDigest, checkpoint };
+          if (saved.digest !== commandDigest) return { state: 'CONFLICT', commandDigest, checkpoint };
+          const event = events.find(item => item.command.kind === 'EXECUTE' && worldDigest(item.command) === commandDigest);
+          check(event, 'COMMIT_EVIDENCE_MISSING');
+          return { state: 'COMMITTED', commandDigest, checkpoint, sequence: event.sequence,
+            eventDigest: event.digest, result: clone(saved.response) };
+        });
+      },
       grantMutation(input) {
         envelope(input, ['policyId', 'contextId', 'expectedRevision', 'allowedTemplates', 'maxMutations', 'expiresAt', 'authority']);
         return apply({ kind: 'GRANT', input: clone(input) });

@@ -166,6 +166,10 @@ function renderTimeline() {
       : group.identity ? 'Operation not supplied' : 'Canonical governance record';
     const heading = node('div', undefined, 'event-heading');
     heading.append(node('h4', operation));
+    if (observedEvidence.canonical?.verifier?.status === 'VERIFIED'
+      && group.canonical.some(event => event.kind === 'EXECUTE' && event.operation === 'write')) {
+      row.append(node('p', 'Canonical write committed. A lost reply does not undo this write. Inspect its request identity before any retry.', 'correlation'));
+    }
     const outcomes = [...new Set(group.collector.map(event => event.outcome))];
     if (outcomes.length === 1) { const state = badge(outcomeLabel(outcomes[0])); state.dataset.state = text(outcomes[0]); heading.append(state); }
     else heading.append(badge(outcomes.length ? 'Mixed outcomes — inspect attempts' : 'No collector outcome'));

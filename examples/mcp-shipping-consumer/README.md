@@ -1,5 +1,7 @@
 # Independent MCP shipping-review consumer
 
+**v0.14.0 recovery:** the current standalone consumer sends one read-only lookup after an interrupted write and continues only when the exact canonical commit is proven. It never automatically resends the write. See [outcomes, reproduction and limitations](../../docs/WRITE_RECOVERY.md).
+
 A small, reusable **scripted** Node client. It imports only the official MCP SDK and Node built-ins, and talks to an existing DungeonQ reference through MCP Streamable HTTP. It does not import the DungeonQ runtime, read a credential bundle, create a server, or receive operator/origin authority.
 
 The task is deliberately narrow: read `order-41` and `review-policy`, save a multiline review to `welcome`, read it back, and issue/use a one-use world ticket. Shipping remains pending. This is synthetic workflow interoperability, not an AI evaluation or shipping connector.

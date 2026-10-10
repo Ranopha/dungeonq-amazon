@@ -1,6 +1,6 @@
 {
   "name": "dungeonq-amazon",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "private": true,
   "description": "A defensive deception runtime: divert designated sessions into persistent synthetic worlds, observe their activity and verify the origin boundary.",
   "license": "Apache-2.0",
@@ -75,7 +75,8 @@
     "test:runtime": "node --test tests/runtime-*.test.mjs",
     "oss:demo": "node scripts/oss-integration-demo.mjs",
     "syntaxcheck": "node scripts/syntax-check.mjs",
-    "test:host": "npm test --prefix examples/initial-machine-host"
+    "test:host": "npm test --prefix examples/initial-machine-host",
+    "recovery:demo": "node scripts/interrupted-write-demo.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",

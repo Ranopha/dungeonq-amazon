@@ -1,5 +1,7 @@
 # External MCP integration example — v0.13.0
 
+**v0.14.0 recovery:** the current standalone consumer sends one read-only lookup after an interrupted write and continues only when the exact canonical commit is proven. It never automatically resends the write. See [outcomes, reproduction and limitations](WRITE_RECOVERY.md).
+
 DungeonQ includes an independent shipping-review consumer at [`examples/mcp-shipping-consumer/`](../examples/mcp-shipping-consumer/README.md). It can be copied into another Node project and connect to an existing `participant-v1` reference using only the public MCP interface. Its runtime dependency is the pinned official `@modelcontextprotocol/sdk`; it imports no DungeonQ runtime implementation.
 
 **Maturity:** a working, locally verified, scripted integration with an artificial reference. No independent adopter, live AI, human presence, production connector, or deception-effectiveness result is established by this example.
