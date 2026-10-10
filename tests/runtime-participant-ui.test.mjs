@@ -9,6 +9,7 @@ import { runInNewContext } from 'node:vm';
 import { createRuntimeClient, RuntimeError } from '../sdk/runtime-client.mjs';
 import { openRuntimeReference } from '../runtime/reference.mjs';
 import { request } from '../runtime/transport.mjs';
+import { interruptedWriteFixture } from '../scripts/lib/interrupted-write-fixture.mjs';
 
 const source = await readFile(new URL('../public/runtime/participant.mjs', import.meta.url), 'utf8');
 const html = await readFile(new URL('../public/runtime/participant.html', import.meta.url), 'utf8');
@@ -42,7 +43,7 @@ function fakeServer() {
     },
   };
 }
-async function fixture(t, { origin = 'http://127.0.0.1:1', reply, fetcher } = {}) {
+async function fixture(t, { origin = 'http://127.0.0.1:1', reply, fetcher, writeStatus = () => Response.json({ state: 'UNKNOWN' }) } = {}) {
   const elements = new Map(), calls = [], timers = new Set();
   const create = tag => ({ tagName: tag, textContent: '', className: '', children: [], dataset: {}, hidden: false,
     disabled: false, value: '', listeners: new Map(), append(...items) { this.children.push(...items); },
@@ -56,7 +57,7 @@ async function fixture(t, { origin = 'http://127.0.0.1:1', reply, fetcher } = {}
   const transport = async (url, options) => {
     const input = JSON.parse(options.body);
     // This fixture exercises explicit retry when the new read-only lookup is unavailable.
-    if (new URL(url).pathname === '/api/write-status') return Response.json({ state: 'UNKNOWN' });
+    if (new URL(url).pathname === '/api/write-status') return writeStatus(url, options);
     calls.push({ path: new URL(url).pathname, input, serialized: options.body });
     if (fetcher) return fetcher(url, options, input);
     const result = await (reply ? reply(input, server) : server.reply(input));
@@ -142,6 +143,26 @@ test('a lost readback retries only that read, never the acknowledged write', asy
   assert.equal(ui.calls.filter(call => call.input.operation === 'write').length, 1);
   const reads = ui.calls.filter(call => call.input.operation === 'read'); assert.equal(reads[0].serialized, reads[1].serialized);
   assert.equal(ui.element('save-state').textContent, 'Saved value read back');
+});
+
+for (const lookupAvailable of [true, false]) test(`unsigned post-commit error preserves UI recovery safety (lookup available: ${lookupAvailable})`, async t => {
+  const f = await interruptedWriteFixture(); t.after(() => f.close());
+  const ui = await fixture(t, { origin: f.gateway.origin, fetcher: (url, options) => fetch(url, options),
+    ...(lookupAvailable ? { writeStatus: (url, options) => fetch(url, options) } : {}) });
+  await ui.connect(f.credentials.actor);
+  ui.element('write-key').value = 'review-findings'; ui.element('write-value').value = 'Artificial findings';
+  f.fault('unsigned-error-after-commit');
+  await ui.dispatch('write-form', 'submit');
+  assert.equal(f.writeAttempts, 1);
+  if (lookupAvailable) {
+    assert.equal(ui.element('save-state').textContent, 'Saved value read back');
+    assert.equal(ui.element('save-state').dataset.state, 'verified');
+  } else {
+    assert.equal(ui.element('uncertain').hidden, false);
+    assert.equal(ui.element('save').disabled, true);
+    await ui.dispatch('refresh'); await ui.dispatch('write-form', 'submit');
+    assert.equal(f.writeAttempts, 1, 'the UI must not turn an uncertain attempt into a new write');
+  }
 });
 
 test('stale revision requires a new snapshot and preserves the review draft without an automatic write retry', async t => {

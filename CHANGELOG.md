@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — recovery security corrections
+
+- Preserve uncertain client outcomes for unsigned upstream errors, invalid proofs and gateway receipt-storage failures after dispatch; recover only through read-only canonical inspection.
+- Restrict global write-status checkpoints and sequence numbers to the operator, and reject authority fields in both actor lookup request bodies.
+- Add fault, UI, concurrency and response-validation regressions. See `docs/SECURITY_REVIEW_20261010.md` for review scope and evidence; this is not a production-security certification.
+
 ## 0.14.0 — 2026-10-10
 
 - Add authenticated, read-only write outcome lookup with exact request/payload binding, verified canonical replay and restart continuity.

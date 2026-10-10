@@ -18,8 +18,17 @@ export async function interruptedWriteFixture() {
         const write = admitted.body.operation === 'write';
         if (write) writeAttempts++;
         if (write && fault === 'before-commit') { fault = 'none'; res.destroy(); return; }
+        if (write && fault === 'unsigned-error-before-commit') {
+          fault = 'none'; send(res, 409, { error: { code: 'REVISION_CONFLICT' } }); return;
+        }
         const result = await request(stateOrigin, '/execute', undefined, admitted);
         if (write && fault === 'after-commit') { fault = 'none'; res.destroy(); return; }
+        if (write && fault === 'unsigned-error-after-commit') {
+          fault = 'none'; send(res, 409, { error: { code: 'REVISION_CONFLICT' } }); return;
+        }
+        if (write && fault === 'invalid-proof-after-commit') {
+          fault = 'none'; send(res, 200, { ...result, mac: 'invalid' }); return;
+        }
         send(res, 200, result);
       }) });
   }
@@ -31,7 +40,7 @@ export async function interruptedWriteFixture() {
   return {
     directory, credentials,
     get gateway() { return gateway; }, get writeAttempts() { return writeAttempts; },
-    fault(value) { if (!['none', 'before-commit', 'after-commit'].includes(value)) throw Error('INVALID_FIXTURE_FAULT'); fault = value; },
+    fault(value) { if (!['none', 'before-commit', 'after-commit', 'unsigned-error-before-commit', 'unsigned-error-after-commit', 'invalid-proof-after-commit'].includes(value)) throw Error('INVALID_FIXTURE_FAULT'); fault = value; },
     async restart() { await gateway.close(); await start(); },
     async close() { await gateway.close(); await collector.close(); await origin.close(); rmSync(directory, { recursive: true, force: true }); }
   };
