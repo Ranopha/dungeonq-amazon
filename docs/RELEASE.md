@@ -1,6 +1,6 @@
-# Current candidate: v0.14.0
+# Current source update: v0.14.0
 
-The recovery source, [reproducible report](WRITE_RECOVERY.md) and updated public walkthrough are version 0.14.0. Final immutable publication still requires exact-source public CI and the runtime/container gate described below. Closed challenge snapshots and existing tags must remain unchanged. Historical v0.13.1 instructions and records follow.
+The recovery source, [reproducible report](WRITE_RECOVERY.md) and updated public walkthrough are version 0.14.0. The functional main commit `6ee781d7ec8730af29abb23a7943c8817995f75f` passed [all five public CI jobs](https://github.com/Ranopha/dungeonq-amazon/actions/runs/38014164173), including the source-bound runtime/container gate. The public walkthrough supplies a source snapshot with generated inventory and checksums. This source update does not claim creation of a new GitHub release tag. Closed challenge snapshots and existing tags must remain unchanged. Historical v0.13.1 instructions and records follow.
 
 # Release and maintenance policy — v0.13.1
 
