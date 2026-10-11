@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "dungeonq.restart-before-lookup-proof/v1",
+  "mode": "SCRIPTED_LOCAL_FAULT_INJECTION",
+  "recordedAt": "2026-10-11T13:52:44.367Z",
+  "sourceVersion": "0.14.0",
+  "status": "PASS",
+  "sourceHashes": {
+    "runtime/store.mjs": "2f1ec108935e9adba72c0c45ff139407f013c2100490b32675b1b1590fd7a16c",
+    "runtime/server.mjs": "2b3ba0b46cfab5b85b0f33e8221d2b6b923c4c9560931865570a42c809c66c61",
+    "runtime/mcp.mjs": "73f24c562120ddcfe1a696a8476c7ed701f62c101170d684e6b46dcd244fdef4",
+    "runtime/outcomes.mjs": "130a9024da19eb14dc088234ac7b1b8d3b1a39e84022d25d25837e6456ef7d41",
+    "sdk/runtime-client.mjs": "7cac18570c1917127578648816090f5fb3ecf0fdd64c0a1e8514566a9aab834d",
+    "scripts/lib/interrupted-write-fixture.mjs": "9a6c4bfdca4690ca0b0fd0c029911a32a5b27bbb3e999ef82a2fcf397e07b0a1",
+    "scripts/restart-recovery-demo.mjs": "95decc60784cbd8473f121f00c804d4bedded29e8bcbec4e3f783c8917e2c13e"
+  },
+  "cases": [
+    {
+      "family": "http",
+      "status": "PASS",
+      "firstStatusLookup": "AFTER_GATEWAY_RESTART",
+      "clientRecreated": true,
+      "state": "COMMITTED",
+      "eventDigest": "8db4b1ac290e216a803e38766797e7438fe96088fc915f3eaa43aa395e0c558b",
+      "operatorMatches": true,
+      "separateReadbackMatches": true,
+      "repeatedLookupLeavesJournalUnchanged": true,
+      "revision": 1,
+      "canonicalWrites": 1,
+      "writeAttempts": 1,
+      "automaticWriteRetries": 0,
+      "retainedUnknownAttempts": 1,
+      "faultedRuntimeEvidence": "FAIL",
+      "divertedOriginAdmissions": 0
+    },
+    {
+      "family": "mcp",
+      "status": "PASS",
+      "firstStatusLookup": "AFTER_GATEWAY_RESTART",
+      "clientRecreated": true,
+      "state": "COMMITTED",
+      "eventDigest": "d9eb73985370e8e1ce80ca503581a7f9c6109934b1b14f2d0517a43df79c3787",
+      "operatorMatches": true,
+      "separateReadbackMatches": true,
+      "repeatedLookupLeavesJournalUnchanged": true,
+      "revision": 1,
+      "canonicalWrites": 1,
+      "writeAttempts": 1,
+      "automaticWriteRetries": 0,
+      "retainedUnknownAttempts": 1,
+      "faultedRuntimeEvidence": "FAIL",
+      "divertedOriginAdmissions": 0
+    }
+  ],
+  "limitations": [
+    "Artificial loopback resources; no model or production test.",
+    "Controlled gateway stop and reopen with the same durable directory and credentials; not a power-loss or disk-loss test.",
+    "Client retains the exact original request and reconnects to the running endpoint; browser reload persistence is not claimed.",
+    "Recovery does not restore missing transport evidence or authorize another write."
+  ]
+}

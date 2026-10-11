@@ -37,6 +37,8 @@ jobs:
       - run: npm run check
       - name: Reproduce interrupted-write recovery without retrying the write
         run: npm run recovery:demo -- "$RUNNER_TEMP/dq-write-recovery.json"
+      - name: Recover through HTTP and MCP only after the gateway restarts
+        run: npm run recovery:restart -- "$RUNNER_TEMP/dq-restart-recovery.json"
       - name: Install the standalone MCP consumer outside the checkout
         run: |
           cp -R examples/mcp-shipping-consumer "$RUNNER_TEMP/dq-mcp-shipping-consumer"
@@ -84,6 +86,7 @@ jobs:
             ${{ runner.temp }}/dq-topology/control.json
             ${{ runner.temp }}/dq-oss-integration.json
             ${{ runner.temp }}/dq-write-recovery.json
+            ${{ runner.temp }}/dq-restart-recovery.json
             ${{ runner.temp }}/dq-oss-consumer-audit.json
             ${{ runner.temp }}/dq-root-dependency-audit.json
           retention-days: 14

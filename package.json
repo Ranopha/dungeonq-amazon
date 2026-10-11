@@ -76,7 +76,8 @@
     "oss:demo": "node scripts/oss-integration-demo.mjs",
     "syntaxcheck": "node scripts/syntax-check.mjs",
     "test:host": "npm test --prefix examples/initial-machine-host",
-    "recovery:demo": "node scripts/interrupted-write-demo.mjs"
+    "recovery:demo": "node scripts/interrupted-write-demo.mjs",
+    "recovery:restart": "node scripts/restart-recovery-demo.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",

@@ -1,3 +1,11 @@
+# Restart-before-lookup follow-up — October 11, 2026
+
+Spencer Truman asked whether the participant could first recover after a gateway restart. The [new proof](../evidence/restart-recovery-v1/report.json) and [reconnect guide](WRITE_RECOVERY.md#what-if-the-gateway-restarts-before-the-first-recovery-lookup) cover that exact ordering through HTTP and real MCP, with fresh client connections and unchanged durable installation data. Each case retains one canonical write, zero automatic write retries, matching original commit/result and separate readback, zero diverted origin admissions, and the unresolved transport record. The faulted installation still reports FAIL.
+
+Local macOS / Node 24.15.0 validation: **504/504 tests**, three deterministic scenarios, source audit, JavaScript syntax check and static build passed. Four new regressions cover both transports, refusal versus UNKNOWN after restart, original versus later values, request conflicts and fenced authority. `npm run recovery:restart` reproduced both recorded cases. The first test draft used the wrong observer digest field; correcting the assertion to the documented `digest` field made the intended comparison executable. This was a test-authoring correction, not a runtime failure. Public CI is recorded separately for the published commit.
+
+These changes add tests, a reproducible proof and documentation; they do not modify runtime behavior, migrate data, change model results or establish power-loss/production recovery. The independently open recovery security review remains a separate patch and must not be described as deployed by this follow-up.
+
 # v0.14.0 recovery validation — October 10, 2026
 
 The current source adds read-only interrupted-write recovery. [Recorded proof](../evidence/write-recovery-v1/report.json) binds the relevant source bytes and six fault/recovery scenes. It is scripted local artificial-resource evidence, with no new model run.
