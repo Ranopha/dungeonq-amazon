@@ -37,7 +37,7 @@ jobs:
       - run: npm run check
       - name: Reproduce interrupted-write recovery without retrying the write
         run: npm run recovery:demo -- "$RUNNER_TEMP/dq-write-recovery.json"
-      - name: Recover through HTTP and MCP only after the gateway restarts
+      - name: Recover HTTP and MCP-family writes via HTTP status after gateway restart
         run: npm run recovery:restart -- "$RUNNER_TEMP/dq-restart-recovery.json"
       - name: Install the standalone MCP consumer outside the checkout
         run: |

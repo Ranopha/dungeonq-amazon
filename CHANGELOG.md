@@ -2,7 +2,8 @@
 
 ## October 11 — restart-before-lookup acceptance
 
-- Add an explicit HTTP and real MCP regression where the first participant recovery lookup occurs after gateway restart and client recreation.
+- Add HTTP-family and MCP-family regressions where the first recovery lookup occurs after gateway restart. Both status queries use HTTP; the MCP case uses its companion `/write-status` endpoint, then recreates an MCP client for a separate `tools/call` readback.
+- Correct the evidence wording on October 12: replace the ambiguous `clientRecreated` field with explicit write, recovery and readback transports, lookup path and MCP connection timing. No MCP-native recovery tool is added or claimed.
 - Preserve refusal/UNKNOWN semantics, original-value versus current-state distinctions and fenced actor authority across restart.
 - Publish a separate reproducible report and reconnect guide; run the proof in Linux/macOS CI. Runtime behavior, the prior film and the October 8 pinned host fixture are unchanged.
 

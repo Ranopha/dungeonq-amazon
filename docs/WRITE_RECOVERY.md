@@ -21,7 +21,7 @@ The report's `status: PASS` means its named recovery assertions passed. The deli
 
 ## Query the exact original write
 
-Actor HTTP: `POST /api/write-status` on the gateway. MCP actor: `POST /write-status` on the MCP listener (same origin as `/mcp`). Authenticate with the same actor Bearer token. Both accept only:
+Actor HTTP: `POST /api/write-status` on the gateway. MCP-family actor: companion HTTP `POST /write-status` on the MCP listener (same origin as `/mcp`). This route is not an MCP tool and is not invoked with `tools/call`. Authenticate with the same actor Bearer token. Both accept only:
 
 ```json
 {
@@ -36,7 +36,7 @@ The server derives context and adapter from the credential and endpoint. The ope
 | State | What the response establishes | Next step |
 | --- | --- | --- |
 | COMMITTED | Authenticated journal replay contains the exact successful command and original saved response, sequence and event digest. | Use the saved response, then read current state separately. Do not create another write. |
-| NOT_COMMITTED | At the returned checkpoint, all observed matching attempts are exact authenticated no-effect refusals and no matching dispatch is pending. | Inspect the refusal and current revision. This is not permission for an automatic retry or a promise about future calls. |
+| NOT_COMMITTED | At the verified journal checkpoint, all observed matching attempts are exact authenticated no-effect refusals and no matching dispatch is pending. | Inspect the refusal and current revision. This is not permission for an automatic retry or a promise about future calls. |
 | UNKNOWN | No conclusive commit/refusal, a pending dispatch, an unsigned error, response loss or missing evidence. Absence alone never means not committed. | Retain the request identity and investigate; automatic retry remains disabled. |
 | CONFLICT | This request identity was used with a different payload or adapter. | Recover the original request details; do not overwrite the identity. |
 
@@ -44,21 +44,28 @@ Every response sets `automaticRetryAllowed: false`. Corrupt/unverifiable canonic
 
 ## What if the gateway restarts before the first recovery lookup?
 
-Yes, when the original durable installation and valid actor authority are retained. The October 11 follow-up specifically tests **write commits → reply is lost → client disconnects → gateway stops and reopens → a new client makes its first write-status query**. The earlier October 10 film recovered before restarting; these are separate recorded checks.
+The local October 11 follow-up tests this ordering with the original durable installation and valid actor authority retained: **write commits → reply is lost → client disconnects → gateway stops and reopens → first HTTP write-status query → separate current-state readback**. In the MCP-family case, the MCP client remains disconnected during recovery lookup and is recreated afterward for the readback. The earlier October 10 film recovered before restarting; these are separate recorded checks.
 
 ```sh
 npm ci --ignore-scripts
 npm run recovery:restart -- /absolute/new/path/restart-recovery.json
 ```
 
-The HTTP and real MCP cases each save exactly one note, recover its original value and commit digest, and perform a separate current-state read. Repeating the status lookup does not alter the canonical journal. Each case keeps its UNKNOWN transport record and overall evidence FAIL; recovery is not a clean transport-acceptance result. [Recorded results](../evidence/restart-recovery-v1/report.json) bind the tested source bytes. CI reruns this command on Linux and macOS.
+| Request family | Original write | First recovery lookup after restart | Later current-state readback |
+| --- | --- | --- | --- |
+| HTTP | HTTP `POST /api/operate` | HTTP `POST /api/write-status` via a new runtime SDK client | HTTP `POST /api/operate` |
+| MCP | MCP `tools/call` → `dungeonq_write` | Companion HTTP `POST /write-status`; no MCP client connected | Recreate MCP client, then `tools/call` → `dungeonq_read` |
+
+The family binds the original request identity; it does not identify the recovery query protocol. An MCP-only client needs a companion HTTP integration to use this lookup. No MCP-native recovery operation is exposed or tested.
+
+Both cases save exactly one note, recover its original value and commit digest, and perform a separate current-state read. Repeating the status lookup does not alter the canonical journal. Each case keeps its UNKNOWN transport record and overall evidence FAIL; recovery is not a clean transport-acceptance result. [Recorded results](../evidence/restart-recovery-v1/report.json) bind the tested source bytes and name `writeTransport`, `recoveryLookupTransport`, `recoveryLookupPath` and `readbackTransport`. `mcpClientConnectedAtFirstLookup` records the connection state before lookup; `mcpClientRecreatedForReadback` applies only to the later MCP read. These replace the ambiguous `clientRecreated` field. CI reruns this command on Linux and macOS.
 
 For a real client reconnect:
 
 1. Preserve the original request ID and **complete original payload**, including the old expected revision. Do not reconstruct it from a later snapshot or allocate a new ID.
 2. Reopen the same private runtime data directory and credentials. Connect to the running endpoint; a launcher using ephemeral ports may print a different URL after restart. Do not initialize a replacement empty world.
 3. Use the actor endpoint matching the original adapter: HTTP `POST /api/write-status`, or MCP's companion HTTP `POST /write-status`. A normal HTTP status lookup cannot recover an MCP request as though it were an HTTP request.
-4. Only COMMITTED supplies a proven original saved result. Read the current record separately, because another authorized write may have changed it. UNKNOWN remains unresolved; NOT_COMMITTED describes an authenticated refusal at its checkpoint. Neither authorizes an automatic retry.
+4. Only COMMITTED supplies a proven original saved result. For MCP, recreate the MCP client against the running `/mcp` endpoint for the separate `dungeonq_read` tool call. Read the current record separately, because another authorized write may have changed it. UNKNOWN remains unresolved; NOT_COMMITTED describes an authenticated refusal at its checkpoint. Neither authorizes an automatic retry.
 
 Regression checks also retain UNKNOWN and authenticated-refusal distinctions across restart, reject a changed expected revision, and verify that a fenced actor stays blocked after restart while the operator can inspect the historical commit. Lookup never restores revoked authority.
 

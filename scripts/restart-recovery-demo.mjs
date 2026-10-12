@@ -15,12 +15,13 @@ export async function runRestartBeforeLookup(family) {
   const f = await interruptedWriteFixture();
   const input = { requestId: `restart-first-${family}`, operation: 'write', args: {
     key: 'welcome', value: 'Review saved before restart.\nShipping still awaits approval.', expectedRevision: 0 } };
-  let mcp;
+  let mcp, mcpConnections = 0;
   async function connect() {
     mcp = new Client({ name: 'restart-recovery-check', version: '1.0.0' });
     await mcp.connect(new StreamableHTTPClientTransport(new URL(f.gateway.mcpEndpoint), {
       requestInit: { headers: { Authorization: `Bearer ${f.credentials.actor}` }, redirect: 'error' }
     }));
+    mcpConnections++;
   }
   async function call(operation, args, requestId) {
     const result = await mcp.callTool({ name: `dungeonq_${operation}`, arguments: { args, requestId } });
@@ -43,6 +44,9 @@ export async function runRestartBeforeLookup(family) {
     assert(event); assert.equal(f.writeAttempts, 1);
     await f.restart();
     const beforeLookup = f.gateway.store.evidence().verifier;
+    // Both lookups are HTTP. The MCP-family route is a companion endpoint,
+    // not tools/call; the MCP client is recreated only for the later readback.
+    const mcpClientConnectedAtFirstLookup = Boolean(mcp);
     const lookup = () => family === 'mcp'
       ? request(new URL(f.gateway.mcpEndpoint).origin, '/write-status', f.credentials.actor, input)
       : createRuntimeClient({ origin: f.gateway.origin, token: f.credentials.actor }).writeStatus(input);
@@ -72,7 +76,12 @@ export async function runRestartBeforeLookup(family) {
     assert.equal(unknown.length, 1); assert.equal(evidence.status, 'FAIL');
     assert.equal(evidence.scope.witness.accepted, 0);
     return { family, status: 'PASS', firstStatusLookup: 'AFTER_GATEWAY_RESTART',
-      clientRecreated: true, state: recovered.state, eventDigest: recovered.eventDigest,
+      writeTransport: family === 'mcp' ? 'MCP_TOOLS_CALL' : 'HTTP',
+      recoveryLookupTransport: 'HTTP', recoveryLookupPath: family === 'mcp' ? '/write-status' : '/api/write-status',
+      mcpClientConnectedAtFirstLookup,
+      readbackTransport: family === 'mcp' ? 'MCP_TOOLS_CALL' : 'HTTP',
+      mcpClientRecreatedForReadback: family === 'mcp' && mcpConnections === 2,
+      state: recovered.state, eventDigest: recovered.eventDigest,
       operatorMatches: true, separateReadbackMatches: true, repeatedLookupLeavesJournalUnchanged: true,
       revision: recovered.result.revision, canonicalWrites: writes.length, writeAttempts: f.writeAttempts,
       automaticWriteRetries: 0, retainedUnknownAttempts: unknown.length,
@@ -91,6 +100,7 @@ export async function runRestartRecoveryDemo() {
       createHash('sha256').update(readFileSync(new URL('../' + path, import.meta.url))).digest('hex')])), cases,
     limitations: ['Artificial loopback resources; no model or production test.',
       'Controlled gateway stop and reopen with the same durable directory and credentials; not a power-loss or disk-loss test.',
+      'Both families recover through HTTP status endpoints; MCP tools/call is used only for the MCP-family write and later readback, not recovery lookup.',
       'Client retains the exact original request and reconnects to the running endpoint; browser reload persistence is not claimed.',
       'Recovery does not restore missing transport evidence or authorize another write.'] };
 }
