@@ -38,11 +38,11 @@ function clearPrivate() {
   session++; client.disconnect(); active = false; connected = false; busy = false;
   revision = null; needsRefresh = true; pending = null; heldTicket = null; expectedReadback = null;
   clearTimeout(ticketTimer);
-  el('actor-token').value = ''; el('write-key').value = 'review-findings'; el('write-value').value = '';
+  el('actor-token').value = ''; el('write-key').value = 'note-review'; el('write-value').value = '';
   for (const id of ['record-rows', 'record-key', 'ticket-key']) el(id).replaceChildren();
   for (const id of ['snapshot-state', 'record-title', 'record-meta', 'record-value', 'save-summary', 'save-readback',
-    'ticket-meta', 'ticket-value', 'request-state', 'request-result', 'retry-description', 'message']) el(id).textContent = '';
-  for (const id of ['private-state', 'record-detail', 'save-result', 'ticket-result', 'message']) el(id).hidden = true;
+    'ticket-meta', 'ticket-value', 'request-state', 'request-result', 'retry-description', 'message', 'trail-state', 'trail-next', 'trail-revealed']) el(id).textContent = '';
+  for (const id of ['private-state', 'record-detail', 'save-result', 'ticket-result', 'message', 'trail-progress']) el(id).hidden = true;
   el('locked-state').hidden = false; el('ticket-state').textContent = 'No ticket held.';
   el('save-state').textContent = 'No save confirmed'; el('save-state').dataset.state = '';
   el('connection-state').textContent = 'Disconnected'; el('revision-state').textContent = 'No server revision loaded';
@@ -50,11 +50,11 @@ function clearPrivate() {
 }
 function projection(operation, value) {
   const fields = {
-    snapshot: ['revision', 'records', 'replayed'],
-    read: ['key', 'value', 'recordRevision', 'revision', 'replayed'],
-    write: ['key', 'value', 'recordRevision', 'revision', 'replayed'],
-    'issue-ticket': ['scope', 'issuedAt', 'expiresAt', 'maxUses', 'revision', 'replayed', 'ticket'],
-    'use-ticket': ['key', 'value', 'recordRevision', 'revision', 'usesRemaining', 'replayed'],
+    snapshot: ['revision', 'records', 'replayed', 'progress', 'revealed'],
+    read: ['key', 'value', 'recordRevision', 'revision', 'replayed', 'progress', 'revealed'],
+    write: ['key', 'value', 'recordRevision', 'revision', 'replayed', 'progress'],
+    'issue-ticket': ['scope', 'issuedAt', 'expiresAt', 'maxUses', 'revision', 'replayed', 'ticket', 'progress'],
+    'use-ticket': ['key', 'value', 'recordRevision', 'revision', 'usesRemaining', 'replayed', 'revealed', 'progress'],
   };
   if (!value || !integer(value.revision) || Object.keys(value).some(key => !fields[operation].includes(key))) {
     throw new RuntimeError('PARTICIPANT_VIEW_REQUIRED');
@@ -70,7 +70,43 @@ function projection(operation, value) {
     throw new RuntimeError('INVALID_PARTICIPANT_RESULT');
   }
   if (operation === 'use-ticket' && !integer(value.usesRemaining)) throw new RuntimeError('INVALID_PARTICIPANT_RESULT');
+  if (Object.hasOwn(value,'revealed') && (!value.revealed || !identifier(value.revealed.key)
+    || !Object.hasOwn(value.revealed,'value') || Object.keys(value.revealed).some(key=>!['key','value'].includes(key)))) {
+    throw new RuntimeError('INVALID_PARTICIPANT_RESULT');
+  }
+  if (Object.hasOwn(value, 'progress')) {
+    const p = value.progress; const next = p?.nextAction;
+    const evidenceView = ['dungeonq.pitching-view/v3', 'dungeonq.pitching-view/v4'].includes(p?.schemaVersion);
+    if (!p || !(p.schemaVersion === 'dungeonq.pitching-view/v2' || evidenceView)
+      || !integer(p.completed) || !integer(p.total) || p.total < 1 || p.total > 4 || p.completed > p.total
+      || (!evidenceView && p.total !== 4)
+      || (evidenceView && (!['UNRESOLVED', 'SUPPORTED', 'UNKNOWN'].includes(p.conclusion) || p.canStop !== true))
+      || !['AVAILABLE', 'PENDING', 'ADVANCED', 'COMPLETE', 'UNAVAILABLE'].includes(p.status)
+      || Object.keys(p).some(key => !['schemaVersion', 'completed', 'total', 'status', 'nextAction', 'notice', ...(evidenceView ? ['conclusion', 'canStop'] : [])].includes(key))
+      || (p.notice !== undefined && safeCode(p.notice) !== p.notice) || !next
+      || !['read', 'write', 'snapshot', 'issue-ticket', 'use-ticket', 'stop'].includes(next.operation)
+      || safeCode(next.reason) !== next.reason || (next.key !== undefined && !identifier(next.key))
+      || (next.family !== undefined && !['http', 'mcp', 'ssh', 'postgres', 'host'].includes(next.family))
+      || Object.keys(next).some(key => !['operation', 'key', 'reason', 'family'].includes(key))) throw new RuntimeError('INVALID_PARTICIPANT_RESULT');
+  }
   return value;
+}
+function renderProgress(value) {
+  if (!value.progress) return;
+  const p = value.progress; const next = p.nextAction;
+  el('trail-progress').hidden = false;
+  const conclusion = { UNRESOLVED: '仍有待查證資料', SUPPORTED: '所需證據已齊備', UNKNOWN: '資料不足，可保留未知結論' }[p.conclusion];
+  el('trail-state').textContent = `${p.status} · 已完成 ${p.completed}/${p.total}。${conclusion ? `${conclusion}。` : ''}曝光紀錄只代表伺服器已提供資料，不代表理解或同意。${value.replayed ? ' 這是原請求的已保存回覆；更新 snapshot 可查看目前進度。' : ''}`;
+  el('trail-next').textContent = next.operation === 'stop' ? `可停止：${next.reason}`
+    : `下一步：${next.operation}${next.key ? ` ${next.key}` : ''}${next.family ? `（使用 ${next.family} 介面）` : ''} · ${next.reason}${p.notice ? ` · ${p.notice}` : ''}`;
+  if (value.revealed) {
+    el('trail-revealed').textContent = `新線索：${value.revealed.key}\n${format(value.revealed.value)}`;
+    for (const id of ['record-key', 'ticket-key']) {
+      if (![...el(id).children].some(option => option.value === value.revealed.key)) {
+        const option = node('option', value.revealed.key); option.value = value.revealed.key; el(id).append(option);
+      }
+    }
+  }
 }
 function renderSnapshot(value) {
   const selected = el('record-key').value, ticketKey = el('ticket-key').value;
@@ -98,7 +134,7 @@ function renderRecord(value) {
     el('save-state').textContent = matches ? 'Saved value read back' : 'Saved record has changed';
     el('save-state').dataset.state = matches ? 'verified' : 'changed';
     el('save-summary').textContent = matches
-      ? `A separate server read returned the saved value at record revision ${value.recordRevision}. Shipping is not approved by this note.`
+      ? `A separate server read returned the saved value at record revision ${value.recordRevision}. This note grants no authority.`
       : 'The write was acknowledged, but a later server read differs. Inspect the current value before writing again.';
     el('save-readback').textContent = format(value.value); expectedReadback = null;
   }
@@ -145,7 +181,7 @@ async function execute(input, atSession) {
   el('revision-state').textContent = `Last server revision ${revision}`;
   describeRequest(input, value);
   if (input.operation === 'snapshot') {
-    renderSnapshot(value); message('Server snapshot loaded. Review the order and policy before saving your findings.');
+    renderSnapshot(value); message('Server snapshot loaded. Review the available records before saving your findings.');
   } else if (input.operation === 'read') {
     renderRecord(value); message(`Read ${value.key} from the server at revision ${value.revision}.`);
   } else if (input.operation === 'write') {
@@ -159,11 +195,14 @@ async function execute(input, atSession) {
   } else {
     heldTicket = null; clearTimeout(ticketTimer);
     el('ticket-state').textContent = `Ticket consumed · ${value.usesRemaining} uses remaining reported by the server.`;
-    el('ticket-value').textContent = format(value.value);
+    el('ticket-value').textContent = format(value.value)
+      + (value.revealed ? `\n\n新線索：${value.revealed.key}\n${format(value.revealed.value)}` : '');
     el('ticket-meta').textContent = `${value.key} · record revision ${value.recordRevision} · world revision ${value.revision}`;
     el('ticket-result').hidden = false;
-    message('Ticket read returned. Refresh the snapshot to see any later server changes.');
+    message(value.revealed ? '已開啟新線索。更新 snapshot 後即可選取及查核。' : 'Ticket read returned. Refresh the snapshot to see any later server changes.');
   }
+  // A write's separate readback renders the newer progress; do not replace it with the write acknowledgement.
+  if (input.operation !== 'write') renderProgress(value);
 }
 function failure(error) {
   const code = safeCode(error?.code);

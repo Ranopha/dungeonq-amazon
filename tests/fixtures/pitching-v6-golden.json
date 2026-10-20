@@ -1,0 +1,113 @@
+{
+  "sourceCommit": "7b6773452daf2104a1731e39062fd053f457b8a1",
+  "rows": [
+    {
+      "variant": "navigation-v6",
+      "seed": 17,
+      "mode": "adaptive",
+      "digest": "871673f1354f079b500f750869ca4747e137a68f776e14ec596c6e974682adb7"
+    },
+    {
+      "variant": "navigation-v6",
+      "seed": 17,
+      "mode": "fixed",
+      "digest": "c9327b2cfd8016ac07595cb08aa47df7961bfa5d58d8de41442cc7d9b861074f"
+    },
+    {
+      "variant": "navigation-v6",
+      "seed": 29,
+      "mode": "adaptive",
+      "digest": "16cc67179285bbf3f852a7d37325a89ecb1640649de12fe0d447ac87acbbf074"
+    },
+    {
+      "variant": "navigation-v6",
+      "seed": 29,
+      "mode": "fixed",
+      "digest": "9aea1d42b817c020f7307ac1daa19f23259932faae94a90fe8ea6b03a1366f1a"
+    },
+    {
+      "variant": "navigation-v6",
+      "seed": 43,
+      "mode": "adaptive",
+      "digest": "f0c51250f4a8a9c38c3da92277183e16ce275a7a5737426ea269ad85a6cbce28"
+    },
+    {
+      "variant": "navigation-v6",
+      "seed": 43,
+      "mode": "fixed",
+      "digest": "070139ad45d93e06053a9b32eef012718282217e550ae9c249c4b63b33e45e46"
+    },
+    {
+      "variant": "fixed-guidance-v6",
+      "seed": 17,
+      "mode": "adaptive",
+      "digest": "02f393032add1a785d0d7bd45e630f5465c179db501e25202cc7d1dd673ea066"
+    },
+    {
+      "variant": "fixed-guidance-v6",
+      "seed": 17,
+      "mode": "fixed",
+      "digest": "858f9100fec91974735a3b0abf55e729f88aeedfefaebc084efa577f1d0fdbb3"
+    },
+    {
+      "variant": "fixed-guidance-v6",
+      "seed": 29,
+      "mode": "adaptive",
+      "digest": "7bd3770b7bacbb77beab083ae36f04a8c9de32155dacd332284cefb556f0349d"
+    },
+    {
+      "variant": "fixed-guidance-v6",
+      "seed": 29,
+      "mode": "fixed",
+      "digest": "c74053dc6dbf152c7f13c8ef248cec6331cc01678ae2a0e5d594bb0b5fce4345"
+    },
+    {
+      "variant": "fixed-guidance-v6",
+      "seed": 43,
+      "mode": "adaptive",
+      "digest": "6f7474e1017709e9c94e4788fe7df36079f64b8795602cf42243ac4cb708aa90"
+    },
+    {
+      "variant": "fixed-guidance-v6",
+      "seed": 43,
+      "mode": "fixed",
+      "digest": "bb8e81b43179cb99cd79910b52eb81ee5a1d5ffda439af6daf97f233961c9613"
+    },
+    {
+      "variant": "behavior-guidance-v6",
+      "seed": 17,
+      "mode": "adaptive",
+      "digest": "1c41adea38fd3b70e702bcb1a602ce264dcaf91c9f7483afd21719800bb0476a"
+    },
+    {
+      "variant": "behavior-guidance-v6",
+      "seed": 17,
+      "mode": "fixed",
+      "digest": "df037ece64d19f96dcad107053bb126a78d47daba8723368a9691bb16a8d6dcf"
+    },
+    {
+      "variant": "behavior-guidance-v6",
+      "seed": 29,
+      "mode": "adaptive",
+      "digest": "22fa95acf952248b4ca2a75b16e31919aebc57f506cf9b3559b7771ef5ec16bb"
+    },
+    {
+      "variant": "behavior-guidance-v6",
+      "seed": 29,
+      "mode": "fixed",
+      "digest": "c1eadbeecfff47d03020e3623d8eedd7c1bfda7255e4999451ba3be2d230c187"
+    },
+    {
+      "variant": "behavior-guidance-v6",
+      "seed": 43,
+      "mode": "adaptive",
+      "digest": "6e732405b8f80283178284dea32184490cddebb56b2f8d2d33e8ac7e155e8d6c"
+    },
+    {
+      "variant": "behavior-guidance-v6",
+      "seed": 43,
+      "mode": "fixed",
+      "digest": "4fe227a49ca36eaa0addbd384752a156aca42b150b041d3aab38cacd44f14f09"
+    }
+  ]
+}

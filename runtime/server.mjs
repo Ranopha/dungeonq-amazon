@@ -7,6 +7,10 @@ import { participantResult } from './participant-view.mjs';
 import { openAuxiliary } from './auxiliary.mjs';
 import { runtimeJson } from './contracts.mjs';
 import { openRuntimeStore } from './store.mjs';
+import { createPitchingBlueprint } from './pitching.mjs';
+import { openPitchControl } from './pitch-control.mjs';
+import { openPitchResponse } from './pitch-response.mjs';
+import { openPitchOwnerLock } from './pitch-owner-lock.mjs';
 import { startNetworkAdapters } from './network.mjs';
 import { startRuntimeMcp } from './mcp.mjs';
 import { startHostBroker } from './host.mjs';
@@ -19,14 +23,29 @@ const RESULT_DOMAIN = 'dungeonq.canonical-result/v1';
 
 export async function startRuntimeGateway({ directory, credentials, facadeOrigin, facadeFactory, originOrigin, collectorOrigin,
   host = '127.0.0.1', port = 0, stateHost = '127.0.0.1', statePort = 0, mcpPort = 0,
-  sshPort = 0, postgresPort = 0, network = true, hostBroker = true, presentation = 'diagnostic-v1' }) {
-  insist(['diagnostic-v1', 'participant-v1'].includes(presentation), 'PRESENTATION_INVALID');
-  const participant = presentation === 'participant-v1';
-  const blueprint = participant ? JSON.parse(readFileSync(new URL('./blueprints/participant.json', import.meta.url), 'utf8')) : undefined;
-  const store = openRuntimeStore({ path: join(directory, 'runtime.sqlite'), ...(blueprint ? { blueprint } : {}) });
+  sshPort = 0, postgresPort = 0, network = true, hostBroker = true, presentation = 'diagnostic-v1',
+  pitchingSeed = 17, pitchingMode = 'adaptive', pitchingVariant = 'baseline', pitchingLimits, alertSender, pitchOwnerLock }) {
+  insist(['diagnostic-v1', 'participant-v1', 'pitching-v1'].includes(presentation), 'PRESENTATION_INVALID');
+  insist(alertSender === undefined || typeof alertSender === 'function', 'PITCH_DELIVERY_INVALID');
+  const pitching = presentation === 'pitching-v1';
+  const participant = presentation !== 'diagnostic-v1';
+  const blueprint = pitching ? createPitchingBlueprint({seed: pitchingSeed, mode: pitchingMode, pitchingVariant})
+    : participant ? JSON.parse(readFileSync(new URL('./blueprints/participant.json', import.meta.url), 'utf8')) : undefined;
+  const ownerLock = pitching ? pitchOwnerLock ?? openPitchOwnerLock({path:join(directory,'pitch-owner.sqlite')}) : undefined;
+  let store;
+  try { store = openRuntimeStore({ path: join(directory, 'runtime.sqlite'), ...(blueprint ? { blueprint } : {}) }); }
+  catch(e) {ownerLock?.close();throw e;}
   let journal;
-  try { journal = openAuxiliary(join(directory, 'gateway.sqlite'), 'CREATE TABLE IF NOT EXISTS gateway_meta(id INTEGER PRIMARY KEY,config TEXT NOT NULL,baseline TEXT); CREATE TABLE IF NOT EXISTS gateway_attempts(event_id TEXT PRIMARY KEY,payload TEXT NOT NULL,acknowledged INTEGER NOT NULL); CREATE TABLE IF NOT EXISTS gateway_pending(event_id TEXT PRIMARY KEY,input_digest TEXT NOT NULL); CREATE TABLE IF NOT EXISTS gateway_previews(id TEXT PRIMARY KEY,body TEXT NOT NULL,digest TEXT NOT NULL,result TEXT);', 'gateway_meta'); } catch(e) { store.close(); throw e; }
-  const running = []; let closed = false;
+  try { journal = openAuxiliary(join(directory, 'gateway.sqlite'), 'CREATE TABLE IF NOT EXISTS gateway_meta(id INTEGER PRIMARY KEY,config TEXT NOT NULL,baseline TEXT); CREATE TABLE IF NOT EXISTS gateway_attempts(event_id TEXT PRIMARY KEY,payload TEXT NOT NULL,acknowledged INTEGER NOT NULL); CREATE TABLE IF NOT EXISTS gateway_pending(event_id TEXT PRIMARY KEY,input_digest TEXT NOT NULL); CREATE TABLE IF NOT EXISTS gateway_previews(id TEXT PRIMARY KEY,body TEXT NOT NULL,digest TEXT NOT NULL,result TEXT);', 'gateway_meta'); } catch(e) { store.close(); ownerLock?.close(); throw e; }
+  let control; let response;
+  try { if (pitching) {
+    control = openPitchControl({path: join(directory, 'pitch-control.sqlite'), limits: pitchingLimits});
+    response = openPitchResponse({path: join(directory, 'pitch-response.sqlite')});
+    control.recoverRelayClaims();
+  } }
+  catch(e) { response?.close(); control?.close(); journal.close(); store.close(); ownerLock?.close(); throw e; }
+  const recoverableLeases = new Set(control?.snapshot().activeLeases.map(row=>row.leaseId) ?? []);
+  const running = []; const activeDispatches = new Set(); let closed = false; let deliveryTimer; let deliveryWork;
   try {
   const configDigest = digest(credentials);
   const saved = journal.prepare('SELECT * FROM gateway_meta WHERE id=1').get();
@@ -41,9 +60,64 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
     if (existing?.state === 'FENCED') insist(existing.tenantId === entry.tenantId && existing.worldId === entry.worldId && existing.disposition === entry.disposition, 'REGISTRATION_CONFLICT');
     else store.registerContext(entry);
   }
-  } catch(e) { journal.close(); store.close(); throw e; }
+  } catch(e) { response?.close(); control?.close(); journal.close(); store.close(); ownerLock?.close(); throw e; }
   const authenticate = (token, family) => store.decide({ token, family });
   const owner = req => insist(equalToken(bearer(req), credentials.owner), 'UNAUTHORIZED');
+  const scopes = new WeakSet(); const requestScopes = new WeakMap();
+  function beforeOperation({token, family}) {
+    insist(!closed, 'SERVICE_UNAVAILABLE');
+    if (!control) return undefined;
+    let decision;
+    try { decision = authenticate(token, family); } catch { /* Count failed authentication without retaining the supplied token. */ }
+    const lease = decision?.disposition === 'NORMAL_AUTHORIZED' ? null : control.begin({family});
+    let finished = false; let failed; let inFlight = 0; let completion;
+    const complete = () => {
+      if (finished || !completion || inFlight > 0) return;
+      const fault = failed ?? completion.error;
+      if (lease) control.finish(lease, {outcome: fault || completion.status >= 400 ? 'UNKNOWN' : 'SERVED',
+        code: fault?.code ?? (completion.status >= 400 ? 'INPUT_REJECTED' : 'OK')});
+      finished = true;
+    };
+    const scope = {
+      fail(error) { failed ??= error; },
+      retain() {
+        insist(!finished && !completion, 'PITCH_SCOPE_CLOSED'); inFlight++;
+        let released = false;
+        return () => { if (!released) { released = true; inFlight--; complete(); } };
+      },
+      finish({status = 200, error} = {}) {
+        if (finished) return;
+        completion ??= {status, error}; complete();
+      }
+    };
+    scopes.add(scope);
+    try { if (lease && decision?.disposition === 'DIVERT') control.bind(lease, {contextId: decision.contextId}); }
+    catch(error) { scope.finish({error}); throw error; }
+    return scope;
+  }
+  const beforeHttp = family => req => {
+    if (!control || family === 'http' && (!req.url.startsWith('/api/') || req.url === '/api/capabilities')) return;
+    // The control plane remains usable when the diverted workload has exhausted its budget.
+    if (family === 'http' && equalToken(bearer(req), credentials.owner)
+      && !['/api/operate','/api/write-status'].includes(req.url)) return;
+    const scope = beforeOperation({token: bearer(req), family}); requestScopes.set(req, scope);
+    return info => scope.finish(info);
+  };
+  function deliverAlerts() {
+    if (!control || !alertSender || deliveryWork || closed) return deliveryWork;
+    deliveryWork = control.deliver({send: alertSender}).catch(() => { /* Durable outbox remains authoritative. */ })
+      .finally(() => { deliveryWork = undefined; });
+    return deliveryWork;
+  }
+  async function dispatch(input) {
+    const owned = !scopes.has(input.pitchScope);
+    const scope = owned ? beforeOperation(input) : input.pitchScope;
+    const release = scope?.retain();
+    const work = performDispatch(input); activeDispatches.add(work);
+    try { return await work; }
+    catch(error) { scope?.fail(error); throw error; }
+    finally { activeDispatches.delete(work); release?.(); if (owned) scope?.finish(); }
+  }
   const originWitness = () => request(originOrigin, '/witness', credentials.witness, undefined, {maxResponse:16777216});
   async function ensureBaseline() {
     const row = journal.prepare('SELECT baseline FROM gateway_meta WHERE id=1').get();
@@ -67,17 +141,19 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
       journal.exec('COMMIT');
     } catch (e) { journal.exec('ROLLBACK'); throw e; }
   }
-  async function dispatch({ token, family, requestId, operation, args }) {
+  async function performDispatch({ token, family, requestId, operation, args }) {
     runtimeJson({token,family,requestId,operation,args},32768);
     insist(typeof requestId === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(requestId), 'REQUEST_ID_INVALID');
     insist(operationNames.includes(operation), 'OPERATION_DENIED');
     const decision = authenticate(token, family);
+    const eventId = randomUUID(); const destination = decision.disposition === 'DIVERT' ? 'SYNTHETIC' : 'ORIGIN';
+    const entry = {contextId: decision.contextId, worldId: decision.worldId, epoch: decision.epoch, eventId};
+    if (control && destination === 'SYNTHETIC') control.reserveEntry(entry);
     if (participant && operation === 'use-ticket' && decision.disposition === 'DIVERT') {
       exact(args, ['ticket'], ['key']);
       args = { ...args, ticket: store.resolveParticipantTicket(args.ticket, decision.contextId) };
     }
     await ensureBaseline(); await flush();
-    const eventId = randomUUID(); const destination = decision.disposition === 'DIVERT' ? 'SYNTHETIC' : 'ORIGIN';
     insist(journal.prepare('SELECT (SELECT count(*) FROM gateway_attempts)+(SELECT count(*) FROM gateway_pending) AS n').get().n < 20000, 'JOURNAL_CAPACITY_LIMIT');
     // Reserve a durable attempt before any external effect. Crash gaps can never produce a green report.
     journal.prepare('INSERT INTO gateway_pending VALUES(?,?)').run(eventId,digest({contextId:decision.contextId,family,requestId,operation,args}));
@@ -105,8 +181,9 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
     }
     const event = { eventId, contextId: decision.contextId, requestId, family, destination, outcome, resultDigest: digest(result) };
     append(event); store.recordRoute({ contextId: decision.contextId, requestId, family, destination, outcome, attemptId: eventId });
+    if (control && destination === 'SYNTHETIC') { control.recordEntry(entry); void deliverAlerts(); }
     try { await flush(); } catch { throw failure('EVIDENCE_INCOMPLETE'); }
-    if (destination === 'SYNTHETIC' && operation === 'use-ticket' && !result.replayed && result.observationId) {
+    if (!pitching && destination === 'SYNTHETIC' && operation === 'use-ticket' && !result.replayed && result.observationId) {
       const snapshot = store.snapshot();
       const policy = snapshot.policies.find(p => p.contextId === decision.contextId && p.expiresAt > Date.now() && p.uses < p.maxMutations);
       if (policy) {
@@ -156,7 +233,16 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
   ];
   const limitations = ['Artificial registered origin and disposable credentials only.', 'Local process separation is not production or infrastructure isolation.',
     'Owner bearer is a reference machine capability, not attestation of human presence.', 'This evidence endpoint measures runtime behavior only; model identity and deception efficacy require a separate experiment record.'];
-  const status = () => ({ ...store.snapshot(), schemaVersion: 'dungeonq.runtime-status/v1', profile: 'LOCAL_INTEGRATION_REFERENCE', presentation, capabilities: capabilities(), limitations });
+  const responseStatus = () => {
+    const snapshot = control.snapshot();
+    for (const row of snapshot.outbox.filter(item => item.status === 'ACCEPTED'))
+      response.recordProviderAcceptance(snapshot.incidents.find(incident => incident.incidentId === row.incidentId), row);
+    return response.snapshot();
+  };
+  const pitchStatus = () => ({...control.snapshot(), deliveryConfigured: Boolean(alertSender),
+    ownership:{bootId:ownerLock.bootId,scope:'COOPERATIVE_SINGLE_GATEWAY'},recoverableLeases:[...recoverableLeases]});
+  const status = () => ({ ...store.snapshot(), schemaVersion: 'dungeonq.runtime-status/v1', profile: 'LOCAL_INTEGRATION_REFERENCE', presentation, capabilities: capabilities(), limitations,
+    ...(control ? {pitching: pitchStatus()} : {}) });
   async function evidence() {
     const checks = []; let witness; let observed; let canonical;
     const add = (id, pass, detail) => checks.push({ id, status: pass === null ? 'INCONCLUSIVE' : pass ? 'PASS' : 'FAIL', detail });
@@ -188,8 +274,11 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
   }
   async function close() {
     if (closed) return; closed = true;
+    clearInterval(deliveryTimer);
     for (const item of running.reverse()) await item.close().catch(() => {});
-    journal.close(); store.close();
+    await Promise.allSettled([...activeDispatches]);
+    await deliveryWork;
+    response?.close(); control?.close(); journal.close(); store.close(); ownerLock?.close();
   }
   try {
     const state = await serve(async (req,res) => {
@@ -221,12 +310,53 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
         return send(res,200,{schemaVersion:'dungeonq.capability-catalogue/v1',capabilities:capabilities(),limitations});
       }
       if(req.method==='POST' && req.url==='/api/operate') {
-        const input=await body(req);exact(input,['requestId','operation','args']);return send(res,200,await dispatch({...input,token:bearer(req),family:'http'}));
+        const input=await body(req);exact(input,['requestId','operation','args']);return send(res,200,await dispatch({...input,token:bearer(req),family:'http',pitchScope:requestScopes.get(req)}));
       }
       if(req.method==='POST' && req.url==='/api/write-status') {
         const input=await body(req); return send(res,200,participantWriteStatus({...input,token:bearer(req),family:'http'}));
       }
       owner(req);
+      if(req.url.startsWith('/api/pitching/')) {
+        insist(control, 'PITCHING_DISABLED');
+        if(req.method==='GET' && req.url==='/api/pitching/status') return send(res,200,pitchStatus());
+        if(req.method==='GET' && req.url==='/api/pitching/response/status') return send(res,200,responseStatus());
+        if(req.method==='POST' && req.url==='/api/pitching/relay/claim') {
+          const input=await body(req); return send(res,200,control.claimRelay(input));
+        }
+        if(req.method==='POST' && req.url==='/api/pitching/relay/complete') {
+          const input=await body(req); const result=control.completeRelay(input); responseStatus();
+          return send(res,200,result);
+        }
+        if(req.method==='POST' && req.url==='/api/pitching/response/event') {
+          const input=await body(req); responseStatus();
+          const incident=control.snapshot().incidents.find(row=>row.incidentId===input.incidentId);
+          const canonical=incident && store.snapshot().contexts.find(row=>row.contextId===incident.contextId);
+          return send(res,200,response.record(input,{incident,canonical}));
+        }
+        if(req.method==='POST' && req.url==='/api/pitching/reconcile-lease') {
+          const input=await body(req);exact(input,['leaseId']);
+          insist(recoverableLeases.has(input.leaseId),'PITCH_RECOVERY_DENIED');
+          const result=control.reconcile({leaseId:input.leaseId,evidence:{kind:'STOPPED_EXECUTION',
+            referenceId:ownerLock.bootId,operatorId:'reference-owner'}});
+          recoverableLeases.delete(input.leaseId);return send(res,200,result);
+        }
+        if(req.method==='POST' && req.url==='/api/pitching/reconcile-delivery') {
+          const input=await body(req);exact(input,['incidentId','evidence']);
+          const result=control.reconcileDelivery(input); responseStatus(); return send(res,200,result);
+        }
+        if(req.method==='POST' && req.url==='/api/pitching/ack') {
+          const input=await body(req);exact(input,['incidentId']);
+          return send(res,200,control.acknowledge({...input,operatorId:'reference-owner'}));
+        }
+        if(req.method==='POST' && req.url==='/api/pitching/resolve') {
+          const input=await body(req);exact(input,['incidentId','resolution']);
+          if(input.resolution==='FENCED') {
+            const incident=control.snapshot().incidents.find(i=>i.incidentId===input.incidentId);
+            insist(incident && store.snapshot().contexts.some(c=>c.contextId===incident.contextId && c.state==='FENCED' && c.epoch>incident.epoch),'PITCH_FENCE_REQUIRED');
+          }
+          return send(res,200,control.resolve({...input,operatorId:'reference-owner'}));
+        }
+      }
       if(req.method==='POST' && req.url==='/api/operator/write-status') {
         const input=await body(req);exact(input,['contextId','family','requestId','operation','args']);
         return send(res,200,inspectWrite(input));
@@ -236,6 +366,7 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
       if(req.method==='POST' && req.url==='/api/policy/preview') {
         const input=await body(req);exact(input,['contextId','action'],['reason']);
         insist(['FENCE','GRANT_MUTATION'].includes(input.action),'ACTION_DENIED');
+        insist(!pitching || input.action==='FENCE','PITCHING_LEGACY_MUTATION_DENIED');
         insist(input.reason===undefined || typeof input.reason==='string' && input.reason.trim().length>0 && input.reason.length<=180,'REASON_INVALID');
         const snap=store.snapshot();const context=snap.contexts.find(c=>c.contextId===input.contextId);
         insist(context?.disposition==='DIVERT' && context.state==='ACTIVE','CONTEXT_DENIED');
@@ -263,7 +394,9 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
         insist(p.expiresAt>=Date.now(),'APPROVAL_EXPIRED');
         insist(context?.state==='ACTIVE' && context.epoch===p.epoch,'APPROVAL_STALE');
         const world=snap.worlds.find(w=>w.worldId===context.worldId && w.tenantId===context.tenantId);
-        insist(world.revision===p.expectedRevision,'APPROVAL_STALE');
+        // Pitching response fences revoke this context/epoch independently of data writes.
+        // Legacy profiles and mutation grants retain the reviewed world revision contract.
+        if(!pitching || p.action!=='FENCE')insist(world.revision===p.expectedRevision,'APPROVAL_STALE');
         if(p.action==='FENCE')store.fence({contextId:p.contextId,reason:fenceReason});
         else store.grantMutation({policyId:p.proposalId,contextId:p.contextId,expectedRevision:p.expectedRevision,
           allowedTemplates:['follow-up'],maxMutations:8,expiresAt:p.policyExpiresAt,authority:{principalId:'reference-owner',kind:'OWNER'}});
@@ -272,15 +405,19 @@ export async function startRuntimeGateway({ directory, credentials, facadeOrigin
         journal.prepare('UPDATE gateway_previews SET result=? WHERE id=?').run(JSON.stringify(result),p.proposalId);return send(res,200,result);
       }
       throw failure('NOT_FOUND');
-    },{host,port,browser:true});running.push(http);
-    const mcp=await startRuntimeMcp({dispatch,authenticate,writeStatus:participantWriteStatus,host,port:mcpPort});running.push(mcp);
+    },{host,port,browser:true,before:beforeHttp('http'),protectedRequest:req=>Boolean(control)
+      && req.url?.startsWith('/api/') && !['/api/operate','/api/write-status','/api/capabilities'].includes(req.url)
+      && equalToken(bearer(req),credentials.owner)});running.push(http);
+    const mcp=await startRuntimeMcp({dispatch,authenticate,writeStatus:participantWriteStatus,host,port:mcpPort,
+      before:beforeHttp('mcp'),requestScope:req=>requestScopes.get(req)});running.push(mcp);
     let protocols;
     if(network) {
       const keys=privateJson(join(directory,'ssh-host.json'),()=>({key:generateKeyPairSync('rsa',{modulusLength:2048,privateKeyEncoding:{type:'pkcs1',format:'pem'},publicKeyEncoding:{type:'spki',format:'pem'}}).privateKey}));
-      protocols=await startNetworkAdapters({dispatch,sshHostKey:keys.key,sshPort,postgresPort});running.push(protocols);
+      protocols=await startNetworkAdapters({dispatch,before:beforeOperation,sshHostKey:keys.key,sshPort,postgresPort});running.push(protocols);
     }
     let broker;
-    if(hostBroker) {broker=await startHostBroker({socketPath:join(directory,'workload.sock'),dispatch});running.push(broker);}
+    if(hostBroker) {broker=await startHostBroker({socketPath:join(directory,'workload.sock'),dispatch,before:beforeOperation});running.push(broker);}
+    if(control && alertSender) { void deliverAlerts(); deliveryTimer=setInterval(deliverAlerts,1000); deliveryTimer.unref(); }
     return {origin:http.origin,port:http.port,stateOrigin:state.origin,statePort:state.port,mcpEndpoint:mcp.origin+'/mcp',protocols,
       brokerPath:broker?.socketPath,store,dispatch,status,evidence,close};
   } catch(e) {await close();throw e;}

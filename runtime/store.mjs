@@ -6,7 +6,9 @@ import { openPrivateWorldDatabase } from '../server/world-store.mjs';
 import { worldDigest } from '../world/kernel.mjs';
 import { RUNTIME_VERSION, RUNTIME_PROFILE, RUNTIME_OPERATIONS, runtimeCheck as check,
   runtimeEnvelope as envelope, runtimeId as id, runtimeInteger as integer, runtimeFamily as family,
-  runtimeValue, validateRuntimeBlueprint } from './contracts.mjs';
+  runtimeValue, validateRuntimeBlueprint, isPitchingBlueprint } from './contracts.mjs';
+import { createPitchingProgress, pitchingRecordVisible, pitchingObservation, advancePitching,
+  isPitchingV2, pitchingExposures, advancePitchingV2, pitchingProgressView } from './pitching.mjs';
 
 const DEFAULT_BLUEPRINT = JSON.parse(readFileSync(new URL('./blueprints/default.json', import.meta.url), 'utf8'));
 const ISSUER = 'dungeonq-runtime-v1';
@@ -46,7 +48,7 @@ function checkSchema(db) {
 export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKeyPath, blueprint = DEFAULT_BLUEPRINT } = {}) {
   check(typeof path === 'string' && isAbsolute(path), 'STORAGE_PATH_INVALID');
   check(typeof clock === 'function', 'CLOCK_INVALID');
-  const pack = validateRuntimeBlueprint(blueprint); const bounds = pack.bounds;
+  const pack = validateRuntimeBlueprint(blueprint); const bounds = pack.bounds; const pitching = isPitchingBlueprint(pack);
   const existed = existsSync(path);
   if (!existed) {
     // A dangling symlink must not be treated as a new database.
@@ -103,8 +105,13 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
     return context;
   };
   const worldFor = (state, context) => {
-    const world = state.worlds.find(item => item.tenantId === context.tenantId && item.worldId === context.worldId);
+    const world = state.worlds.find(item => item.tenantId === context.tenantId && item.worldId === context.worldId
+      && (!pitching || item.contextId === context.contextId));
     check(world, 'WORLD_UNKNOWN'); return world;
+  };
+  const visibleRecord = (world, context, key) => {
+    check(!pitching || pitchingRecordVisible(context, key), 'RECORD_UNKNOWN');
+    const record = world.records.find(item => item.key === key); check(record, 'RECORD_UNKNOWN'); return record;
   };
   const revision = (world, expected) => {
     integer(expected, 0, Number.MAX_SAFE_INTEGER, 'REVISION_INVALID'); check(world.revision === expected, 'REVISION_CONFLICT');
@@ -143,10 +150,12 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
       check(['DIVERT', 'NORMAL_AUTHORIZED'].includes(input.disposition), 'DISPOSITION_INVALID');
       check(!state.contexts.some(item => item.contextId === input.contextId || item.tokenHash === input.tokenHash), 'CONTEXT_CONFLICT');
       check(state.contexts.length < bounds.maxContexts, 'CONTEXT_LIMIT');
-      const context = { ...input, epoch: 1, state: 'ACTIVE' }; state.contexts.push(context);
-      if (input.disposition === 'DIVERT' && !state.worlds.some(item => item.tenantId === input.tenantId && item.worldId === input.worldId)) {
+      const context = { ...input, epoch: 1, state: 'ACTIVE',
+        ...(pitching && input.disposition === 'DIVERT' ? { pitching: createPitchingProgress(pack, at) } : {}) }; state.contexts.push(context);
+      if (input.disposition === 'DIVERT' && !state.worlds.some(item => item.tenantId === input.tenantId && item.worldId === input.worldId
+        && (!pitching || item.contextId === input.contextId))) {
         check(state.worlds.length < bounds.maxWorlds, 'WORLD_LIMIT');
-        state.worlds.push({ tenantId: input.tenantId, worldId: input.worldId, revision: 0,
+        state.worlds.push({ tenantId: input.tenantId, worldId: input.worldId, revision: 0, ...(pitching ? { contextId: input.contextId } : {}),
           records: pack.records.map(record => ({ ...clone(record), revision: 0 })) });
       }
       result = safeContext(context);
@@ -155,12 +164,23 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
       family(input.family); id(input.requestId, 'REQUEST_ID_INVALID');
       check(RUNTIME_OPERATIONS.includes(input.operation), 'OPERATION_UNSUPPORTED');
       const context = active(state, input.contextId, true); const world = worldFor(state, context); const args = input.args;
-      if (input.operation === 'snapshot') { envelope(args, []); result = clone(world); }
+      let usedTicket;
+      if (input.operation === 'snapshot') {
+        envelope(args, []); result = pitching ? { tenantId: world.tenantId, worldId: world.worldId, revision: world.revision,
+          records: clone(world.records.filter(record => pitchingRecordVisible(context, record.key))) } : clone(world);
+      }
       else if (input.operation === 'read') {
-        envelope(args, ['key']); id(args.key); const record = world.records.find(item => item.key === args.key);
-        check(record, 'RECORD_UNKNOWN'); result = { key: record.key, value: clone(record.value), recordRevision: record.revision, revision: world.revision };
+        envelope(args, ['key']); id(args.key); const record = visibleRecord(world, context, args.key);
+        result = { key: record.key, value: clone(record.value), recordRevision: record.revision, revision: world.revision };
       } else if (input.operation === 'write') {
-        envelope(args, ['key', 'value', 'expectedRevision']); id(args.key); revision(world, args.expectedRevision);
+        envelope(args, ['key', 'value', 'expectedRevision']); id(args.key);
+        if (pitching) {
+          if (pack.records.some(record => record.key === args.key)) {
+            visibleRecord(world, context, args.key); check(false, 'PITCHING_RECORD_IMMUTABLE');
+          }
+          check(/^note-[A-Za-z0-9][A-Za-z0-9_-]*$/u.test(args.key), 'PITCHING_NOTE_SCOPE_DENIED');
+        }
+        revision(world, args.expectedRevision);
         const value = runtimeValue(args.value, bounds.maxValueBytes); const record = world.records.find(item => item.key === args.key);
         check(record || world.records.length < bounds.maxRecords, 'RECORD_LIMIT'); world.revision++;
         if (record) { record.value = value; record.revision = world.revision; }
@@ -170,7 +190,7 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
         envelope(args, [], ['scope', 'ttlMs', 'maxUses']);
         const scope = args.scope ?? ['welcome']; const ttlMs = args.ttlMs ?? Math.min(60000, bounds.maxTicketTtlMs); const maxUses = args.maxUses ?? 1;
         check(Array.isArray(scope) && scope.length >= 1 && scope.length <= bounds.maxScopeKeys && new Set(scope).size === scope.length, 'TICKET_SCOPE_INVALID');
-        for (const key of scope) { id(key); check(world.records.some(item => item.key === key), 'RECORD_UNKNOWN'); }
+        for (const key of scope) { id(key); visibleRecord(world, context, key); }
         integer(ttlMs, 1, bounds.maxTicketTtlMs, 'TICKET_TTL_INVALID'); integer(maxUses, 1, 8, 'TICKET_USES_INVALID');
         check(state.tickets.length < bounds.maxTickets, 'TICKET_LIMIT');
         const body = { schemaVersion: 'dungeonq.wrong-ticket/v1', ticketId: worldDigest({ contextId: context.contextId, epoch: context.epoch, requestId: input.requestId }),
@@ -181,15 +201,30 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
       } else {
         envelope(args, ['ticket'], ['key']); const key = args.key ?? 'welcome'; id(key);
         const ticket = inspectTicket(state, args.ticket, context, at, key); check(ticket.uses < ticket.body.maxUses, 'TICKET_EXHAUSTED');
-        const record = world.records.find(item => item.key === key); check(record, 'RECORD_UNKNOWN'); ticket.uses++;
+        const record = visibleRecord(world, context, key); ticket.uses++;
+        usedTicket = ticket;
+        const revealed = pitching && !isPitchingV2(pack) ? advancePitching({ pack, context, world, observations: state.observations, input, at, sequence }) : null;
         result = { ticketId: ticket.body.ticketId, key, value: clone(record.value), recordRevision: record.revision,
-          revision: world.revision, usesRemaining: ticket.body.maxUses - ticket.uses };
+          revision: world.revision, usesRemaining: ticket.body.maxUses - ticket.uses, ...(revealed ? { revealed } : {}) };
       }
       const observationId = `obs-${sequence}`;
-      state.observations.push({ observationId, contextId: context.contextId, epoch: context.epoch,
-        worldRevision: world.revision, requestId: input.requestId, operation: input.operation, usedBy: null });
+      const observation = { observationId, contextId: context.contextId, epoch: context.epoch,
+        worldRevision: world.revision, requestId: input.requestId, operation: input.operation, usedBy: null,
+        ...(pitching ? pitchingObservation(input, result, pack) : {}) };
+      state.observations.push(observation);
+      if (isPitchingV2(pack)) {
+        const options = { pack, context, world, observations: state.observations, tickets: state.tickets, input, at, sequence, usedTicket };
+        const advanced = advancePitchingV2(options);
+        Object.assign(result, advanced, { revision: world.revision }); observation.worldRevision = world.revision;
+        if (input.operation === 'snapshot') result.records = clone(world.records.filter(record => pitchingRecordVisible(context, record.key)));
+        observation.exposures = pitchingExposures(input, result);
+        if (input.operation === 'read' && result.revealed) observation.exposures.push({ key: result.revealed.key,
+          recordRevision: world.records.find(item => item.key === result.revealed.key).revision, valueDigest: worldDigest(result.revealed.value) });
+        result.progress = pitchingProgressView(options, { advanced: Boolean(result.revealed), reason: advanced.progress.notice });
+      }
       result.observationId = observationId;
     } else if (command.kind === 'GRANT') {
+      check(!pitching, 'PITCHING_LEGACY_MUTATION_DENIED');
       envelope(input, ['policyId', 'contextId', 'expectedRevision', 'allowedTemplates', 'maxMutations', 'expiresAt', 'authority']);
       id(input.policyId); envelope(input.authority, ['principalId', 'kind']); id(input.authority.principalId);
       check(input.authority.kind === 'OWNER', 'OWNER_AUTHORITY_REQUIRED');
@@ -206,6 +241,7 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
         expiresAt: input.expiresAt, principalId: input.authority.principalId };
       state.policies.push(policy); result = { ...clone(policy), revision: world.revision, remaining: policy.maxMutations };
     } else if (command.kind === 'MUTATE') {
+      check(!pitching, 'PITCHING_LEGACY_MUTATION_DENIED');
       envelope(input, ['policyId', 'contextId', 'observationId', 'requestId', 'expectedRevision', 'template']);
       id(input.policyId); id(input.observationId); id(input.requestId, 'REQUEST_ID_INVALID'); id(input.template);
       const context = active(state, input.contextId, true); const world = worldFor(state, context); revision(world, input.expectedRevision);
@@ -358,12 +394,13 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
       },
       mutate(input) { envelope(input, ['policyId', 'contextId', 'observationId', 'requestId', 'expectedRevision', 'template']); return apply({ kind: 'MUTATE', input: clone(input) }); },
       fence(input) { envelope(input, ['contextId', 'reason']); return apply({ kind: 'FENCE', input: clone(input) }); },
-      snapshot() { return observe(({ state }) => ({ schemaVersion: 'dungeonq.runtime-snapshot/v1', profile: RUNTIME_PROFILE,
+      snapshot() { return observe(({ state }) => ({ schemaVersion: 'dungeonq.runtime-snapshot/v1', profile: pack.profile,
         contexts: state.contexts.map(safeContext), worlds: clone(state.worlds), policies: clone(state.policies), observations: clone(state.observations),
         bounds: { ...clone(bounds), reservedFenceEvents: bounds.maxContexts, reservedFenceBytes: bounds.maxContexts * FENCE_RESERVE_BYTES },
-        blueprint: { id: pack.id, digest: worldDigest(pack), allowedTemplates: pack.templates.map(item => item.id) } })); },
+        blueprint: { id: pack.id, digest: worldDigest(pack), allowedTemplates: pack.templates.map(item => item.id),
+          ...(pitching ? { profile: pack.profile, pitching: clone(pack.pitching) } : {}) } })); },
       evidence() {
-        return observe(({ state, events, head }) => ({ schemaVersion: 'dungeonq.runtime-evidence/v1', profile: RUNTIME_PROFILE,
+        return observe(({ state, events, head }) => ({ schemaVersion: 'dungeonq.runtime-evidence/v1', profile: pack.profile,
           events: events.map(event => {
             const input = event.command.input;
             const details = Object.fromEntries(['contextId', 'tenantId', 'worldId', 'requestId', 'family', 'operation', 'destination', 'outcome', 'policyId', 'template', 'observationId']
@@ -372,6 +409,8 @@ export function openRuntimeStore({ path, clock = Date.now, signingKey, signingKe
               previousDigest: event.previousDigest, requestDigest: worldDigest(event.command), responseDigest: worldDigest(event.response),
               stateDigest: event.stateDigest, digest: event.digest };
           }),
+          ...(pitching ? { pitching: state.contexts.filter(context => context.pitching).map(context => ({ contextId: context.contextId,
+            ...clone(context.pitching) })) } : {}),
           verifier: { status: 'VERIFIED', version: RUNTIME_VERSION, method: 'AUTHENTICATED_JOURNAL_REPLAY', eventCount: events.length,
             head, stateDigest: worldDigest(state), scope: 'LOCAL_CANONICAL_STATE', independentWitness: false } }));
       },

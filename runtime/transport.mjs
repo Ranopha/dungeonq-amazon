@@ -44,7 +44,7 @@ export function send(res, status, body) {
 export function sendError(res, error) {
   const code = /^[A-Z][A-Z0-9_]{1,79}$/.test(error?.code ?? '') ? error.code : 'SERVICE_UNAVAILABLE';
   const status = /UNAUTHORIZED|AUTH_REQUIRED/.test(code) ? 401 : /DENIED|FENCED/.test(code) ? 403
-    : /CONFLICT|STALE/.test(code) ? 409 : /LIMIT|CAPACITY/.test(code) ? 429 : /UNAVAILABLE|UNKNOWN/.test(code) ? 503 : 400;
+    : /CONFLICT|STALE/.test(code) ? 409 : /LIMIT|CAPACITY|PITCH_(GLOBAL|CONTEXT)_(TOTAL|RATE|CONCURRENT|ERRORS)/.test(code) ? 429 : /UNAVAILABLE|UNKNOWN/.test(code) ? 503 : 400;
   if (!res.headersSent) send(res, status, { error: { code, message: code.replaceAll('_', ' ') } }); else res.destroy();
 }
 export async function body(req, limit = 32768) {
@@ -55,13 +55,17 @@ export async function body(req, limit = 32768) {
   try { return runtimeJson(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(chunks))),limit); }
   catch { throw failure('JSON_INVALID'); }
 }
-export async function serve(handler, { host = '127.0.0.1', port = 0, browser = false } = {}) {
-  let active = 0; let requests = 0; let until = Date.now() + 60000;
+export async function serve(handler, { host = '127.0.0.1', port = 0, browser = false, before,
+  protectedRequest, requestLimit = 12000, protectedRequestLimit = 1200 } = {}) {
+  const lanes = {shared: {active:0, requests:0, until:0}, control: {active:0, requests:0, until:0}};
   const server = http.createServer({ maxHeaderSize: 8192 }, async (req, res) => {
-    let admitted = false;
+    let admitted = false; let finish; let caught; let lane;
     try {
-      if (Date.now() >= until) { requests = 0; until = Date.now() + 60000; }
-      insist(++requests <= 12000 && active < 64, 'CAPACITY_LIMIT'); active++; admitted = true;
+      const privileged = protectedRequest?.(req) === true;
+      lane = lanes[privileged ? 'control' : 'shared'];
+      if (Date.now() >= lane.until) { lane.requests = 0; lane.until = Date.now() + 60000; }
+      insist(++lane.requests <= (privileged ? protectedRequestLimit : requestLimit)
+        && lane.active < (privileged ? 8 : 64), 'CAPACITY_LIMIT'); lane.active++; admitted = true;
       const expected = req.headers.host;
       insist(typeof expected === 'string' && expected.length < 128 && req.rawHeaders.filter((v, i) => i % 2 === 0 && v.toLowerCase() === 'host').length === 1, 'HOST_DENIED');
       if (host === '127.0.0.1') insist(expected === `127.0.0.1:${server.address().port}` && req.socket.remoteAddress === '127.0.0.1', 'HOST_DENIED');
@@ -69,8 +73,12 @@ export async function serve(handler, { host = '127.0.0.1', port = 0, browser = f
       else insist(!req.headers.origin && !req.headers.cookie, 'BROWSER_DENIED');
       insist(!req.headers['sec-fetch-site'] || ['same-origin', 'none'].includes(req.headers['sec-fetch-site']), 'ORIGIN_DENIED');
       insist(typeof req.url === 'string' && req.url.length <= 256 && /^\/[A-Za-z0-9_./-]*$/.test(req.url), 'PATH_DENIED');
+      finish = before?.(req);
       await handler(req, res);
-    } catch (e) { sendError(res, e); } finally { if (admitted) active--; }
+    } catch (e) { caught = e; sendError(res, e); } finally {
+      try { finish?.({ status: res.statusCode, error: caught }); } catch { res.destroy(); }
+      if (admitted) lane.active--;
+    }
   });
   server.maxConnections = 128; server.headersTimeout = 5000; server.requestTimeout = 5000;
   server.timeout = 6000; server.keepAliveTimeout = 1000;

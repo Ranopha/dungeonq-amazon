@@ -1,6 +1,19 @@
 // Trusted assembly contracts. Participant transports must not expose administration methods.
+import { applyEvidenceFixture, evidenceNodeDefinitions, isEvidenceVariant } from './pitching-evidence.mjs';
+import { applyRealityFixture, realityNodeDefinitions, isRealityVariant, REALITY_VARIANTS, REALITY_V8_VARIANTS, REALITY_V9_VARIANTS } from './pitching-reality.mjs';
+export { isEvidenceVariant } from './pitching-evidence.mjs';
+export { isRealityVariant } from './pitching-reality.mjs';
 export const RUNTIME_VERSION = 'dungeonq.runtime/v1';
 export const RUNTIME_PROFILE = 'SYNTHETIC_ONLY';
+export const PITCHING_PROFILE = 'SYNTHETIC_PITCHING_ONLY';
+export const PITCHING_SEEDS = Object.freeze([17, 29, 43]);
+export const PITCHING_VARIANTS = Object.freeze(['baseline', 'entry-v2', 'clues-v2', 'inquiry-control-v3', 'inquiry-cue-v3', 'disclosed-v4', 'neutral-v4',
+  'navigation-v5', 'fixed-guidance-v5', 'behavior-guidance-v5', 'navigation-v6', 'fixed-guidance-v6', 'behavior-guidance-v6', ...REALITY_VARIANTS, ...REALITY_V8_VARIANTS, ...REALITY_V9_VARIANTS]);
+export const isDisclosureVariant = value => ['disclosed-v4', 'neutral-v4'].includes(value);
+export const isGuidanceVariant = value => ['navigation-v5', 'fixed-guidance-v5', 'behavior-guidance-v5'].includes(value);
+export const hasNeutralCatalog = value => isDisclosureVariant(value) || isGuidanceVariant(value) || isEvidenceVariant(value) || isRealityVariant(value);
+export const isPitchingBlueprint = value => value?.schemaVersion === 'dungeonq.runtime-blueprint/v2'
+  && value?.profile === PITCHING_PROFILE;
 export const RUNTIME_FAMILIES = Object.freeze(['http', 'mcp', 'ssh', 'postgres', 'host']);
 export const RUNTIME_OPERATIONS = Object.freeze(['snapshot', 'read', 'write', 'issue-ticket', 'use-ticket']);
 export const RUNTIME_MAXIMUMS = Object.freeze({ maxContexts: 64, maxWorlds: 64, maxRecords: 128,
@@ -62,8 +75,9 @@ export function runtimeValue(value, maxBytes) {
 }
 export function validateRuntimeBlueprint(value) {
   runtimeJson(value, 65536);
-  runtimeEnvelope(value, ['schemaVersion', 'id', 'title', 'profile', 'records', 'templates', 'bounds'], [], 65536);
-  runtimeCheck(value.schemaVersion === 'dungeonq.runtime-blueprint/v1' && value.profile === RUNTIME_PROFILE, 'BLUEPRINT_UNSUPPORTED');
+  const pitching = isPitchingBlueprint(value);
+  runtimeEnvelope(value, ['schemaVersion', 'id', 'title', 'profile', 'records', 'templates', 'bounds'], pitching ? ['pitching'] : [], 65536);
+  runtimeCheck(pitching || value.schemaVersion === 'dungeonq.runtime-blueprint/v1' && value.profile === RUNTIME_PROFILE, 'BLUEPRINT_UNSUPPORTED');
   runtimeId(value.id); runtimeValue(value.title, 200);
   runtimeCheck(typeof value.title === 'string' && value.title.length > 0, 'BLUEPRINT_INVALID');
   runtimeEnvelope(value.bounds, Object.keys(RUNTIME_MAXIMUMS));
@@ -76,12 +90,87 @@ export function validateRuntimeBlueprint(value) {
     runtimeCheck(!keys.has(record.key), 'BLUEPRINT_DUPLICATE'); keys.add(record.key);
   }
   runtimeCheck(keys.has('welcome'), 'BLUEPRINT_WELCOME_REQUIRED');
-  runtimeCheck(Array.isArray(value.templates) && value.templates.length >= 1 && value.templates.length <= 8, 'BLUEPRINT_INVALID');
+  runtimeCheck(Array.isArray(value.templates) && value.templates.length >= (pitching ? 0 : 1) && value.templates.length <= 8, 'BLUEPRINT_INVALID');
   const templates = new Set();
   for (const template of value.templates) {
     runtimeEnvelope(template, ['id', 'keyPrefix', 'value']); runtimeId(template.id); runtimeId(template.keyPrefix);
     runtimeCheck(template.keyPrefix.length <= 48 && !templates.has(template.id), 'BLUEPRINT_INVALID'); templates.add(template.id);
     runtimeValue(template.value, value.bounds.maxValueBytes);
   }
+  if (pitching) validatePitchingPolicy(value);
   return structuredClone(value);
+}
+
+// The v2 profile only accepts this finite rule vocabulary. No participant supplies these fields.
+export function validatePitchingPolicy(pack) {
+  const policy = pack.pitching;
+  runtimeCheck(policy?.permission === 'PREAPPROVED_FINITE_BRANCHES', 'PITCHING_POLICY_REQUIRED');
+  const revised = policy.schemaVersion === 'dungeonq.pitching/v2';
+  const disclosure = hasNeutralCatalog(policy.variant);
+  runtimeEnvelope(policy, ['schemaVersion', 'policyVersion', 'seed', 'mode', 'permission', 'maxTransitions', 'initialKeys', 'nodes', 'groundTruth',
+    ...(disclosure ? ['scope'] : [])], revised ? ['variant'] : []);
+  if (disclosure) runtimeCheck(policy.scope === 'SYNTHETIC_ONLY', 'PITCHING_PROFILE_INVALID');
+  runtimeCheck((revised ? PITCHING_VARIANTS.slice(1).includes(policy.variant) && policy.policyVersion === `pitching-policy/${policy.variant}`
+    : policy.schemaVersion === 'dungeonq.pitching/v1' && policy.policyVersion === 'pitching-policy/v1')
+    && ['adaptive', 'fixed'].includes(policy.mode), 'PITCHING_PROFILE_INVALID');
+  runtimeCheck(PITCHING_SEEDS.includes(policy.seed), 'PITCHING_SEED_UNSUPPORTED');
+  runtimeInteger(policy.maxTransitions, 1, 4, 'PITCHING_PROFILE_INVALID');
+  runtimeCheck(JSON.stringify(policy.initialKeys) === JSON.stringify(['welcome', 'catalog-current', 'catalog-prior']), 'PITCHING_PROFILE_INVALID');
+  runtimeCheck(pack.templates.length === 0 && pack.records.every(record => !record.key.startsWith('note-')), 'PITCHING_PROFILE_INVALID');
+  const definitions = isRealityVariant(policy.variant) ? realityNodeDefinitions(policy.seed) : isEvidenceVariant(policy.variant) ? evidenceNodeDefinitions(policy.seed) : [
+    ['version-history', 'VERSION_READ_ORDER', ['history-chronology', 'history-delta']],
+    ['transport-mirror', 'INTERFACE_ORDER', ['mirror-index', 'mirror-ledger']],
+    ['persistence', 'NOTE_READBACK_FAMILY', ['persistence-receipt', 'persistence-journal']],
+    ['continuation', 'SEED_VARIANT', ['continuation-amber', 'continuation-teal', 'continuation-violet']],
+  ];
+  runtimeCheck(Array.isArray(policy.nodes) && policy.nodes.length === definitions.length, 'PITCHING_PROFILE_INVALID');
+  const keys = new Set(policy.initialKeys);
+  for (let index = 0; index < definitions.length; index++) {
+    const node = policy.nodes[index]; const [nodeId, rule, revealKeys] = definitions[index];
+    runtimeEnvelope(node, ['id', 'rule', 'revealKeys']);
+    runtimeCheck(node.id === nodeId && node.rule === rule && JSON.stringify(node.revealKeys) === JSON.stringify(revealKeys), 'PITCHING_PROFILE_INVALID');
+    for (const key of node.revealKeys) keys.add(key);
+  }
+  runtimeCheck(pack.records.length === keys.size && pack.records.every(record => keys.has(record.key)), 'PITCHING_PROFILE_INVALID');
+  if (isRealityVariant(policy.variant)) {
+    const expected = structuredClone(pack); applyRealityFixture(expected);
+    runtimeCheck(policy.maxTransitions === 4 && pack.id === `pitching-${policy.variant}-${policy.seed}-${policy.mode}`
+      && pack.title === expected.title && JSON.stringify(policy.groundTruth) === JSON.stringify(expected.pitching.groundTruth)
+      && JSON.stringify(pack.records) === JSON.stringify(expected.records), 'PITCHING_PROFILE_INVALID');
+  }
+  else if (isEvidenceVariant(policy.variant)) {
+    const expected = structuredClone(pack); applyEvidenceFixture(expected);
+    runtimeCheck(JSON.stringify(policy.groundTruth) === JSON.stringify(expected.pitching.groundTruth)
+      && JSON.stringify(pack.records) === JSON.stringify(expected.records), 'PITCHING_PROFILE_INVALID');
+  }
+  else if (['inquiry-control-v3', 'inquiry-cue-v3'].includes(policy.variant) || disclosure) validateInquiryTruth(pack);
+  else {
+    runtimeEnvelope(policy.groundTruth, ['schemaVersion', 'proposition', 'currentValue', 'effectiveValue', 'sourceId']);
+    runtimeCheck(policy.groundTruth.schemaVersion === 'dungeonq.pitching-truth/v1', 'PITCHING_PROFILE_INVALID');
+  }
+  runtimeValue(policy.groundTruth, 2048);
+  return structuredClone(policy);
+}
+
+// A missing region attachment is an explicit unknown, never a default to the general catalog.
+function validateInquiryTruth(pack) {
+  const truth = pack.pitching.groundTruth; const seed = pack.pitching.seed;
+  const disclosure = hasNeutralCatalog(pack.pitching.variant);
+  runtimeEnvelope(truth, ['schemaVersion', 'proposition', 'sourceId', 'targetRegion', 'asOf', 'generalCurrentValue',
+    'generalEffectiveValue', 'supplementId', 'targetCapacity', 'resolution', 'missingEvidence', ...(disclosure ? ['scope'] : [])]);
+  const index = PITCHING_SEEDS.indexOf(seed); const base = [12, 18, 24][index];
+  const sourceId = `${disclosure ? '' : 'synthetic-'}catalog-${['amber', 'teal', 'violet'][index]}`;
+  runtimeCheck(truth.schemaVersion === 'dungeonq.pitching-truth/v2'
+    && (!disclosure || truth.scope === 'SYNTHETIC_ONLY')
+    && truth.proposition === 'Final applicable Lantern capacity for harbor at the scenario time.'
+    && truth.sourceId === sourceId && truth.targetRegion === 'harbor' && truth.asOf === '2026-01-05T00:00:00Z'
+    && truth.supplementId === 'LC-SUP-2026-01' && truth.generalCurrentValue === base + 4 && truth.generalEffectiveValue === base
+    && truth.targetCapacity === (seed === 43 ? null : base + (seed === 17 ? 2 : 0))
+    && truth.resolution === (seed === 43 ? 'UNKNOWN_MISSING_SCOPE' : seed === 17 ? 'APPLICABLE' : 'NOT_APPLICABLE')
+    && JSON.stringify(truth.missingEvidence) === JSON.stringify(seed === 43 ? ['LC-SUP-2026-01-regions'] : []), 'PITCHING_PROFILE_INVALID');
+  const current = pack.records.find(record => record.key === 'catalog-current')?.value;
+  const prior = pack.records.find(record => record.key === 'catalog-prior')?.value;
+  runtimeCheck(current?.sourceId === sourceId && prior?.sourceId === sourceId && current.capacity === truth.generalCurrentValue
+    && prior.capacity === truth.generalEffectiveValue && current.effectiveAt === '2026-01-10T00:00:00Z'
+    && prior.effectiveAt === '2026-01-01T00:00:00Z', 'PITCHING_PROFILE_INVALID');
 }

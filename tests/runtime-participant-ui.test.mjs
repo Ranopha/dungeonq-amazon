@@ -19,6 +19,21 @@ const snapshot = (revision = 0) => ({ revision, records: [
   { key: 'review-policy', value: 'Shipping approval is a separate process.', revision: 0 },
 ] });
 
+test('participant 接受 v6/v7 的實際節點數、UNKNOWN 與停止，同時拒絕未知欄位', async t => {
+  for (const version of [3, 4]) for (const conclusion of ['UNRESOLVED', 'SUPPORTED', 'UNKNOWN']) {
+    const progress = { schemaVersion: `dungeonq.pitching-view/v${version}`, completed: conclusion === 'UNRESOLVED' ? 1 : 2,
+      total: 2, status: conclusion === 'UNRESOLVED' ? 'AVAILABLE' : 'COMPLETE', conclusion, canStop: true,
+      nextAction: { operation: conclusion === 'UNRESOLVED' ? 'read' : 'stop', reason: 'EVIDENCE_CHECK' } };
+    const ui = await fixture(t, { reply: input => ({ ...snapshot(), progress }) });
+    await ui.connect(); assert.equal(ui.element('private-state').hidden, false);
+    assert.match(ui.element('trail-state').textContent, /已完成 [12]\/2/);
+    assert.match(ui.element('trail-state').textContent, conclusion === 'UNKNOWN' ? /資料不足/ : conclusion === 'SUPPORTED' ? /已齊備/ : /待查證/);
+    const invalid = await fixture(t, { reply: input => ({ ...snapshot(), progress: { ...progress, groundTruth: 'private' } }) });
+    await invalid.connect(); assert.equal(invalid.element('private-state').hidden, true);
+    assert.doesNotMatch(invalid.allText(), /groundTruth/);
+  }
+});
+
 function fakeServer() {
   let revision = 0; const values = new Map(snapshot().records.map(row => [row.key, row.value]));
   const results = new Map(); let uses = 0;
@@ -237,7 +252,70 @@ test('mismatched readback is visibly unverified and all record content remains i
 test('participant controls are labeled and have no owner, persistence or injection paths', () => {
   assert.match(html, /<html lang="en">/); assert.match(html, /type="password" autocomplete="off"/);
   assert.match(html, /role="status" aria-live="polite" tabindex="-1"/); assert.match(html, /class="skip-link"/);
-  assert.match(html, /Self-hosted manual fixture/); assert.match(html, /does not approve shipping/);
+  assert.match(html, /Self-hosted manual fixture/); assert.match(html, /does not grant authority/);
   for (const id of ['actor-token', 'record-key', 'write-key', 'write-value', 'ticket-key']) assert.match(html, new RegExp(`label for="${id}"`));
   assert.doesNotMatch(source + html, /localStorage|sessionStorage|\.innerHTML|\.outerHTML|document\.write|console\.|location\.(?:search|hash)|client\.(?:status|evidence|preview|apply)\(/);
+});
+
+test('pitching participant UI reads a newly revealed branch and preserves private response boundaries',async t=>{
+ const directory=mkdtempSync(join(tmpdir(),'dq-pitch-ui-'));
+ const runtime=await openRuntimeReference({directory,network:false,hostBroker:false,presentation:'pitching-v1'});
+ t.after(async()=>{await runtime.close();rmSync(directory,{recursive:true,force:true});});
+ const ui=await fixture(t,{origin:runtime.origin,fetcher:(url,options)=>fetch(url,options)});
+ await ui.connect(runtime.credentials.actor);
+ for(const key of ['catalog-current','catalog-prior']){ui.element('record-key').value=key;await ui.dispatch('read-form','submit');}
+ ui.element('ticket-key').value='catalog-current';await ui.dispatch('issue-form','submit');await ui.dispatch('use-ticket');
+ assert.equal(ui.element('private-state').hidden,false);
+ assert.match(ui.element('ticket-value').textContent,/history-delta/);
+ assert.doesNotMatch(ui.allText(),/groundTruth|policyDigest|blueprintDigest/);
+ await ui.dispatch('refresh');ui.element('record-key').value='history-delta';await ui.dispatch('read-form','submit');
+ assert.match(ui.element('record-value').textContent,/effectiveVersion/);
+ ui.element('write-key').value='note-ui';ui.element('write-value').value='Synthetic local observation';
+ await ui.dispatch('write-form','submit');assert.equal(ui.element('save-state').textContent,'Saved value read back');
+});
+
+test('v2 UI shows deferred snapshot/read reveals, a visible pending next step and completion, then clears them on disconnect', async t => {
+  const directory = mkdtempSync(join(tmpdir(), 'dq-pitch-v2-ui-'));
+  const runtime = await openRuntimeReference({ directory, network: false, hostBroker: false,
+    presentation: 'pitching-v1', pitchingVariant: 'clues-v2', pitchingSeed: 29 });
+  t.after(async () => { await runtime.close(); rmSync(directory, { recursive: true, force: true }); });
+  const call = (requestId, operation, args = {}) => request(runtime.origin, '/api/operate', runtime.credentials.actor, { requestId, operation, args });
+  const early = await call('ui-early-issue', 'issue-ticket', { scope: ['catalog-current'] });
+  const pending = await call('ui-early-use', 'use-ticket', { key: 'catalog-current', ticket: early.ticket });
+  assert.equal(pending.progress.status, 'PENDING');
+  const ui = await fixture(t, { origin: runtime.origin, fetcher: (url, options) => fetch(url, options) });
+  await ui.connect(runtime.credentials.actor);
+  assert.equal(ui.element('trail-progress').hidden, false); assert.match(ui.element('trail-state').textContent, /ADVANCED.*1\/4/);
+  assert.match(ui.element('trail-revealed').textContent, /history-chronology.*\n/);
+  assert.ok(ui.element('ticket-key').children.some(row => row.value === 'history-chronology'));
+  ui.element('ticket-key').value = 'history-chronology'; await ui.dispatch('issue-form', 'submit'); await ui.dispatch('use-ticket');
+  assert.match(ui.element('trail-state').textContent, /PENDING/); assert.match(ui.element('trail-next').textContent, /read catalog-current.*mcp/);
+  const rpc = async (id, method, params) => {
+    const response = await fetch(runtime.mcpEndpoint, { method: 'POST', headers: { Authorization: `Bearer ${runtime.credentials.actor}`,
+      'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' }, body: JSON.stringify({ jsonrpc: '2.0', id, method, params }) });
+    assert.equal(response.status, 200); return response.json();
+  };
+  await rpc(1, 'initialize', { protocolVersion: '2025-11-25', capabilities: {}, clientInfo: { name: 'ui-v2-fixture', version: '1' } });
+  const mirror = await rpc(2, 'tools/call', { name: 'dungeonq_read', arguments: { requestId: 'ui-other-family', args: { key: 'catalog-current' } } });
+  assert.equal(mirror.result.structuredContent.progress.completed, 2);
+  await ui.dispatch('refresh');
+  ui.element('write-key').value = 'note-ui'; ui.element('write-value').value = 'UNKNOWN remains a permitted conclusion.';
+  await ui.dispatch('write-form', 'submit'); assert.equal(ui.element('save-state').textContent, 'Saved value read back');
+  ui.element('ticket-key').value = 'note-ui'; await ui.dispatch('issue-form', 'submit'); await ui.dispatch('use-ticket');
+  assert.match(ui.element('trail-revealed').textContent, /persistence-receipt/);
+  ui.element('ticket-key').value = 'persistence-receipt'; await ui.dispatch('issue-form', 'submit'); await ui.dispatch('use-ticket');
+  assert.match(ui.element('trail-state').textContent, /PENDING.*3\/4/);
+  ui.element('record-key').value = 'persistence-receipt'; await ui.dispatch('read-form', 'submit');
+  assert.match(ui.element('trail-state').textContent, /COMPLETE.*4\/4/); assert.match(ui.element('trail-next').textContent, /可停止/);
+  assert.match(ui.element('trail-revealed').textContent, /continuation-teal/);
+  assert.doesNotMatch(ui.allText(), /groundTruth|policyDigest|blueprintDigest|authorizationRequestId|"decisions"/);
+  await ui.dispatch('disconnect'); assert.equal(ui.element('trail-progress').hidden, true);
+  assert.equal(ui.element('trail-next').textContent, ''); assert.equal(ui.element('trail-revealed').textContent, '');
+});
+
+test('v2 UI rejects unknown progress authority fields before displaying a response', async t => {
+  const ui = await fixture(t, { reply: () => ({ ...snapshot(), progress: { schemaVersion: 'dungeonq.pitching-view/v2',
+    completed: 0, total: 4, status: 'AVAILABLE', nextAction: { operation: 'stop', reason: 'TRAIL_COMPLETE' }, groundTruth: 'must-never-render' } }) });
+  await ui.connect(); assert.equal(ui.element('private-state').hidden, true);
+  assert.equal(ui.allText().includes('must-never-render'), false); assert.match(ui.element('message').textContent, /INVALID_PARTICIPANT_RESULT/);
 });

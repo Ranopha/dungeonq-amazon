@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { startRuntimeGateway } from './server.mjs';
+import { openPitchOwnerLock } from './pitch-owner-lock.mjs';
 import { insist, newToken, privateJson } from './transport.mjs';
 
 async function startChild(role, options) {
@@ -26,17 +27,19 @@ async function startChild(role, options) {
   } catch(e) {await close();throw e;}
 }
 
-export async function openRuntimeReference({ directory, port=0, mcpPort=0, sshPort=0, postgresPort=0, network=true, hostBroker=true, presentation='diagnostic-v1' }={}) {
+export async function openRuntimeReference({ directory, port=0, mcpPort=0, sshPort=0, postgresPort=0, network=true, hostBroker=true, presentation='diagnostic-v1', pitchingSeed=17, pitchingMode='adaptive', pitchingVariant='baseline', pitchingLimits, alertSender }={}) {
   directory ??= mkdtempSync(join(tmpdir(),'dq-runtime-'));
   insist(isAbsolute(directory), 'ABSOLUTE_DIRECTORY_REQUIRED'); mkdirSync(directory,{recursive:true,mode:0o700});
   const mode=lstatSync(directory);insist(mode.isDirectory()&&!mode.isSymbolicLink()&&!(mode.mode&0o077),'PRIVATE_DIRECTORY_REQUIRED');
   const children=[];let gateway;let closed=false;
-  const credentials=privateJson(join(directory,'credentials.json'),()=>Object.fromEntries(['owner','actor','other','ordinary','seal','producer','reader','witness'].map(k=>[k,newToken()])));
-  const close=async()=>{if(closed)return;closed=true;await gateway?.close();for(const child of children.reverse())await child.close();};
+  const pitchOwnerLock=presentation==='pitching-v1'?openPitchOwnerLock({path:join(directory,'pitch-owner.sqlite')}):undefined;
+  let credentials;
+  const close=async()=>{if(closed)return;closed=true;try{await gateway?.close();for(const child of children.reverse())await child.close();}finally{pitchOwnerLock?.close();}};
   try {
+    credentials=privateJson(join(directory,'credentials.json'),()=>Object.fromEntries(['owner','actor','other','ordinary','seal','producer','reader','witness'].map(k=>[k,newToken()])));
     const origin=await startChild('origin',{path:join(directory,'origin.sqlite'),normalToken:credentials.ordinary,witnessToken:credentials.witness});children.push(origin);
     const collector=await startChild('collector',{path:join(directory,'collector.sqlite'),producerToken:credentials.producer,readerToken:credentials.reader});children.push(collector);
-    gateway=await startRuntimeGateway({directory,credentials,originOrigin:origin.origin,collectorOrigin:collector.origin,port,mcpPort,sshPort,postgresPort,network,hostBroker,presentation,
+    gateway=await startRuntimeGateway({directory,credentials,originOrigin:origin.origin,collectorOrigin:collector.origin,port,mcpPort,sshPort,postgresPort,network,hostBroker,presentation,pitchingSeed,pitchingMode,pitchingVariant,pitchingLimits,alertSender,pitchOwnerLock,
       facadeFactory:async stateOrigin=>{const facade=await startChild('facade',{stateOrigin});children.push(facade);return facade;}});
     return {...gateway,directory,credentials,originService:origin,collectorService:collector,facadeService:children.find(c=>c!==origin&&c!==collector),close};
   }catch(e){await close();throw e;}

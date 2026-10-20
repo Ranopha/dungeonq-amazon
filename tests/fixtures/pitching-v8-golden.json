@@ -1,0 +1,149 @@
+{
+  "source": "8cdd8bcee748d449c07cd10e9d4b260bafd7888f",
+  "rows": [
+    {
+      "seed": 17,
+      "mode": "fixed",
+      "variant": "transparent-v8",
+      "digest": "edc7b6efb9b8c1fd28a0a63a195eb3f5d55fb78c465998350c4d9358d695d6a8"
+    },
+    {
+      "seed": 17,
+      "mode": "fixed",
+      "variant": "false-exit-v8",
+      "digest": "6b0f10170b93966c788a538e2bfa062a90269bdd3fc9f9a38f4121289e4ec0b4"
+    },
+    {
+      "seed": 17,
+      "mode": "fixed",
+      "variant": "memory-conflict-v8",
+      "digest": "8cfc68b2f7a11ccf3c2422643e3c4dfd25d336bda752d8e18fbb885bc87551a9"
+    },
+    {
+      "seed": 17,
+      "mode": "fixed",
+      "variant": "combined-v8",
+      "digest": "d4840274c7b65a75649c56f916e8dc6faba121624510fcc99b3581dd22a26051"
+    },
+    {
+      "seed": 17,
+      "mode": "adaptive",
+      "variant": "transparent-v8",
+      "digest": "22649726bfd3f6095a4a8e9a3ec1ff542cca485fe6b50b3f1628e177f44d4696"
+    },
+    {
+      "seed": 17,
+      "mode": "adaptive",
+      "variant": "false-exit-v8",
+      "digest": "f2a3b4bc0ff2f2080ed225a2d6d401af5fa7162500f662e86d9ac6c30c1c9b42"
+    },
+    {
+      "seed": 17,
+      "mode": "adaptive",
+      "variant": "memory-conflict-v8",
+      "digest": "12067c8f3d667c30f83864f026f5fbbe6661d568e5821df62ccfac8b44c42d6e"
+    },
+    {
+      "seed": 17,
+      "mode": "adaptive",
+      "variant": "combined-v8",
+      "digest": "a2a830bb8c42df085af4bfd90f45c43353e9049247f6c45d53dd169fa40dd5d9"
+    },
+    {
+      "seed": 29,
+      "mode": "fixed",
+      "variant": "transparent-v8",
+      "digest": "6732580e0271d2b252e7faadf6f5cbaf0101dd976c3f62bcf7d572fe9c8822e7"
+    },
+    {
+      "seed": 29,
+      "mode": "fixed",
+      "variant": "false-exit-v8",
+      "digest": "d2d293c07b97247a1a2588f29ce933fe4c631b136046f9878b7a1e119eac36b2"
+    },
+    {
+      "seed": 29,
+      "mode": "fixed",
+      "variant": "memory-conflict-v8",
+      "digest": "92859fbd3a36171967677b32559f1098c02fae0e035221601d6f9225bf9a9ec2"
+    },
+    {
+      "seed": 29,
+      "mode": "fixed",
+      "variant": "combined-v8",
+      "digest": "a97974d8fd6ffeb388ef278e16456c0ff2ace8e46b28f355431fd65b5336c21d"
+    },
+    {
+      "seed": 29,
+      "mode": "adaptive",
+      "variant": "transparent-v8",
+      "digest": "b68583be075af437bfefd1f85705fd3039864c328917c1d66123df474de733c4"
+    },
+    {
+      "seed": 29,
+      "mode": "adaptive",
+      "variant": "false-exit-v8",
+      "digest": "a7db0fb9e4b4b944e6501314b1849192932202ec72567b3cbb5e79c63cd1d5dc"
+    },
+    {
+      "seed": 29,
+      "mode": "adaptive",
+      "variant": "memory-conflict-v8",
+      "digest": "a2bde2763eb3fdda0091650a12b3f4a5fd13d8c6eb51d5e7de1241233f5f1e27"
+    },
+    {
+      "seed": 29,
+      "mode": "adaptive",
+      "variant": "combined-v8",
+      "digest": "9b5a1e2edb159d81120bfcd55d4f725251aca4728002002976d457def7b752c9"
+    },
+    {
+      "seed": 43,
+      "mode": "fixed",
+      "variant": "transparent-v8",
+      "digest": "729a47c56ebd34aa44c8940fb93d01697ebebe86fc6fd083ffb06e4a068090c0"
+    },
+    {
+      "seed": 43,
+      "mode": "fixed",
+      "variant": "false-exit-v8",
+      "digest": "73d629ae1c2ae7baa380332579b887771dbc6925bfc0b55defaf9b1d4484d673"
+    },
+    {
+      "seed": 43,
+      "mode": "fixed",
+      "variant": "memory-conflict-v8",
+      "digest": "cbc0f6ccc042b81e8704bf9ccba0ae80a7e65860b4048b33c511de0d989d662b"
+    },
+    {
+      "seed": 43,
+      "mode": "fixed",
+      "variant": "combined-v8",
+      "digest": "4df7d9b9df4bcd10f1ea0ee47e29fca9b27918037829fe5c684a4b031e941920"
+    },
+    {
+      "seed": 43,
+      "mode": "adaptive",
+      "variant": "transparent-v8",
+      "digest": "b15fec6b97daf492e058a7be1087b509625c53c9f32752df8301b082d9d02dd4"
+    },
+    {
+      "seed": 43,
+      "mode": "adaptive",
+      "variant": "false-exit-v8",
+      "digest": "da61d78b91d6170c9dca5e032cc44928eead19003a22af96390b66591b9b7f9f"
+    },
+    {
+      "seed": 43,
+      "mode": "adaptive",
+      "variant": "memory-conflict-v8",
+      "digest": "39e4f7219d69c216cb26a7852fc745d35d9462ad296e9390c210e0c6d3ddcabb"
+    },
+    {
+      "seed": 43,
+      "mode": "adaptive",
+      "variant": "combined-v8",
+      "digest": "465679877655be77a5f6e9dc9473a2396a80f8020637b7b1441a46a623fe68d4"
+    }
+  ]
+}

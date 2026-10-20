@@ -26,6 +26,10 @@ const keyPattern = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/;
 const decoder = new TextDecoder('utf-8', { fatal: true });
 const forbiddenKeys = new Set(['__proto__', 'prototype', 'constructor']);
 const fault = (code) => Object.assign(new Error(code), { code });
+const finishFailure = (scope, error) => {
+  try { scope?.finish({ status: 400, error }); return error; }
+  catch (failure) { return failure; }
+};
 const rejectRequest = () => { throw fault('UNSUPPORTED_REQUEST'); };
 const plain = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 
@@ -168,7 +172,7 @@ function cstring(frame) {
   return decoder.decode(frame.subarray(5, -1));
 }
 
-function postgresSession(socket, dispatch, signal) {
+function postgresSession(socket, dispatch, signal, before) {
   let token;
   let connection;
   let buffer = Buffer.alloc(0);
@@ -226,18 +230,23 @@ function postgresSession(socket, dispatch, signal) {
       // No password database: the trusted dispatch callback validates the supplied disposable token.
       getClearTextPassword: () => '',
       async validateCredentials({ username, password }) {
-        if (username !== 'dungeonq' || !tokenValid(password)) return false;
+        let scope;
         try {
-          await boundedDispatch(dispatch, { token: password, family: 'postgres', requestId: `auth-${randomUUID()}`, operation: 'snapshot', args: {} }, signal);
-          if (signal.aborted) return false;
+          scope = before?.({ token: password, family: 'postgres' });
+          if (username !== 'dungeonq' || !tokenValid(password)) throw fault('UNSUPPORTED_REQUEST');
+          await boundedDispatch(dispatch, { token: password, family: 'postgres', requestId: `auth-${randomUUID()}`, operation: 'snapshot', args: {},
+            ...(scope ? { pitchScope: scope } : {}) }, signal);
+          if (signal.aborted) throw fault('SESSION_CLOSED');
+          scope?.finish();
           token = password;
           return true;
-        } catch { return false; }
+        } catch (error) { finishFailure(scope, error); return false; }
       },
     },
     async onMessage(data, state) {
-      const frame = Buffer.from(data);
+      const frame = Buffer.from(data); let scope;
       try {
+        if (state.isAuthenticated && !(frame[0] === 88 && frame.length === 5)) scope = before?.({ token, family: 'postgres' });
         if (++requests > NETWORK_LIMITS.requestsPerConnection) throw fault('REQUEST_LIMIT');
         if (!state.hasStarted) { validateStartup(frame); return; }
         if (!state.isAuthenticated) {
@@ -247,9 +256,11 @@ function postgresSession(socket, dispatch, signal) {
         if (frame[0] === 88 && frame.length === 5) return; // Terminate.
         if (frame[0] !== 81) throw fault('UNSUPPORTED_MESSAGE');
         const request = postgresEnvelope(cstring(frame));
-        const result = await boundedDispatch(dispatch, { token, family: 'postgres', ...request }, signal);
+        const result = await boundedDispatch(dispatch, { token, family: 'postgres', ...request, ...(scope ? { pitchScope: scope } : {}) }, signal);
+        scope?.finish();
         return pgResult(connection, result);
       } catch (error) {
+        error = finishFailure(scope, error);
         if (!state.isAuthenticated || ['REQUEST_LIMIT', 'UNSUPPORTED_MESSAGE'].includes(error?.code)) {
           throw BackendError.create({ severity: 'FATAL', code: '08P01', message: 'UNSUPPORTED_PROTOCOL_REQUEST' });
         }
@@ -268,8 +279,9 @@ function postgresSession(socket, dispatch, signal) {
  * A timeout does not cancel an already dispatched mutation; reconcile with its requestId.
  * This profile intentionally rejects external binds because PostgreSQL TLS is not configured.
  */
-export async function startNetworkAdapters({ dispatch, host = '127.0.0.1', sshPort = 0, postgresPort = 0, sshHostKey }) {
+export async function startNetworkAdapters({ dispatch, before, host = '127.0.0.1', sshPort = 0, postgresPort = 0, sshHostKey }) {
   if (typeof dispatch !== 'function' || !['127.0.0.1', '::1'].includes(host)) throw fault('LOOPBACK_DISPATCH_REQUIRED');
+  if (before !== undefined && typeof before !== 'function') throw fault('INGRESS_HOOK_INVALID');
   for (const port of [sshPort, postgresPort]) {
     if (!Number.isInteger(port) || port < 0 || port > 65_535) throw fault('INVALID_PORT');
   }
@@ -302,18 +314,23 @@ export async function startNetworkAdapters({ dispatch, host = '127.0.0.1', sshPo
     };
     for (const event of ['request', 'tcpip', 'openssh.streamlocal', 'x11']) client.on(event, deny);
     client.on('authentication', async (context) => {
-      if (++attempts > 4) { context.reject(); client.end(); return; }
-      if (context.method !== 'password' || context.username !== 'dungeonq' || !tokenValid(context.password) || busy) {
-        context.reject(['password']); return;
-      }
-      busy = true;
+      let scope; let claimedBusy = false;
       let aborted = false;
       context.once('abort', () => { aborted = true; });
       try {
-        await boundedDispatch(dispatch, { token: context.password, family: 'ssh', requestId: `auth-${randomUUID()}`, operation: 'snapshot', args: {} }, aborter.signal);
+        if (context.method === 'password') scope = before?.({ token: context.password, family: 'ssh' });
+        if (++attempts > 4) { scope?.finish({ status: 400, error: fault('REQUEST_LIMIT') }); context.reject(); client.end(); return; }
+        if (context.method !== 'password' || context.username !== 'dungeonq' || !tokenValid(context.password) || busy) throw fault('UNSUPPORTED_REQUEST');
+        busy = true; claimedBusy = true;
+        await boundedDispatch(dispatch, { token: context.password, family: 'ssh', requestId: `auth-${randomUUID()}`, operation: 'snapshot', args: {},
+          ...(scope ? { pitchScope: scope } : {}) }, aborter.signal);
+        scope?.finish();
         if (!aborted && !aborter.signal.aborted) { token = context.password; context.accept(); }
-      } catch { if (!aborted && !aborter.signal.aborted) context.reject(['password']); }
-      finally { busy = false; }
+      } catch (error) {
+        error = finishFailure(scope, error);
+        if (!aborted && !aborter.signal.aborted) context.reject(['password']);
+      }
+      finally { if (claimedBusy) busy = false; }
     });
     client.on('session', (accept, reject) => {
       if (!token || sessions >= NETWORK_LIMITS.concurrentSshSessions || ++requests > NETWORK_LIMITS.requestsPerConnection) { reject(); return; }
@@ -332,11 +349,15 @@ export async function startNetworkAdapters({ dispatch, host = '127.0.0.1', sshPo
         // Commands are complete in the exec request; stdin is never an alternate command path.
         stream.on('data', () => { stream.close(); });
         busy = true;
+        let scope;
         try {
+          scope = before?.({ token, family: 'ssh' });
           const request = sshEnvelope(info.command);
-          const result = await boundedDispatch(dispatch, { token, family: 'ssh', ...request }, aborter.signal);
+          const result = await boundedDispatch(dispatch, { token, family: 'ssh', ...request, ...(scope ? { pitchScope: scope } : {}) }, aborter.signal);
+          scope?.finish();
           if (!stream.destroyed) { stream.write(`${result}\n`); stream.exit(0); stream.end(); }
         } catch (error) {
+          error = finishFailure(scope, error);
           if (!stream.destroyed) {
             const details = { code: safeCode(error) };
             if (error?.code === 'DISPATCH_TIMEOUT') details.outcome = 'unknown';
@@ -349,7 +370,7 @@ export async function startNetworkAdapters({ dispatch, host = '127.0.0.1', sshPo
     });
   });
   const sshServer = net.createServer({ highWaterMark: NETWORK_LIMITS.inputBytes }, (socket) => acceptSocket(socket, () => sshProtocol.injectSocket(socket)));
-  const postgresServer = net.createServer({ highWaterMark: NETWORK_LIMITS.inputBytes }, (socket) => acceptSocket(socket, (sock, signal) => postgresSession(sock, dispatch, signal)));
+  const postgresServer = net.createServer({ highWaterMark: NETWORK_LIMITS.inputBytes }, (socket) => acceptSocket(socket, (sock, signal) => postgresSession(sock, dispatch, signal, before)));
   let closing;
   const close = () => closing ??= (async () => {
     const closed = [sshServer, postgresServer].map((server) => new Promise((resolve) => {

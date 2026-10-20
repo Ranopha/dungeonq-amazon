@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DungeonQ 即時工具紀錄</title>
+<style>
+:root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC",sans-serif;background:#0c1916;color:#f4f0e6}*{box-sizing:border-box}body{margin:0;padding:18px 24px;max-width:1000px;height:100vh;overflow:hidden;display:flex;flex-direction:column}header{border-bottom:1px solid #496257;padding-bottom:10px;margin-bottom:10px;flex:none}h1{font-size:27px;margin:7px 0;letter-spacing:.02em}h2{font-size:18px;margin:0 0 9px;color:#c6decf}p{margin:5px 0;line-height:1.45}.eyebrow{font-size:14px;color:#afd5bf;letter-spacing:.12em}.scope{font-size:14px;color:#c5c9bc}.badge{display:inline-block;background:#214c3c;padding:5px 10px;border-radius:4px;font-size:15px}.muted{color:#b6c3b9}.main{display:grid;gap:12px;flex:1;min-height:0;grid-template-rows:auto minmax(0,1fr) auto}.row{display:flex;gap:24px;align-items:center;justify-content:space-between}.number{font-size:38px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}.small{font-size:14px}.panel{border-top:1px solid #334d42;padding-top:12px;min-height:0;overflow:hidden}.body-scroll{overflow:auto;min-height:0;scrollbar-color:#769483 #152720}.record{margin:0 0 14px;padding-left:12px;border-left:3px solid #7fbea0;overflow-wrap:anywhere}.record h3{font-size:19px;margin:0 0 6px;color:#f4e2a9}.record p{font-size:17px;line-height:1.4}.ops{max-height:150px;overflow:auto;font-size:16px;line-height:1.55;border-top:1px solid #334d42;margin-top:12px;padding-top:8px}.op{overflow-wrap:anywhere;border-bottom:1px solid #22392f;padding:4px 0}.checks{display:grid;gap:6px}.check{display:flex;justify-content:space-between;gap:16px;font-size:17px;line-height:1.4}.check span:first-child{min-width:0;overflow-wrap:anywhere}.pass{color:#a2dfb4}.warn{color:#ffcf83}.fail{color:#ffac9b}.final{background:#17372a;padding:12px 15px;border-left:3px solid #d6c897;font-size:16px;max-height:220px;overflow:auto;overflow-wrap:anywhere}.final strong{font-size:25px}.incident{padding:9px 0;border-bottom:1px solid #334d42;font-size:18px}.footer{font-size:12px;color:#a6b9ab;margin-top:5px}.issue{font-size:14px;color:#ffcf83;max-height:40px;overflow:auto}.hidden{display:none!important}#operator-main .body-scroll{display:grid;align-content:start;gap:8px}#operator-main .panel{padding-top:8px}#operator-main h2{font-size:17px;margin-bottom:6px}#operator-main p{line-height:1.3;font-size:14px;margin:4px 0}#operator-main .incident{font-size:16px;padding:5px 0}#operator-main .checks{gap:3px}#operator-main .check{font-size:15px;line-height:1.25}#actor-content{display:flex;flex-direction:column;min-height:0}#records{flex:1;min-height:100px;overflow:auto}#note{font-size:15px;color:#b9d4c4;overflow-wrap:anywhere;max-height:58px;overflow:auto}@media(max-width:620px){body{padding:15px}h1{font-size:24px}.number{font-size:30px}.row{gap:12px}.record p{font-size:16px}}
+#operator-main .body-scroll{grid-auto-rows:max-content}#operator-main .body-scroll>.panel{min-height:auto}
+</style></head><body>
+<header><div class="eyebrow">DUNGEONQ · 人工合成測試</div><h1 id="title">即時工具紀錄</h1><p class="scope">本機錄影儀表 · 顯示實際紀錄；不是 agent 操作介面或防護保證</p></header>
+<main class="main" id="actor-main">
+  <div class="row"><div><div class="small muted">已完成工具請求</div><div class="number" id="actor-count">0</div></div><div><div class="small muted">公開分支進度</div><div class="number" id="progress">—</div></div><span class="badge" id="actor-host">待啟動</span></div>
+  <section id="actor-content" class="panel"><h2>最新公開 record</h2><div id="records" class="body-scroll"><p class="muted">等待 agent 的第一筆工具操作</p></div><div id="note"></div><div id="operations" class="ops" aria-live="polite"></div></section>
+  <div><div id="final" class="final hidden"></div><p id="actor-issue" class="issue"></p><p class="footer">HTTP／MCP 真實回應投影 · 憑證與 ticket handle 不顯示</p></div>
+</main>
+<main class="main hidden" id="operator-main">
+  <div class="row"><div><div class="small muted">本場請求</div><div class="number" id="requests">0 / 40</div></div><div><div class="small muted">client 剩餘次數</div><div class="number" id="remaining">40</div></div><span class="badge" id="operator-host">待啟動</span></div>
+  <div class="body-scroll"><section class="panel"><h2>Runtime 狀態讀回</h2><p id="runtime" class="muted">尚未取得 host 狀態</p><p id="time" class="small muted"></p></section>
+    <section class="panel"><h2>入場事件與操作者處置</h2><div id="incidents"><p class="muted">尚無入場紀錄</p></div><p id="delivery" class="small muted">本機 inbox；未啟用外部發送，不表示人已收到。</p><div id="response-timeline"></div></section>
+    <section class="panel"><h2 id="evidence-title">Canonical 獨立驗證 · 待驗證</h2><div class="checks" id="checks"></div><p class="small muted">只依本場 after-evidence 顯示；未量測不標為 PASS。</p></section>
+  </div><div><p id="operator-issue" class="issue"></p><p class="footer">只讀狀態投影 · ACK／REVIEWED 顯示來源檔的已完成紀錄</p></div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const operator = location.pathname === '/operator';
+$('actor-main').classList.toggle('hidden', operator); $('operator-main').classList.toggle('hidden', !operator);
+$('title').textContent = operator ? 'Runtime 進度、告警與證據' : 'Agent 即時工具紀錄';
+const hostLabels = {WAITING:'待啟動',LIVE:'Host 已讀回',UNAVAILABLE:'讀回失敗／待確認',STOPPING:'Host 正在收尾',STOPPED:'Host 已停止'};
+const checkLabels = {PENDING:'待驗證',PASS:'PASS',FAIL:'FAIL',INCONCLUSIVE:'未能確認'};
+let last = '', stopped = false;
+function element(tag, text, className) { const el = document.createElement(tag); el.textContent = text; if(className)el.className=className; return el; }
+function render(state) {
+  const a = state.actor, o = state.operator;
+  for(const id of ['actor-host','operator-host']) $(''+id).textContent=hostLabels[state.host.state] || '未知';
+  $('actor-count').textContent = a.operations.at(-1)?.sequence ?? 0;
+  $('progress').textContent = a.progress ? `${a.progress.completed} / ${a.progress.total}` : '—';
+  const records = a.latestRecords.slice(-1).map(record => {
+    const el=element('div','','record'); el.append(element('h3',record.key));
+    record.lines.forEach(line=>el.append(element('p',line))); return el;
+  });
+  if(records.length) $('records').replaceChildren(...records);
+  const ops = a.operations.map(row=>element('div',`#${String(row.sequence??'?').padStart(2,'0')}  ${row.family.toUpperCase()} · ${row.operation} · ${row.key}  [${row.httpStatus}]${row.state==='RECORDED'?'':' · 結果待確認／錯誤'}`,'op'));
+  $('operations').replaceChildren(...ops); $('operations').scrollTop=$('operations').scrollHeight;
+  if(a.latestNote) $('note').textContent=`Note ${a.latestNote.operation==='write'?'已寫入':'已讀回'}：${a.latestNote.key} · revision ${a.latestNote.revision??'?'}${a.latestNote.summary.length?' · '+a.latestNote.summary.join('；'):''}`;
+  const report = a.report; $('final').classList.toggle('hidden', !report);
+  if(report) $('final').replaceChildren(element('strong',`結論 capacity：${report.capacity ?? 'UNKNOWN'} · ${report.status}`),element('p',report.reason),element('p',`停止：${report.stopCategory} · ${report.stopReason}`));
+  $('requests').textContent=`${o.requests} / ${o.requestLimit}`; $('remaining').textContent=o.remainingRequests;
+  $('runtime').textContent=`Runtime 請求 ${o.runtimeAttempts??'待讀回'} · 錯誤 ${o.runtimeErrors??'待讀回'} · 執行中 ${o.activeRequests??'待讀回'}${state.host.statusSource==='LIVE'?'':state.host.statusSource==='NONE'?'':' · 已保存的收尾狀態'}`;
+  $('time').textContent=o.remainingSeconds===null?'client 計時尚未開始':`client 時間上限剩餘 ${o.remainingSeconds} 秒${report?' · agent 已提交報告':''}`;
+  const incidents=o.incidents.map(row=>element('div',`事件 ${row.number} · ${row.phase==='ENTERED'?'ENTERED 已入場':row.phase==='ADMITTED'?'ADMITTED 已准入':row.phase} · ${row.acknowledged?'ACK 已確認':'ACK 待確認'} · ${row.resolution==='PENDING'?'尚未結案':row.resolution}`,'incident'));
+  $('incidents').replaceChildren(...(incidents.length?incidents:[element('p','尚無入場紀錄','muted')]));
+  $('delivery').textContent=o.delivery==='LOCAL_ONLY'?'本機 inbox；未啟用外部發送，不表示人已收到。':o.delivery==='OWNER_CONNECTOR_RELAY'?'實際 Email relay；寄出、收件確認、ACK、封鎖分開量測。':'已設定外部 sender；此畫面沒有人的收件證明。';
+  const relative=(at,entered)=>at===null?'待確認':entered===null?'已記錄':`入場後 ${Math.max(0,(at-entered)/1000).toFixed(2)} 秒`;
+  $('response-timeline').replaceChildren(...(o.responseTimeline??[]).slice(0,1).flatMap(row=>[
+    element('p',`寄送服務接受：${relative(row.providerAcceptedAt,row.enteredAt)} · ${row.deliveryState}`,'small'),
+    element('p',`收件回覆：${relative(row.deliveryConfirmedByReplyAt,row.enteredAt)}（送達時間上界）`,'small'),
+    element('p',`真人 ACK：${relative(row.humanAcknowledgedAt,row.enteredAt)}${row.humanEvidenceTranscribed?' · 操作者轉錄回覆':''}`,'small'),
+    element('p',`處置生效：${relative(row.actionCompletedAt,row.enteredAt)}${row.fencedReadback?' · FENCED 已讀回':' · 不以 ACK 當完成'}`,'small'),
+  ]));
+  $('evidence-title').textContent=`Canonical 獨立驗證 · ${checkLabels[o.evidence.status]??'未知'}`;
+  $('checks').replaceChildren(...o.evidence.checks.map(row=>{const el=element('div','','check');el.append(element('span',row.label),element('span',checkLabels[row.status]??'未知',row.status==='PASS'?'pass':row.status==='FAIL'?'fail':'warn'));return el;}));
+  const labels={FILE_UNAVAILABLE:'檔案暫不可讀',FILE_TOO_LARGE:'檔案超過上限',FILE_INVALID:'檔案尚未完整／格式錯誤',UNSAFE_FILE:'已拒絕不安全檔案路徑',STATUS_UNAVAILABLE:'Host 狀態讀回失敗，保留上次紀錄',INVALID_RUN_INFO:'Host 啟動資訊無效',MALFORMED_TRAJECTORY:'部分完整紀錄格式錯誤',PARTIAL_TRAJECTORY:'最後一筆仍在寫入'};
+  for(const id of ['actor-issue','operator-issue']) $(id).textContent=state.issues.map(code=>labels[code]??'資料待確認').join(' · ');
+}
+async function poll(){
+  try{const response=await fetch('/api/state',{cache:'no-store'});if(!response.ok)throw Error();const state=await response.json();const value=JSON.stringify(state);if(value!==last){render(state);last=value;}}
+  catch{for(const id of ['actor-issue','operator-issue'])$(id).textContent='觀察台連線中斷；畫面保留最後讀回，不代表目前狀態。';}
+  finally{if(!stopped)setTimeout(poll,1000);}
+}
+window.addEventListener('pagehide',()=>{stopped=true;});poll();
+</script></body></html>

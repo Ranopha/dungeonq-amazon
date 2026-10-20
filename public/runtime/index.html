@@ -14,7 +14,7 @@
   <aside class="rail" aria-label="Runtime navigation">
     <a class="wordmark" href="#main" aria-label="DungeonQ runtime home">D<span>Q</span><small>DUNGEONQ</small></a>
     <p class="rail-label">OPERATOR WORKSPACE</p>
-    <nav><a href="#observe">01 <span>Observe</span></a><a href="#policy">02 <span>Review policy</span></a><a href="#evidence">03 <span>Read evidence</span></a></nav>
+    <nav><a href="#observe">01 <span>Observe</span></a><a href="#policy">02 <span>Review policy</span></a><a href="#evidence">03 <span>Read evidence</span></a><a id="pitch-nav" href="#pitching" lang="zh-Hant" hidden>04 <span>告警收件匣</span></a></nav>
     <div class="rail-foot"><span class="status-dot"></span> LOCAL REFERENCE<br><small>Authority stays outside the model.</small></div>
   </aside>
   <main id="main" tabindex="-1">
@@ -47,12 +47,19 @@
       </div>
       <p id="locked-state" class="empty">Connect to read private contexts, worlds and route evidence.</p>
     </section>
+    <section id="pitching" class="workspace-section" lang="zh-Hant" aria-labelledby="pitch-heading" hidden>
+      <div class="section-heading"><div><p class="eyebrow">PITCHING / OWNER</p><h2 id="pitch-heading" tabindex="-1">入場告警收件匣</h2></div><span id="pitch-read-time" class="section-note"></span></div>
+      <p>連線後每 3 秒讀取 Owner 狀態。本機收件匣、外部傳送、工程師確認及結案各自記錄。</p>
+      <p class="help">ADMITTED 表示已保留入場紀錄；ENTERED 表示已記錄進入。外部 ACCEPTED 只表示傳送服務接受，不代表收件匣送達、已讀或人員確認。結案也不等於已封鎖 context。</p>
+      <p id="pitch-summary" role="status" aria-live="polite"></p>
+      <ol id="pitch-incidents" class="pitch-incidents" aria-label="入場告警"></ol>
+    </section>
     <section id="policy" class="workspace-section" aria-labelledby="policy-title">
       <div class="section-heading"><div><p class="eyebrow">02 / REVIEW POLICY</p><h2 id="policy-title">A proposal before a change.</h2></div><span class="section-note">Server-enforced operator authority</span></div>
       <p>Preview the exact scope and digest. Applying requires a separate, explicit action. Model output cannot approve a policy.</p>
       <form id="preview-form" class="policy-form">
         <div><label for="context">Context</label><select id="context" required disabled><option value="">Connect to load contexts</option></select></div>
-        <div><label for="action">Policy action</label><select id="action" disabled><option value="FENCE">Fence context</option><option value="GRANT_MUTATION">Grant mutation</option></select></div>
+        <div><label for="action">Policy action</label><select id="action" disabled><option value="FENCE">Fence context</option><option id="grant-mutation-option" value="GRANT_MUTATION">Grant mutation</option></select></div>
         <div class="reason-field"><label for="reason">Reason <span class="optional">(optional)</span></label><input id="reason" maxlength="180" autocomplete="off" disabled></div>
         <button id="preview" type="submit" disabled>Preview change</button>
       </form>

@@ -9,6 +9,11 @@ let session = 0;
 let proposalTimer;
 let observedStatus = null;
 let observedEvidence = null;
+let pitchEnabled = false;
+let pitchTimer;
+let pitchGeneration = 0;
+let pitchViewKey = null;
+let incidentControls = [];
 const DISPLAY_LIMIT = 80;
 const list = value => Array.isArray(value) ? value : [];
 const text = value => value === null || value === undefined ? 'Not reported' : String(value);
@@ -37,6 +42,107 @@ function controls() {
   for (const id of ['refresh', 'read-evidence']) el(id).disabled = !connected || busy;
   for (const id of ['context', 'action', 'reason', 'preview', 'inspect-context']) el(id).disabled = !connected || busy || !observedStatus;
   el('apply').disabled = !connected || busy || !proposal || !el('confirm').checked;
+  for (const { element, available } of incidentControls) element.disabled = !connected || busy || !available;
+}
+function stopPitchPolling() { clearTimeout(pitchTimer); pitchTimer = undefined; pitchGeneration++; }
+function clearPitch() {
+  stopPitchPolling(); pitchEnabled = false; pitchViewKey = null; incidentControls = [];
+  el('pitching').hidden = true; el('pitch-nav').hidden = true;
+  el('pitch-incidents').replaceChildren(); el('pitch-summary').textContent = ''; el('pitch-read-time').textContent = '';
+  el('grant-mutation-option').hidden = false; el('grant-mutation-option').disabled = false;
+}
+function renderPitch(value) {
+  if (value?.schemaVersion !== 'dungeonq.pitch-control/v1' || !Array.isArray(value.incidents) || !Array.isArray(value.outbox)) {
+    throw { code: 'PITCH_STATUS_INVALID' };
+  }
+  el('pitching').hidden = false; el('pitch-nav').hidden = false;
+  el('pitch-read-time').textContent = `讀取時間 ${new Date().toLocaleTimeString('zh-TW')}`;
+  const viewKey = JSON.stringify([value.incidents, value.outbox]);
+  if (viewKey === pitchViewKey) return;
+  pitchViewKey = viewKey;
+  const focused = document.activeElement?.dataset?.pitchControl;
+  const selections = new Map(incidentControls.filter(item => item.element.tagName.toLowerCase() === 'select')
+    .map(item => [item.element.dataset.pitchControl, item.element.value]));
+  const knownLabel = (labels, key, fallback) => Object.hasOwn(labels, key) ? labels[key] : fallback;
+  const deliveries = new Map(value.outbox.map(row => [row.incidentId, row]));
+  const pending = value.incidents.filter(row => !row.resolution).length;
+  el('pitch-summary').textContent = `${value.incidents.length} 件告警，${pending} 件未結案。`;
+  incidentControls = [];
+  const control = (element, available, identity) => {
+    element.dataset.pitchControl = identity; incidentControls.push({ element, available }); return element;
+  };
+  el('pitch-incidents').replaceChildren(...value.incidents.slice().reverse().map(incident => {
+    const row = node('li', undefined, 'pitch-incident');
+    row.append(node('h3', `Context ${text(incident.contextId)}`));
+    row.append(node('p', `世界 ${text(incident.worldId)} · Epoch ${text(incident.epoch)} · ${text(incident.incidentId)}`, 'request-identity'));
+    const phase = { ADMITTED: 'ADMITTED · 已保留入場紀錄', ENTERED: 'ENTERED · 已記錄進入' };
+    row.append(badge(knownLabel(phase, incident.phase, '入場狀態未知')));
+    const delivery = deliveries.get(incident.incidentId);
+    const deliveryLabels = { PENDING: 'PENDING · 等待傳送', IN_FLIGHT: 'IN_FLIGHT · 傳送中',
+      ACCEPTED: 'ACCEPTED · 傳送服務已接受（非收件匣送達或已讀）', UNKNOWN: 'UNKNOWN · 傳送結果未知，待對帳',
+      EXHAUSTED: 'EXHAUSTED · 傳送嘗試已用完' };
+    const facts = node('dl', undefined, 'facts');
+    for (const [label, value] of [
+      ['本機收件匣', incident.localInbox === 'AVAILABLE' ? 'AVAILABLE · 本機已保存，可供 Owner 讀取' : '狀態未確認'],
+      ['外部傳送', knownLabel(deliveryLabels, delivery?.status, '外部傳送狀態未確認')],
+      ['傳送次數', delivery?.attempts ?? '未提供'],
+      ['已保留入場', eventTime(incident.admittedAt)],
+      ['已記錄進入', incident.enteredAt == null ? '尚未確認' : eventTime(incident.enteredAt)],
+      ['人員確認', incident.acknowledgement ? `${text(incident.acknowledgement.operatorId)} · ${eventTime(incident.acknowledgement.at)}` : '尚未確認'],
+      ['結案', incident.resolution ? `${knownLabel({ REVIEWED: '已檢視', FALSE_POSITIVE: '已判定誤報', FENCED: '已封鎖' }, incident.resolution.resolution, '未知結果')} · ${eventTime(incident.resolution.at)}` : '尚未結案'],
+    ]) facts.append(node('dt', label), node('dd', value));
+    row.append(facts);
+    const actions = node('div', undefined, 'pitch-actions');
+    const ack = control(node('button', '確認收到'), !incident.acknowledgement && !incident.resolution, `ack:${incident.incidentId}`);
+    ack.type = 'button'; ack.ariaLabel = `確認收到 ${text(incident.contextId)} 的告警`;
+    ack.addEventListener('click', () => void actOnIncident(incident.incidentId));
+    const select = control(node('select'), Boolean(incident.acknowledgement) && !incident.resolution, `resolution:${incident.incidentId}`);
+    select.id = `resolution-${incident.incidentId}`;
+    const placeholder = node('option', '選擇結案原因'); placeholder.value = ''; select.append(placeholder);
+    for (const [key, label] of [['REVIEWED', '已檢視'], ['FALSE_POSITIVE', '誤報']]) { const option = node('option', label); option.value = key; select.append(option); }
+    const selected = selections.get(select.dataset.pitchControl);
+    if (!incident.resolution && ['REVIEWED', 'FALSE_POSITIVE'].includes(selected)) select.value = selected;
+    const label = node('label', '結案原因'); label.htmlFor = select.id;
+    const resolve = control(node('button', '記錄結案'), Boolean(incident.acknowledgement) && !incident.resolution, `resolve:${incident.incidentId}`);
+    resolve.type = 'button'; resolve.ariaLabel = `記錄 ${text(incident.contextId)} 的告警結案`;
+    resolve.addEventListener('click', () => {
+      if (!['REVIEWED', 'FALSE_POSITIVE'].includes(select.value)) { message('請先選擇結案原因。', true); select.focus(); return; }
+      void actOnIncident(incident.incidentId, select.value);
+    });
+    actions.append(ack, label, select, resolve); row.append(actions); return row;
+  }));
+  if (!value.incidents.length) el('pitch-incidents').append(node('li', '目前沒有入場告警。', 'empty'));
+  controls();
+  if (focused) {
+    const replacement = incidentControls.find(item => item.element.dataset.pitchControl === focused && !item.element.disabled);
+    (replacement?.element ?? el('pitch-heading')).focus();
+  }
+}
+async function readPitch() {
+  const current = session; const generation = pitchGeneration; const value = await client.pitchStatus();
+  if (current === session && generation === pitchGeneration && connected && pitchEnabled) renderPitch(value);
+}
+function schedulePitchPolling() {
+  clearTimeout(pitchTimer);
+  if (!connected || !pitchEnabled) return;
+  const current = session; const generation = pitchGeneration;
+  pitchTimer = setTimeout(async () => {
+    if (current !== session || generation !== pitchGeneration || !connected || !pitchEnabled) return;
+    if (busy) { schedulePitchPolling(); return; }
+    try { await readPitch(); } catch (error) { if (current === session && generation === pitchGeneration) failure(error); }
+    finally { if (current === session && generation === pitchGeneration) schedulePitchPolling(); }
+  }, 3000);
+}
+async function actOnIncident(incidentId, resolution) {
+  if (!connected || !pitchEnabled || busy) return;
+  const current = session;
+  await run(async () => {
+    if (resolution) await client.resolveIncident({ incidentId, resolution });
+    else await client.acknowledgeIncident({ incidentId });
+    if (current !== session) return;
+    await readPitch();
+    if (current === session) message(resolution ? '已讀回告警結案紀錄；這不表示 context 已封鎖。' : '已讀回人員確認紀錄；這不表示處置已完成。');
+  });
 }
 function clearEvidence() {
   observedEvidence = null;
@@ -47,6 +153,7 @@ function clearEvidence() {
   el('evidence-summary').textContent = 'Read evidence for the current observations. No previous verification is carried forward.';
 }
 function clearReadbacks() {
+  clearPitch();
   observedStatus = null;
   resetProposal(); el('private-state').hidden = true; el('locked-state').hidden = false;
   el('contexts').replaceChildren(); el('worlds').replaceChildren(); el('context').replaceChildren(node('option', 'Connect to load contexts'));
@@ -58,7 +165,7 @@ function clearReadbacks() {
   el('read-time').textContent = 'No private state loaded'; controls();
 }
 function clearPrivate() {
-  connected = false; session++; client.disconnect(); el('operator-token').value = '';
+  connected = false; session++; busy = false; client.disconnect(); el('operator-token').value = '';
   clearReadbacks();
   el('connection-state').textContent = 'Disconnected'; el('read-time').textContent = 'No private state loaded';
   el('evidence-state').textContent = 'Not verified'; el('evidence-state').dataset.state = 'INCONCLUSIVE';
@@ -76,9 +183,9 @@ function failure(error) {
 }
 async function run(action) {
   if (busy) return;
-  busy = true; controls();
-  try { await action(); } catch (error) { failure(error); }
-  finally { busy = false; controls(); }
+  const current = session; stopPitchPolling(); busy = true; controls();
+  try { await action(); } catch (error) { if (current === session) failure(error); }
+  finally { if (current === session) { busy = false; controls(); schedulePitchPolling(); } }
 }
 function capabilities(value) {
   const items = list(value?.capabilities);
@@ -202,6 +309,12 @@ function renderTimeline() {
 }
 function status(value) {
   observedStatus = value; clearEvidence();
+  pitchEnabled = value.pitching != null;
+  if (pitchEnabled) {
+    el('grant-mutation-option').hidden = true; el('grant-mutation-option').disabled = true;
+    if (el('action').value === 'GRANT_MUTATION') { el('action').value = 'FENCE'; resetProposal(); }
+    renderPitch(value.pitching);
+  } else clearPitch();
   capabilities(value);
   const contexts = list(value.contexts); const previous = el('context').value;
   el('contexts').replaceChildren(...contexts.map(context => {
@@ -251,9 +364,12 @@ async function readEvidence() {
 }
 el('connect-form').addEventListener('submit', event => {
   event.preventDefault();
+  if (busy) return;
   const token = el('operator-token').value; el('operator-token').value = '';
+  clearPrivate();
   void run(async () => {
-    clearPrivate(); client.setToken(token); await readState();
+    const current = session; client.setToken(token); await readState();
+    if (current !== session) return;
     connected = true; el('connection-state').textContent = 'Operator connected';
     message('Operator access confirmed. State has been read; no policy was changed.');
   });
@@ -266,11 +382,14 @@ for (const id of ['context', 'action', 'reason']) el(id).addEventListener('input
 el('confirm').addEventListener('change', controls);
 el('preview-form').addEventListener('submit', event => {
   event.preventDefault(); void run(async () => {
+    const current = session;
     resetProposal();
     const requested = { contextId: el('context').value, action: el('action').value };
+    if (pitchEnabled && requested.action === 'GRANT_MUTATION') { message('配球模式使用預授權規則，不提供一般 mutation grant。', true); return; }
     if (!requested.contextId) { message('Choose a context before previewing a policy change.', true); el('context').focus(); return; }
     if (el('reason').value.trim()) requested.reason = el('reason').value.trim();
     const next = await client.preview(requested);
+    if (current !== session) return;
     const expires = typeof next.expiresAt === 'number' ? next.expiresAt : Date.parse(next.expiresAt);
     if (!next.proposalId || !/^[a-f0-9]{64}$/i.test(next.digest ?? '') || next.contextId !== requested.contextId
       || next.action !== requested.action || !Number.isFinite(expires) || expires <= Date.now()) {
@@ -287,14 +406,17 @@ el('preview-form').addEventListener('submit', event => {
 });
 el('apply-form').addEventListener('submit', event => {
   event.preventDefault(); void run(async () => {
+    const current = session;
     if (!connected || !proposal || !el('confirm').checked) return;
     if (proposal.expiresAt <= Date.now()) { resetProposal(); message('The proposal expired. Preview the current state again.', true); return; }
     const reviewed = { proposalId: proposal.proposalId, digest: proposal.digest, confirmation: 'APPLY' };
     resetProposal();
     const result = await client.apply(reviewed);
+    if (current !== session) return;
     el('policy-readback').textContent = redacted(result); el('readback-section').hidden = false;
     el('readback-title').textContent = result.state === 'APPLIED' ? 'Policy applied — server readback' : 'Policy result — not confirmed';
-    await readState(); await readEvidence(); el('readback-title').focus();
+    await readState(); if (current !== session) return;
+    await readEvidence(); if (current !== session) return; el('readback-title').focus();
     message(result.state === 'APPLIED' ? 'The server reports this proposal applied. Inspect its readback and the separate evidence result below.' : 'The server did not confirm an applied change. Inspect readback and evidence.', result.state !== 'APPLIED');
   });
 });
