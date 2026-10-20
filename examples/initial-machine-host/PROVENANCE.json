@@ -63,7 +63,7 @@
     },
     {
       "path": "scripts/dungeonq-host/pursuit-fixture.mjs",
-      "sha256": "0e6fde0f090fa75fb115b4ec3a73e038a46d1158bd42cd210af595fd64f373bf"
+      "sha256": "b5c26f7741ae7b4f5b925513bdfbba3f1888b2a388a04eb20a70cb37f7f61d63"
     },
     {
       "path": "scripts/dungeonq-host/recording-console.html",
