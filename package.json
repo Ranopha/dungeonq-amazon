@@ -77,7 +77,10 @@
     "syntaxcheck": "node scripts/syntax-check.mjs",
     "test:host": "npm test --prefix examples/initial-machine-host",
     "recovery:demo": "node scripts/interrupted-write-demo.mjs",
-    "test:pitching": "node --test tests/runtime-pitch*.test.mjs"
+    "test:pitching": "node --test tests/runtime-pitch*.test.mjs",
+    "test:host-source": "npm run test:source --prefix examples/initial-machine-host",
+    "demo:response": "npm run demo:response --prefix examples/initial-machine-host --",
+    "console:response": "npm run console:response --prefix examples/initial-machine-host --"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",

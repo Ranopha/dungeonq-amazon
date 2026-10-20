@@ -151,11 +151,22 @@ jobs:
         run: |
           cp -R examples/initial-machine-host "$RUNNER_TEMP/dq-host-fixture"
           npm --prefix "$RUNNER_TEMP/dq-host-fixture" ci --ignore-scripts
-          git clone --branch v0.13.1 --depth 1 https://github.com/Ranopha/dungeonq-astra.git "$RUNNER_TEMP/dq-host-fixture/vendor/dungeonq-runtime"
-          npm --prefix "$RUNNER_TEMP/dq-host-fixture/vendor/dungeonq-runtime" ci --ignore-scripts
+          npm --prefix "$RUNNER_TEMP/dq-host-fixture" run prepare:runtime
       - name: Audit locked host and runtime dependencies
         run: |
           npm --prefix "$RUNNER_TEMP/dq-host-fixture" audit --include=dev --audit-level=low
           npm --prefix "$RUNNER_TEMP/dq-host-fixture/vendor/dungeonq-runtime" audit --include=dev --audit-level=low
       - name: Verify real MCP control, diversion, ticket denial and persistence
         run: npm --prefix "$RUNNER_TEMP/dq-host-fixture" test
+
+      - name: Verify source permissions and alert-to-revocation checks
+        run: |
+          npm --prefix "$RUNNER_TEMP/dq-host-fixture" run test:source
+          npm --prefix "$RUNNER_TEMP/dq-host-fixture" run test:response
+          npm --prefix "$RUNNER_TEMP/dq-host-fixture" run demo:response -- "$RUNNER_TEMP/dq-judge-response.json"
+      - name: Retain the public response demonstration
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: response-demonstration-${{ matrix.os }}
+          path: ${{ runner.temp }}/dq-judge-response.json
+          retention-days: 14

@@ -1,3 +1,20 @@
+# Current judge route — v0.15.0
+
+**Start with the working response console.** Follow [the host README](../examples/initial-machine-host/README.md), then run `npm run console:response -- /absolute/path/new-report.json` from that directory. Open the printed loopback URL and click **Run working demonstration**. It executes actual requests once, then lets you revisit five recorded stages.
+
+1. **MCP workspace:** five official-SDK tools, a saved prior observation, no approval tool.
+2. **Conflicting claims:** a claimed recovery and inconsistent retrospective capacity. This is data inside the world; the route has not become the origin.
+3. **Useful verification:** a relevant revocation record resolves the business question. Note persistence, zero world-to-origin business reads and an explicit stop are checked.
+4. **Effective rotation:** a separate local receiver acknowledges, rotates and independently verifies old/new authority after restart. This demonstration has zero configured delay; exact measured time is in its report.
+5. **Source permissions:** metadata-only overview and explicit expected denials for forged role, cross-tenant claim, ticket mixing and revoked-authority replay.
+
+The demonstration is scripted, uses fresh artificial resources and makes no model calls. Read [the real Sol results](MODEL_RESULTS.md) separately: the guided variant did not establish an advantage over transparent isolation, and the last single session ended UNKNOWN_AFTER_LIMIT. The reported 30-second response window was configured, not induced by deception.
+
+Use [VALIDATION](VALIDATION.md) for source/CI/release identity. The earlier routes below remain available as historical functionality; old films do not depict v0.15.
+
+
+---
+
 # Start with an independent AI-agent client integration
 
 **v0.13.0 candidate:** run the [standalone MCP shipping consumer](../examples/mcp-shipping-consumer/README.md) through [the external integration route](EXTERNAL_INTEGRATION.md). The purpose is to let a suspicious participant work within a persistent synthetic world while a person or authorized defender agent inspects the evidence and prepares a response. The example does not measure how much response time is gained.

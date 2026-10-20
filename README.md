@@ -1,308 +1,82 @@
 # DungeonQ — Defensive Deception Runtime
 
-**Give suspicious AI-agent sessions a bounded world to work in, so people and defender agents have time and space to respond.**
+**Keep suspicious AI-agent work separated while people and authorized defender agents respond.**
 
-DungeonQ is an Apache-2.0 defensive deception runtime for developers securing AI-agent tool workflows. Its design goal is to create response time and separation for human operators and authorized defender agents; measured delay or defensive efficacy has not yet been established. At a designated entry point, its trusted gateway routes an admitted session into a separate synthetic world. The participant can read records, save changes and use a useful **Wrong Ticket** there. The operator retains the activity history and checks the protected origin through independent evidence.
+DungeonQ is an Apache-2.0 reference for developers securing AI-agent tool workflows. A trusted gateway routes a designated session into a persistent synthetic world. The participant can investigate, save a note, use a scoped **Wrong Ticket**, and continue across supported interfaces. Separate source authorization, alert receipt and credential-revocation checks determine what was actually protected.
 
-The current self-hosted reference makes that sequence inspectable with real HTTP, MCP, SSH, a bounded PostgreSQL protocol and a private Unix workload broker. Trusted setup explicitly provisions which contexts are diverted; the protected origin and all records are artificial.
+**v0.15.0** adds bounded false-exit and memory-conflict cues, useful follow-up verification, metadata-only source overviews, and a reproducible alert-to-rotation demonstration. Recognizing the world or choosing to stop is a valid outcome. The objective is response opportunity, not a mandatory false belief.
 
-[**Follow the recorded diversion**](docs/JUDGE_ROUTE.md) · [**Operate your own reference**](#run-the-reference) · [Acceptance evidence](docs/RUNTIME_ACCEPTANCE.md)
+[**Start the working demonstration**](docs/JUDGE_ROUTE.md) · [**Design and permission contract**](docs/CONTINUATION_DESIGN.md) · [**Real-model results and limits**](docs/MODEL_RESULTS.md) · [Validation](docs/VALIDATION.md)
 
-## v0.14.0 — interrupted writes, inspectable outcomes
+## See the current system work
 
-A missing client reply does not tell you whether a write committed. The current runtime adds an authenticated, **read-only write-status lookup** for the original context, adapter, request ID and exact payload. It returns **COMMITTED**, **NOT_COMMITTED**, **UNKNOWN** or **CONFLICT**. The participant and independent MCP consumer can recover a proven saved result without resending the write; the operator timeline also marks canonical commits. Missing evidence stays unknown, and transport history is preserved.
-
-[**View the recovery walkthrough and film**](https://dungeonq-astra.kq7dn7jb6r.chatgpt.site/#write-recovery) · [**Run the recovery example**](docs/WRITE_RECOVERY.md) · [Recorded machine-readable results](evidence/write-recovery-v1/report.json) · [Validation status](docs/VALIDATION.md)
-
-The new example actually closes the synthetic facade connection after a durable write, checks the same commit after restart, and contrasts an authenticated refusal with an unproven outcome. It is a scripted local fault-injection test using artificial resources, with no new model run. The October 8 Initial Machine film and its pinned v0.13.1 runtime remain historical; they do not include this update.
-
-## A task you can operate
-
-For developers securing **AI-agent tool workflows**: open the Participant workspace and the separate operator Control room. Read a shipping record, save a multiline review note, read it back from the server, and use a world-only ticket. The operator sees the same persisted world, successful observations and a request timeline tied to independent route evidence. An explicitly approved policy can add a bounded follow-up record. Restart the services and continue from the saved state.
-
-[Step-by-step working views](docs/RUNTIME.md#try-a-complete-participant-task-v0120) · [Reproduce ten checkpoints](docs/AMAZON_JUDGE_DEMO.md)
-
-The new walkthrough adds an ordinary authorized-origin reachability control, a verified stale-write refusal and a ticket-to-origin denial **before** its final witness read. It uses real MCP/HTTP clients and artificial resources, not a live model. The September 20 film records the earlier seven-scene command-output version; it does not show these new interfaces or checks. Historical container evidence does not certify this changed source.
-
-## Initial Machine: actual host-operation film (October 8)
-
-[Watch the 2:04 English film](https://youtu.be/uFvzFXfL2F0): real local MCP operations, a reachable artificial-file origin, a diverted persistent world, a useful world-only ticket rejected at the origin, and an actual restart. Astra max chooses its own calls in two routes; the featured pair completed all five tool stages with **3 source business reads for DIRECT and 0 for DIVERT**, matching note readbacks and an unchanged artificial target. The film separates actual operation footage from a labeled recorded-result summary.
-
-[Reproduce the selected host integration](examples/initial-machine-host/README.md) · [Procedure and evidence scope](docs/INITIAL_MACHINE_FILM.md) · [Recorded comparison](evidence/initial-machine-workflow/summary.json)
-
-This is an operator-provisioned, artificial-file workflow. It does not establish that a model was fooled or an autonomous attack was defeated. The standalone host slice is Apache-2.0; the private Initial Machine OS and original target are not distributed.
-
-## v0.13.1 — dependency repair
-
-The local browser rehearsal now uses Node's static server and an explicit static build. The removed Vinext wrapper only redirected to that existing page; all persistent runtime services, APIs, SDKs and public assets are retained. Removing the unused wrapper removes its vulnerable `braces` dependency chain. `npm run check` now checks the actual JavaScript modules and built static artifacts; this is documented JavaScript syntax validation, not a semantic TypeScript check.
-
-The [v0.13.0 film](https://youtu.be/8h5yeKb2XzE) still describes the unchanged consumer flow. See [INSTALL](docs/INSTALL.md), [SECURITY](SECURITY.md), and [versioned validation](docs/VALIDATION.md) for build commands and exact evidence.
-
-## Integrate a separate consumer (v0.13.0)
-
-[Watch the retained v0.13.0 English walkthrough](https://youtu.be/8h5yeKb2XzE) — a scripted public-interface consumer with separate operator and artificial-origin checks. It is not a new live-model attack study.
-
-The [standalone MCP shipping consumer](examples/mcp-shipping-consumer/README.md) has its own package and talks only to the public MCP/HTTP interfaces. It receives the actor endpoint and token; operator and artificial-origin checks run separately. A deterministic client exercises integration, not third-party adoption or a live-model evaluation.
+Node.js **24.15.0+**, npm and Git are required. No API key, paid model call, Amazon account or production document is needed.
 
 ```sh
 npm ci --ignore-scripts
-npm run oss:demo -- /absolute/path/new-oss-report.json
+cd examples/initial-machine-host
+npm ci --ignore-scripts
+npm run prepare:runtime
+npm run console:response -- /absolute/path/new-response-report.json
 ```
 
-Use a new report filename outside the checkout. Read [external integration and report interpretation](docs/EXTERNAL_INTEGRATION.md) before connecting your own client. For human-operated work, use the Participant workspace and Control room below. A defender agent may inspect permitted evidence or propose an action; it does not gain approval authority.
+Open the printed loopback URL and click **Run working demonstration**. Five stages execute real MCP/HTTP requests against new artificial resources:
 
-**Release status:** use the [v0.13.1 release record](https://github.com/Ranopha/dungeonq-amazon/releases/tag/v0.13.1) for the final tag, CI and download checksums; [VALIDATION](docs/VALIDATION.md) explains their scope. The maintained [release policy](docs/RELEASE.md) distinguishes source on `main` from an immutable release.
+1. An official-SDK MCP client enters a bounded workspace.
+2. A claimed recovery conflicts with a saved observation.
+3. A revocation record resolves the original business question; the note survives restart and the path offers a stop.
+4. A separate receiver acknowledges an alert, rotates a temporary connector credential, checks old/new authority and verifies the state after restart.
+5. Source policy rejects forged roles, cross-tenant declarations, foreign tickets and revoked-authority replay. Overviews contain no record values.
 
-## What happens after DIVERT
+The console shows actual request results, then replays that run. It is a **scripted working-system demonstration**, not a live-model experiment. Its response delay is zero. Credentials and original target bytes stay outside the public report. [Installation and detailed scope](examples/initial-machine-host/README.md).
 
-| Step | Participant experience | Operator evidence and control |
+## What the real AI studies found
+
+Historical October 19 Sol sessions are reported separately from the new engineering demonstration. Four isolated v12 sessions recorded **zero participant source business reads**. In the two configured 30-second response arms, rotation became effective after **30.174 and 30.182 seconds**. Those numbers include an injected 30-second delay: they do **not** establish extra time caused by deception or an advantage over transparent isolation.
+
+The later single v13 Sol session ended at its **14-call limit**, with zero source reads and **UNKNOWN_AFTER_LIMIT**. It did not autonomously exercise the four permission attacks; deterministic negative tests cover those cases. The v9 comparison did not increase meaningful exploration over its transparent control. Voluntary stopping, call-limit stopping and raw failed checkpoints remain distinguishable in [MODEL_RESULTS](docs/MODEL_RESULTS.md).
+
+DIRECT is a deliberately authorized positive control. Its early content read is evidence of granted permission, not a breach of isolation. An unchanged file alone does not establish that no one read it.
+
+## How the boundaries fit together
+
+| Boundary | Capability | What it does not confer |
 | --- | --- | --- |
-| Enter | A real client request reaches its designated synthetic world. | Authenticated routing is correlated with canonical and collector records. |
-| Work | Read and write persistent records; use a Wrong Ticket for a bounded world-only read. | A ticket never supplies origin authority; state and ticket consumption survive restart. |
-| Continue | Revisit the same world across supported adapters. | Observe stored requests, operations and world revisions across the session. |
-| Adapt | Approved follow-up records can appear after a first-time ticket use. | A finite operator grant controls the template, context, expiry and mutation budget. |
-| Verify | Synthetic success remains within that world. | Check the separate artificial-origin witness and route census; fence the context when required. |
+| Participant | Read/write its world, consume scoped tickets, follow bounded clues or stop | Operator approval, route selection or source access |
+| Trusted gateway | Bind an admitted context to its world across HTTP, MCP, finite SSH/PostgreSQL and a private workload broker | Automatic attack classification or arbitrary traffic interception |
+| Source policy | Check principal, tenant, resource scope and current epoch on every content request | Authority from a self-declared role or a world ticket |
+| Authorized responder | Receive a local alert and rotate a specific temporary connector credential | Proof of human acknowledgement, external mail delivery or production-key rotation |
+| Independent evidence | Reconcile actor reads, defender controls, restart and exact request outcomes | General security certification or established deception efficacy |
 
-A Wrong Ticket is deliberately useful, rather than an inert fake credential. Its signed scope permits work inside its issuing world. Approved adaptation extends that world with bounded records; participant instructions cannot authorize it. Transport failure never causes a diverted request to fall back to origin.
+Wrong Tickets do useful work only inside their issuing world. The **false exit** is a data claim, not a routing change. Memory conflict is an observable inconsistency, not a rewrite of the participant's saved note. Follow-up clues address an unresolved task question, have a finite budget and expose a stopping condition. [Complete design](docs/CONTINUATION_DESIGN.md).
 
-## Run the reference
+## Operate and integrate
 
-Use Node.js **24.15.0+**, npm and the prerequisites in [the operation guide](docs/RUNTIME.md):
+For the general persistent participant workspace and separate operator Control room:
 
 ```sh
-npm ci --ignore-scripts
-npm run runtime -- --data-dir ../dungeonq-review-013 --presentation participant-v1
+npm run runtime -- --data-dir ../dungeonq-reference-015 --presentation participant-v1
 ```
 
-Open the printed **Participant workspace** and **Control room** URLs in separate tabs. Keep the private credential file outside Git and AI context. Give a participant only its actor token; keep operator authority separate. Follow the [evaluator route](docs/JUDGE_ROUTE.md) to send a real request, consume a ticket, authorize one finite policy and inspect retained state after restart. Reuse the same private data directory to resume.
+Use a new private directory for a new installation; retain the full private state for restart. Keep actor and operator credentials separate. [Runtime guide](docs/RUNTIME.md) · [Independent MCP consumer](examples/mcp-shipping-consumer/README.md) · [Interrupted-write recovery](docs/WRITE_RECOVERY.md) · [Container reference](deploy/runtime-reference/README.md).
 
-The [client guide](docs/RUNTIME.md) covers all five adapters, the CLI and Node/Python SDKs. The [container profile](deploy/runtime-reference/README.md) adds measured network and file separation. The recorded website and older browser rehearsal are presentations; running the source provides the actual server roles.
+Transport loss never falls back to origin. A read-only write-status lookup can distinguish **COMMITTED**, **NOT_COMMITTED**, **UNKNOWN** and **CONFLICT** without resending the write. The retained Alexa-style governed-assistant profile uses the official MCP SDK, Streamable HTTP and protocol 2025-11-25; human approval is outside the assistant's tools. This is the rules-permitted simulation, not Alexa service/device certification or an AWS deployment.
 
-## Evidence you can inspect
-
-Use [the current validation record](docs/VALIDATION.md) for the current local checks, independent consumer result, public CI and source-bound container acceptance. The [integration guide](docs/EXTERNAL_INTEGRATION.md) explains which observations come from the actor, operator and artificial origin. Missing, stale or unknown evidence cannot become a pass.
-
-<details>
-<summary>Historical v0.11 reference evidence</summary>
-
-## Evidence you can inspect
-
-The **September 18 v0.11.0 Amazon distribution** passed **460/460 tests**. Its [public CI run](https://github.com/Ranopha/dungeonq-amazon/actions/runs/35303213743) passed Ubuntu, macOS and source-bound runtime acceptance: **11/11 required rows and 16/16 container checks**. The earlier reference also recorded restart continuity and an inconclusive result when infrastructure was stopped. These are dated observations; the [validation record](docs/VALIDATION.md) identifies each tested source.
-
-[Six recorded checkpoints](evidence/runtime-v1/journey.json) · [Evidence summary](evidence/runtime-v1/summary.json) · [Versioned runtime contract](docs/contracts/RUNTIME_V1.md). The checkpoints group one recorded reference acceptance run by capability, with source pointers and timing; public CI is separate corroboration.
-
-For fresh acceptance, follow the container guide and run the documented `runtime:proof` and `runtime:gate` commands against the exact clean candidate. Missing or stale evidence, unknown outcomes and failed checks prevent full admission. Public CI does not by itself establish protected-branch enforcement.
-
-</details>
-
-## Scope and open questions
-
-This is an **owned reference using artificial resources**, with explicitly provisioned contexts. It does not yet classify arbitrary attacks, transparently intercept host activity or certify production protection. SSH and PostgreSQL accept finite operations; the Unix broker mediates an explicitly connected workload. Local processes share an OS user, while the measured container profile still trusts Docker administration, the shared kernel and the gateway.
-
-“Origin untouched” means the named artificial data/configuration and admission interval were checked; audit records change to record that measurement. Real deployment requires a named authorized connector, detection/identity integration, legitimate-traffic continuity, recovery and environment-specific acceptance.
-
-Engineering success also does not establish deception efficacy. The complete research record retains **0/2** wrong-high-confidence study outcomes, **0/4** unsupported completion claims and the earlier **0/3** defense pilot. Later workspace participants accepted decoy values while explicitly qualifying their synthetic, common-source evidence. [Study](docs/STUDY_RESULTS.md) · [Topology](docs/TOPOLOGY_RESULTS.md) · [Defense pilot](docs/DEFENSE_PILOT_RESULTS.md) · [Workspace](docs/WORKSPACE_LAB.md).
-
-## One core, reusable capabilities
-
-The Proof Kernel and separate approval boundary support the runtime's decisions and evidence. The governed-assistant/Astra profiles exercise bounded clients; Defense and Orders Workspace retain incident response, notifications and account workflows; World, Study and Topology retain research instruments and their original results. These are supporting profiles of DungeonQ, not separate product definitions. Legacy account/email features do not automatically apply to the runtime's reference owner token.
-
-## Amazon contribution
-
-The retained **Alexa+ simulation** lets an assistant investigate through real local MCP while a separate reviewer controls bounded effects. DungeonQ's defensive deception runtime is the product; the assistant workflow demonstrates how a client can participate without acquiring operator authority.
-
-This entry retains **Alexa+ primary + Open Source Mini**. [Contribution and reused foundations](docs/DELTA.md) · [Current submission copy](docs/SUBMISSION.md) · [External MCP client](docs/EXTERNAL_AGENT.md). The assistant is a deterministic Alexa-style simulation, with no Alexa service, Echo integration or AWS deployment claim. The [original v0.2 film](https://youtu.be/ezX7cOF2s0s) demonstrates that earlier workflow, not Runtime v1.
-
-## Verify and contribute
+## Verify, release and contribute
 
 ```sh
 npm run check
-npm run verify:source
+npm run test:host
+npm run test:host-source
+npm run demo:response -- /absolute/path/new-cli-report.json
 ```
 
-[Open-source review route](docs/OSS_REVIEW_GUIDE.md) · [Maintenance plan](docs/MAINTAINER_PLAN.md) · [External integration](docs/EXTERNAL_INTEGRATION.md) · [Testing](docs/TESTING.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Release history](CHANGELOG.md). Apache-2.0: preserve [LICENSE](LICENSE), [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md). Source manifests check integrity, not independent certification. The earlier WebMCP repository, site, submission and evidence remain frozen.
+The root check covers 670 tests, scenario verification, source audit, JavaScript syntax and static build at the recorded v0.15 checkpoint. Host checks use the separately installed pinned runtime. Consult [VALIDATION](docs/VALIDATION.md) for actual source/run scope and public CI, not just expected counts. [Release policy](docs/RELEASE.md) · [Testing](docs/TESTING.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md).
 
-<details>
-<summary>Historical v0.10 and earlier profile walkthroughs</summary>
+The entry is **Alexa+ primary + Open Source Mini**. [Submission copy](docs/SUBMISSION.md) · [New work and reused foundations](docs/DELTA.md) · [Product feedback](docs/PRODUCT_FEEDBACK.md). The competition's whole-repository and material freeze is recorded in [COMPETITION_FREEZE](docs/COMPETITION_FREEZE.md).
 
-The following dated sections preserve prior workflows, counts and launch statements. They are historical context, not fresh release or remote-submission confirmations.
+All resources are artificial and routing is explicitly provisioned. Local processes trust one OS user; the container reference still trusts the gateway, Docker administrator and shared kernel. Production identity/detection integration, legitimate-traffic continuity and external response delivery require environment-specific acceptance.
 
-## v0.10.0: the alert belongs to the administrator
+The [October 8 film](https://youtu.be/uFvzFXfL2F0), [earlier consumer film](https://youtu.be/8h5yeKb2XzE), and [original assistant film](https://youtu.be/ezX7cOF2s0s) are retained historical records. Earlier [Study](docs/STUDY_RESULTS.md), [Topology](docs/TOPOLOGY_RESULTS.md), [Defense](docs/DEFENSE_PILOT_RESULTS.md) and [Workspace](docs/WORKSPACE_LAB.md) results, including failures, remain available. Closed WebMCP and Astra entries are unchanged.
 
-The current synthetic reference release adds **verified administrator email binding, email-alias sign-in and a durable recipient-bound alert queue**. Reauthenticate, verify your address, then inspect the message generated by a new honey contact. Actor and MCP tools cannot choose the recipient or approve a response.
-
-Optional Google / GitHub sign-in adapters bind the verified provider email to an existing Owner, never create one from email alone. They require your registered application and credentials; the default demo has none. Apple sign-in is visibly unavailable in this local profile. Authentication and email delivery are separate services.
-
-Run `npm run defense:workspace` for the full self-hosted lab. Its default **simulated mailbox** needs no account, cloud service or paid call. An optional explicitly configured, TLS-verified SMTP transport supports real mail; a simulated verification never becomes a real-mail verification. SMTP acceptance is not an inbox-delivery claim.
-
-[Email setup and judge route](docs/EMAIL_NOTIFICATIONS.md) · [Recorded synthetic proof](evidence/email-v1/proof.json). Reproduce with `npm run email:proof -- --out ../dungeonq-email-proof`. Prior world, governance, original video and all positive/negative model results below are retained. No enterprise integration or general deception efficacy is claimed.
-
-## v0.9.0: an inspectable decoy workspace
-
-New **Orders Workspace** adds a coherent English snapshot → index → reconciliation trail, stable saved records and four real HTTP MCP tools. Evaluator-only labels are withheld from the participant, while the Owner retains origin truth, local alerts and separately approved rotation. Start a **new** installation with `npm run defense:workspace`; no cloud account, API key or paid call is required.
-
-Two fresh Codex sessions used the workspace quantities **19/21** (fixed origin A=**7**) and recorded completion at 95% confidence. Both still qualified their claims as synthetic-interface, common-source evidence. This demonstrates **decoy-data acceptance, not sustained origin misbelief or general attacker deception**. The overly broad original metric and prior 0/3 negative pilot are disclosed, with complete raw records and projection/replay verification.
-
-[Installation, judge route and results](docs/WORKSPACE_LAB.md) · [Recorded A](evidence/workspace-pilot-v1/a-report.json) · [Recorded B](evidence/workspace-pilot-v1/b-report.json). Run `npm run workspace:verify -- evidence/workspace-pilot-v1`. The retained video records v0.2, not this new workspace. This release remains synthetic-only and does not claim Alexa service certification.
-
-## Retained v0.8.0: one incident, a complete defensive response
-
-Start with `npm run defense:proof` for the new **same-incident reference profile**: a configured honey contact opens a bounded synthetic world, creates a durable local alert and proposes a rotation for protected resource A. Separate Owner reauthentication approves the exact manifest. A real loopback TLS issuer rotates once, then checks the old key, new business request, old consumer and world-issued decoy token independently. The world remains usable afterward.
-
-The recorded engineering proof passes **13 named checks**, including HTTP/MCP parity, altered-evidence rejection and a complete restart. It uses `SCRIPTED_FIXTURE` and an automated Owner credential: **not a human-presence proof, a live LLM evaluation or production defense**. The actor receives no approval or origin-control tool. No API key or paid model call is needed.
-
-[Start the English Actor and Owner desks](docs/DEFENSE_LAB.md) · [Inspect the recorded proof](evidence/defense-v1/proof.json) · [Three-minute OSS review](docs/OSS_REVIEW_GUIDE.md).
-
-```sh
-npm ci --ignore-scripts
-npm run defense:proof -- --out ../dungeonq-defense-proof
-
-# First installation: a new, empty, private directory
-mkdir -m 700 ../dungeonq-defense-lab
-npm run defense -- --data-dir ../dungeonq-defense-lab --seed 42 --depth 4
-```
-
-Use the URLs printed by the launcher. Keep the Owner password outside the Actor/MCP client. This profile supports **one fixed synthetic A and one rotation per installation**, a 30-day local worker credential and a 30-day self-signed certificate. Restart with the same directory, seed and depth. An expired unclaimed proposal can be refreshed; an uncertain execution uses readback reconciliation. [Recovery and exact limits](docs/DEFENSE_LAB.md#expiry-restart-and-uncertain-results).
-
-MCP is an interface, not transparent interception. A honey contact proves neither AI identity nor compromise of A. `LOCAL_SINK_ONLY` means local receipt, not email delivery; same-host services do not establish production isolation. An actor already holding a valid A credential needs origin enforcement and a credential/session fence in a real deployment. The reference does not claim to divert arbitrary traffic.
-
-## Retained v0.7.0: follow the packet, verify the destination
-
-Run `npm run topology` for an English, persistent publishing workflow: saved note → edition → preview → queue → fixed filing worker. The actual visitor catalogue has a separate deposit/index path. HTTP and MCP share the same runtime; a separate Observer retains causal evidence. **No key or paid model call is needed.**
-
-[Two-minute workflow guide](docs/TOPOLOGY_LAB.md) · [All four model pilot records and limits](docs/TOPOLOGY_RESULTS.md).
-
-Both procedural-memo participants followed the complete local branch (2/2), versus 0/2 early-explanation controls. **False completion was not observed (0/4); all four ultimately verified the real goal.** This is observed route following, not proof of a false causal belief or general deception efficacy. The older study below remains intact.
-
-## Retained v0.6.0: governed actions and a world you can question
-
-The original governed MCP workflow stays intact. New `npm run world` and `npm run study` experiences add persistent abstract rooms and a finite two-feature causal experiment: **predict → act → reflect**, with consent, withdrawal, debrief and a separate-process Observer. No API key is needed.
-
-[Two-minute study route](docs/STUDY_LAB.md#a-two-minute-reviewer-route) · [World guide](docs/WORLD_LAB.md) · [Research results and raw evidence](docs/STUDY_RESULTS.md) · [Three-minute OSS reviewer guide](docs/OSS_REVIEW_GUIDE.md).
-
-The evidence includes **48 reference-learner conditions, not 48 subjects**, and an N=2 Codex pilot with **0/2 wrong-high-confidence induction**. Exact pilot model identity was not independently attested. No general human/LLM efficacy is claimed. This is finite feature learning, not exploitable vulnerabilities or attack chains.
-
-The study UI remains Traditional Chinese; its English guide includes important labels. [Overview](media/study-evidence.png) and [learner trace](media/study-trace.png) are actual recorded-evidence explorer captures, not a live hosted study. The independent Observer requires self-hosting. The original video below records the 0.2.0 governed workflow, not these new features.
-
-**Let it investigate. Decide before it acts.**
-
-DungeonQ is an Apache-2.0, locally runnable reference lab for **testing the boundary between an assistant's request and a human-authorized effect**. An assistant uses a real MCP server to investigate a synthetic incident and request containment. A separately authenticated reviewer approves an exact manifest. Only then can the assistant change one synthetic session and obtain a verifiable receipt.
-
-For MCP developers, security engineers and reviewers who need more than an approval label: challenge the boundary, inspect what changed, tamper with the evidence, and rerun the checks.
-
-**Synthetic only.** The transport, authentication, SQLite writes and signatures are real; the identities, incident and effects are artificial. The governed assistant is deterministic, **not an LLM, the Alexa service, an Echo integration or production security software**. No cloud account, API key, credit card, live attack or real enterprise connection is needed.
-
-[Watch the original 2:35 demo](https://youtu.be/ezX7cOF2s0s) · [Source releases](https://github.com/Ranopha/dungeonq-amazon/releases) · [Review the evidence map](docs/GOVERNANCE.md) · [Public acceptance runs](https://github.com/Ranopha/dungeonq-amazon/actions/workflows/ci.yml)
-
-## Start in five minutes
-
-Reference runtime: Node.js **24.15.0+**, npm and OpenSSL with `req -addext`. Public CI targets Ubuntu 24.04 and macOS 14; the [validation record](docs/VALIDATION.md) identifies completed runs. Native Windows is not release-accepted. See [installation and troubleshooting](docs/INSTALL.md).
-
-```sh
-npm ci --ignore-scripts
-npm run doctor
-```
-
-Run these commands in the unpacked source directory containing `package.json`. The sections below retain the earlier governed-containment workflow; the v0.8.0 defense entry above is separate.
-
-### A. Reproduce the proof without a browser
-
-```sh
-npm run demo:proof -- --out ../dungeonq-proof-040
-```
-
-Expect **seven PASS checks**, ending with `Result: PASS`. The command starts a fresh lab on random loopback ports, crosses actual HTTPS/CSRF and Streamable HTTP, verifies scope/signature/tamper/replay, stops the entire stack, and verifies persistence after restart. It exits nonzero on failure, refuses an existing output directory and removes only its own disposable private lab.
-
-The output includes `report.json`, original and tampered evidence, and a **public** verification key. No passwords, worker tokens or private keys are exported. The automated driver controls **both fixture roles**; it does not prove human presence or give the runtime assistant an approval tool.
-
-Independently check the signed receipt:
-
-```sh
-npm run verify:assistant-evidence -- ../dungeonq-proof-040/evidence.json ../dungeonq-proof-040/trusted-public-key.pem amazon-local-lab
-npm run verify:assistant-evidence -- ../dungeonq-proof-040/tampered-evidence.json ../dungeonq-proof-040/trusted-public-key.pem amazon-local-lab
-```
-
-The first returns `receiptValid: true` / exit 0. The **second must return false / exit 1**: that is the expected rejection, not a failed installation. The harness pins the key before exporting evidence. For artifacts supplied by someone else, obtain the trusted key independently; accepting an accompanying key proves no trusted origin.
-
-### B. Experience the human approval boundary
-
-```sh
-npm run amazon
-```
-
-Open **https://127.0.0.1:4186/assistant**. Sign in as `owner-lab` with the new disposable password printed in your terminal. Inspect and handle the local self-signed certificate warning yourself; do not install system trust or disable TLS validation.
-
-1. **Investigate this incident** → see route `DENY` and a decision digest; no asset changes.
-2. **Request containment**, then ask the assistant to **Apply** → `HUMAN_APPROVAL_REQUIRED`; both assets stay active.
-3. In **The approval boundary**, review the exact session, digest, five-minute expiry and one-effect limit. Reauthenticate and approve.
-4. Ask the assistant to **Apply** → target becomes `CONTAINED`, version 1; the other session stays `ACTIVE`, version 0.
-5. **Verify receipt**, **Test tampering**, **Replay apply**, **Export evidence** → valid original, rejected altered copy, same receipt and no second mutation.
-
-[Reviewer walkthrough](docs/REVIEWER_GUIDE.md) covers expected outcomes, expiry and restart. The public video records the preceding 0.2.0 workflow; 0.4.0 adds scenario-aware proof, an independent MCP client and public release tooling without changing that UI or approval contract.
-
-## What you can actually verify
-
-| Question | Inspectable result |
-|---|---|
-| Can the assistant approve its own request? | Six MCP tools, none for approval; an approval command is rejected. Human HTTPS reauthentication is separate. |
-| Does approval bind the effect's scope? | Exact digest, worker, observed asset/version, expiry and one-effect limit; unrelated asset remains unchanged. |
-| Can a retry execute twice? | Atomic claim and CAS; replay returns the original receipt without incrementing the asset again. |
-| Can an edited receipt pass? | Ed25519 verification against a previously pinned key rejects the modified copy. |
-| Does restart forget the decision? | Real full-stack restart preserves the account, request, effect and receipt in SQLite. |
-| Do combined failures grant more authority? | All 127 nonempty subsets of seven **modeled** failure flags remove capabilities; not 127 infrastructure attacks. |
-
-[Governance and security value](docs/GOVERNANCE.md) maps claims to code, checks, limits and reuse. [Architecture](docs/ARCHITECTURE.md) distinguishes modeled decisions, durable local effects and deferred production guarantees.
-
-## Bring your own synthetic scenario
-
-Copy `assistant/scenarios/after-hours.json` and change its synthetic identifiers, seed, policy or signals. The [Scenario Pack contract](docs/SCENARIO_PACK.md) describes accepted fields and limits.
-
-Run **your file through the complete proof**, not just an analysis preview:
-
-```sh
-npm run demo:proof -- --scenario ./my-synthetic-scenario.json --out ../my-scenario-proof
-```
-
-Each run reports the scenario ID, input/decision/proposal digests, platform and named outcome. Equal admitted input produces equal decision digests; fresh keys, timestamps and receipts are intentionally not byte-identical. Invalid inputs or incorrect expected assertions exit nonzero. The proof cannot attach to or overwrite an existing lab.
-
-| Shipped proof case | Expected result | What it actually proves |
-|---|---|---|
-| `assistant/scenarios/after-hours.json` | `APPROVED_EFFECT_VERIFIED`, 7 checks | Pre-approval denial, separate fixture approval, exact effect, signature, tamper, replay, restart |
-| `assistant/scenarios/budget-blocked.json` | `POLICY_BLOCKED`, 3 checks | Modeled budget exhaustion prevents observation/request creation; assets unchanged |
-| `assistant/scenarios/unsupported-mapping.json` | `UNSUPPORTED_MAPPING_REJECTED`, 3 checks | Rotation is analyzed but this adapter refuses execution; no receipt invented |
-
-Use each path with `--scenario` and a new `--out` directory. The two rejection proofs export `rejection.json`, **not** a signed effect receipt. A PASS means the named expectation held; it does not mean every case executed an effect. A pack whose cost exceeds its declared budget is rejected even earlier at admission.
-
-- **Upload in the UI** to analyze through MCP. Uploading does not replace the installed lab or grant execution rights.
-- **Install in a fresh lab** to exercise the supported containment mapping:
-
-```sh
-npm run amazon -- --scenario ./my-synthetic-scenario.json
-```
-
-Execution supports **ISOLATE_SESSION, scope 1, AVAILABLE → containment** only. Other modeled effects can be analyzed but cannot be executed by this adapter. URLs, real-looking credentials, extra fields, executable content and excess budget are rejected. Never use real incident data.
-
-The [reviewer guide](docs/REVIEWER_GUIDE.md) names three fixed-seed cases and expected outcomes. [MCP documentation](docs/MCP.md) includes the six tool authorities and an external local client.
-
-For a separately running client and a Codex connection example, see [External Agent walkthrough](docs/EXTERNAL_AGENT.md). Only the worker transport token belongs in that process; human approval stays in the HTTPS UI. CI tests the SDK client, not a live LLM or Alexa account.
-
-## Verify, contribute, release
-
-```sh
-npm run check
-npm run verify:source
-```
-
-`check` runs source tests, three fixed-seed goldens, release-pattern audit, type checking and build. It is not independent security certification. `verify:source` checks the distribution's file inventory and SHA-256 manifest; a hash manifest is not a signature or trusted timestamp.
-
-- [Testing and evidence scope](docs/TESTING.md)
-- [Versioned validation record](docs/VALIDATION.md): tests, three goldens, full and rejection proofs; limits included.
-- [Contributing](CONTRIBUTING.md) · [Security reporting](SECURITY.md)
-- [Release notes](CHANGELOG.md) · [Version/release policy](docs/RELEASE.md)
-- [Amazon-specific changes and provenance](docs/DELTA.md) · [Developer-tool feedback](docs/PRODUCT_FEEDBACK.md)
-
-Prepared for **Build, Ship, Shape: Amazon Developer Hackathon — Alexa+ + Open Source Mini Challenge**. The older WebMCP entry is separate and unchanged. Public availability and passing local tests do not imply contest acceptance, OpenAI endorsement or production readiness.
-
-Apache-2.0: [LICENSE](LICENSE), [NOTICE](NOTICE), [third-party notices](THIRD_PARTY_NOTICES.md), [SBOM](SBOM.cdx.json). The package is intentionally private to prevent accidental npm publishing; the GitHub source is open source.
-
-</details>
+Apache-2.0. Preserve [LICENSE](LICENSE), [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md). Source inventories establish byte integrity, not independent certification.

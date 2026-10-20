@@ -1,3 +1,12 @@
+# Current architecture — v0.15.0
+
+The persistent runtime now includes bounded task-related continuation and a separate source-policy/response host. [CONTINUATION_DESIGN](CONTINUATION_DESIGN.md) defines their current contracts; [MODEL_RESULTS](MODEL_RESULTS.md) separates measured response timing from unproven incremental deception effects. The earlier architecture below remains the foundation.
+
+Source admission is evaluated at the origin, including cached replies and ticket use. Metadata-only overviews cannot bypass explicit content permission. A separate authenticated responder rotates the temporary connector epoch and verifies old/new requests; it does not grant the participant source authority. The demo's zero delay and the historical study's injected 30-second delay are distinct configurations.
+
+
+---
+
 # Architecture and claim boundary — v0.13.0
 
 DungeonQ is a defensive deception runtime for AI-agent workflows. A designated suspicious session continues in a persistent synthetic world, giving human operators and authorized defender agents a place to observe and prepare a response. Additional response time is the design objective; no measured efficacy or production protection is established.

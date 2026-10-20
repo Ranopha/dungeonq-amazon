@@ -1,3 +1,15 @@
+# 0.15.0 — October 20, 2026
+
+- Bounded pitching runtime with false-exit and memory-conflict cues, task-related continuation, persistent notes and explicit stop/UNKNOWN semantics.
+- Source overviews return metadata only. Content access checks current principal, tenant, scope and epoch independently of role text, world tickets and cached requests.
+- Selected host integration v0.2.0, pinned to the public Amazon runtime, adds 21 source-policy tests and alert-to-rotation/restart verification.
+- A new five-stage working console and CLI use actual MCP/HTTP, fresh artificial resources and no paid model calls.
+- Preserved historical Sol results: no established exploration advantage over transparent control; 30-second response delay is configured; v13 ends UNKNOWN_AFTER_LIMIT.
+- Reproducible judge route, updated entry materials and explicit whole-entry competition freeze.
+
+
+---
+
 # Changelog
 
 ## 0.14.0 — 2026-10-10

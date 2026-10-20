@@ -1,41 +1,46 @@
-# Initial Machine host fixture
+# Initial Machine host fixture — v0.2.0
 
-This is the selected DungeonQ host integration used by the October 8, 2026 film. It provides a real MCP Streamable HTTP server, an independent artificial file origin, persistent synthetic state, scoped tickets, source-read accounting, and restart checks. It does not include the private Initial Machine OS.
+This selected Apache-2.0 host integration runs a real MCP Streamable HTTP server against an independent artificial-file origin. It adds source authorization, alert receipt, connector rotation and restart checks to the retained October 8 integration. The private Initial Machine OS, its target, credentials and history are not distributed.
 
-## Reproduce the transport and boundary checks
+## Install and run
 
-Tested on macOS with Node 24.15 or newer, npm, and Git. No model, API key, paid service, or real document is needed for these checks.
+Use Node.js 24.15.0+, npm and Git. From this directory:
 
 ```sh
-cd examples/initial-machine-host
 npm ci --ignore-scripts
-git clone --branch v0.13.1 --depth 1 https://github.com/Ranopha/dungeonq-astra.git vendor/dungeonq-runtime
-npm ci --ignore-scripts --prefix vendor/dungeonq-runtime
+npm run prepare:runtime
+npm run test:source
 npm test
+npm run test:response
+npm run console:response -- /absolute/path/new-response-report.json
 ```
 
-The runtime must resolve to `17ba40cbd687ff08ff0a3f02bece4a2189db76f9`. The test creates a fresh temporary artificial file, uses the official MCP SDK to initialize/list/call the real server, verifies the normal control can read the file, verifies the diverted participant receives different bytes with zero source business reads, checks a world ticket, writes a note, stops/restarts the runtime, and reads the note back. It also checks wrong authentication, forged routing, and immutable target rejection. The temporary fixture is removed afterward.
+`prepare:runtime` clones the public Amazon repository into a **new** ignored `vendor/dungeonq-runtime` directory and checks out runtime commit `345ef3efe46cdd75abff2dde673f57a956cff6db` (v0.15.0). It refuses an existing destination. The host wrapper and runtime have separate version pins so the export is reproducible. The published host source inventory is in `PROVENANCE.json`.
 
-## Operate the local console
+Open the printed loopback URL, run the demonstration and inspect all five result tabs. The same operation without the UI is:
 
 ```sh
-npm run prepare:fixture
-npm start
+npm run demo:response -- /absolute/path/another-new-report.json
 ```
 
-Preparation creates a new random artificial file with private permissions; it refuses to replace an existing target. Open the loopback URL printed by the server. Run the normal control, diverted session, and restart/readback buttons. These are scripted client checks over real MCP, not a model experiment.
+The report filename must be new. Each run creates new random artificial target bytes in a private temporary directory; it cannot attach to an existing production target. Temporary credentials, raw target bytes and installation state are not included in the public report. Stop the console with Ctrl-C or SIGTERM. No model, API key, paid service, external notification or real document is used.
 
-The optional Astra buttons require the user's own signed-in Codex desktop installation on macOS and access to `gpt-6-astra`. They use subscription authentication, maximum reasoning, one process per route, the same document-review prompt, and five explicitly authorized participant tools. Shell, other applications, web search, and subagents are disabled in that process. An unavailable model or failed tool approval is inconclusive. Do not replace a provider refusal with an assertion of success. No API key is bundled.
+## What is verified
 
-Results and raw model events are saved under `.local/dungeonq-host/recordings/`. Treat them as private: tool records contain temporary tickets and artificial document contents. The console displays a minimized operational summary. Stop the server with SIGTERM after use; all listeners are loopback only.
+- Five official-SDK MCP tools and cross-interface world state; no participant approval tool.
+- A false recovery claim, conflicting prior observation, task-relevant revocation evidence and a finite stop.
+- Saved participant note after a real service restart; world requests do not become source requests.
+- A real loopback alert receiver, durable incident identity, temporary connector credential rotation and old/new authority readback after restart.
+- Metadata-only source overview; forged role, cross-tenant declaration, foreign source ticket and old-epoch replay refusal.
 
-## What the evidence means
+The deterministic `test:source` suite has 21 cases. `test:response` also checks failure/UNKNOWN and duplicate-alert handling. Expected refusals are asserted against the code actually returned; unexpected errors are failures.
 
-- DIRECT is an authorized positive control, not an unprotected production system.
-- DIVERT is explicitly provisioned by the operator, not automatically classified as malicious.
-- Source business-read counts are separate from guard/witness reads. An unchanged file alone does not prove it was unread.
-- The model chooses its own calls within five bounded MCP tools. It is not conducting an autonomous penetration test.
-- A routed session is not evidence that the model believed the world was real. No general attack-defeat, OS/admin protection, or production-security claim is made.
-- Evidence applies to this artificial file, these routes, these tools, this runtime version, and the recorded sessions.
+## Interpretation
 
-The repository owner approved this selected host slice for publication under Apache-2.0. See LICENSE. The separately obtained DungeonQ runtime retains its own Apache-2.0 license.
+DIRECT deliberately has source permission. DIVERT is explicitly provisioned; neither routing nor this demo classifies arbitrary attacks. A world-issued ticket never becomes source authority. Source business reads distinguish actor requests from exact-ID defender positive controls. The raw containment checkpoint can include defender reads and remain FAIL even when the separately reconciled actor count is zero; the public report retains both.
+
+The console's configured response delay is **zero**. Historical Sol trials used a separately configured 30-second delay; their time is not attributed to deception. This run is scripted, not a live Sol session. See [historical model outcomes](../../docs/MODEL_RESULTS.md), including voluntary UNKNOWN and UNKNOWN_AFTER_LIMIT.
+
+## Historical console
+
+The older `prepare:fixture` / `start` commands and October 8 film remain available as historical assets. Their optional Astra buttons need separate model access and are **not part of the default v0.15 judge route**. They were not used for this update. Never put raw model events, tickets, source contents or private installation files into a public upload.

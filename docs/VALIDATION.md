@@ -1,3 +1,22 @@
+# Current v0.15 validation — October 20, 2026
+
+Runtime core: `345ef3efe46cdd75abff2dde673f57a956cff6db`. Host fixture: v0.2.0, with its own file inventory and this fixed public runtime pin. Final package/CI/tag references are recorded in the release record; a local PASS does not itself establish publication.
+
+| Observed check | Result and scope |
+| --- | --- |
+| Root `npm run check` | 670/670 tests, three scenario goldens, source audit with zero findings, JavaScript syntax and 43 static output files |
+| Host `test:source` | 21/21 source-policy cases, including overview/cache, role, tenant, ticket and revocation checks |
+| Host `npm test` | Actual SDK MCP control/diversion and restart; one authorized control read, zero diverted source reads |
+| Host `test:response` | Nine named alert/rotation/replay/restart/dedup/failure checks |
+| Working console | Five stages passed on fresh artificial resources; visible results and actual report retained in `evidence/response-v15/recorded-demo.json` |
+| Model calls for this refresh | Zero. October 19 Sol studies are historical and described separately in MODEL_RESULTS |
+
+The console report retains raw host checkpoint FAIL when its legacy counter includes defender positive-control reads. Exact defender request IDs are separated to establish the actor count; the raw result is not relabeled. This is a scoped demonstration, not full production containment acceptance. The recording's response delay is zero and is not comparable to the historical configured 30-second study as a deception-effect estimate.
+
+The host pin uses Vitest 4.1.12 after correcting an initial lockfile mismatch and updating past a dependency advisory. Early demo attempts caught an invalid note key and a ticket-mixing probe that hit the target scope gate first; the final demonstration uses the allowed note key and tests ticket issuer binding on an otherwise readable ordinary record. No permission check was weakened. Raw private development logs remain retained outside the public distribution.
+
+## Historical validation records
+
 # v0.14.0 recovery validation — October 10, 2026
 
 The current source adds read-only interrupted-write recovery. [Recorded proof](../evidence/write-recovery-v1/report.json) binds the relevant source bytes and six fault/recovery scenes. It is scripted local artificial-resource evidence, with no new model run.

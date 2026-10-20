@@ -1,3 +1,12 @@
+# v0.15 release and competition freeze
+
+The runtime core is pinned at `345ef3efe46cdd75abff2dde673f57a956cff6db`; the final public release also contains the separately versioned host fixture, current docs, evidence and media references. [VALIDATION](VALIDATION.md) records final publication/CI status. Existing tags and films are immutable historical records.
+
+This refresh targets **Amazon only**. Do not update the closed Astra or WebMCP entries. From Taiwan October 24 03:00 until after the actual winner announcement, the **whole submitted repository and all linked submission materials must remain unchanged**, including new branches/releases and minor edits. Read [COMPETITION_FREEZE](COMPETITION_FREEZE.md) before any later work. A release tag alone is not a substitute for this freeze.
+
+
+---
+
 # Current source update: v0.14.0
 
 The recovery source, [reproducible report](WRITE_RECOVERY.md) and updated public walkthrough are version 0.14.0. The functional main commit `6ee781d7ec8730af29abb23a7943c8817995f75f` passed [all five public CI jobs](https://github.com/Ranopha/dungeonq-amazon/actions/runs/38014164173), including the source-bound runtime/container gate. The public walkthrough supplies a source snapshot with generated inventory and checksums. This source update does not claim creation of a new GitHub release tag. Closed challenge snapshots and existing tags must remain unchanged. Historical v0.13.1 instructions and records follow.

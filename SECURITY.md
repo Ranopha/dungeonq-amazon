@@ -1,3 +1,14 @@
+# v0.15 source authority and response boundary
+
+The current host fixture defaults to no protected-target read permission. Every content path, ticket consumption and cached result checks source principal, tenant, scope and current epoch. Snapshot/overview results contain record metadata only. Caller-supplied roles and tenant fields cannot grant authority. Unknown or stale authority fails closed. The broader runtime's world tickets and adaptation grants remain separate from source authorization.
+
+The response demonstration rotates one temporary connector bearer, persists the epoch, verifies old/new requests and repeats readback after restart. It does not rotate an encrypted file password, a production credential or a model-provider key. Alert acknowledgement is a local system receipt, not a human or inbox acknowledgement. These are owned artificial-resource checks, not general penetration resistance. See [design](docs/CONTINUATION_DESIGN.md) and [results](docs/MODEL_RESULTS.md).
+
+Host development dependency Vitest is pinned to 4.1.12. Source/runtime and host lockfile audits are recorded separately. No model call or external deployment is part of CI.
+
+
+---
+
 # Security policy — synthetic reference profiles
 
 ## Current deception runtime

@@ -1,3 +1,19 @@
+# Current feedback — October 20, 2026
+
+Track: Alexa+ simulation + Open Source. The current official MCP SDK is **1.32.1**, using Streamable HTTP and protocol 2025-11-25. The reference was built and exercised locally with Node 24, artificial resources and a separate human/operator authority. No real Alexa device/service, Amazon account linking or AWS deployment was tested; no firsthand AWS Builder feedback is claimed.
+
+## What the extended implementation taught us
+
+1. **Important: distinguish permission from descriptive metadata.** A convenient source overview originally carried content even when it should only describe available records. We replaced it with metadata-only responses and required explicit, current source permission for content, including cached replies. This was our implementation defect, not an Amazon or MCP SDK defect.
+2. **Important: make response provenance resumable.** An assistant needs to distinguish alert sent, receiver acknowledged, human acknowledged and rotation verified. Stable incident IDs and authenticated old/new readbacks survive transport loss and restart. A platform-native, scoped human handoff with operation ID, expiry and exact manifest would reduce custom work without exposing approval credentials to the assistant.
+3. **Useful: preserve UNKNOWN in agent tooling.** A 14-call budget ended one Sol session without a final answer. Tooling should label a budget stop separately from the model's own choice to stop and from successful task completion. Missing transport or model evidence must not be inferred as success.
+4. **Useful: ship bounded local MCP examples with negative tests.** Official SDK handshake, tool listing and invocation made our independent client and judge demo reproducible. Examples spanning metadata-only enumeration, tenant binding, ticket issuer binding, stale epochs and replay would shorten secure integration work.
+
+We would reuse MCP for a standard client interface. Actual Alexa+ device/service onboarding remains future work; the simulation does not establish platform certification. The default judge route needs no API key or paid service. Earlier implementation observations below are retained as dated history; the Vinext wrapper mentioned there was removed in v0.13.1.
+
+
+---
+
 # Product feedback and friction log
 
 Recorded from implementation on September 12, 2026. No AWS account, Amazon hardware, Alexa service API or production incident data was used. We cannot report firsthand Alexa account-linking/device SDK behavior. This is the rules-permitted simulated assistant route with an actual local MCP implementation.

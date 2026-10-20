@@ -1,16 +1,49 @@
 {
-  "schemaVersion": "dungeonq.host-fixture-source/v1",
-  "runtimeVersion": "0.13.1",
-  "runtimeCommit": "17ba40cbd687ff08ff0a3f02bece4a2189db76f9",
-  "scope": "selected host integration only; no private OS, original target, credentials, state, logs, or git history",
+  "schemaVersion": "dungeonq.host-fixture-source/v2",
+  "hostVersion": "0.2.0",
+  "runtimeVersion": "0.15.0",
+  "runtimeCommit": "345ef3efe46cdd75abff2dde673f57a956cff6db",
+  "scope": "selected original Apache-2.0 host integration; no private OS, original target, credentials, state, raw model events or private git history",
   "files": [
     {
+      "path": "plugins/dungeonq-host-integration/src/contracts.ts",
+      "sha256": "7c96f449f4dfb456ddd9f91588a1c32d461c2702428f3a373b5c03d3fbcca042"
+    },
+    {
+      "path": "plugins/dungeonq-host-integration/src/file-origin.test.ts",
+      "sha256": "6a84ec5386acade668ffbf53c8835e25c1d6794cb803ec6a2ba7b574cfcbc9fb"
+    },
+    {
+      "path": "plugins/dungeonq-host-integration/src/file-origin.ts",
+      "sha256": "fbf9297fd3dc0fe02da64e198425c7ac66c9c98fc05a6403b1ee776aa260d8db"
+    },
+    {
+      "path": "plugins/dungeonq-host-integration/src/index.ts",
+      "sha256": "fd6d4b185f81c3be62a3a47789804ce44c020483700cff60781eaef9b1d2ce2a"
+    },
+    {
+      "path": "plugins/dungeonq-host-integration/src/runtime-bridge.ts",
+      "sha256": "ca54dc552315e4eb86495128f787cf6304f2519c223237fd0a8e4973f72fd320"
+    },
+    {
+      "path": "plugins/dungeonq-host-integration/src/target-witness.ts",
+      "sha256": "ff1f26c240b028cc58a37cc2fd0d17aab04aaa863f601530187a9a13cc49a4d7"
+    },
+    {
+      "path": "scripts/demo-console.html",
+      "sha256": "d379ec9e83d1a66dd3f2fbf532d18551f7329c4739c44159e25587814652e7d6"
+    },
+    {
+      "path": "scripts/demo-console.mjs",
+      "sha256": "ae1c665b32c1f78465f22fa2957cb253033c53f2056d41da3b2f34f1a41c9f96"
+    },
+    {
       "path": "scripts/dungeonq-host/adversarial-integration-test.mjs",
-      "sha256": "bfbe19469d2cbe3b094235e997d38e582664db8cf2b00435df8fe05f7067fe37"
+      "sha256": "890abecef17b2322c6549d7b98b51bde52ee785e18fe6d7d7556d6cd50841480"
     },
     {
       "path": "scripts/dungeonq-host/adversarial-lab.mjs",
-      "sha256": "235881e050ece4fe9b1d1418e57bae7734b7fd29e8ef8c40322abdf9d9b48a83"
+      "sha256": "c40726d54bef16873e674e327dfcf6f5ff9dae66cfceaed770859e5c30143230"
     },
     {
       "path": "scripts/dungeonq-host/adversarial-worker.mjs",
@@ -25,6 +58,14 @@
       "sha256": "6b26e58cd5dc5291d0a8c3934715746db6f160884a155aa43514fa40806110ce"
     },
     {
+      "path": "scripts/dungeonq-host/pitching-lab.mjs",
+      "sha256": "e410d50a9ca7f13701cff922081dd5f1780ef84116721642b2685f7389774618"
+    },
+    {
+      "path": "scripts/dungeonq-host/pursuit-fixture.mjs",
+      "sha256": "0e6fde0f090fa75fb115b4ec3a73e038a46d1158bd42cd210af595fd64f373bf"
+    },
+    {
       "path": "scripts/dungeonq-host/recording-console.html",
       "sha256": "ba008ba94a16ae351ee1e792c62b9520a29234df754e50c158b228c246f3fe6c"
     },
@@ -33,28 +74,40 @@
       "sha256": "892e8fb6d4dc0f72da731fb6241c0d5f2b5ddb179a2b73572d14e410144b1e00"
     },
     {
+      "path": "scripts/dungeonq-host/response-alert.mjs",
+      "sha256": "633c4ee0be9fa5b845b01c0c1e577b6ba452de91b703cbe25a639546ce9a4509"
+    },
+    {
+      "path": "scripts/dungeonq-host/response-storage.mjs",
+      "sha256": "aecc430362ac57c5259cdb413605da90854dc51ca5cc1d29ff90b41f028580d8"
+    },
+    {
+      "path": "scripts/dungeonq-response-study/defender.mjs",
+      "sha256": "b8d47b6ab6cd4f390bcda2fe2fb171f4d67f1201943119f9c4c0fdfa0a5e2798"
+    },
+    {
+      "path": "scripts/dungeonq-response-study/preflight.mjs",
+      "sha256": "5be5a0f842d03cfd575db6c7ec37226af271c7f5c92d5fc8b3e95c72d3d41e98"
+    },
+    {
+      "path": "scripts/dungeonq-response-study/session.mjs",
+      "sha256": "6a7f9a1db9218de5a0390b35b9c52858888d3c3d3060c7d9c6c3b6f41f0043c5"
+    },
+    {
+      "path": "scripts/dungeonq-response-study/worker.mjs",
+      "sha256": "2fc01ea0260ea44c5de29c38c5551d6634fe744b17d8a076b8b94acbfb9cc762"
+    },
+    {
+      "path": "scripts/judge-response-demo.mjs",
+      "sha256": "baae6adeaf4ca7a3976764198fa6ade7fed2c376a56203608ad99b7a7f925025"
+    },
+    {
       "path": "scripts/prepare-fixture.mjs",
       "sha256": "557ace7c4d67baa699b2ebcd76281f7ac0a083517d33ae398b78436e1c69e2b8"
     },
     {
-      "path": "plugins/dungeonq-host-integration/src/contracts.ts",
-      "sha256": "cf5348fddb92baf568742de3ec7568446e2609afaa528ca7cdf4d41dd16c7ac3"
-    },
-    {
-      "path": "plugins/dungeonq-host-integration/src/file-origin.ts",
-      "sha256": "ebb05f924e145d96d3bca87c45f0bd7e3936cc8efee6b3a79bdc44de9b69952f"
-    },
-    {
-      "path": "plugins/dungeonq-host-integration/src/index.ts",
-      "sha256": "fd6d4b185f81c3be62a3a47789804ce44c020483700cff60781eaef9b1d2ce2a"
-    },
-    {
-      "path": "plugins/dungeonq-host-integration/src/runtime-bridge.ts",
-      "sha256": "fd3fdaef8102c15d1f73312735247747a2284dadc399a11f4e4db9aba3140b14"
-    },
-    {
-      "path": "plugins/dungeonq-host-integration/src/target-witness.ts",
-      "sha256": "031ac22e6e372916c641a21d10d19c4d6aa92640c95d9f77ac1d18a20f144c01"
+      "path": "scripts/prepare-runtime.mjs",
+      "sha256": "372c5d5cd6254e0148ad2812b79fce2548e323496047c85c5dc97f30ebf335b0"
     }
   ]
 }

@@ -1,3 +1,12 @@
+# Current v0.15 judge route
+
+Use Node.js 24.15.0+, npm and Git. Install root dependencies with `npm ci --ignore-scripts`. For the working alert/response console, follow the [host installation](../examples/initial-machine-host/README.md): install its separate lockfile, run `prepare:runtime`, then `console:response` with a new report filename. All credentials and targets are generated locally; no API key, paid call, AWS account or real document is needed.
+
+The general runtime and earlier profiles below remain available. Their token models and storage directories are separate. Never reuse or overwrite a private installation just to make a demonstration pass.
+
+
+---
+
 # Install, integrate, stop and recover — v0.13.1
 
 Use a source archive or a pinned commit of the public repository. `main` can contain a newer candidate than the latest release; check [VALIDATION](VALIDATION.md) and [release policy](RELEASE.md) before attributing results to a version. The package is private to prevent accidental npm publication; clone/download the open-source repository rather than looking for a published npm package.

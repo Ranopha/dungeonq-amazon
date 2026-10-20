@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "dungeonq.judge-response/v1",
+  "profile": "SYNTHETIC_ONLY",
+  "client": "scripted official-SDK MCP and HTTP client; no model call",
+  "startedAt": "2026-10-20T01:39:50.271Z",
+  "events": [
+    {
+      "sequence": 1,
+      "stage": "workspace",
+      "title": "An actual MCP client enters the bounded workspace",
+      "facts": {
+        "tools": [
+          "dungeonq_snapshot",
+          "dungeonq_read",
+          "dungeonq_write",
+          "dungeonq_issue_ticket",
+          "dungeonq_use_ticket"
+        ],
+        "originalCapacity": 12,
+        "approvalToolExposed": false
+      },
+      "at": "2026-10-20T01:39:50.657Z"
+    },
+    {
+      "sequence": 2,
+      "stage": "conflict",
+      "title": "The recovery claim conflicts with the saved observation",
+      "facts": {
+        "displayedConnection": "ORIGINAL_SOURCE_RESTORED",
+        "originalCapacity": 12,
+        "retrospectiveClaim": 16,
+        "openQuestion": "Supplement revoked at target?",
+        "candidateCapacities": [
+          12,
+          14
+        ],
+        "remainingTransitions": 2,
+        "canStop": true
+      },
+      "at": "2026-10-20T01:39:50.792Z"
+    },
+    {
+      "sequence": 3,
+      "stage": "resolution",
+      "title": "Useful verification resolves the original business question",
+      "facts": {
+        "noteSurvivedRestart": true,
+        "revocation": "REMOVE_SUPPLEMENT_ADJUSTMENT",
+        "externalHandoffRecorded": false,
+        "sourceBusinessReads": 0,
+        "conclusion": "SUPPORTED",
+        "nextAction": "stop"
+      },
+      "at": "2026-10-20T01:39:51.628Z"
+    },
+    {
+      "sequence": 4,
+      "stage": "response",
+      "title": "The receiver verifies rotation, then verifies it after restart",
+      "facts": {
+        "acknowledgement": "SYSTEM_ACK / loopback",
+        "configuredDelaySeconds": 0,
+        "alertToEffectiveSeconds": 0.175711459,
+        "epoch": 1,
+        "actorSourceBusinessReads": 0,
+        "targetUnchanged": true,
+        "readbacks": [
+          {
+            "label": "after-old-read",
+            "code": "ORIGIN_AUTHORITY_DENIED"
+          },
+          {
+            "label": "after-old-snapshot",
+            "code": "ORIGIN_AUTHORITY_DENIED"
+          },
+          {
+            "label": "after-old-replay",
+            "code": "ORIGIN_AUTHORITY_DENIED"
+          },
+          {
+            "label": "after-old-ticket",
+            "code": "TICKET_AUTHORITY_DENIED"
+          },
+          {
+            "label": "after-new-replay",
+            "code": "REQUEST_EPOCH_DENIED"
+          },
+          {
+            "label": "after-new-read",
+            "code": "SOURCE_BYTES_MATCH"
+          },
+          {
+            "label": "restart-old-read",
+            "code": "ORIGIN_AUTHORITY_DENIED"
+          },
+          {
+            "label": "restart-old-snapshot",
+            "code": "ORIGIN_AUTHORITY_DENIED"
+          },
+          {
+            "label": "restart-old-replay",
+            "code": "ORIGIN_AUTHORITY_DENIED"
+          },
+          {
+            "label": "restart-old-ticket",
+            "code": "TICKET_AUTHORITY_DENIED"
+          },
+          {
+            "label": "restart-new-replay",
+            "code": "REQUEST_EPOCH_DENIED"
+          },
+          {
+            "label": "restart-new-read",
+            "code": "SOURCE_BYTES_MATCH"
+          }
+        ],
+        "restartVerified": true,
+        "rawHostCheckpoint": "FAIL",
+        "attribution": "Defender positive-control reads are counted separately; raw host checkpoint retained."
+      },
+      "at": "2026-10-20T01:39:52.698Z"
+    },
+    {
+      "sequence": 5,
+      "stage": "permissions",
+      "title": "Claims and tickets cannot grant missing source authority",
+      "facts": {
+        "overviewContainsValues": false,
+        "denials": [
+          {
+            "name": "Forged admin role",
+            "code": "ORIGIN_SCOPE_DENIED"
+          },
+          {
+            "name": "Cross-tenant declaration",
+            "code": "ORIGIN_TENANT_DENIED"
+          },
+          {
+            "name": "Foreign source ticket",
+            "code": "TICKET_AUTHORITY_DENIED"
+          }
+        ],
+        "oldBearerReplay": "ORIGIN_AUTHORITY_DENIED",
+        "newBearerOldRequest": "REQUEST_EPOCH_DENIED",
+        "oldTicket": "TICKET_AUTHORITY_DENIED"
+      },
+      "at": "2026-10-20T01:39:52.728Z"
+    }
+  ],
+  "status": "PASS",
+  "finishedAt": "2026-10-20T01:39:52.728Z"
+}

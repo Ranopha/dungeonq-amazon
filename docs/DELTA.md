@@ -1,3 +1,14 @@
+# v0.15.0 contribution — October 20, 2026
+
+The existing DungeonQ project has been materially extended during this competition. New runtime work adds false-exit and memory-conflict cues, bounded task-relevant continuation, persistent hypothesis notes and an explicit stopping condition. New source work removes values from overviews, binds content reads to server-side principal/tenant/scope, and checks the current revocation epoch even on cached request paths.
+
+The selected host integration now provides a real alert receiver, durable rotation state, exact-ID actor/defender accounting, old/new authority readback and restart verification. A new public console and CLI reproduce five stages with fresh artificial data and actual MCP/HTTP. No new paid model calls were made for the final refresh.
+
+The released source uses a clean public history and selected original Apache-2.0 code, not a copy of the private OS or its data. Host provenance lists exported files and the public runtime pin. Historical Sol studies are disclosed with negative/UNKNOWN outcomes; no improvement over transparent control is claimed. Earlier licensed foundations and dated contributions below remain attributable to their own versions.
+
+
+---
+
 # v0.13.0 contribution — October 7, 2026
 
 This candidate adds an independently packaged consumer of the public MCP/HTTP contract and makes the open-source maintenance path reviewable. The goal remains defensive deception for AI-agent workflows: useful bounded work in a persistent synthetic world gives people and authorized defender agents a place to observe and prepare a response. Actual delay and protection efficacy remain unmeasured.

@@ -42,6 +42,11 @@ try{
   const installation=await prepareInstallation(root,true);
   lab=await startAdversarialLab({repoRoot:root,directory:join(root,'trial-direct'),arm:'DIRECT',installation});
   await connect();
+  const overview=await operate({requestId:'control-overview',operation:'snapshot',args:{}});
+  assert(overview.records.some(row=>row.key==='initial-machine-target'));
+  assert(overview.records.every(row=>!Object.hasOwn(row,'value')&&!Object.hasOwn(row,'contents')));
+  assert(!JSON.stringify(overview).includes(bytes.toString('base64')));
+  assert.equal((await lab.checkpoint()).originTargetReads.length,0);
   const direct=await operate({requestId:'control-read',operation:'read',args:{key:'initial-machine-target'}});
   assert.equal(direct.value.contentEncoding,'base64');
   assert.deepEqual(Buffer.from(direct.value.contents,'base64'),bytes);

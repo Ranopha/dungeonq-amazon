@@ -8,7 +8,7 @@ import { dirname, join, resolve, sep } from "node:path";
 import { DatabaseSync, type SQLInputValue } from "node:sqlite";
 
 import {
-  dungeonqLogicalTargetId, dungeonqMaximumTargetBytes, dungeonqTargetRelativePath,
+  dungeonqLogicalTargetId, dungeonqMaximumTargetBytes, dungeonqPursuitTargetRelativePath, dungeonqTargetRelativePath,
   targetWitnessSchema, type TargetWitness
 } from "./contracts";
 import { DungeonQHostError } from "./target-witness";
@@ -21,6 +21,12 @@ CREATE TABLE requests(id TEXT PRIMARY KEY, digest TEXT NOT NULL, operation TEXT 
 CREATE TABLE admissions(seq INTEGER PRIMARY KEY, context TEXT NOT NULL, accepted INTEGER NOT NULL, request_id TEXT NOT NULL);
 CREATE TABLE access_intents(seq INTEGER PRIMARY KEY, admission_seq INTEGER, purpose TEXT NOT NULL, request_id TEXT NOT NULL, state TEXT NOT NULL, bytes_read INTEGER, digest TEXT, error TEXT);
 `;
+const rotationSchema = `
+CREATE TABLE credential_state(id INTEGER PRIMARY KEY CHECK(id=1), epoch INTEGER NOT NULL, token_hash TEXT NOT NULL);
+CREATE TABLE credential_receipts(action_id TEXT PRIMARY KEY, input_digest TEXT NOT NULL, next_hash TEXT NOT NULL UNIQUE, receipt TEXT NOT NULL);
+CREATE TABLE request_epochs(request_id TEXT PRIMARY KEY REFERENCES requests(id), epoch INTEGER NOT NULL);
+`;
+export type FileOriginRotationReceipt = { actionId: string; at: string; previousEpoch: number; epoch: number; monotonicNs: string };
 const targetKey = dungeonqLogicalTargetId;
 const maximumEntries = 20_000;
 const sha = (value: string | Uint8Array): string => createHash("sha256").update(value).digest("hex");
@@ -58,11 +64,17 @@ export type FileOriginReport = {
   stateDigest: string; configDigest: string; accepted: number; rejected: number;
   acceptedContexts: string[]; highWater: number; admissions: Admission[];
   targetReads: FileOriginAccessIntent[]; accessIntents: FileOriginAccessIntent[];
+  credentialEpoch?: number;
   targetReadCount: number; witnessReadCount: number; revision: number; complete: true;
 };
 export type FileOriginOptions = {
   targetPath: string; baseline: TargetWitness; directory: string; normalToken: string;
-  witnessToken: string; host?: string; port?: number;
+  witnessToken: string; rotationControlToken?: string | undefined; host?: string; port?: number;
+  accessPolicy?: FileOriginAccessPolicy;
+};
+export type FileOriginAccessPolicy = {
+  tenantId: string; principalId: string; readTarget: boolean; readOtherRecords: boolean;
+  writeOtherRecords: boolean; issueTickets: boolean;
 };
 export type FileOrigin = { origin: string; report(): FileOriginReport; close(): Promise<void> };
 type RequestRow = { id: string; digest: string; operation: string; state: string; response: string | null; error: string | null };
@@ -72,20 +84,37 @@ type RecordRow = { key: string; value: string; revision: number };
 /** A separate host connector: the real target never enters DungeonQ's canonical world. */
 async function openFileOrigin(options: FileOriginOptions): Promise<FileOrigin> {
   const baseline = targetWitnessSchema.parse(options.baseline);
+  // The business bearer is bound to one source-owned principal. Missing policy is
+  // deliberately unable to read the protected target.
+  const policy: FileOriginAccessPolicy = options.accessPolicy ?? {
+    tenantId: "reference", principalId: "ordinary-connector", readTarget: false,
+    readOtherRecords: true, writeOtherRecords: true, issueTickets: true
+  };
+  check(Object.keys(policy).sort().join(",") === ["tenantId", "principalId", "readTarget", "readOtherRecords", "writeOtherRecords", "issueTickets"].sort().join(",")
+    && /^[A-Za-z0-9_-]{1,128}$/u.test(policy.tenantId)
+    && /^[A-Za-z0-9_-]{1,128}$/u.test(policy.principalId)
+    && [policy.readTarget, policy.readOtherRecords, policy.writeOtherRecords, policy.issueTickets].every(value => typeof value === "boolean"),
+  "ORIGIN_POLICY_INVALID");
   check((baseline.mode & 0o077) === 0, "TARGET_PRIVATE_MODE_REQUIRED");
   check([options.normalToken, options.witnessToken].every(value => /^[A-Za-z0-9_.-]{16,2048}$/u.test(value))
     && options.normalToken !== options.witnessToken, "ORIGIN_CREDENTIAL_INVALID");
+  const rotating = options.rotationControlToken !== undefined;
+  check(!rotating || /^[A-Za-z0-9_.-]{16,2048}$/u.test(options.rotationControlToken!)
+    && ![options.normalToken, options.witnessToken].includes(options.rotationControlToken!), "ORIGIN_CREDENTIAL_INVALID");
+  const activeSchema = schema + (rotating ? rotationSchema : "");
   const host = options.host ?? "127.0.0.1";
   check(host === "127.0.0.1", "ORIGIN_LOOPBACK_REQUIRED");
   check(options.port === undefined || Number.isSafeInteger(options.port) && options.port >= 0 && options.port <= 65535, "ORIGIN_PORT_INVALID");
   const requestedTarget = resolve(options.targetPath);
-  const suffix = `${sep}${dungeonqTargetRelativePath.split("/").join(sep)}`;
-  check(requestedTarget.endsWith(suffix), "HOST_PATH_NOT_ALLOWLISTED");
+  const relativeTarget = [dungeonqTargetRelativePath, dungeonqPursuitTargetRelativePath]
+    .find(path => requestedTarget.endsWith(`${sep}${path.split("/").join(sep)}`));
+  check(relativeTarget, "HOST_PATH_NOT_ALLOWLISTED");
+  const suffix = `${sep}${relativeTarget.split("/").join(sep)}`;
   const root = realpathSync(requestedTarget.slice(0, -suffix.length));
-  const target = join(root, dungeonqTargetRelativePath);
+  const target = join(root, relativeTarget);
   const assertTargetSegments = (): void => {
     let cursor = root;
-    for (const segment of dungeonqTargetRelativePath.split("/").slice(0, -1)) {
+    for (const segment of relativeTarget.split("/").slice(0, -1)) {
       cursor = join(cursor, segment);
       const info = lstatSync(cursor);
       check(info.isDirectory() && !info.isSymbolicLink(), "HOST_SYMLINK_DENIED");
@@ -154,21 +183,29 @@ async function openFileOrigin(options: FileOriginOptions): Promise<FileOrigin> {
     const configDigest = jsonDigest({ schemaVersion: "initial-machine.file-origin/v1", target,
       baseline: { sha256: baseline.sha256, sizeBytes: baseline.sizeBytes, mode: baseline.mode,
         device: baseline.device, inode: baseline.inode, modifiedAtMs: baseline.modifiedAtMs },
-      normalTokenHash: sha(options.normalToken), witnessTokenHash: sha(options.witnessToken), contextId: "ordinary" });
+      normalTokenHash: sha(options.normalToken), witnessTokenHash: sha(options.witnessToken), contextId: "ordinary", policy,
+      ...(rotating ? { rotationControlTokenHash: sha(options.rotationControlToken!), rotationSchemaVersion: 1 } : {}) });
     if (!existing) {
       transact(() => {
-        database.exec(schema);
+        database.exec(activeSchema);
         database.prepare("INSERT INTO meta VALUES(1,?,1,NULL)").run(configDigest);
+        if (rotating) database.prepare("INSERT INTO credential_state VALUES(1,0,?)").run(sha(options.normalToken));
       });
     } else {
       check(one<{ quick_check: string }>("PRAGMA quick_check")?.quick_check === "ok", "ORIGIN_STORAGE_CORRUPT");
       const expected = new DatabaseSync(":memory:");
       let expectedSchema: string;
-      try { expected.exec(schema); expectedSchema = JSON.stringify(expected.prepare("SELECT sql FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' ORDER BY name").all()); }
+      try { expected.exec(activeSchema); expectedSchema = JSON.stringify(expected.prepare("SELECT sql FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' ORDER BY name").all()); }
       finally { expected.close(); }
       check(JSON.stringify(database.prepare("SELECT sql FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' ORDER BY name").all()) === expectedSchema, "ORIGIN_SCHEMA_CHANGED");
       check(one<{ config: string }>("SELECT config FROM meta WHERE id=1")?.config === configDigest, "ORIGIN_CONFIG_CHANGED");
     }
+    const credential = (): { epoch: number; token_hash: string } => {
+      const row = rotating ? one<{ epoch: number; token_hash: string }>("SELECT epoch,token_hash FROM credential_state WHERE id=1")
+        : { epoch: 0, token_hash: sha(options.normalToken) };
+      check(row && Number.isSafeInteger(row.epoch) && row.epoch >= 0 && /^[a-f0-9]{64}$/u.test(row.token_hash), "ORIGIN_CREDENTIAL_STATE_INVALID");
+      return row;
+    };
     const assertStorage = (): void => {
       check(!closed, "ORIGIN_CLOSED");
       const actualDirectory = lstatSync(directory, { bigint: true });
@@ -187,6 +224,7 @@ async function openFileOrigin(options: FileOriginOptions): Promise<FileOrigin> {
     };
     const assertHealthy = (): void => {
       assertStorage();
+      credential();
       check(meta().failure === null, "ORIGIN_WITNESS_UNAVAILABLE");
       check(one<{ n: number }>("SELECT count(*) AS n FROM access_intents WHERE state IN ('PENDING','FAILED')")?.n === 0
         && one<{ n: number }>("SELECT count(*) AS n FROM requests WHERE state!='DONE'")?.n === 0, "ORIGIN_AUDIT_INCOMPLETE");
@@ -266,7 +304,7 @@ async function openFileOrigin(options: FileOriginOptions): Promise<FileOrigin> {
           && (row.admission_seq === null || admissions[row.admission_seq - 1]?.accepted === 1)), "ORIGIN_AUDIT_INCOMPLETE");
       const targetReads = accessIntents.filter(row => row.purpose === "BUSINESS");
       return { schemaVersion: "dungeonq.origin-witness/v1", resource: "initial-machine-artificial-file", stateDigest: baseline.sha256,
-        configDigest, admissions, accepted: admissions.filter(row => row.accepted === 1).length,
+        configDigest, ...(rotating ? { credentialEpoch: credential().epoch } : {}), admissions, accepted: admissions.filter(row => row.accepted === 1).length,
         rejected: admissions.filter(row => row.accepted === 0).length,
         acceptedContexts: [...new Set(admissions.filter(row => row.accepted === 1).map(row => row.context))],
         highWater: admissions.at(-1)?.seq ?? 0, targetReads, accessIntents, targetReadCount: targetReads.length,
@@ -274,7 +312,9 @@ async function openFileOrigin(options: FileOriginOptions): Promise<FileOrigin> {
     };
     const record = (key: string): RecordRow | undefined => key === targetKey
       ? { key, value: "null", revision: 1 } : one<RecordRow>("SELECT * FROM records WHERE key=?", key);
-    const ticketToken = (id: string): string => `FILE_ORIGIN_${id}.${createHmac("sha256", options.normalToken).update(`file-origin-ticket/v1\n${id}`).digest("hex")}`;
+    const canRead = (key: string): boolean => key === targetKey ? policy.readTarget : policy.readOtherRecords;
+    const ticketToken = (id: string): string => `FILE_ORIGIN_${id}.${createHmac("sha256", options.normalToken)
+      .update(`file-origin-ticket/v3\n${configDigest}\n${policy.tenantId}\n${policy.principalId}\n${credential().epoch}\n${id}`).digest("hex")}`;
     const findTicket = (value: unknown, key: string, replay: boolean): Ticket => {
       check(typeof value === "string" && value.length <= 8192, "TICKET_INVALID");
       const id = /^FILE_ORIGIN_([a-f0-9-]{36})\.[a-f0-9]{64}$/u.exec(value)?.[1];
@@ -288,11 +328,14 @@ async function openFileOrigin(options: FileOriginOptions): Promise<FileOrigin> {
     };
     const materialize = (skeleton: JsonRecord, operation: string, requestId: string, admission: number): JsonRecord => {
       const result = structuredClone(skeleton);
-      const hasTarget = operation === "snapshot" || (operation === "read" || operation === "use-ticket") && result.key === targetKey;
+      const hasTarget = (operation === "read" || operation === "use-ticket") && result.key === targetKey;
       const contents = inspectTarget(hasTarget ? "BUSINESS" : "GUARD", requestId, admission);
       const targetValue = { documentId: targetKey, classification: "RESTRICTED", status: "AVAILABLE", contentEncoding: "base64", contents };
       if (operation === "snapshot") {
-        result.records = (result.records as JsonRecord[]).map(row => row.key === targetKey ? { ...row, value: targetValue } : row);
+        // Rebuild the response from a strict projection, including cached snapshots
+        // created by an older worker. No record value reaches the overview surface.
+        result.records = (result.records as JsonRecord[]).map(row => ({ key: row.key, revision: row.revision,
+          classification: row.key === targetKey ? "RESTRICTED" : "INTERNAL", status: "AVAILABLE" }));
       } else if (hasTarget) result.value = targetValue;
       if (operation === "issue-ticket") result.ticket = ticketToken(String(result.ticketId));
       return result;
@@ -307,17 +350,26 @@ async function openFileOrigin(options: FileOriginOptions): Promise<FileOrigin> {
           const raw = input as JsonRecord;
           context = safeLabel(raw.contextId, "invalid"); requestId = safeLabel(raw.requestId, "invalid");
         }
-        check(tokenEqual(suppliedToken, options.normalToken), "ORIGIN_AUTHORITY_DENIED");
+        assertStorage();
+        const current = credential();
+        check(typeof suppliedToken === "string" && timingSafeEqual(Buffer.from(sha(suppliedToken)), Buffer.from(current.token_hash)), "ORIGIN_AUTHORITY_DENIED");
         assertHealthy();
-        validate(() => passive.runtimeEnvelope(input, ["contextId", "requestId", "operation", "args"], [], 32768));
+        validate(() => passive.runtimeEnvelope(input, ["contextId", "requestId", "operation", "args"], ["tenantId", "principalId", "role"], 32768));
         const value = input as JsonRecord;
         check(value.contextId === "ordinary", "ORIGIN_AUTHORITY_DENIED");
+        check(value.tenantId === undefined || value.tenantId === policy.tenantId, "ORIGIN_TENANT_DENIED");
+        check(value.principalId === undefined || value.principalId === policy.principalId, "ORIGIN_PRINCIPAL_DENIED");
+        // A role string is accepted as an untrusted claim for audit/probe compatibility.
+        // It never enters the authorization decision.
+        check(value.role === undefined || typeof value.role === "string" && /^[A-Za-z0-9_-]{1,128}$/u.test(value.role), "ORIGIN_ROLE_INVALID");
         check(typeof value.requestId === "string" && /^[A-Za-z0-9_-]{1,128}$/u.test(value.requestId), "REQUEST_ID_INVALID");
         check(typeof value.operation === "string" && ["snapshot", "read", "write", "issue-ticket", "use-ticket"].includes(value.operation), "OPERATION_DENIED");
         const operation = value.operation;
         const args = value.args as JsonRecord;
         const inputDigest = jsonDigest(value);
         const previous = one<RequestRow>("SELECT * FROM requests WHERE id=?", requestId);
+        check(!previous || !rotating || one<{ epoch: number }>("SELECT epoch FROM request_epochs WHERE request_id=?", requestId)?.epoch === current.epoch,
+          "REQUEST_EPOCH_DENIED");
         check(!previous || previous.digest === inputDigest, "IDEMPOTENCY_CONFLICT");
         check(!previous || previous.state === "DONE", "ORIGIN_OPERATION_INCOMPLETE");
         let key = targetKey;
@@ -329,19 +381,23 @@ async function openFileOrigin(options: FileOriginOptions): Promise<FileOrigin> {
           if (operation === "snapshot") passive.runtimeEnvelope(args, []);
           else if (operation === "read") {
             passive.runtimeEnvelope(args, ["key"]); key = passive.runtimeId(args.key);
+            check(canRead(key), "ORIGIN_SCOPE_DENIED");
             check(record(key), "RECORD_UNKNOWN");
           } else if (operation === "write") {
             passive.runtimeEnvelope(args, ["key", "value", "expectedRevision"]); key = passive.runtimeId(args.key);
             check(key !== targetKey, "TARGET_IMMUTABLE");
+            check(policy.writeOtherRecords, "ORIGIN_SCOPE_DENIED");
             check(Number.isSafeInteger(args.expectedRevision) && Number(args.expectedRevision) >= 0, "REVISION_INVALID");
             if (!previous) check(args.expectedRevision === meta().revision, "REVISION_CONFLICT");
             passive.runtimeValue(args.value, 2048);
             if (!record(key)) capacity("records", 127);
           } else if (operation === "issue-ticket") {
             passive.runtimeEnvelope(args, [], ["scope", "ttlMs", "maxUses"]);
+            check(policy.issueTickets, "ORIGIN_SCOPE_DENIED");
             const rawScope = args.scope ?? [targetKey];
             check(Array.isArray(rawScope) && rawScope.length >= 1 && rawScope.length <= 16 && new Set(rawScope).size === rawScope.length, "TICKET_SCOPE_INVALID");
             scope = rawScope.map(entry => passive.runtimeId(entry));
+            check(scope.every(canRead), "ORIGIN_SCOPE_DENIED");
             check(scope.every(entry => record(entry)), "RECORD_UNKNOWN");
             ttlMs = args.ttlMs === undefined ? ttlMs : Number(args.ttlMs);
             maxUses = args.maxUses === undefined ? maxUses : Number(args.maxUses);
@@ -355,6 +411,7 @@ async function openFileOrigin(options: FileOriginOptions): Promise<FileOrigin> {
             }
           } else {
             passive.runtimeEnvelope(args, ["ticket"], ["key"]); key = passive.runtimeId(args.key ?? targetKey);
+            check(canRead(key), "ORIGIN_SCOPE_DENIED");
             ticket = findTicket(args.ticket, key, Boolean(previous)); check(record(key), "RECORD_UNKNOWN");
           }
         });
@@ -363,6 +420,7 @@ async function openFileOrigin(options: FileOriginOptions): Promise<FileOrigin> {
           const sequence = addAdmission(context, true, requestId);
           if (!previous) {
             database.prepare("INSERT INTO requests VALUES(?,?,?,'PENDING',NULL,NULL)").run(requestId, inputDigest, operation);
+            if (rotating) database.prepare("INSERT INTO request_epochs VALUES(?,?)").run(requestId, current.epoch);
             newRequest = true;
           }
           return sequence;
@@ -374,8 +432,8 @@ async function openFileOrigin(options: FileOriginOptions): Promise<FileOrigin> {
         let skeleton: JsonRecord;
         const revision = meta().revision;
         if (operation === "snapshot") {
-          skeleton = { tenantId: "reference", worldId: "ordinary-world", revision,
-            records: [{ key: targetKey, value: null, revision: 1 }, ...all<RecordRow>("SELECT * FROM records ORDER BY key").map(row => ({ ...row, value: JSON.parse(row.value) as unknown }))] };
+          skeleton = { tenantId: policy.tenantId, worldId: "ordinary-world", revision,
+            records: [{ key: targetKey, revision: 1 }, ...all<RecordRow>("SELECT key,revision FROM records ORDER BY key")] };
         } else if (operation === "read" || operation === "use-ticket") {
           const row = record(key); check(row, "RECORD_UNKNOWN");
           skeleton = { key, value: key === targetKey ? null : JSON.parse(row.value) as unknown, recordRevision: row.revision, revision,
@@ -409,6 +467,36 @@ async function openFileOrigin(options: FileOriginOptions): Promise<FileOrigin> {
         throw new DungeonQHostError(code);
       }
     };
+    const controlStatus = (): { epoch: number; rotations: FileOriginRotationReceipt[] } => {
+      assertHealthy();
+      return { epoch: credential().epoch, rotations: all<{ receipt: string }>("SELECT receipt FROM credential_receipts ORDER BY rowid").map(row => JSON.parse(row.receipt) as FileOriginRotationReceipt) };
+    };
+    const rotate = (input: unknown): FileOriginRotationReceipt => {
+      assertHealthy();
+      validate(() => passive.runtimeEnvelope(input, ["actionId", "expectedEpoch", "nextToken"], [], 4096));
+      const value = input as JsonRecord;
+      check(typeof value.actionId === "string" && /^[A-Za-z0-9_-]{1,128}$/u.test(value.actionId), "ACTION_ID_INVALID");
+      check(Number.isSafeInteger(value.expectedEpoch) && Number(value.expectedEpoch) >= 0, "CREDENTIAL_EPOCH_INVALID");
+      check(typeof value.nextToken === "string" && /^[A-Za-z0-9_.-]{16,2048}$/u.test(value.nextToken), "ORIGIN_CREDENTIAL_INVALID");
+      const nextHash = sha(value.nextToken);
+      const digest = jsonDigest({ actionId: value.actionId, expectedEpoch: value.expectedEpoch, nextHash });
+      return transact(() => {
+        const prior = one<{ input_digest: string; receipt: string }>("SELECT input_digest,receipt FROM credential_receipts WHERE action_id=?", value.actionId as string);
+        if (prior) {
+          check(prior.input_digest === digest, "IDEMPOTENCY_CONFLICT");
+          return JSON.parse(prior.receipt) as FileOriginRotationReceipt;
+        }
+        const current = credential();
+        check(current.epoch === value.expectedEpoch && current.epoch < Number.MAX_SAFE_INTEGER, "CREDENTIAL_EPOCH_CONFLICT");
+        check(![sha(options.normalToken), sha(options.witnessToken), sha(options.rotationControlToken!), current.token_hash].includes(nextHash)
+          && !one("SELECT action_id FROM credential_receipts WHERE next_hash=?", nextHash), "CREDENTIAL_REUSE_DENIED");
+        check((one<{ n: number }>("SELECT count(*) AS n FROM credential_receipts")?.n ?? maximumEntries) < maximumEntries, "ORIGIN_AUDIT_LIMIT");
+        const receipt: FileOriginRotationReceipt = { actionId: value.actionId as string, at: new Date().toISOString(), previousEpoch: current.epoch, epoch: current.epoch + 1, monotonicNs: process.hrtime.bigint().toString() };
+        database.prepare("UPDATE credential_state SET epoch=?,token_hash=? WHERE id=1").run(receipt.epoch, nextHash);
+        database.prepare("INSERT INTO credential_receipts VALUES(?,?,?,?)").run(receipt.actionId, digest, nextHash, JSON.stringify(receipt));
+        return receipt;
+      });
+    };
     const send = (response: ServerResponse, status: number, value: unknown): void => {
       response.writeHead(status, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff",
         "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'", "Referrer-Policy": "no-referrer", "Cross-Origin-Resource-Policy": "same-origin" });
@@ -433,6 +521,12 @@ async function openFileOrigin(options: FileOriginOptions): Promise<FileOrigin> {
             && request.socket.remoteAddress === "127.0.0.1", "HOST_DENIED");
           check(!request.headers.origin && !request.headers.cookie
             && (!request.headers["sec-fetch-site"] || ["same-origin", "none"].includes(String(request.headers["sec-fetch-site"]))), "BROWSER_DENIED");
+          if (rotating && (request.url === "/control/rotate" || request.url === "/control/status")) {
+            check(tokenEqual(bearer(request), options.rotationControlToken!), "UNAUTHORIZED");
+            check(request.url === "/control/status" ? request.method === "GET" : request.method === "POST", "NOT_FOUND");
+            const result = request.url === "/control/status" ? controlStatus() : rotate(await readBody(request));
+            delegated = true; send(response, 200, result); return;
+          }
           if (request.url === "/witness" && request.method === "GET") {
             check(tokenEqual(bearer(request), options.witnessToken), "UNAUTHORIZED");
             delegated = true; send(response, 200, report()); return;

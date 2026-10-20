@@ -13,6 +13,7 @@ import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import {
   dungeonqLogicalTargetId,
   dungeonqMaximumTargetBytes,
+  dungeonqPursuitTargetRelativePath,
   dungeonqRuntimeCommit,
   dungeonqRuntimeVersion,
   dungeonqStateRelativePath,
@@ -67,9 +68,12 @@ async function sha256File(path: string): Promise<string> {
   return hash.digest("hex");
 }
 
-export async function captureTargetWitness(repoRoot: string): Promise<TargetWitness> {
+export async function captureTargetWitness(repoRoot: string, targetRelativePath = dungeonqTargetRelativePath): Promise<TargetWitness> {
+  if (![dungeonqTargetRelativePath, dungeonqPursuitTargetRelativePath].includes(targetRelativePath)) {
+    throw new DungeonQHostError("HOST_PATH_NOT_ALLOWLISTED");
+  }
   const repository = await realpath(resolve(repoRoot));
-  const target = resolve(repository, dungeonqTargetRelativePath);
+  const target = resolve(repository, targetRelativePath);
   await assertNoSymlinkSegments(repository, target);
   const resolvedTarget = await realpath(target);
   if (!resolvedTarget.startsWith(`${repository}${sep}`)) {

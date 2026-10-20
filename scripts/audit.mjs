@@ -18,6 +18,8 @@ async function walk(directory) {
   for (const entry of entries) {
     if (
       entry.name === "node_modules" ||
+      entry.name === "vendor" ||
+      entry.name === ".local" ||
       entry.name === ".git" ||
       entry.name === ".DS_Store" ||
       entry.name === ".next" ||

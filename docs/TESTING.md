@@ -1,3 +1,12 @@
+# Current v0.15 checks
+
+After host installation and `prepare:runtime`, run `npm run test:source` (21 source-policy cases), `npm test` (actual MCP control/diversion/restart), `npm run test:response` (alert/rotation/failure/restart), and `npm run demo:response -- /absolute/path/new-report.json` from `examples/initial-machine-host`. These execute real local requests using artificial fixtures, without model calls. The root `npm run check` checkpoint has 670 tests; use [VALIDATION](VALIDATION.md) for the exact observed candidate and CI result.
+
+The new console needs a visible five-tab review. Historical Sol trajectories are a separate evidence class and are not rerun by CI. A deterministic denial does not mean the AI chose that path; a call limit does not mean it voluntarily stopped. See [MODEL_RESULTS](MODEL_RESULTS.md).
+
+
+---
+
 # Reproducible testing — v0.13.1
 
 Use a pinned public source checkout, Node.js 24.15.0+ and the prerequisites in [INSTALL](INSTALL.md). The [current validation record](VALIDATION.md) binds observed results to source and environment. A command below describes what to run; it is not a predeclared PASS or a substitute for source-bound acceptance.

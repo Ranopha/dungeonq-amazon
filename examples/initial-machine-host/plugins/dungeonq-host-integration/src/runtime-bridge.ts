@@ -9,6 +9,7 @@ import { pathToFileURL } from "node:url";
 import {
   astraSessionSchema,
   dungeonqRuntimeCommit,
+  dungeonqRuntimePackage,
   dungeonqRuntimeVersion,
   rehearsalReportSchema,
   type AstraSession,
@@ -175,7 +176,7 @@ export function verifyRuntimeSource(repoRoot: string): { root: string; commit: s
   }).trim();
   if (dirty) throw new DungeonQHostError("RUNTIME_SOURCE_DIRTY");
   const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8")) as { name?: string; version?: string };
-  if (packageJson.name !== "dungeonq-astra" || packageJson.version !== dungeonqRuntimeVersion) {
+  if (packageJson.name !== dungeonqRuntimePackage || packageJson.version !== dungeonqRuntimeVersion) {
     throw new DungeonQHostError("RUNTIME_PACKAGE_MISMATCH");
   }
   return { root, commit, version: packageJson.version };
