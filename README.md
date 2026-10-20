@@ -77,6 +77,8 @@ The entry is **Alexa+ primary + Open Source Mini**. [Submission copy](docs/SUBMI
 
 All resources are artificial and routing is explicitly provisioned. Local processes trust one OS user; the container reference still trusts the gateway, Docker administrator and shared kernel. Production identity/detection integration, legitimate-traffic continuity and external response delivery require environment-specific acceptance.
 
+The v0.15 gallery and reproducible console show current behavior. The newly prepared v0.15 film remains local only and has not replaced the public video.
+
 The [October 8 film](https://youtu.be/uFvzFXfL2F0), [earlier consumer film](https://youtu.be/8h5yeKb2XzE), and [original assistant film](https://youtu.be/ezX7cOF2s0s) are retained historical records. Earlier [Study](docs/STUDY_RESULTS.md), [Topology](docs/TOPOLOGY_RESULTS.md), [Defense](docs/DEFENSE_PILOT_RESULTS.md) and [Workspace](docs/WORKSPACE_LAB.md) results, including failures, remain available. Closed WebMCP and Astra entries are unchanged.
 
 Apache-2.0. Preserve [LICENSE](LICENSE), [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md). Source inventories establish byte integrity, not independent certification.

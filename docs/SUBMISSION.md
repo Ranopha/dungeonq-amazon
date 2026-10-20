@@ -14,7 +14,7 @@ At the independent source, overviews now return metadata only. Explicit content 
 
 ## A working demonstration you can reproduce
 
-The current English film and five-stage console show actual local MCP/HTTP results against fresh artificial resources: workspace entry, conflicting claims, useful verification, effective rotation and source-policy refusals. This demonstration is scripted and makes no model calls. Its configured response delay is zero. Raw failed host checkpoints remain visible alongside exact-ID actor/defender attribution.
+The updated gallery and five-stage console show actual local MCP/HTTP results against fresh artificial resources: workspace entry, conflicting claims, useful verification, effective rotation and source-policy refusals. This demonstration is scripted and makes no model calls. Its configured response delay is zero. Raw failed host checkpoints remain visible alongside exact-ID actor/defender attribution.
 
 With Node.js 24.15.0+, npm and Git:
 
@@ -28,9 +28,13 @@ npm run console:response -- /absolute/path/new-report.json
 
 Open the printed loopback URL and run the demonstration. No API key, paid model, Amazon account or production file is needed. [Judge route](https://github.com/Ranopha/dungeonq-amazon/blob/main/docs/JUDGE_ROUTE.md) · [Host installation](https://github.com/Ranopha/dungeonq-amazon/tree/main/examples/initial-machine-host).
 
+## Embedded video — retained historical demonstration
+
+The embedded [October 8 English film](https://youtu.be/uFvzFXfL2F0), 124.267 seconds, shows v0.13.1 host operation and its recorded Astra comparison. It does not depict the v0.15 continuation or source-permission changes. The new 149.833-second v0.15 film has been produced and validated locally but is not published; use the updated gallery and reproducible console for current behavior. [Historical scope and evidence](https://github.com/Ranopha/dungeonq-amazon/blob/main/docs/INITIAL_MACHINE_FILM.md).
+
 ## What the real Sol studies found
 
-The October 19 real-model studies are separate from the scripted film demonstration. Four isolated v12 sessions made zero participant source business reads. Two configured rotation arms became effective at 30.174 and 30.182 seconds after local alert acknowledgement. Both include an injected 30-second delay. This is not evidence that deception caused extra time; the guided condition has not shown more meaningful exploration than transparent isolation.
+The October 19 real-model studies are separate from the scripted console demonstration. Four isolated v12 sessions made zero participant source business reads. Two configured rotation arms became effective at 30.174 and 30.182 seconds after local alert acknowledgement. Both include an injected 30-second delay. This is not evidence that deception caused extra time; the guided condition has not shown more meaningful exploration than transparent isolation.
 
 The later single v13 Sol session made 14 tool calls, reached its limit and remained UNKNOWN_AFTER_LIMIT. It did not voluntarily stop or produce a final answer, and did not autonomously try the four permission attacks. The 21 deterministic source-policy cases test those paths separately.
 

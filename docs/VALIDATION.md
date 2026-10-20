@@ -15,6 +15,12 @@ The console report retains raw host checkpoint FAIL when its legacy counter incl
 
 The host pin uses Vitest 4.1.12 after correcting an initial lockfile mismatch and updating past a dependency advisory. Early demo attempts caught an invalid note key and a ticket-mixing probe that hit the target scope gate first; the final demonstration uses the allowed note key and tests ticket issuer binding on an otherwise readable ordinary record. No permission check was weakened. Raw private development logs remain retained outside the public distribution.
 
+## Public CI checkpoint and media status
+
+[Public CI run 39355381029](https://github.com/Ranopha/dungeonq-amazon/actions/runs/39355381029) passed all five jobs for source `146cb1b0d3a48d6591fbb68d15921433c0980a22`: Ubuntu/macOS root acceptance, Ubuntu/macOS MCP host acceptance, and source-bound Docker runtime acceptance. The final release record binds its own package commit, tag and exact-source CI.
+
+The replacement gallery contains nine current workflow/result images. The new English v0.15 film is 149.833 seconds, 1920×1080 at 30 fps, with narration and English captions; frame/layout checks and full media decode passed locally. It remains **local only at the owner's direction**. The Devpost embed still points to the October 8 v0.13.1 historical film, labeled accordingly. No new model call or paid media service was used for this refresh.
+
 ## Historical validation records
 
 # v0.14.0 recovery validation — October 10, 2026
