@@ -11,6 +11,8 @@ Public runtime source is exported from the previously tested 0.15.0-dev.18 sourc
 
 The functional source `2579359c005f59f005d74e3ed535642b21e17f6d` passed all five [CI jobs](https://github.com/Ranopha/dungeonq-amazon/actions/runs/39737487527), including both OS host suites and the source-bound isolated container gate. Final package/tag identity is recorded by the immutable release and its manifest. No production, newly paid AI or second additional human trial is performed by this update.
 
+The first merged-main CI [39738648747](https://github.com/Ranopha/dungeonq-amazon/actions/runs/39738648747) exposed a macOS scheduling-sensitive assertion: 778/779 passed. An earlier observed retry interval can be longer under load even when the configured minimum doubles correctly. The release repair preserves the real HTTP retry-count, stop and minimum-wait checks, and strengthens the controlled-clock test to verify both deadlines and refusal immediately before each deadline. Runtime retry behavior is unchanged. Final exact-source CI is attached to the release; this failed attempt remains recorded.
+
 ## Packaging failures retained
 
 The original exporter required an absent historical document and stopped before writing output. The explicit source import initially omitted a matching SDK change and copied an older embedded host example; these were corrected by completing the runtime slice and restoring/exporting the selected current host independently. Missing closure template and nested vendor test discovery were repaired without weakening authorization or test assertions. Original local logs and the first failed public CI run remain retained; only the final exact-source CI supports release acceptance.

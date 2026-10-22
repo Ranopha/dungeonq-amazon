@@ -981,10 +981,6 @@
       "sha256": "945fed47dcfda156e8f5e31ef5a4fc62bd55101cb7b8b5d04d1a612899623fea"
     },
     {
-      "path": "tests/runtime-pitch-control.test.mjs",
-      "sha256": "301e6aa14cf68a4152243dd43e77c5837743ce3bbf17e8336ac5fd63ae63e906"
-    },
-    {
       "path": "tests/runtime-pitch-owner-lock.test.mjs",
       "sha256": "c46b7919b8c46c1be283650d674f561eef41a05e6e3d9529b9393ee6dde610cc"
     },
@@ -1003,10 +999,6 @@
     {
       "path": "tests/runtime-pitching-handoff-decision.test.mjs",
       "sha256": "1f3c88086f6c46a7e0fc927f2402645c10ab9e46cab89eb95a5522a20a84d9c0"
-    },
-    {
-      "path": "tests/runtime-pitching-handoff-gateway.test.mjs",
-      "sha256": "6fa999443497dc824f9babd60015c54ad63ad9837deafd4d4b188cac77e3d632"
     },
     {
       "path": "tests/runtime-pitching-handoff.test.mjs",
@@ -1275,6 +1267,20 @@
     {
       "path": "world/topology.mjs",
       "sha256": "70203515c143af9593e3b0bc333142f32012d181670a5c63eb95722e946f8fe3"
+    }
+  ],
+  "modifiedSourceFiles": [
+    {
+      "path": "tests/runtime-pitch-control.test.mjs",
+      "sourceSha256": "301e6aa14cf68a4152243dd43e77c5837743ce3bbf17e8336ac5fd63ae63e906",
+      "publicSha256": "8312081b90629e2b38e943b23a33baea7e816ddfc45cb0f679c9ebb15a260822",
+      "reason": "Release CI regression: exact retry doubling uses a controlled clock; real gateway checks minimum waits and finite attempts without assuming scheduler latency is monotonic."
+    },
+    {
+      "path": "tests/runtime-pitching-handoff-gateway.test.mjs",
+      "sourceSha256": "6fa999443497dc824f9babd60015c54ad63ad9837deafd4d4b188cac77e3d632",
+      "publicSha256": "c73d593a48fae05e2570a547b48e81de54f0b05195bfece06f991199f8b6a13e",
+      "reason": "Release CI regression: exact retry doubling uses a controlled clock; real gateway checks minimum waits and finite attempts without assuming scheduler latency is monotonic."
     }
   ]
 }
