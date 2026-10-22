@@ -14,3 +14,14 @@ export function participantResult(operation, result, ticketHandle) {
   if (operation === 'issue-ticket' && Object.hasOwn(result, 'ticket')) output.ticket = ticketHandle(result.ticket);
   return output;
 }
+
+// Open-control (ORIGIN) surface for the participant-v1 presentation. The authorized real entrance returns the
+// genuine business record; the participant must still never see internal routing (`_route`, `destination`).
+// This is response minimization for the control arm, never an authorization boundary.
+export function participantControlResult(result) {
+  const output = {};
+  for (const key of ['records', 'revision', 'key', 'value', 'recordRevision']) if (Object.hasOwn(result, key)) output[key] = structuredClone(result[key]);
+  if (Object.hasOwn(result, 'record')) output.record = structuredClone(result.record);
+  if (Object.hasOwn(result, 'requestId')) output.requestId = result.requestId;
+  return output;
+}

@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
@@ -80,7 +81,7 @@ test('獨立離線 verifier 固定外部公鑰，不信任證據內置替換 key
   await writeFile(badKey, generateKeyPairSync('ed25519').publicKey.export({ type: 'spki', format: 'pem' }));
   const evidence = { schemaVersion: 'dungeonq.assistant-evidence/v1', response: { receipt }, verificationKey: 'not-trusted' };
   await writeFile(path, JSON.stringify(evidence));
-  const run = pinned => spawnSync(process.execPath, [new URL('../scripts/verify-assistant-evidence.mjs', import.meta.url).pathname, path, pinned, 'response-test'], { encoding: 'utf8' });
+  const run = pinned => spawnSync(process.execPath, [fileURLToPath(new URL('../scripts/verify-assistant-evidence.mjs', import.meta.url)), path, pinned, 'response-test'], { encoding: 'utf8' });
   const valid = run(key); assert.equal(valid.status, 0);
   assert.equal(JSON.parse(valid.stdout).envelopeAuthenticated, false);
   assert.equal(run(badKey).status, 1);

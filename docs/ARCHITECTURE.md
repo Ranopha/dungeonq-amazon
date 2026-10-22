@@ -1,3 +1,11 @@
+# v0.16 response architecture
+
+The origin applies one durable authority state to MAIN/A2/CACHE/EXPORT. The gateway's fixed control channel and authenticated loopback human interface are outside participant tools. A selected policy module authorizes the connector; the connector verifies it again. Confirmed rotation enables a separate human closure with sealing, revocation readback, retained fencing, notification records and post-incident review. [Contract and limits](HANDOFF_DESIGN.md).
+
+The following v0.15 architecture is retained for historical comparison; current human evidence is in [HUMAN_RESPONSE_RESULTS](HUMAN_RESPONSE_RESULTS.md).
+
+---
+
 # Current architecture — v0.15.0
 
 The persistent runtime now includes bounded task-related continuation and a separate source-policy/response host. [CONTINUATION_DESIGN](CONTINUATION_DESIGN.md) defines their current contracts; [MODEL_RESULTS](MODEL_RESULTS.md) separates measured response timing from unproven incremental deception effects. The earlier architecture below remains the foundation.

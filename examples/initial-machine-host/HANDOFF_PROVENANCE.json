@@ -1,0 +1,177 @@
+{
+  "schemaVersion": "dungeonq.host-handoff-source/v1",
+  "sourceCommit": "ce44db1da25137f35dd746b71499c9c69b30761f",
+  "scope": "selected original DungeonQ modules only; no private OS or history",
+  "transformations": [
+    "Policy imports point directly to the selected DungeonQ policy module",
+    "Original target name replaced by public disposable fixture path",
+    "Runtime identity retains public package and is pinned separately"
+  ],
+  "files": [
+    {
+      "path": "packages/policy/src/dungeonq-response-action.ts",
+      "sourceSha256": "9d7d82361dcbc4b1684e283cf926b2ee82350cca9b5053d304c217104e3955c3",
+      "publicSha256": "9d7d82361dcbc4b1684e283cf926b2ee82350cca9b5053d304c217104e3955c3"
+    },
+    {
+      "path": "plugins/dungeonq-host-integration/src/file-origin.ts",
+      "sourceSha256": "431e8be663e49f35827ef314c4180823435fd7378a396aaf886c62f60c3a44dc",
+      "publicSha256": "431e8be663e49f35827ef314c4180823435fd7378a396aaf886c62f60c3a44dc"
+    },
+    {
+      "path": "plugins/dungeonq-host-integration/src/response-actions.ts",
+      "sourceSha256": "fdcb4abe1eb26adc21ed6d4364b339794d4fa0b92430f0e78d0209119c8f8d13",
+      "publicSha256": "362451654621807d03b7cfcd782b1328883d965675d3500d05144a3b9ba51d8c"
+    },
+    {
+      "path": "plugins/dungeonq-host-integration/src/target-witness.ts",
+      "sourceSha256": "ff1f26c240b028cc58a37cc2fd0d17aab04aaa863f601530187a9a13cc49a4d7",
+      "publicSha256": "ff1f26c240b028cc58a37cc2fd0d17aab04aaa863f601530187a9a13cc49a4d7"
+    },
+    {
+      "path": "scripts/dungeonq-host/ack-operator.mjs",
+      "sourceSha256": "da0a49fd95d25ac86bf930eb182424e0e9e94e9c8eac2bb6357b86cf3d753456",
+      "publicSha256": "da0a49fd95d25ac86bf930eb182424e0e9e94e9c8eac2bb6357b86cf3d753456"
+    },
+    {
+      "path": "scripts/dungeonq-host/alert-sender.mjs",
+      "sourceSha256": "2716d51ad177910d1a5ac3c69cebb65d8015b3366729b2f096a859b5cb3d5461",
+      "publicSha256": "2716d51ad177910d1a5ac3c69cebb65d8015b3366729b2f096a859b5cb3d5461"
+    },
+    {
+      "path": "scripts/dungeonq-host/evidence-sealer.mjs",
+      "sourceSha256": "791a1f0cfb0674d48da63c43458f9ef332ecb42445782975705cdd3f8ed10059",
+      "publicSha256": "791a1f0cfb0674d48da63c43458f9ef332ecb42445782975705cdd3f8ed10059"
+    },
+    {
+      "path": "scripts/dungeonq-host/evidence-verify.mjs",
+      "sourceSha256": "cdffc8d3de46276ceeba29f032e9e135d376a1cfdb794157dc96b38111509660",
+      "publicSha256": "cdffc8d3de46276ceeba29f032e9e135d376a1cfdb794157dc96b38111509660"
+    },
+    {
+      "path": "scripts/dungeonq-host/human-source-close-isolated-test.mjs",
+      "sourceSha256": "bdbb0ec8d0a95d4bedafaa42f22c2538f1446a5c46b0b1a5010f2f4772d0ccfa",
+      "publicSha256": "bdbb0ec8d0a95d4bedafaa42f22c2538f1446a5c46b0b1a5010f2f4772d0ccfa"
+    },
+    {
+      "path": "scripts/dungeonq-host/human-source-drill.mjs",
+      "sourceSha256": "6552c85905edb871a1f59dcd1f89cfabbfbccfa8d28231be0eec5d3f2fc51f8e",
+      "publicSha256": "6552c85905edb871a1f59dcd1f89cfabbfbccfa8d28231be0eec5d3f2fc51f8e"
+    },
+    {
+      "path": "scripts/dungeonq-host/human-source-handoff.mjs",
+      "sourceSha256": "68085e6412eef1640915399e51cb63668a6e80f3445da64c62e2e7dc15261137",
+      "publicSha256": "521e2f50bd330793cc7cda1a232c14b069cb72cbd2e693d5f3ae17fd414898ce"
+    },
+    {
+      "path": "scripts/dungeonq-host/human-source-handoff.test.mjs",
+      "sourceSha256": "551c0027eee9d2c8b39bde23bdc5c357d43931c5f1595b358d989988a6757da5",
+      "publicSha256": "551c0027eee9d2c8b39bde23bdc5c357d43931c5f1595b358d989988a6757da5"
+    },
+    {
+      "path": "scripts/dungeonq-host/human-source-replay.mjs",
+      "sourceSha256": "300f2baf015f68e6da824714d65459d570f592378c75d1f3f0a57eea8045f350",
+      "publicSha256": "300f2baf015f68e6da824714d65459d570f592378c75d1f3f0a57eea8045f350"
+    },
+    {
+      "path": "scripts/dungeonq-host/incident-close-integration.test.mjs",
+      "sourceSha256": "431881b36d69d85449bb20bf419482f5ce27ea037114e04cad5768362702c183",
+      "publicSha256": "020821a9f6103b29bf244c01062d4e1760eb81a7bcb0841aa4dbdc9959a35a0b"
+    },
+    {
+      "path": "scripts/dungeonq-host/incident-close.mjs",
+      "sourceSha256": "f8562f8da239a5f9fcd5f17629dddf6aa8d486dd008a8a80167761b29bc697dc",
+      "publicSha256": "78c50163619a3bbdca8c5119dbc48e4994bb70b1a552653817d102eeb04120e4"
+    },
+    {
+      "path": "scripts/dungeonq-host/incident-close.test.mjs",
+      "sourceSha256": "2b6d9c2be933809087e9e54c46485ba7a4510ef35e23cd84928cae9c4cc1c2b8",
+      "publicSha256": "2b6d9c2be933809087e9e54c46485ba7a4510ef35e23cd84928cae9c4cc1c2b8"
+    },
+    {
+      "path": "scripts/dungeonq-host/incident-local-ports.mjs",
+      "sourceSha256": "acc36b47f793615f0f87467d0483d8da42c18df84eac1969ff47ab2d493660dc",
+      "publicSha256": "acc36b47f793615f0f87467d0483d8da42c18df84eac1969ff47ab2d493660dc"
+    },
+    {
+      "path": "scripts/dungeonq-host/incident-review.mjs",
+      "sourceSha256": "e89122eece3fb7a458109cf805517fb7c15bd1f11ee740340baa60d5c12d0014",
+      "publicSha256": "e89122eece3fb7a458109cf805517fb7c15bd1f11ee740340baa60d5c12d0014"
+    },
+    {
+      "path": "scripts/dungeonq-host/incident-wiring.mjs",
+      "sourceSha256": "0be6bcc3443d077c24167632eddf046b4712be526afce33321e43b0c253ee971",
+      "publicSha256": "0be6bcc3443d077c24167632eddf046b4712be526afce33321e43b0c253ee971"
+    },
+    {
+      "path": "scripts/dungeonq-host/incident-wiring.test.mjs",
+      "sourceSha256": "8a1e9c3ceaeedb7b1baf4e7addd0fe4f67424943dec873b275353cfa4e7ab0e5",
+      "publicSha256": "8a1e9c3ceaeedb7b1baf4e7addd0fe4f67424943dec873b275353cfa4e7ab0e5"
+    },
+    {
+      "path": "scripts/dungeonq-host/isolated-lab.mjs",
+      "sourceSha256": "796b8a05c112870ae8037181012ccf84d27db801608c71a69bbd56eb8fa2fa2b",
+      "publicSha256": "796b8a05c112870ae8037181012ccf84d27db801608c71a69bbd56eb8fa2fa2b"
+    },
+    {
+      "path": "scripts/dungeonq-host/legit-consumer.mjs",
+      "sourceSha256": "81927ddf9eed6fc908e05ce9cb06968d396350212065452fb24bf994a686c9fd",
+      "publicSha256": "81927ddf9eed6fc908e05ce9cb06968d396350212065452fb24bf994a686c9fd"
+    },
+    {
+      "path": "scripts/dungeonq-host/response-wiring.mjs",
+      "sourceSha256": "04060db782687aa48590bd13f887e3a33618774cb1adc68086635bc9b2de5a49",
+      "publicSha256": "eaf8db6d9fef186fa0946803e51b41a2725c962d9c4b683afbfcf3f425bdaef1"
+    },
+    {
+      "path": "scripts/dungeonq-host/source-close-probe-container.mjs",
+      "sourceSha256": "c1c6729c061ee4353693496f368847efc7d196ff5d1b7fbcd3bba5c5871ca6aa",
+      "publicSha256": "c1c6729c061ee4353693496f368847efc7d196ff5d1b7fbcd3bba5c5871ca6aa"
+    },
+    {
+      "path": "scripts/dungeonq-host/source-close.mjs",
+      "sourceSha256": "a6c0d04770a9c9b380f341d2d7041ccdbbbdae6adf072008a81ab83d99f1eca2",
+      "publicSha256": "6a7c9f9406ea62d99dec02d4ba0148ea9c76a068babec1ebcd224a4fcd8dfd4f"
+    },
+    {
+      "path": "scripts/dungeonq-host/source-close.test.mjs",
+      "sourceSha256": "e83aaaadb9e07a687985907be187d5cd217240470fcb75832c619f5835614f90",
+      "publicSha256": "e83aaaadb9e07a687985907be187d5cd217240470fcb75832c619f5835614f90"
+    },
+    {
+      "path": "scripts/dungeonq-host/source-guard-drill.mjs",
+      "sourceSha256": "9c8e8740eecf445c52e8b2504076ead5f35851f556826fe498a0ac7345aae5ef",
+      "publicSha256": "9c8e8740eecf445c52e8b2504076ead5f35851f556826fe498a0ac7345aae5ef"
+    },
+    {
+      "path": "scripts/dungeonq-host/source-probe-container.mjs",
+      "sourceSha256": "41a99ca39ecc1056c5ef1c6cda7a725a77cebf37e69b70200210fe1fc4a2e5fe",
+      "publicSha256": "41a99ca39ecc1056c5ef1c6cda7a725a77cebf37e69b70200210fe1fc4a2e5fe"
+    },
+    {
+      "path": "scripts/dungeonq-host/source-response.mjs",
+      "sourceSha256": "73a9d7031208ca10eea8133696b5fbe26e05226527349726d13b032bdfa6e50b",
+      "publicSha256": "5df1c19d03a81ada5f0dad54d7756abc31390712fa90ca4ebd367b92439148d8"
+    },
+    {
+      "path": "scripts/dungeonq-host/source-response.test.mjs",
+      "sourceSha256": "6b52c2c97aa53036233193fea5aa1fc784a1746ab29d641435cc6cec80c6e54e",
+      "publicSha256": "6b52c2c97aa53036233193fea5aa1fc784a1746ab29d641435cc6cec80c6e54e"
+    },
+    {
+      "path": "scripts/dungeonq-host/work-order.mjs",
+      "sourceSha256": "b1aab2735521085753e44cec58507d94b08e986c70dc51dc745347d16909de1b",
+      "publicSha256": "fd57b89f0a208f761e949b57d4e3736a1c6123ece50e9a23e2baec34302c0cdc"
+    },
+    {
+      "path": "scripts/lib/dungeonq-response-policy-fitness.mjs",
+      "sourceSha256": "3a5b5e131f53d09ef3d2c2f4c66344599fda45080a9a95042f89eba69b44e56e",
+      "publicSha256": "3a5b5e131f53d09ef3d2c2f4c66344599fda45080a9a95042f89eba69b44e56e"
+    },
+    {
+      "path": "docs/templates/dungeonq-post-incident.md",
+      "sourceSha256": "844ebe7984a4431d9d136631df0c68b3b75950b21e48c8f92fb3644cc2efa083",
+      "publicSha256": "07115defbc869b27fc5986dc4b491febb1ee2c3808bf26142130a390bf8443be"
+    }
+  ]
+}

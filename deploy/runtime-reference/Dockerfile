@@ -8,7 +8,11 @@ RUN npm ci --ignore-scripts --omit=optional --no-audit --no-fund && npm cache cl
 COPY runtime/ ./runtime/
 COPY world/ ./world/
 COPY server/world-store.mjs ./server/world-store.mjs
+COPY server/passwords.mjs ./server/passwords.mjs
+COPY server/totp.mjs ./server/totp.mjs
+COPY server/contracts.mjs ./server/contracts.mjs
 COPY sdk/runtime-client.mjs ./sdk/runtime-client.mjs
+COPY public/src/canonical.mjs ./public/src/canonical.mjs
 COPY public/runtime/ ./public/runtime/
 RUN mkdir -p /state /run/dungeonq && chown ${RUNTIME_UID}:${RUNTIME_GID} /state && chmod 700 /state
 ENV NODE_ENV=production HOME=/tmp

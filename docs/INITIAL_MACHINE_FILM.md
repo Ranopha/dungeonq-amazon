@@ -1,3 +1,18 @@
+# Current film — v0.16 (2026-10-22)
+
+[Watch the 2 minute 30 second film](https://youtu.be/6RqYwUeEmus). It combines recorded synthetic MCP/HTTP console interactions with clearly labeled evidence graphics. The actual guided human response is run-03, not a new model trial. Captions and local synthetic narration accompany the 1920×1080, 30 fps H.264/AAC film.
+
+- Local exported duration: 150.266667 seconds.
+- MP4 SHA-256: `837507d81c87ffa1449b5a893d36348a70522cf0d1279830f8523ce8ea952131`.
+- Public root version 0.16.0; host slice 0.3.0. Runtime and host provenance are recorded separately.
+- All nine historical M8 runs obtained the artificial target via then-open A2. The repaired source boundary has deterministic checks, with no new paid-model trial.
+- One guided human rehearsal: 84.606 seconds to verified rotation; 250.921 seconds to closure. Neither number measures additional time caused by deception. M9 remains pending a second full run.
+- Earlier films and raw evidence remain preserved. Editable scenes, captions, audio and source captures remain in the local media project.
+
+---
+
+## Historical film record
+
 # Initial Machine: real MCP host operation
 
 [English film — 124.267 seconds](https://youtu.be/uFvzFXfL2F0) · [Host source and installation](../examples/initial-machine-host/README.md) · [Minimized evidence](../evidence/initial-machine-workflow/summary.json)

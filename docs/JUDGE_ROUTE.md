@@ -1,3 +1,9 @@
+# v0.16 judge route
+
+Start with the working console below. Then run `npm --prefix examples/initial-machine-host run test:handoff` after host installation: it exercises actual local HTTP authentication, incident binding, policy/connector checks, UNKNOWN, revocation and closure using fake senders/test accounts. No real message or model call is made.
+
+Read [Human response](HUMAN_RESPONSE_RESULTS.md) for the one actual guided human closure, and [Model results](MODEL_RESULTS.md) for the nine open-A2 Sol runs and earlier transparent comparison. They are distinct experiments. The repaired source has no new paid AI trial. Full M9 remains PENDING; no extra-time or production guarantee is claimed.
+
 # Current judge route — v0.15.0
 
 **Start with the working response console.** Follow [the host README](../examples/initial-machine-host/README.md), then run `npm run console:response -- /absolute/path/new-report.json` from that directory. Open the printed loopback URL and click **Run working demonstration**. It executes actual requests once, then lets you revisit five recorded stages.

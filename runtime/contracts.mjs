@@ -20,6 +20,40 @@ export const RUNTIME_MAXIMUMS = Object.freeze({ maxContexts: 64, maxWorlds: 64, 
   maxRequests: 2048, maxEvents: 2048, maxTickets: 512, maxPolicies: 128, maxValueBytes: 2048,
   maxScopeKeys: 16, maxMutations: 32, maxTicketTtlMs: 3600000, maxPolicyTtlMs: 3600000, maxJournalBytes: 10485760 });
 
+// Wrong-ticket tracker vocabulary (opt-in, pitching profile only). Labels are unverified hints,
+// never identity, routing or authority. See docs/contracts/dungeonq-wrong-ticket-v1.md in the host repository.
+export const WRONG_TICKET_LEDGER_VERSION = 'dungeonq.wrong-ticket-ledger/v1';
+export const WRONG_TICKET_ENTRY_TYPES = Object.freeze([...RUNTIME_FAMILIES, 'real-entry', 'control']);
+export const WRONG_TICKET_POSITIONS = Object.freeze(['ARGUMENT', 'CREDENTIAL']);
+export const WRONG_TICKET_OUTCOMES = Object.freeze(['PRESENTED', 'ACCEPTED', 'REFUSED', 'UNKNOWN']);
+export const WRONG_TICKET_SEVERITIES = Object.freeze(['HIGH', 'CRITICAL']);
+export const WRONG_TICKET_SPREAD_REASONS = Object.freeze(['CONTEXT', 'SOURCE']);
+export const WRONG_TICKET_UPDATE_KINDS = Object.freeze(['FIRST_USE', 'DIGEST']);
+// D9: first use immediately, then at most one digest per incident every five minutes, 20 per incident.
+export const WRONG_TICKET_ALERT_DEFAULTS = Object.freeze({ digestIntervalMs: 300000, maxUpdatesPerIncident: 20,
+  maxTrackedTickets: 512, maxUses: 20000, maxSightings: 8 });
+export const WRONG_TICKET_ALERT_BOUNDS = Object.freeze({ digestIntervalMs: [1000, 86400000], maxUpdatesPerIncident: [1, 100],
+  maxTrackedTickets: [1, 4096], maxUses: [1, 100000], maxSightings: [1, 64] });
+
+/** Bounded passive text for an untrusted client or network hint; anything else is recorded as absent. */
+export function runtimeHintLabel(value) {
+  if (typeof value !== 'string' || value.length > 1024) return null;
+  const text = value.replace(/[^A-Za-z0-9 ._:/()+;,=@[\]-]/gu, '').replace(/\s+/gu, ' ').trim().slice(0, 128);
+  return text.length > 0 ? text : null;
+}
+
+/** Trusted in-process entry metadata. Participant transports never construct this object. */
+export function runtimeTicketEntry(value) {
+  runtimeEnvelope(value, ['type'], ['client', 'source', 'ticket', 'position'], 8192);
+  runtimeCheck(WRONG_TICKET_ENTRY_TYPES.includes(value.type), 'TICKET_ENTRY_INVALID');
+  for (const key of ['client', 'source']) runtimeCheck(value[key] === undefined || value[key] === null || typeof value[key] === 'string', 'TICKET_ENTRY_INVALID');
+  runtimeCheck(value.ticket === undefined || typeof value.ticket === 'string' && value.ticket.length >= 1 && value.ticket.length <= 4096, 'TICKET_ENTRY_INVALID');
+  runtimeCheck((value.ticket === undefined) === (value.position === undefined)
+    && (value.position === undefined || value.position === 'CREDENTIAL'), 'TICKET_ENTRY_INVALID');
+  return { type: value.type, client: runtimeHintLabel(value.client), source: runtimeHintLabel(value.source),
+    ticket: value.ticket ?? null, position: value.position ?? null };
+}
+
 export function runtimeCheck(condition, code = 'INVALID_ENVELOPE') {
   if (!condition) throw Object.assign(new Error(code), { code });
 }

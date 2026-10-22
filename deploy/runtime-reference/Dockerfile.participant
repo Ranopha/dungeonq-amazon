@@ -1,0 +1,13 @@
+# Participant image: Node runtime and the participant client only. No DungeonQ runtime source,
+# no dependencies, no credentials. The capability arrives later through a private config volume.
+FROM node:24.15.0-bookworm-slim@sha256:4e6b70dd6cbfc88c8157ba19aa3d9f9cce6ba4703576d55459e45efcbc9c5f5d
+ARG PARTICIPANT_UID=64101
+ARG PARTICIPANT_GID=64101
+WORKDIR /opt/participant
+COPY participant-client.mjs ./client.mjs
+RUN mkdir -p /run/participant && chmod 755 /run/participant && chmod 644 /opt/participant/client.mjs
+ENV NODE_ENV=production HOME=/tmp
+USER ${PARTICIPANT_UID}:${PARTICIPANT_GID}
+ARG SOURCE_DIGEST
+LABEL org.dungeonq.profile="participant-lab-v1" org.dungeonq.role="participant" org.dungeonq.source-digest="${SOURCE_DIGEST}"
+CMD ["node", "/opt/participant/client.mjs", "idle", "/run/participant/participant.json"]

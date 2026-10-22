@@ -162,6 +162,7 @@ jobs:
       - name: Verify source permissions and alert-to-revocation checks
         run: |
           npm --prefix "$RUNNER_TEMP/dq-host-fixture" run test:source
+          npm --prefix "$RUNNER_TEMP/dq-host-fixture" run test:handoff
           npm --prefix "$RUNNER_TEMP/dq-host-fixture" run test:response
           npm --prefix "$RUNNER_TEMP/dq-host-fixture" run demo:response -- "$RUNNER_TEMP/dq-judge-response.json"
       - name: Retain the public response demonstration

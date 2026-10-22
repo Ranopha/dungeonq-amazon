@@ -3,7 +3,10 @@ import { lstatSync, mkdirSync } from 'node:fs';
 import { dirname, isAbsolute } from 'node:path';
 import { openAuxiliary } from './auxiliary.mjs';
 import { runtimeCheck as check, runtimeEnvelope as envelope, runtimeFamily as family,
-  runtimeId as identifier, runtimeInteger as integer } from './contracts.mjs';
+  runtimeId as identifier, runtimeInteger as integer, runtimeHintLabel as hintLabel,
+  WRONG_TICKET_ALERT_BOUNDS, WRONG_TICKET_ALERT_DEFAULTS, WRONG_TICKET_ENTRY_TYPES, WRONG_TICKET_LEDGER_VERSION,
+  WRONG_TICKET_OUTCOMES, WRONG_TICKET_POSITIONS, WRONG_TICKET_SEVERITIES, WRONG_TICKET_SPREAD_REASONS,
+  WRONG_TICKET_UPDATE_KINDS } from './contracts.mjs';
 
 export const PITCH_CONTROL_VERSION = 'dungeonq.pitch-control/v1';
 export const PITCH_CONTROL_DEFAULT_LIMITS = Object.freeze({
@@ -35,6 +38,112 @@ const coded = code => Object.assign(new Error(code), { code });
 const nullableId = value => value === null || identifier(value);
 const atValue = value => integer(value, 0, Number.MAX_SAFE_INTEGER, 'PITCH_STATE_INVALID');
 const nullableAt = value => value === null || atValue(value);
+const HEX64 = /^[a-f0-9]{64}$/;
+const TICKET_SCHEMA = 'CREATE TABLE pitch_ticket_uses (seq INTEGER PRIMARY KEY,use_id TEXT NOT NULL UNIQUE,record TEXT NOT NULL,digest TEXT NOT NULL)';
+const TICKET_USE_FIELDS = ['useId', 'seq', 'trackId', 'incidentId', 'incidentUse', 'at', 'contextId', 'entry', 'position',
+  'client', 'source', 'spread', 'severity', 'outcome', 'code', 'replayed', 'settledAt'];
+const DELIVERY_FIELDS = ['status', 'attempts', 'nextAttemptAt', 'leaseId', 'leaseExpiresAt', 'receiptId', 'acceptedAt',
+  'lastError', 'uncertainAt', 'reconciliationDigest'];
+const UPDATE_FIELDS = ['updateId', 'incidentId', 'ordinal', 'kind', 'idempotencyKey', 'severity', 'createdAt', 'fromUse',
+  'toUse', 'useCount', 'spreadUses', 'firstSpread', 'distinctContexts', 'distinctSources', ...DELIVERY_FIELDS];
+
+/** Domain-separated digest of a presented participant ticket. The ledger never stores the capability itself. */
+export function ticketHandleDigest(handle) {
+  check(typeof handle === 'string' && handle.length >= 1 && handle.length <= 4096, 'TICKET_INVALID');
+  return createHash('sha256').update('dungeonq.ticket-presentation/v1\0').update(handle).digest('hex');
+}
+
+function ticketLimitsFor(value) {
+  if (value === undefined || value === false) return null;
+  const supplied = value === true ? {} : value;
+  envelope(supplied, [], Object.keys(WRONG_TICKET_ALERT_DEFAULTS));
+  const limits = { ...WRONG_TICKET_ALERT_DEFAULTS, ...supplied };
+  for (const [key, bounds] of Object.entries(WRONG_TICKET_ALERT_BOUNDS)) integer(limits[key], ...bounds, 'PITCH_TICKET_LIMITS_INVALID');
+  return limits;
+}
+
+function validateDelivery(row, limits) {
+  check(DELIVERY_STATES.includes(row.status), 'PITCH_STATE_INVALID');
+  integer(row.attempts, 0, limits.deliveryAttempts); atValue(row.nextAttemptAt);
+  nullableId(row.leaseId); nullableAt(row.leaseExpiresAt); nullableId(row.receiptId); nullableAt(row.acceptedAt); nullableAt(row.uncertainAt);
+  check(row.lastError === null || ['TRANSPORT_UNKNOWN', 'RELAY_UNKNOWN', 'RECEIPT_INVALID', 'NOT_ACCEPTED', 'LEASE_EXPIRED', 'TIMEOUT'].includes(row.lastError), 'PITCH_STATE_INVALID');
+  check(row.reconciliationDigest === null || HEX64.test(row.reconciliationDigest), 'PITCH_STATE_INVALID');
+  check(row.status === 'IN_FLIGHT' ? row.leaseId !== null && row.leaseExpiresAt !== null
+    : row.leaseId === null && row.leaseExpiresAt === null, 'PITCH_STATE_INVALID');
+  check(row.status === 'ACCEPTED' ? row.receiptId !== null && row.acceptedAt !== null
+    : row.receiptId === null && row.acceptedAt === null, 'PITCH_STATE_INVALID');
+}
+
+const label = value => value === null || (typeof value === 'string' && hintLabel(value) === value);
+const ordered = (values, vocabulary) => vocabulary.filter(value => values.includes(value));
+
+// Every ledger invariant is re-checked on each transaction; a mismatch is corruption, never a reset.
+function validateLedger(ledger, state, limits, ticketLimits) {
+  envelope(ledger, ['version', 'useCount', 'refusedAtCapacity', 'tickets', 'incidents', 'updates']);
+  check(ledger.version === WRONG_TICKET_LEDGER_VERSION, 'PITCH_SCHEMA_UNSUPPORTED');
+  integer(ledger.useCount, 0, ticketLimits.maxUses, 'PITCH_STATE_INVALID'); atValue(ledger.refusedAtCapacity);
+  check(Array.isArray(ledger.tickets) && ledger.tickets.length <= ticketLimits.maxTrackedTickets
+    && Array.isArray(ledger.incidents) && ledger.incidents.length <= limits.maxIncidents
+    && Array.isArray(ledger.updates) && ledger.updates.length <= limits.maxIncidents * ticketLimits.maxUpdatesPerIncident, 'PITCH_STATE_INVALID');
+  for (const key of ['trackId', 'handleDigest', 'ticketId']) check(new Set(ledger.tickets.map(row => row[key])).size === ledger.tickets.length, 'PITCH_STATE_INVALID');
+  check(new Set(ledger.incidents.map(row => row.incidentId)).size === ledger.incidents.length
+    && new Set(ledger.updates.map(row => row.idempotencyKey)).size === ledger.updates.length, 'PITCH_STATE_INVALID');
+  for (const row of ledger.tickets) {
+    envelope(row, ['trackId', 'ticketId', 'handleDigest', 'incidentId', 'contextId', 'worldId', 'epoch', 'entry', 'issuedAt',
+      'expiresAt', 'issuedSource', 'uses', 'accepted', 'contexts', 'sources', 'otherSightings', 'spread']);
+    check(/^wt-[a-f0-9]{32}$/.test(row.trackId) && row.trackId === trackIdentity(row.ticketId)
+      && HEX64.test(row.ticketId) && HEX64.test(row.handleDigest), 'PITCH_STATE_INVALID');
+    identifier(row.contextId); identifier(row.worldId); integer(row.epoch, 1, Number.MAX_SAFE_INTEGER);
+    check(row.incidentId === incidentIdentity(row) && state.incidents.some(i => i.incidentId === row.incidentId)
+      && WRONG_TICKET_ENTRY_TYPES.includes(row.entry) && label(row.issuedSource), 'PITCH_STATE_INVALID');
+    atValue(row.issuedAt); atValue(row.expiresAt); atValue(row.uses); atValue(row.accepted); atValue(row.otherSightings);
+    check(row.expiresAt > row.issuedAt && row.accepted <= row.uses, 'PITCH_STATE_INVALID');
+    check(Array.isArray(row.contexts) && row.contexts.length <= ticketLimits.maxSightings && new Set(row.contexts).size === row.contexts.length
+      && row.contexts.every(value => value === null || identifier(value)), 'PITCH_STATE_INVALID');
+    check(Array.isArray(row.sources) && row.sources.length <= ticketLimits.maxSightings && new Set(row.sources).size === row.sources.length
+      && row.sources.every(value => value !== null && label(value)), 'PITCH_STATE_INVALID');
+    check(Array.isArray(row.spread) && JSON.stringify(row.spread) === JSON.stringify(ordered(row.spread, WRONG_TICKET_SPREAD_REASONS)), 'PITCH_STATE_INVALID');
+  }
+  let total = 0;
+  for (const row of ledger.incidents) {
+    envelope(row, ['incidentId', 'severity', 'uses', 'spreadUses', 'firstUseAt', 'lastUseAt', 'updates', 'coveredUses',
+      'lastUpdateAt', 'pendingUses', 'pendingSpreadUses', 'pendingSince', 'suppressedUses']);
+    check(state.incidents.some(i => i.incidentId === row.incidentId) && WRONG_TICKET_SEVERITIES.includes(row.severity), 'PITCH_STATE_INVALID');
+    for (const key of ['uses', 'spreadUses', 'firstUseAt', 'lastUseAt', 'coveredUses', 'pendingUses', 'pendingSpreadUses', 'suppressedUses']) atValue(row[key]);
+    integer(row.updates, 0, ticketLimits.maxUpdatesPerIncident, 'PITCH_STATE_INVALID'); nullableAt(row.lastUpdateAt); nullableAt(row.pendingSince);
+    const own = ledger.updates.filter(update => update.incidentId === row.incidentId);
+    // Summaries only group records: covered + pending + suppressed is exactly the number of recorded uses.
+    check(row.uses >= 1 && row.coveredUses + row.pendingUses + row.suppressedUses === row.uses
+      && row.spreadUses <= row.uses && row.pendingSpreadUses <= row.pendingUses
+      && row.severity === (row.spreadUses > 0 ? 'CRITICAL' : 'HIGH') && row.firstUseAt <= row.lastUseAt
+      && own.length === row.updates && (row.updates === 0) === (row.lastUpdateAt === null)
+      && (row.pendingUses > 0) === (row.pendingSince !== null)
+      && (row.suppressedUses === 0 || row.updates === ticketLimits.maxUpdatesPerIncident && row.pendingUses === 0), 'PITCH_STATE_INVALID');
+    let covered = 0;
+    for (const [index, update] of own.entries()) {
+      check(update.ordinal === index + 1 && update.fromUse === covered + 1 && update.toUse === covered + update.useCount, 'PITCH_STATE_INVALID');
+      covered = update.toUse;
+    }
+    check(covered === row.coveredUses, 'PITCH_STATE_INVALID'); total += row.uses;
+  }
+  check(total === ledger.useCount, 'PITCH_STATE_INVALID');
+  for (const row of ledger.updates) {
+    envelope(row, UPDATE_FIELDS);
+    check(ledger.incidents.some(i => i.incidentId === row.incidentId) && WRONG_TICKET_UPDATE_KINDS.includes(row.kind)
+      && row.kind === (row.ordinal === 1 ? 'FIRST_USE' : 'DIGEST') && WRONG_TICKET_SEVERITIES.includes(row.severity)
+      && row.idempotencyKey === `pitch-ticket-update-v1:${row.incidentId}:${row.ordinal}`
+      && row.updateId === `ticket-update-${hash([row.incidentId, row.ordinal]).slice(0, 32)}`
+      && typeof row.firstSpread === 'boolean', 'PITCH_STATE_INVALID');
+    integer(row.ordinal, 1, ticketLimits.maxUpdatesPerIncident, 'PITCH_STATE_INVALID'); atValue(row.createdAt);
+    for (const key of ['fromUse', 'toUse', 'useCount', 'distinctContexts']) integer(row[key], 1, Number.MAX_SAFE_INTEGER, 'PITCH_STATE_INVALID');
+    atValue(row.spreadUses); atValue(row.distinctSources); check(row.spreadUses <= row.useCount, 'PITCH_STATE_INVALID');
+    validateDelivery(row, limits);
+  }
+}
+
+function trackIdentity(ticketId) {
+  return `wt-${hash(['dungeonq.wrong-ticket-track/v1', ticketId]).slice(0, 32)}`;
+}
 
 function limitsFor(value = {}) {
   envelope(value, [], Object.keys(PITCH_CONTROL_DEFAULT_LIMITS));
@@ -55,8 +164,8 @@ function validateCounter(value) {
   for (const number of [...Object.values(value.outcomes), ...Object.values(value.denials)]) atValue(number);
 }
 
-function validateState(state, limits) {
-  const keys = ['version', 'lastAt', 'global', 'contexts', 'leases', 'samples', 'incidents', 'outbox'];
+function validateState(state, limits, ticketLimits = null) {
+  const keys = ['version', 'lastAt', 'global', 'contexts', 'leases', 'samples', 'incidents', 'outbox', ...(ticketLimits ? ['ticketLedger'] : [])];
   check(state && typeof state === 'object' && !Array.isArray(state)
     && Object.keys(state).length === keys.length && keys.every(key => Object.hasOwn(state, key)), 'PITCH_STATE_INVALID');
   check(state.version === PITCH_CONTROL_VERSION, 'PITCH_SCHEMA_UNSUPPORTED'); atValue(state.lastAt);
@@ -104,20 +213,12 @@ function validateState(state, limits) {
   }
   check(state.outbox.length === state.incidents.length, 'PITCH_STATE_INVALID');
   for (const row of state.outbox) {
-    envelope(row, ['incidentId', 'idempotencyKey', 'status', 'attempts', 'nextAttemptAt', 'leaseId', 'leaseExpiresAt',
-      'receiptId', 'acceptedAt', 'lastError', 'uncertainAt', 'reconciliationDigest']);
+    envelope(row, ['incidentId', 'idempotencyKey', ...DELIVERY_FIELDS]);
     identifier(row.incidentId);
-    check(state.incidents.some(i => i.incidentId === row.incidentId) && row.idempotencyKey === `pitch-alert-v1:${row.incidentId}`
-      && DELIVERY_STATES.includes(row.status), 'PITCH_STATE_INVALID');
-    integer(row.attempts, 0, limits.deliveryAttempts); atValue(row.nextAttemptAt);
-    nullableId(row.leaseId); nullableAt(row.leaseExpiresAt); nullableId(row.receiptId); nullableAt(row.acceptedAt); nullableAt(row.uncertainAt);
-    check(row.lastError === null || ['TRANSPORT_UNKNOWN', 'RELAY_UNKNOWN', 'RECEIPT_INVALID', 'NOT_ACCEPTED', 'LEASE_EXPIRED', 'TIMEOUT'].includes(row.lastError), 'PITCH_STATE_INVALID');
-    check(row.reconciliationDigest === null || /^[a-f0-9]{64}$/.test(row.reconciliationDigest), 'PITCH_STATE_INVALID');
-    check(row.status === 'IN_FLIGHT' ? row.leaseId !== null && row.leaseExpiresAt !== null
-      : row.leaseId === null && row.leaseExpiresAt === null, 'PITCH_STATE_INVALID');
-    check(row.status === 'ACCEPTED' ? row.receiptId !== null && row.acceptedAt !== null
-      : row.receiptId === null && row.acceptedAt === null, 'PITCH_STATE_INVALID');
+    check(state.incidents.some(i => i.incidentId === row.incidentId) && row.idempotencyKey === `pitch-alert-v1:${row.incidentId}`, 'PITCH_STATE_INVALID');
+    validateDelivery(row, limits);
   }
+  if (ticketLimits) validateLedger(state.ticketLedger, state, limits, ticketLimits);
   return state;
 }
 
@@ -143,27 +244,36 @@ function category(code) {
  * No participant token, ticket, body or arbitrary message is accepted or stored.
  * One local SQLite file coordinates handles; this is not a distributed limiter.
  */
-export function openPitchControl({ path, clock = Date.now, limits: supplied } = {}) {
+export function openPitchControl({ path, clock = Date.now, limits: supplied, ticketTracking } = {}) {
   check(typeof path === 'string' && isAbsolute(path), 'STORAGE_PATH_INVALID');
   check(typeof clock === 'function', 'CLOCK_INVALID');
   const limits = limitsFor(supplied);
+  // Opt-in only. Disabled ledgers keep the exact v1 schema, config bytes and state shape.
+  const ticketLimits = ticketLimitsFor(ticketTracking);
   const rawNow = () => integer(clock(), 0, Number.MAX_SAFE_INTEGER - 7200000, 'CLOCK_INVALID');
   const initialAt = rawNow();
   mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
   const parent = lstatSync(dirname(path));
   check(parent.isDirectory() && !parent.isSymbolicLink() && (parent.mode & 0o022) === 0, 'STORAGE_DIRECTORY_INVALID');
-  const db = openAuxiliary(path, SCHEMA, 'pitch_meta'); let closed = false;
-  const config = JSON.stringify({ version: PITCH_CONTROL_VERSION, limits });
+  const db = openAuxiliary(path, ticketLimits ? `${SCHEMA};${TICKET_SCHEMA}` : SCHEMA, 'pitch_meta'); let closed = false;
+  const config = JSON.stringify({ version: PITCH_CONTROL_VERSION, limits,
+    ...(ticketLimits ? { ticketTracking: { version: WRONG_TICKET_LEDGER_VERSION, limits: ticketLimits } } : {}) });
   const live = () => check(!closed, 'PITCH_CONTROL_CLOSED');
   const read = () => {
     const row = db.prepare('SELECT * FROM pitch_meta WHERE id=1').get();
     check(row && row.config === config, 'PITCH_CONFIG_CHANGED');
     check(Buffer.byteLength(row.state) <= MAX_STATE_BYTES, 'PITCH_STATE_INVALID');
     const state = JSON.parse(row.state); check(hash(state) === row.digest, 'PITCH_STATE_CORRUPT');
-    return validateState(state, limits);
+    validateState(state, limits, ticketLimits);
+    if (ticketLimits) {
+      // The ledger counter and the append-only use rows must agree before any new decision.
+      const rows = db.prepare('SELECT count(*) AS n,coalesce(max(seq),0) AS high FROM pitch_ticket_uses').get();
+      check(rows.n === state.ticketLedger.useCount && rows.high === rows.n, 'PITCH_TICKET_LEDGER_CORRUPT');
+    }
+    return state;
   };
   const write = state => {
-    validateState(state, limits); const json = JSON.stringify(state);
+    validateState(state, limits, ticketLimits); const json = JSON.stringify(state);
     check(Buffer.byteLength(json) <= MAX_STATE_BYTES, 'PITCH_STATE_LIMIT');
     db.prepare('UPDATE pitch_meta SET state=?,digest=? WHERE id=1').run(json, hash(state));
   };
@@ -178,7 +288,9 @@ export function openPitchControl({ path, clock = Date.now, limits: supplied } = 
     db.exec('PRAGMA wal_autocheckpoint=64; PRAGMA journal_size_limit=1048576;');
     if (!db.prepare('SELECT id FROM pitch_meta WHERE id=1').get()) {
       const at = initialAt; const state = { version: PITCH_CONTROL_VERSION, lastAt: at, global: counter(at),
-        contexts: [], leases: [], samples: [], incidents: [], outbox: [] };
+        contexts: [], leases: [], samples: [], incidents: [], outbox: [],
+        ...(ticketLimits ? { ticketLedger: { version: WRONG_TICKET_LEDGER_VERSION, useCount: 0, refusedAtCapacity: 0,
+          tickets: [], incidents: [], updates: [] } } : {}) };
       db.prepare('INSERT INTO pitch_meta VALUES(1,?,?,?)').run(config, JSON.stringify(state), hash(state));
     }
     read();
@@ -239,6 +351,11 @@ export function openPitchControl({ path, clock = Date.now, limits: supplied } = 
       row.lastError = row.leaseId?.startsWith('relay-') ? 'RELAY_UNKNOWN' : 'LEASE_EXPIRED';
       row.leaseId = null; row.leaseExpiresAt = null;
     }
+    // M3 ticket-update claims follow the same rule: an expired claim is UNKNOWN and never re-sent blindly.
+    if (ticketLimits) for (const row of state.ticketLedger.updates) if (row.status === 'IN_FLIGHT' && row.leaseExpiresAt <= at) {
+      row.status = 'UNKNOWN'; row.uncertainAt = at; row.lastError = 'LEASE_EXPIRED';
+      row.leaseId = null; row.leaseExpiresAt = null;
+    }
   };
   const clearDeliveryLease = row => { row.leaseId = null; row.leaseExpiresAt = null; };
   const acceptDelivery = (row, receiptId, at) => {
@@ -252,6 +369,41 @@ export function openPitchControl({ path, clock = Date.now, limits: supplied } = 
     return { incident, row: state.outbox.find(item => item.incidentId === input.incidentId) };
   };
   const relayResult = result => { if (result.error) throw coded(result.error); return result; };
+  const ticketsOn = () => check(ticketLimits !== null, 'PITCH_TICKET_TRACKING_DISABLED');
+  const readUse = row => {
+    const record = JSON.parse(row.record);
+    check(hash(record) === row.digest && record.seq === row.seq && record.useId === row.use_id, 'PITCH_TICKET_LEDGER_CORRUPT');
+    envelope(record, TICKET_USE_FIELDS); check(WRONG_TICKET_OUTCOMES.includes(record.outcome), 'PITCH_TICKET_LEDGER_CORRUPT');
+    return record;
+  };
+  const recentUses = count => db.prepare('SELECT * FROM pitch_ticket_uses ORDER BY seq DESC LIMIT ?').all(count).reverse().map(readUse);
+  const sighting = (ticket, list, value) => {
+    if (list.includes(value)) return;
+    if (list.length < ticketLimits.maxSightings) list.push(value); else ticket.otherSightings = increase(ticket.otherSightings);
+  };
+  // One update groups every not-yet-covered use of the incident; it never drops or merges records.
+  const enqueueTicketUpdate = (ledger, row, at) => {
+    const ordinal = row.updates + 1;
+    const tickets = ledger.tickets.filter(ticket => ticket.incidentId === row.incidentId);
+    const contexts = new Set(tickets.flatMap(ticket => ticket.contexts)); const sources = new Set(tickets.flatMap(ticket => ticket.sources));
+    ledger.updates.push({ updateId: `ticket-update-${hash([row.incidentId, ordinal]).slice(0, 32)}`, incidentId: row.incidentId, ordinal,
+      kind: ordinal === 1 ? 'FIRST_USE' : 'DIGEST', idempotencyKey: `pitch-ticket-update-v1:${row.incidentId}:${ordinal}`,
+      severity: row.severity, createdAt: at, fromUse: row.coveredUses + 1, toUse: row.coveredUses + row.pendingUses,
+      useCount: row.pendingUses, spreadUses: row.pendingSpreadUses, firstSpread: row.pendingSpreadUses > 0 && row.spreadUses === row.pendingSpreadUses,
+      distinctContexts: Math.max(1, contexts.size), distinctSources: sources.size,
+      status: 'PENDING', attempts: 0, nextAttemptAt: at, leaseId: null, leaseExpiresAt: null, receiptId: null, acceptedAt: null,
+      lastError: null, uncertainAt: null, reconciliationDigest: null });
+    row.updates = ordinal; row.coveredUses += row.pendingUses; row.lastUpdateAt = at;
+    row.pendingUses = 0; row.pendingSpreadUses = 0; row.pendingSince = null;
+  };
+  // Lazy and bounded: no timer exists. Status reads, new uses and the M3 read path release due digests.
+  const materializeTicketUpdates = (state, at) => {
+    if (!ticketLimits) return;
+    for (const row of state.ticketLedger.incidents) if (row.pendingUses > 0 && row.updates < ticketLimits.maxUpdatesPerIncident
+      && at - row.lastUpdateAt >= ticketLimits.digestIntervalMs) enqueueTicketUpdate(state.ticketLedger, row, at);
+  };
+  const ledgerView = state => ({ ...state.ticketLedger, limits: ticketLimits, recentUses: recentUses(32),
+    pendingUpdates: state.ticketLedger.updates.filter(row => row.status === 'PENDING').length });
 
   return {
     begin(input) {
@@ -309,10 +461,180 @@ export function openPitchControl({ path, clock = Date.now, limits: supplied } = 
     },
     snapshot() {
       return transact((state, at) => {
-        expireDeliveries(state, at);
+        expireDeliveries(state, at); materializeTicketUpdates(state, at);
         return copy({ schemaVersion: PITCH_CONTROL_VERSION, limits, global: state.global, contexts: state.contexts,
           activeLeases: state.leases, samples: state.samples, incidents: state.incidents, outbox: state.outbox,
-          clockAt: state.lastAt, scope: 'SINGLE_HOST_REFERENCE' });
+          clockAt: state.lastAt, scope: 'SINGLE_HOST_REFERENCE', ...(ticketLimits ? { ticketLedger: ledgerView(state) } : {}) });
+      });
+    },
+    ticketTracking: ticketLimits !== null,
+    // Called only after the canonical store issued a ticket and before its handle leaves the gateway.
+    trackTicket(input) {
+      ticketsOn();
+      envelope(input, ['ticketId', 'handleDigest', 'contextId', 'worldId', 'epoch', 'entry', 'issuedAt', 'expiresAt'], ['source']);
+      check(HEX64.test(input.ticketId) && HEX64.test(input.handleDigest) && WRONG_TICKET_ENTRY_TYPES.includes(input.entry), 'PITCH_TICKET_INVALID');
+      identifier(input.contextId); identifier(input.worldId); integer(input.epoch, 1, Number.MAX_SAFE_INTEGER);
+      atValue(input.issuedAt); atValue(input.expiresAt); check(input.expiresAt > input.issuedAt, 'PITCH_TICKET_INVALID');
+      const source = hintLabel(input.source ?? null);
+      const result = transact((state, at) => {
+        const ledger = state.ticketLedger; materializeTicketUpdates(state, at);
+        const trackId = trackIdentity(input.ticketId); const existing = ledger.tickets.find(row => row.trackId === trackId);
+        if (existing) {
+          check(existing.handleDigest === input.handleDigest && existing.contextId === input.contextId && existing.worldId === input.worldId
+            && existing.epoch === input.epoch && existing.issuedAt === input.issuedAt && existing.expiresAt === input.expiresAt, 'PITCH_TICKET_CONFLICT');
+          return copy({ ticket: existing, replayed: true });
+        }
+        check(!ledger.tickets.some(row => row.handleDigest === input.handleDigest), 'PITCH_TICKET_CONFLICT');
+        const incidentId = incidentIdentity(input);
+        check(state.incidents.some(row => row.incidentId === incidentId), 'PITCH_INCIDENT_UNKNOWN');
+        if (ledger.tickets.length >= ticketLimits.maxTrackedTickets) return { error: 'PITCH_TICKET_CAPACITY' };
+        const ticket = { trackId, ticketId: input.ticketId, handleDigest: input.handleDigest, incidentId, contextId: input.contextId,
+          worldId: input.worldId, epoch: input.epoch, entry: input.entry, issuedAt: input.issuedAt, expiresAt: input.expiresAt,
+          issuedSource: source, uses: 0, accepted: 0, contexts: [], sources: [], otherSightings: 0, spread: [] };
+        ledger.tickets.push(ticket); return copy({ ticket, replayed: false });
+      });
+      return relayResult(result);
+    },
+    // Recorded before any canonical or origin effect. An unrecorded presentation must be refused by the caller.
+    recordTicketUse(input) {
+      ticketsOn();
+      envelope(input, ['handleDigest', 'contextId', 'entry', 'position'], ['client', 'source']);
+      check(HEX64.test(input.handleDigest) && WRONG_TICKET_ENTRY_TYPES.includes(input.entry)
+        && WRONG_TICKET_POSITIONS.includes(input.position), 'PITCH_TICKET_INVALID');
+      nullableId(input.contextId);
+      const client = hintLabel(input.client ?? null); const source = hintLabel(input.source ?? null);
+      const result = transact((state, at) => {
+        const ledger = state.ticketLedger; materializeTicketUpdates(state, at);
+        const ticket = ledger.tickets.find(row => row.handleDigest === input.handleDigest);
+        if (!ticket) return { tracked: false };
+        if (ledger.useCount >= ticketLimits.maxUses) {
+          ledger.refusedAtCapacity = increase(ledger.refusedAtCapacity); return { error: 'PITCH_TICKET_LEDGER_LIMIT' };
+        }
+        let row = ledger.incidents.find(item => item.incidentId === ticket.incidentId);
+        if (!row) {
+          row = { incidentId: ticket.incidentId, severity: 'HIGH', uses: 0, spreadUses: 0, firstUseAt: at, lastUseAt: at, updates: 0,
+            coveredUses: 0, lastUpdateAt: null, pendingUses: 0, pendingSpreadUses: 0, pendingSince: null, suppressedUses: 0 };
+          ledger.incidents.push(row);
+        }
+        const reference = ticket.issuedSource ?? ticket.sources[0] ?? null;
+        const spread = ordered([...(input.contextId !== ticket.contextId ? ['CONTEXT'] : []),
+          ...(source !== null && reference !== null && source !== reference ? ['SOURCE'] : [])], WRONG_TICKET_SPREAD_REASONS);
+        sighting(ticket, ticket.contexts, input.contextId); if (source !== null) sighting(ticket, ticket.sources, source);
+        ticket.uses = increase(ticket.uses); ticket.spread = ordered([...ticket.spread, ...spread], WRONG_TICKET_SPREAD_REASONS);
+        // D9 supplement (2026-10-20): the first observed spread of an incident is released immediately.
+        const firstSpread = spread.length > 0 && row.spreadUses === 0;
+        row.uses += 1; row.lastUseAt = at; if (spread.length > 0) row.spreadUses += 1;
+        row.severity = row.spreadUses > 0 ? 'CRITICAL' : 'HIGH';
+        const seq = ledger.useCount + 1; ledger.useCount = seq;
+        if (row.updates >= ticketLimits.maxUpdatesPerIncident) row.suppressedUses += 1;
+        else {
+          row.pendingUses += 1; if (spread.length > 0) row.pendingSpreadUses += 1; row.pendingSince ??= at;
+          // D9: the first use and the first spread are immediate; later uses wait for the per-incident digest window.
+          // Both still count toward maxUpdatesPerIncident.
+          if (row.updates === 0 || firstSpread || at - row.lastUpdateAt >= ticketLimits.digestIntervalMs) enqueueTicketUpdate(ledger, row, at);
+        }
+        const record = { useId: `ticket-use-${seq}`, seq, trackId: ticket.trackId, incidentId: ticket.incidentId, incidentUse: row.uses, at,
+          contextId: input.contextId, entry: input.entry, position: input.position, client, source, spread,
+          severity: spread.length > 0 ? 'CRITICAL' : 'HIGH', outcome: 'PRESENTED', code: null, replayed: null, settledAt: null };
+        db.prepare('INSERT INTO pitch_ticket_uses VALUES(?,?,?,?)').run(seq, record.useId, JSON.stringify(record), hash(record));
+        return copy({ tracked: true, useId: record.useId, seq, trackId: ticket.trackId, incidentId: ticket.incidentId, spread,
+          severity: row.severity, issuing: { contextId: ticket.contextId, worldId: ticket.worldId, epoch: ticket.epoch } });
+      });
+      return relayResult(result);
+    },
+    settleTicketUse(input) {
+      ticketsOn();
+      envelope(input, ['useId', 'outcome', 'code'], ['replayed']);
+      check(typeof input.useId === 'string' && /^ticket-use-[1-9][0-9]{0,15}$/.test(input.useId)
+        && ['ACCEPTED', 'REFUSED', 'UNKNOWN'].includes(input.outcome) && typeof input.code === 'string'
+        && /^[A-Z][A-Z0-9_]{0,127}$/.test(input.code) && (input.replayed === undefined || typeof input.replayed === 'boolean'), 'PITCH_TICKET_INVALID');
+      return transact((state, at) => {
+        const row = db.prepare('SELECT * FROM pitch_ticket_uses WHERE use_id=?').get(input.useId);
+        check(row, 'PITCH_TICKET_USE_UNKNOWN'); const record = readUse(row);
+        if (record.outcome !== 'PRESENTED') {
+          check(record.outcome === input.outcome && record.code === input.code, 'PITCH_TICKET_SETTLE_CONFLICT'); return copy(record);
+        }
+        Object.assign(record, { outcome: input.outcome, code: input.code, replayed: input.replayed ?? null, settledAt: at });
+        if (input.outcome === 'ACCEPTED') {
+          const ticket = state.ticketLedger.tickets.find(item => item.trackId === record.trackId);
+          ticket.accepted = increase(ticket.accepted);
+        }
+        db.prepare('UPDATE pitch_ticket_uses SET record=?,digest=? WHERE use_id=?').run(JSON.stringify(record), hash(record), input.useId);
+        return copy(record);
+      });
+    },
+    ticketUses(input = {}) {
+      ticketsOn(); envelope(input, [], ['afterSeq', 'limit']);
+      const afterSeq = input.afterSeq ?? 0; const count = input.limit ?? 200;
+      integer(afterSeq, 0, Number.MAX_SAFE_INTEGER, 'PITCH_TICKET_INVALID'); integer(count, 1, 500, 'PITCH_TICKET_INVALID');
+      return transact(state => {
+        const uses = db.prepare('SELECT * FROM pitch_ticket_uses WHERE seq>? ORDER BY seq LIMIT ?').all(afterSeq, count).map(readUse);
+        const nextAfterSeq = uses.at(-1)?.seq ?? afterSeq;
+        return copy({ useCount: state.ticketLedger.useCount, uses, nextAfterSeq, complete: nextAfterSeq >= state.ticketLedger.useCount });
+      });
+    },
+    // M3 delivery interface: due digests are materialized here; rows stay PENDING until M3 claims them.
+    // The existing deliver()/claimRelay() never read these rows.
+    ticketUpdates() {
+      ticketsOn();
+      return transact((state, at) => { expireDeliveries(state, at); materializeTicketUpdates(state, at); return copy({ updates: state.ticketLedger.updates,
+        incidents: state.ticketLedger.incidents, limits: ticketLimits }); });
+    },
+    // M3 claim: one send attempt for the oldest due PENDING ticket update. Losing the reply leaves the row
+    // IN_FLIGHT until its lease expires (then UNKNOWN); it is never reclaimed or re-sent blindly.
+    claimTicketUpdate(input = {}) {
+      ticketsOn(); envelope(input, [], ['leaseMs']);
+      const leaseMs = input.leaseMs ?? limits.deliveryLeaseMs; integer(leaseMs, 1000, 900000, 'PITCH_RELAY_LEASE_INVALID');
+      return transact((state, at) => {
+        expireDeliveries(state, at); materializeTicketUpdates(state, at);
+        const row = state.ticketLedger.updates.find(item => item.status === 'PENDING'
+          && item.attempts < limits.deliveryAttempts && item.nextAttemptAt <= at);
+        if (!row) return null;
+        const claimToken = randomUUID(); row.attempts++; row.status = 'IN_FLIGHT';
+        row.leaseId = `update-${hash(claimToken)}`; row.leaseExpiresAt = at + leaseMs; row.reconciliationDigest = null;
+        const incident = state.incidents.find(item => item.incidentId === row.incidentId);
+        const summary = state.ticketLedger.incidents.find(item => item.incidentId === row.incidentId);
+        return copy({ claimToken, update: row, attempt: row.attempts, leaseExpiresAt: row.leaseExpiresAt,
+          incident: { incidentId: incident.incidentId, contextId: incident.contextId, worldId: incident.worldId,
+            epoch: incident.epoch, phase: incident.phase, enteredAt: incident.enteredAt },
+          ledgerIncident: { severity: summary.severity, uses: summary.uses, spreadUses: summary.spreadUses,
+            updates: summary.updates, suppressedUses: summary.suppressedUses, firstUseAt: summary.firstUseAt, lastUseAt: summary.lastUseAt },
+          limits: { maxUpdatesPerIncident: ticketLimits.maxUpdatesPerIncident, digestIntervalMs: ticketLimits.digestIntervalMs } });
+      });
+    },
+    completeTicketUpdate(input) {
+      ticketsOn();
+      envelope(input, ['updateId', 'claimToken', 'outcome'], ['receiptId', 'retryable']);
+      identifier(input.updateId); identifier(input.claimToken);
+      check(['ACCEPTED', 'REJECTED', 'UNKNOWN'].includes(input.outcome), 'PITCH_RELAY_OUTCOME_INVALID');
+      if (input.outcome === 'ACCEPTED') identifier(input.receiptId);
+      else check(!Object.hasOwn(input, 'receiptId'), 'PITCH_RELAY_OUTCOME_INVALID');
+      check(input.outcome === 'REJECTED' ? typeof input.retryable === 'boolean' : !Object.hasOwn(input, 'retryable'), 'PITCH_RELAY_OUTCOME_INVALID');
+      return transact((state, at) => {
+        expireDeliveries(state, at);
+        const row = state.ticketLedger.updates.find(item => item.updateId === input.updateId);
+        check(row, 'PITCH_TICKET_UPDATE_UNKNOWN');
+        // A stale completion cannot overwrite an expired or replaced claim.
+        if (row.status !== 'IN_FLIGHT' || row.leaseId !== `update-${hash(input.claimToken)}`) return copy({ update: row, stale: true });
+        clearDeliveryLease(row);
+        if (input.outcome === 'ACCEPTED') acceptDelivery(row, input.receiptId, at);
+        else if (input.outcome === 'REJECTED') {
+          row.status = input.retryable && row.attempts < limits.deliveryAttempts ? 'PENDING' : 'EXHAUSTED';
+          row.lastError = 'NOT_ACCEPTED'; row.uncertainAt = null;
+        } else { row.status = 'UNKNOWN'; row.lastError = 'TRANSPORT_UNKNOWN'; row.uncertainAt = at; }
+        row.nextAttemptAt = at + Math.min(3600000, limits.retryBaseMs * (2 ** (row.attempts - 1)));
+        return copy({ update: row, stale: false });
+      });
+    },
+    // Call after the gateway owner lock is acquired: a previous process cannot still complete its claim.
+    recoverTicketUpdateClaims() {
+      if (!ticketLimits) return { recovered: 0, outcome: 'UNKNOWN' };
+      return transact((state, at) => {
+        let recovered = 0;
+        for (const row of state.ticketLedger.updates) if (row.status === 'IN_FLIGHT') {
+          row.status = 'UNKNOWN'; row.uncertainAt = at; row.lastError = 'LEASE_EXPIRED'; clearDeliveryLease(row); recovered++;
+        }
+        return { recovered, outcome: 'UNKNOWN' };
       });
     },
     reserveEntry(input) {

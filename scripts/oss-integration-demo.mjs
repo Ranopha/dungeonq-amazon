@@ -102,7 +102,12 @@ export async function runIntegrationDemo({ output, onScene = () => {} } = {}) {
     const authorityChecks = { secretRead: secretCheck.result, operatorDenied: denied.every(code => code === 'UNAUTHORIZED') };
     show('authority-boundary', { ...authorityChecks, nodePermission: true, passedCredentials: ['actorToken'], passedEndpoints: ['MCP endpoint'], inheritedEnvironment: ['PATH', 'NODE_NO_WARNINGS'] });
     const control = await ordinary.operate({ requestId: 'oss-ordinary-control', operation: 'read', args: { key: 'welcome' } });
-    requireCondition(control.record?.quantity === 7 && control._route?.destination === 'ORIGIN', 'ORDINARY_CONTROL_FAILED');
+    // The participant surface never carries internal routing; confirm the ordinary control reached the real origin
+    // through the authoritative operator evidence census instead of a participant-visible _route field.
+    const controlEvidence = await operator.evidence();
+    requireCondition(control.record?.quantity === 7 && control._route === undefined
+      && controlEvidence.events.some(event => event.requestId === 'oss-ordinary-control' && event.contextId === 'ordinary'
+        && event.destination === 'ORIGIN' && event.outcome === 'SERVED'), 'ORDINARY_CONTROL_FAILED');
     let policyId;
     const consumed = await launchConsumer({ cwd: actorCwd, configuration: { endpoint: runtime.mcpEndpoint, actorToken: runtime.credentials.actor, requestPrefix: 'oss-shipping', waitForOperator: true },
       onScene: scene => { scenes.push(scene); onScene(scene); },

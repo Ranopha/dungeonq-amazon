@@ -1,13 +1,13 @@
 {
   "schemaVersion": "dungeonq.host-fixture-source/v2",
-  "hostVersion": "0.2.0",
-  "runtimeVersion": "0.15.0",
-  "runtimeCommit": "345ef3efe46cdd75abff2dde673f57a956cff6db",
+  "hostVersion": "0.3.0",
+  "runtimeVersion": "0.16.0",
+  "runtimeCommit": "ae3be61d3f25e9cbf0fd1d1b0eef260cccb5c2e4",
   "scope": "selected original Apache-2.0 host integration; no private OS, original target, credentials, state, raw model events or private git history",
   "files": [
     {
       "path": "plugins/dungeonq-host-integration/src/contracts.ts",
-      "sha256": "7c96f449f4dfb456ddd9f91588a1c32d461c2702428f3a373b5c03d3fbcca042"
+      "sha256": "ed4757dc00c7567b168abec2cb210e549532006dfa0838a3bd3561fbaa137903"
     },
     {
       "path": "plugins/dungeonq-host-integration/src/file-origin.test.ts",
@@ -15,7 +15,7 @@
     },
     {
       "path": "plugins/dungeonq-host-integration/src/file-origin.ts",
-      "sha256": "fbf9297fd3dc0fe02da64e198425c7ac66c9c98fc05a6403b1ee776aa260d8db"
+      "sha256": "431e8be663e49f35827ef314c4180823435fd7378a396aaf886c62f60c3a44dc"
     },
     {
       "path": "plugins/dungeonq-host-integration/src/index.ts",

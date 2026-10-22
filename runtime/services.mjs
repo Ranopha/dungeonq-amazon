@@ -1,13 +1,18 @@
+import { openSourceAuthority, SOURCE_PROTECTION, SOURCE_SCHEMA } from './source-authority.mjs';
+import { STUDY_FIXTURE, studyRecords } from './study-fixture.mjs';
 import { openAuxiliary } from './auxiliary.mjs';
 import { bearer, body, digest, equalToken, exact, insist, request, send, serve } from './transport.mjs';
 
-export async function startOrigin({ path, normalToken, witnessToken, contextId = 'ordinary', host, port }) {
-  const db = openAuxiliary(path, 'CREATE TABLE IF NOT EXISTS origin_meta (id INTEGER PRIMARY KEY, config TEXT NOT NULL, value TEXT NOT NULL); CREATE TABLE IF NOT EXISTS origin_admissions (seq INTEGER PRIMARY KEY, context TEXT NOT NULL, accepted INTEGER NOT NULL, request_id TEXT NOT NULL);', 'origin_meta');
-  const config = digest({ normalToken, witnessToken, contextId });
+export async function startOrigin({ path, normalToken, witnessToken, contextId = 'ordinary', host, port, studyFixture, sourceProtection, rotationControlToken }) {
+  insist(studyFixture === undefined || studyFixture === STUDY_FIXTURE, 'STUDY_FIXTURE_INVALID');
+  insist(sourceProtection === undefined || (sourceProtection === SOURCE_PROTECTION && studyFixture === STUDY_FIXTURE && typeof rotationControlToken === 'string' && rotationControlToken.length >= 32), 'SOURCE_PROTECTION_INVALID');
+  const db = openAuxiliary(path, 'CREATE TABLE IF NOT EXISTS origin_meta (id INTEGER PRIMARY KEY, config TEXT NOT NULL, value TEXT NOT NULL); CREATE TABLE IF NOT EXISTS origin_admissions (seq INTEGER PRIMARY KEY, context TEXT NOT NULL, accepted INTEGER NOT NULL, request_id TEXT NOT NULL);' + (sourceProtection ? SOURCE_SCHEMA : ''), 'origin_meta');
+  const config = digest({ normalToken, witnessToken, contextId, ...(studyFixture ? { studyFixture } : {}), ...(sourceProtection ? { sourceProtection, rotationControlToken } : {}) });
   const saved = db.prepare('SELECT * FROM origin_meta WHERE id=1').get();
-  if (!saved) db.prepare('INSERT INTO origin_meta VALUES(1,?,?)').run(config, JSON.stringify({ key: 'welcome', quantity: 7, classification: 'ARTIFICIAL_PROTECTED_REFERENCE' }));
+  if (!saved) db.prepare('INSERT INTO origin_meta VALUES(1,?,?)').run(config, JSON.stringify(studyFixture ? studyRecords() : { key: 'welcome', quantity: 7, classification: 'ARTIFICIAL_PROTECTED_REFERENCE' }));
   else insist(saved.config === config, 'ORIGIN_CONFIG_CHANGED');
   const value = () => JSON.parse(db.prepare('SELECT value FROM origin_meta WHERE id=1').get().value);
+  const authority = sourceProtection ? openSourceAuthority(db, { normalToken, initialize: !saved }) : null;
   const report = () => {
     const rows = db.prepare('SELECT * FROM origin_admissions ORDER BY seq').all();
     insist(rows.every((r,index)=>r.seq===index+1), 'ORIGIN_AUDIT_INCOMPLETE');
@@ -20,16 +25,32 @@ export async function startOrigin({ path, normalToken, witnessToken, contextId =
     if (req.url === '/witness' && req.method === 'GET') {
       insist(equalToken(bearer(req), witnessToken), 'UNAUTHORIZED'); return send(res, 200, report());
     }
+    if (authority && ['/source/status', '/source/witness', '/source/rotate'].includes(req.url)) {
+      insist(equalToken(bearer(req), rotationControlToken), 'UNAUTHORIZED');
+      if (req.url === '/source/rotate') { insist(req.method === 'POST', 'METHOD_DENIED'); return send(res, 200, authority.rotate(await body(req))); }
+      insist(req.method === 'GET', 'METHOD_DENIED');
+      return send(res, 200, req.url === '/source/status' ? authority.status() : authority.report());
+    }
+    if (authority && req.url === '/source/read' && req.method === 'POST') {
+      const input = await body(req); exact(input, ['tenant', 'key', 'channel', 'requestId']);
+      const admission = authority.authorize({ token: bearer(req), ...input });
+      insist(admission.allowed, 'TARGET_AUTHORITY_DENIED');
+      return send(res, 200, { asset: input.key, contents: JSON.stringify(value().find(row => row.key === input.key).value), epoch: admission.epoch, requestId: input.requestId });
+    }
     insist(req.url === '/business' && req.method === 'POST', 'NOT_FOUND');
     const input = await body(req); exact(input, ['contextId', 'requestId', 'operation', 'args']);
     insist(typeof input.contextId === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(input.contextId), 'CONTEXT_INVALID');
     insist(typeof input.requestId === 'string' && /^[a-zA-Z0-9_-]{1,128}$/.test(input.requestId), 'REQUEST_ID_INVALID');
     insist(db.prepare('SELECT count(*) AS n FROM origin_admissions').get().n < 20000, 'ORIGIN_AUDIT_LIMIT');
-    const accepted = equalToken(bearer(req), normalToken) && input.contextId === contextId
-      && ['snapshot', 'read'].includes(input.operation) && (input.operation !== 'read' || input.args?.key === 'welcome');
+    let accepted = equalToken(bearer(req), normalToken) && input.contextId === contextId
+      && ['snapshot', 'read'].includes(input.operation) && (input.operation !== 'read' || (studyFixture ? value().some(row => row.key === input.args?.key) : input.args?.key === 'welcome'));
+    if (authority && input.operation === 'read' && input.args?.key === 'deployment-manifest') {
+      accepted = input.contextId === contextId && authority.authorize({ token: bearer(req), tenant: 'reference', key: input.args.key, channel: 'MAIN', requestId: input.requestId }).allowed;
+    }
     db.prepare('INSERT INTO origin_admissions(context,accepted,request_id) VALUES(?,?,?)').run(input.contextId, Number(accepted), input.requestId);
     insist(accepted, 'ORIGIN_AUTHORITY_DENIED');
-    return send(res, 200, { destination: 'ORIGIN', record: value(), requestId: input.requestId });
+    const result = studyFixture ? (input.operation === 'snapshot' ? { revision: 0, records: authority ? value().map(row => ({ key: row.key })) : value() } : { ...value().find(row => row.key === input.args.key), revision: 0, recordRevision: 0 }) : { record: value() };
+    return send(res, 200, { destination: 'ORIGIN', ...result, requestId: input.requestId });
   }, { host, port }); }
   catch (e) { db.close(); throw e; }
   return { ...transport, report, close: async () => { await transport.close(); db.close(); } };

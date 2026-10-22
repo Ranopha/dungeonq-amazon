@@ -1,6 +1,6 @@
 {
   "name": "dungeonq-initial-machine-host-fixture",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "license": "Apache-2.0",
@@ -11,11 +11,13 @@
     "prepare:fixture": "node --import tsx scripts/prepare-fixture.mjs",
     "test": "node --import tsx scripts/dungeonq-host/adversarial-integration-test.mjs",
     "start": "node --import tsx scripts/dungeonq-host/recording-session.mjs",
-    "test:source": "vitest run plugins/dungeonq-host-integration/src/file-origin.test.ts",
+    "test:source": "vitest run --exclude '**/vendor/**' plugins/dungeonq-host-integration/src/file-origin.test.ts",
     "test:response": "node --import tsx scripts/dungeonq-response-study/preflight.mjs",
     "prepare:runtime": "node --import tsx scripts/prepare-runtime.mjs",
     "demo:response": "node --import tsx scripts/judge-response-demo.mjs",
-    "console:response": "node --import tsx scripts/demo-console.mjs"
+    "console:response": "node --import tsx scripts/demo-console.mjs",
+    "test:handoff": "node --import tsx --test scripts/dungeonq-host/source-response.test.mjs scripts/dungeonq-host/source-close.test.mjs scripts/dungeonq-host/human-source-handoff.test.mjs scripts/dungeonq-host/incident-close.test.mjs scripts/dungeonq-host/incident-close-integration.test.mjs scripts/dungeonq-host/incident-wiring.test.mjs",
+    "demo:human-close:isolated": "node --import tsx scripts/dungeonq-host/human-source-close-isolated-test.mjs"
   },
   "dependencies": {
     "tsx": "4.23.1",

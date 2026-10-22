@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-export const dungeonqRuntimeCommit = "345ef3efe46cdd75abff2dde673f57a956cff6db";
-export const dungeonqRuntimeVersion = "0.15.0";
+export const dungeonqRuntimeCommit = "ae3be61d3f25e9cbf0fd1d1b0eef260cccb5c2e4";
+export const dungeonqRuntimeVersion = "0.16.0";
 export const dungeonqRuntimePackage = "dungeonq-amazon";
 const realityV9RuntimeCommit = "ad5bbfecc164bbfd102d5df2c8c1733028f2d60b";
 const realityV8RuntimeCommit = "8cdd8bcee748d449c07cd10e9d4b260bafd7888f";

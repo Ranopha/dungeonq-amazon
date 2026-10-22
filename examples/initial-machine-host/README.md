@@ -1,3 +1,21 @@
+# v0.3.0 host / public runtime v0.16
+
+This selected Apache-2.0 slice now includes the DungeonQ source-response policy, authenticated incident handoff, six-step closure, evidence sealer and tests. It does not export the private OS. `PROVENANCE.json` and `HANDOFF_PROVENANCE.json` identify source transformations; the runtime is fixed to public commit ae3be61d3f25e9cbf0fd1d1b0eef260cccb5c2e4.
+
+After the existing installation steps below:
+
+```sh
+npm run test:handoff
+```
+
+This test uses disposable accounts/artificial data and fake senders. It sends no real messages and uses no model API. The historical human evidence is documented in ../../docs/HUMAN_RESPONSE_RESULTS.md; a passing unit test is not a new human rehearsal.
+
+The advanced `demo:human-close:isolated -- /absolute/path/new-directory` uses a test account and fake sender but requires an already configured, host-mount-free `dungeonq-rehearsal` Colima profile. It never starts a paid model. The separate `scripts/dungeonq-host/human-source-drill.mjs` is an opt-in real-notification runner: enroll your own account, configure your own channels privately, obtain the operator's readiness and respect the bounded per-run notification budget. No account, recipient, key or live channel configuration ships here. Do not use production data.
+
+Prior installation/console instructions follow; existing worlds and historical evidence must not be overwritten.
+
+---
+
 # Initial Machine host fixture — v0.2.0
 
 This selected Apache-2.0 host integration runs a real MCP Streamable HTTP server against an independent artificial-file origin. It adds source authorization, alert receipt, connector rotation and restart checks to the retained October 8 integration. The private Initial Machine OS, its target, credentials and history are not distributed.
