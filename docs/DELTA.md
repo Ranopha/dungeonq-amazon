@@ -1,3 +1,11 @@
+# Final October 22 update — v0.16
+
+During the hackathon window we added source-wide scope/epoch enforcement, an alternate route with no target copy, bounded prepare/commit rotation, password/TOTP human ACK, explicit action/closure decisions, separate evidence sealing and post-incident candidate gating. The standalone public export includes the selected original DungeonQ modules and source hashes, without private OS history or credentials.
+
+Evidence added: nine October 21 real Sol observations (including target disclosure through the then-open A2), the subsequent scripted source repair, and all three human attempts, of which only run-03 completed closure. No additional paid AI run or unannounced human trial was added for publication. [Current evidence](HUMAN_RESPONSE_RESULTS.md).
+
+---
+
 # v0.15.0 contribution — October 20, 2026
 
 The existing DungeonQ project has been materially extended during this competition. New runtime work adds false-exit and memory-conflict cues, bounded task-relevant continuation, persistent hypothesis notes and an explicit stopping condition. New source work removes values from overviews, binds content reads to server-side principal/tenant/scope, and checks the current revocation epoch even on cached request paths.

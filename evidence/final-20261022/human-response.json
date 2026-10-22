@@ -1,0 +1,293 @@
+{
+  "schemaVersion": "dungeonq.public-human-evidence/v1",
+  "date": "2026-10-21",
+  "scope": "announced guided human decisions with scripted participant in owned isolated artificial-resource lab",
+  "sourceHostCommit": "ce44db1da25137f35dd746b71499c9c69b30761f",
+  "sourceRuntimeCommit": "361e7183de761d2e95f0c4e0794650dfe6ab6795",
+  "fullHumanClosures": 1,
+  "additionalSecondHumanTrial": "NOT_RUN",
+  "publicProjection": "explicit allowlist of outcome, metric, check name and raw evidence hash; no credentials, recipients, ticket values or target content",
+  "rawEvidence": "retained privately; hashes bind this projection to retained originals but are not independent attestation",
+  "trust": "SAME_HOST_SELF_ATTESTED",
+  "runs": [
+    {
+      "id": "run-01",
+      "outcome": "UNKNOWN",
+      "metrics": {
+        "providerAcceptedAt": 1792560925632,
+        "inboxArrival": {
+          "at": 1792560924000,
+          "observedAt": 1792560927383,
+          "status": "FOUND"
+        },
+        "verifiedHumanAckAt": null,
+        "decisionAt": null,
+        "rotationVerifiedAt": null,
+        "alertToVerifiedMs": null,
+        "providerToAckMs": null,
+        "ackToDecisionMs": null,
+        "decisionToVerifiedMs": null,
+        "humanResponseMs": null,
+        "providerToEffectiveHostBoundsMs": null,
+        "decisionToEffectiveHostBoundsMs": null,
+        "sourceEffectiveAt": null,
+        "unknown": [
+          "causal_extra_time",
+          "real_attacker_persistence",
+          "M7_close"
+        ],
+        "extraTimeFromDungeonQ": "NOT_PROVEN",
+        "newModelObservations": 0,
+        "paidCalls": 0
+      },
+      "checks": [
+        {
+          "name": "container-isolation",
+          "ok": true
+        },
+        {
+          "name": "exact-lab-containers",
+          "ok": true
+        },
+        {
+          "name": "authorized-positive-control",
+          "ok": true
+        },
+        {
+          "name": "overview-no-target-content",
+          "ok": true
+        },
+        {
+          "name": "wrong-ticket-issued",
+          "ok": true
+        },
+        {
+          "name": "unauthorized-source-denied",
+          "ok": true
+        },
+        {
+          "name": "alternate-CACHE-denied",
+          "ok": true
+        },
+        {
+          "name": "alternate-EXPORT-denied",
+          "ok": true
+        }
+      ],
+      "processRows": 362,
+      "originalProcessSha256": "ee273f1bce5de64b6f60f28c43dcc2043df89972fe03b8b77fb96742df585a6f",
+      "originalResultSha256": "3bfb5bb9c8ff0a12fb5f9667b0b47b12d36a0334808ff99667347da095984ff8",
+      "m9Overall": "PENDING",
+      "paidCalls": 0,
+      "newModelObservations": 0,
+      "extraTimeFromDungeonQ": "NOT_PROVEN"
+    },
+    {
+      "id": "run-02",
+      "outcome": "HUMAN_ROTATION_CONFIRMED",
+      "metrics": {
+        "providerAcceptedAt": 1792562073280,
+        "inboxArrival": {
+          "at": 1792562072000,
+          "observedAt": 1792562076752,
+          "status": "FOUND"
+        },
+        "verifiedHumanAckAt": 1792562188534,
+        "decisionAt": 1792562228155,
+        "rotationVerifiedAt": 1792562242973,
+        "alertToVerifiedMs": 175085,
+        "providerToAckMs": 115254,
+        "ackToDecisionMs": 39621,
+        "decisionToVerifiedMs": 14818,
+        "humanResponseMs": 169693,
+        "providerToEffectiveHostBoundsMs": [
+          159808,
+          160200
+        ],
+        "decisionToEffectiveHostBoundsMs": [
+          4933,
+          5325
+        ],
+        "sourceEffectiveAt": 1792562233291,
+        "unknown": [
+          "causal_extra_time",
+          "real_attacker_persistence",
+          "M7_close"
+        ],
+        "extraTimeFromDungeonQ": "NOT_PROVEN",
+        "newModelObservations": 0,
+        "paidCalls": 0
+      },
+      "checks": [
+        {
+          "name": "container-isolation",
+          "ok": true
+        },
+        {
+          "name": "exact-lab-containers",
+          "ok": true
+        },
+        {
+          "name": "authorized-positive-control",
+          "ok": true
+        },
+        {
+          "name": "overview-no-target-content",
+          "ok": true
+        },
+        {
+          "name": "wrong-ticket-issued",
+          "ok": true
+        },
+        {
+          "name": "unauthorized-source-denied",
+          "ok": true
+        },
+        {
+          "name": "alternate-CACHE-denied",
+          "ok": true
+        },
+        {
+          "name": "alternate-EXPORT-denied",
+          "ok": true
+        },
+        {
+          "name": "rotate-effective",
+          "ok": true
+        },
+        {
+          "name": "old-capability-denied-all-paths",
+          "ok": true
+        },
+        {
+          "name": "new-capability-works-all-paths",
+          "ok": true
+        }
+      ],
+      "processRows": 194,
+      "originalProcessSha256": "7aaaf59803e8f09c8e55f4f2943f57bfcdba84ccdaa802153c1b783743f595e8",
+      "originalResultSha256": "8ea121704d6eed3e38ce773118270cd0380b49e9f75b7aedfe4a86203f45e689",
+      "m9Overall": "PENDING",
+      "paidCalls": 0,
+      "newModelObservations": 0,
+      "extraTimeFromDungeonQ": "NOT_PROVEN"
+    },
+    {
+      "id": "run-03",
+      "outcome": "HUMAN_CLOSED_CONFIRMED",
+      "metrics": {
+        "providerAcceptedAt": 1792570692996,
+        "inboxArrival": {
+          "at": null,
+          "observedAt": null,
+          "status": "NOT_APPLICABLE"
+        },
+        "verifiedHumanAckAt": 1792570758607,
+        "decisionAt": 1792570762810,
+        "rotationVerifiedAt": 1792570777602,
+        "alertToVerifiedMs": 90891,
+        "providerToAckMs": 65611,
+        "ackToDecisionMs": 4203,
+        "decisionToVerifiedMs": 14792,
+        "closeDecisionAt": 1792570918881,
+        "closedAt": 1792570943917,
+        "rotationToClosedMs": 166315,
+        "providerToClosedMs": 250921,
+        "humanResponseMs": 84606,
+        "providerToEffectiveHostBoundsMs": [
+          75789,
+          76094
+        ],
+        "decisionToEffectiveHostBoundsMs": [
+          5975,
+          6280
+        ],
+        "sourceEffectiveAt": 1792570768899,
+        "unknown": [
+          "causal_extra_time",
+          "real_attacker_persistence"
+        ],
+        "extraTimeFromDungeonQ": "NOT_PROVEN",
+        "newModelObservations": 0,
+        "paidCalls": 0
+      },
+      "checks": [
+        {
+          "name": "container-isolation",
+          "ok": true
+        },
+        {
+          "name": "exact-lab-containers",
+          "ok": true
+        },
+        {
+          "name": "authorized-positive-control",
+          "ok": true
+        },
+        {
+          "name": "overview-no-target-content",
+          "ok": true
+        },
+        {
+          "name": "wrong-ticket-issued",
+          "ok": true
+        },
+        {
+          "name": "unauthorized-source-denied",
+          "ok": true
+        },
+        {
+          "name": "alternate-CACHE-denied",
+          "ok": true
+        },
+        {
+          "name": "alternate-EXPORT-denied",
+          "ok": true
+        },
+        {
+          "name": "rotate-effective",
+          "ok": true
+        },
+        {
+          "name": "old-capability-denied-all-paths",
+          "ok": true
+        },
+        {
+          "name": "new-capability-works-all-paths",
+          "ok": true
+        },
+        {
+          "name": "M7-closed",
+          "ok": true
+        }
+      ],
+      "processRows": 304,
+      "originalProcessSha256": "2607dee39168de8f6cf0553c1d751bd94895e67a3d7e7e5fe8ce50856512f104",
+      "originalResultSha256": "1b7049f00a1b6165bb398a74380c0bfe8f05fda9f54caf2d4a7aa4bdd1bb76c8",
+      "m9Overall": "PENDING",
+      "paidCalls": 0,
+      "newModelObservations": 0,
+      "extraTimeFromDungeonQ": "NOT_PROVEN"
+    }
+  ],
+  "run03ReceiptLayers": {
+    "alertGmailProvider": "UNKNOWN",
+    "closeGmailProvider": "UNKNOWN",
+    "inboxEvidence": "both INBOX records independently read through connector",
+    "humanReport": "both entry channels received; closure email received and readable",
+    "LINEProvider": "ACCEPTED"
+  },
+  "run03Readback": {
+    "oldPathsDenied": 4,
+    "newPathsWorked": 4,
+    "sourceActorTargetReads": 0,
+    "healthSuccesses": 328,
+    "healthSamples": 328,
+    "journalEntries": 18,
+    "sealedEntries": 18,
+    "closeVerification": "VERIFIED",
+    "fenceAppliedRelease": "NONE",
+    "candidateRule": "TEST_FAILED_NOT_PUBLISHED",
+    "participantStop": "SCRIPTED_SELF_STOP_NO_AUTHORIZED_PATH"
+  }
+}

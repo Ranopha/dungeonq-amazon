@@ -1,3 +1,11 @@
+# v0.16 source-wide authority and human closure
+
+MAIN, A2, CACHE and EXPORT now share source tenant/resource/epoch checks. A2 does not retain target contents or operator credentials. Missing source state and unavailable cache revalidation fail closed. Human ACK and decisions use incident-bound authentication; the participant cannot approve rotation or closure. The source policy module remains separate from narrative clues. [Design](docs/HANDOFF_DESIGN.md).
+
+One guided, artificial-resource human closure was observed. Gmail provider UNKNOWN is retained despite inbox and human receipt evidence. This is not production-key rotation, independent host attestation or an efficacy claim. Nine earlier Sol runs disclosed the artificial target through an open A2; they are not post-repair trials. [Results](docs/HUMAN_RESPONSE_RESULTS.md).
+
+---
+
 # v0.15 source authority and response boundary
 
 The current host fixture defaults to no protected-target read permission. Every content path, ticket consumption and cached result checks source principal, tenant, scope and current epoch. Snapshot/overview results contain record metadata only. Caller-supplied roles and tenant fields cannot grant authority. Unknown or stale authority fails closed. The broader runtime's world tickets and adaptation grants remain separate from source authorization.

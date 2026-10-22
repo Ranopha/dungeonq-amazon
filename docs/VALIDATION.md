@@ -1,3 +1,22 @@
+# v0.16 final-update validation — October 22
+
+Public runtime source is exported from the previously tested 0.15.0-dev.18 source; public host modules derive from the actual M9 run's host source. These are separately tested exports, not a claim that a historical run used the new public release.
+
+- Local root check: 779/779 tests, scenario verification, source audit, syntax check and static build passed.
+- Host source: 21/21 cases after constraining Vitest discovery to exclude the nested vendor checkout.
+- Human handoff/closure: 43/45 initially passed; two failures were a missing exported report template. Adding the original compatible template passed all 3 affected C-4 cases. The final CI runs all 45 together.
+- Real MCP host: authorized control read 1, diverted source reads 0, persisted revision 2, PASS.
+- Five-stage local response demonstration: PASS, zero model calls. It remains separate from the historical actual human event.
+- Historical scope: [nine Sol sessions](MODEL_RESULTS.md), [three human attempts](HUMAN_RESPONSE_RESULTS.md), raw failures and UNKNOWN preserved.
+
+Final source/CI/release identity is recorded in RELEASE.md and the release asset manifest. No production, newly paid AI or second additional human trial is performed by this update.
+
+## Packaging failures retained
+
+The original exporter required an absent historical document and stopped before writing output. The explicit source import initially omitted a matching SDK change and copied an older embedded host example; these were corrected by completing the runtime slice and restoring/exporting the selected current host independently. Missing closure template and nested vendor test discovery were repaired without weakening authorization or test assertions. Original local logs and the first failed public CI run remain retained; only the final exact-source CI supports release acceptance.
+
+---
+
 # Current v0.15 validation — October 20, 2026
 
 Runtime core: `345ef3efe46cdd75abff2dde673f57a956cff6db`. Host fixture: v0.2.0, with its own file inventory and this fixed public runtime pin. Final package/CI/tag references are recorded in the release record; a local PASS does not itself establish publication.

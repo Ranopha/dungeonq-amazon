@@ -1,3 +1,9 @@
+# October 22 follow-up from actual human operation
+
+The operator initially interpreted successful A-2 rotation as completed closure. Our UI needs to distinguish these stages and their next action more clearly. Gmail arrived while our provider receipt remained UNKNOWN; receiver evidence and provider acknowledgement should have separate fields and explicit timeout semantics. These are observed integration/UX issues in our implementation, not claims of an Amazon SDK defect.
+
+For MCP tooling, examples of human handoff should keep authenticated ACK, exact action approval and completion readback distinct. For model evaluation APIs, budget stops should remain separate from voluntary stopping and semantic UNKNOWN. The nine historical Sol sessions also showed why alternate data paths need the same source policy; this was our fixture's authorization gap.
+
 # Current feedback — October 20, 2026
 
 Track: Alexa+ simulation + Open Source. The current official MCP SDK is **1.32.1**, using Streamable HTTP and protocol 2025-11-25. The reference was built and exercised locally with Node 24, artificial resources and a separate human/operator authority. No real Alexa device/service, Amazon account linking or AWS deployment was tested; no firsthand AWS Builder feedback is claimed.
