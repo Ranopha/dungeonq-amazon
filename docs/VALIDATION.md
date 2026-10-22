@@ -4,12 +4,12 @@ Public runtime source is exported from the previously tested 0.15.0-dev.18 sourc
 
 - Local root check: 779/779 tests, scenario verification, source audit, syntax check and static build passed.
 - Host source: 21/21 cases after constraining Vitest discovery to exclude the nested vendor checkout.
-- Human handoff/closure: 45/45 initially passed; two failures were a missing exported report template. Adding the original compatible template passed all 3 affected C-4 cases. The final CI runs all 45 together.
+- Human handoff/closure: initial 43/45 passed; two failures exposed a missing exported report template. Adding the original compatible template passed all 3 affected C-4 cases. The complete final local run and public CI both passed all 45.
 - Real MCP host: authorized control read 1, diverted source reads 0, persisted revision 2, PASS.
 - Five-stage local response demonstration: PASS, zero model calls. It remains separate from the historical actual human event.
 - Historical scope: [nine Sol sessions](MODEL_RESULTS.md), [three human attempts](HUMAN_RESPONSE_RESULTS.md), raw failures and UNKNOWN preserved.
 
-Final source/CI/release identity is recorded in RELEASE.md and the release asset manifest. No production, newly paid AI or second additional human trial is performed by this update.
+The functional source `2579359c005f59f005d74e3ed535642b21e17f6d` passed all five [CI jobs](https://github.com/Ranopha/dungeonq-amazon/actions/runs/39737487527), including both OS host suites and the source-bound isolated container gate. Final package/tag identity is recorded by the immutable release and its manifest. No production, newly paid AI or second additional human trial is performed by this update.
 
 ## Packaging failures retained
 

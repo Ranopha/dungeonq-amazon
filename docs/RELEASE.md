@@ -1,6 +1,6 @@
-# v0.16 release candidate — 2026-10-22
+# v0.16 release — 2026-10-22
 
-The public root is version **0.16.0**; the selected host is **0.3.0** and pins runtime commit `ae3be61d3f25e9cbf0fd1d1b0eef260cccb5c2e4`. That public core includes the source-wide guard, human incident lifecycle and the Hono 4.13.13 dependency repair. The release candidate additionally contains documentation, sanitized evidence and host provenance. Final CI, tag and release status are recorded at publication.
+The public root is version **0.16.0**; the selected host is **0.3.0** and pins runtime commit `ae3be61d3f25e9cbf0fd1d1b0eef260cccb5c2e4`. That public core includes the source-wide guard, human incident lifecycle and the Hono 4.13.13 dependency repair. The release candidate additionally contains documentation, sanitized evidence and host provenance. The functional source `2579359c005f59f005d74e3ed535642b21e17f6d` passed all five jobs in [CI 39737487527](https://github.com/Ranopha/dungeonq-amazon/actions/runs/39737487527). The final tag identifies the packaged source; RELEASE_MANIFEST records its immediately preceding source-input commit. The GitHub release attaches exact final CI metadata and SHA-256 checksums.
 
 [Film](https://youtu.be/6RqYwUeEmus) · [Human evidence](HUMAN_RESPONSE_RESULTS.md) · [Model results](MODEL_RESULTS.md). Three human attempts are retained; one completed the full guided closure. M9 remains PENDING. No new paid AI test or human trial was performed for this publication.
 
