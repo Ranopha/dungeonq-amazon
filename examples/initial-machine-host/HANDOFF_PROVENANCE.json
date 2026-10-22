@@ -5,7 +5,8 @@
   "transformations": [
     "Policy imports point directly to the selected DungeonQ policy module",
     "Original target name replaced by public disposable fixture path",
-    "Runtime identity retains public package and is pinned separately"
+    "Runtime identity retains public package and is pinned separately",
+    "Closure evaluates health after asynchronous measurement; regression forces a delayed measurement."
   ],
   "files": [
     {
@@ -81,12 +82,12 @@
     {
       "path": "scripts/dungeonq-host/incident-close.mjs",
       "sourceSha256": "f8562f8da239a5f9fcd5f17629dddf6aa8d486dd008a8a80167761b29bc697dc",
-      "publicSha256": "78c50163619a3bbdca8c5119dbc48e4994bb70b1a552653817d102eeb04120e4"
+      "publicSha256": "526a3bd2fd0464125c67b92803eae6b7328b57dadc8644093ed0dffb8c07d695"
     },
     {
       "path": "scripts/dungeonq-host/incident-close.test.mjs",
       "sourceSha256": "2b6d9c2be933809087e9e54c46485ba7a4510ef35e23cd84928cae9c4cc1c2b8",
-      "publicSha256": "2b6d9c2be933809087e9e54c46485ba7a4510ef35e23cd84928cae9c4cc1c2b8"
+      "publicSha256": "8391a910b9cbc15c73f093c2825a3f07d02b4a3ed472cd72f8b63a77e8dc1028"
     },
     {
       "path": "scripts/dungeonq-host/incident-local-ports.mjs",

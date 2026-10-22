@@ -255,7 +255,12 @@ const freezeTrail = caseDir => readCloseJournal(caseDir).entries.filter(entry =>
 
 test('第 0 步正向：合法消費者仍運作時經政策封鎖 context 並讀回，接著停止世界、最後停止合法消費者，之後才封存', async t => {
   const l = lab(t, { legit: true });
-  const result = await l.open().run();
+  // 量測經過非同步工作後才完成，判定時間必須在量測完成之後。
+  const response = { ...l.ports.response, health: { measure: async () => {
+    await new Promise(resolve => setTimeout(resolve, 5));
+    return l.ports.response.health.measure();
+  } } };
+  const result = await l.open({ response }).run();
   assert.equal(result.status, 'CLOSED', JSON.stringify(result));
   assert.deepEqual(readCloseJournal(l.caseDir).entries.filter(entry => entry.kind === 'STEP_DONE').map(entry => entry.step), [...INCIDENT_CLOSE_STEPS]);
   assert.equal(INCIDENT_CLOSE_STEPS[0], 'FREEZE');

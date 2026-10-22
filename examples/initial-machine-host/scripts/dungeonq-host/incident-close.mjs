@@ -511,8 +511,8 @@ async function fenceThroughPolicy(context, item) {
   const target = registry.entries.find(row => entry.targetKinds.includes(row.kind) && row.assetId === `context:${item.contextId}`
     && (row.boundIncidentId === null || row.boundIncidentId === incidentId));
   insist(target, 'FREEZE_CONTEXT_NOT_REGISTERED', { contextId: item.contextId });
-  const evaluatedAt = iso(clock());
   const legitimateHealth = await callPort('response.health.measure', response.health.measure, { sinceMs: clock() - 10_000 }, limits.portTimeoutMs, signal);
+  const evaluatedAt = iso(clock());
   const input = { policyVersion: DUNGEONQ_RESPONSE_ACTION_POLICY_VERSION, traceId: `close-${digestOf('close-trace', { incidentId, contextId: item.contextId }).slice(0, 24)}`,
     evaluatedAt, incidentId, signal: response.signal, actionCode: entry.code, targetId: target.targetId,
     parameters: { rateLimitDurationSeconds: entry.limits.maxDurationSeconds === null ? null : 3600 }, targetRegistry: registry,
@@ -550,8 +550,8 @@ async function requestHumanFence(context, items) {
     const target = registry.entries.find(row => entry.targetKinds.includes(row.kind) && row.assetId === `${CONTEXT_ACCOUNT_ASSET_PREFIX}${item.contextId}`
       && (row.boundIncidentId === null || row.boundIncidentId === incidentId));
     insist(target, 'FREEZE_HUMAN_TARGET_NOT_REGISTERED', { contextId: item.contextId, contexts });
-    const evaluatedAt = iso(clock());
     const legitimateHealth = await callPort('response.health.measure', response.health.measure, { sinceMs: clock() - 10_000 }, limits.portTimeoutMs, signal);
+    const evaluatedAt = iso(clock());
     const input = { policyVersion: DUNGEONQ_RESPONSE_ACTION_POLICY_VERSION,
       traceId: `close-wo-${digestOf('close-work-order-trace', { incidentId, contextId: item.contextId }).slice(0, 24)}`,
       evaluatedAt, incidentId, signal: response.signal, actionCode: entry.code, targetId: target.targetId, parameters: { rateLimitDurationSeconds: null },
