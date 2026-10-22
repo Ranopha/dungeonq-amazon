@@ -197,12 +197,16 @@ test('pitch explicitly idempotent callbacks retry unknown results with the ident
 });
 
 test('pitch definite nonacceptance uses bounded backoff and a finite retry budget', async t => {
-  const f = fixture(t, { deliveryAttempts: 2 }); const control = f.open(); entered(control); let calls = 0;
+  const f = fixture(t, { deliveryAttempts: 3 }); const control = f.open(); entered(control); let calls = 0;
   const send = async () => { calls++; return { accepted: false, definitive: true, retryable: true }; };
   await control.deliver({ send }); assert.equal(control.snapshot().outbox[0].status, 'PENDING');
-  assert.equal((await control.deliver({ send })).attempted, 0); f.advance(10);
-  await control.deliver({ send }); assert.equal(control.snapshot().outbox[0].status, 'EXHAUSTED');
-  f.advance(1000); assert.equal((await control.deliver({ send, idempotent: true })).attempted, 0); assert.equal(calls, 2);
+  assert.equal(control.snapshot().outbox[0].nextAttemptAt, 1000010);
+  f.advance(9); assert.equal((await control.deliver({ send })).attempted, 0);
+  f.advance(1); await control.deliver({ send }); assert.equal(calls, 2);
+  assert.equal(control.snapshot().outbox[0].nextAttemptAt, 1000030, 'the second minimum wait doubles from 10 to 20 ms');
+  f.advance(19); assert.equal((await control.deliver({ send })).attempted, 0);
+  f.advance(1); await control.deliver({ send }); assert.equal(control.snapshot().outbox[0].status, 'EXHAUSTED');
+  f.advance(1000); assert.equal((await control.deliver({ send, idempotent: true })).attempted, 0); assert.equal(calls, 3);
 });
 
 test('pitch concurrent delivery handles cannot claim the same live lease', async t => {

@@ -176,5 +176,8 @@ test('N-7 供應商持續暫時性拒絕：入場告警重送次數有上限、�
   assert.equal(times.GMAIL_SMTP.length, 3, 'one send plus two bounded resends, then stop');
   assert.equal(times.LINE_PUSH.length, 3);
   const gaps = times.GMAIL_SMTP.slice(1).map((at, index) => at - times.GMAIL_SMTP[index]);
-  assert(gaps[1] > gaps[0], 'intervals grow');
+  // Scheduler delays can make an earlier observed interval longer than the next.
+  // Assert the actual minimum waits here; the controlled-clock unit test checks exact doubling.
+  assert(gaps[0] >= 200, 'first resend waits at least the configured base interval');
+  assert(gaps[1] >= 400, 'second resend waits at least twice the base interval');
 });

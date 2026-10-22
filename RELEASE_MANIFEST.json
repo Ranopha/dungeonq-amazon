@@ -2,8 +2,8 @@
   "schemaVersion": "dungeonq.source-release/v1",
   "profile": "SYNTHETIC_ONLY",
   "privateHistoryIncluded": false,
-  "sourceCommit": "841bf24c39d278f4279720933217301f5ab7e3bf",
-  "generatedAt": "2026-10-22T07:03:44.820Z",
+  "sourceCommit": "38dcc71bf765d102bada61fa4a15823b275a4f28",
+  "generatedAt": "2026-10-22T07:30:15.560Z",
   "entries": [
     {
       "path": ".github/workflows/ci.yml",
@@ -372,8 +372,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 27211,
-      "sha256": "672fc86d0c710f9373ac742ecb5f9d0507f7d961b33c11c7f95cf20b35a16f26"
+      "bytes": 28370,
+      "sha256": "ea171c63c43767eb71b29ed93902a16229597b3a8a2ce271afb6b2a1dbea9fd4"
     },
     {
       "path": "docs/WORKSPACE_LAB.md",
@@ -477,8 +477,8 @@
     },
     {
       "path": "evidence/final-20261022/runtime-import.json",
-      "bytes": 45462,
-      "sha256": "c407a28e6d662f276db4d29459ca1b126ed78bc7c280115534b017627148e4cf"
+      "bytes": 46067,
+      "sha256": "16a49516bc330e5daf733549baaf4a4877f93e1175807ab00e71208c7f814689"
     },
     {
       "path": "evidence/final-20261022/sol-m8.json",
@@ -682,8 +682,8 @@
     },
     {
       "path": "examples/initial-machine-host/HANDOFF_PROVENANCE.json",
-      "bytes": 8878,
-      "sha256": "575a99b8b5e4bf3dbb73f1cf19e07e46cd928002d9df68d169fc258d956f1821"
+      "bytes": 8983,
+      "sha256": "d3b9aad0de10f50b3208dbdd8f524d0e9fa0ef2f73ab3c1ffbc1be87cc3b662c"
     },
     {
       "path": "examples/initial-machine-host/LICENSE",
@@ -833,12 +833,12 @@
     {
       "path": "examples/initial-machine-host/scripts/dungeonq-host/incident-close.mjs",
       "bytes": 77518,
-      "sha256": "78c50163619a3bbdca8c5119dbc48e4994bb70b1a552653817d102eeb04120e4"
+      "sha256": "526a3bd2fd0464125c67b92803eae6b7328b57dadc8644093ed0dffb8c07d695"
     },
     {
       "path": "examples/initial-machine-host/scripts/dungeonq-host/incident-close.test.mjs",
-      "bytes": 55800,
-      "sha256": "2b6d9c2be933809087e9e54c46485ba7a4510ef35e23cd84928cae9c4cc1c2b8"
+      "bytes": 56090,
+      "sha256": "8391a910b9cbc15c73f093c2825a3f07d02b4a3ed472cd72f8b63a77e8dc1028"
     },
     {
       "path": "examples/initial-machine-host/scripts/dungeonq-host/incident-local-ports.mjs",
@@ -1438,7 +1438,7 @@
     {
       "path": "SBOM.cdx.json",
       "bytes": 65614,
-      "sha256": "fa39f64a2b7007f50e30c2bc316f685be23c80510979c3d354d057d9ac145fe1"
+      "sha256": "4ca6c6c85298012f5d617010098841b9e15070bd91a8d7f347e1f38bbeb72628"
     },
     {
       "path": "scripts/amazon.mjs",
@@ -2197,8 +2197,8 @@
     },
     {
       "path": "tests/runtime-pitch-control.test.mjs",
-      "bytes": 22225,
-      "sha256": "301e6aa14cf68a4152243dd43e77c5837743ce3bbf17e8336ac5fd63ae63e906"
+      "bytes": 22580,
+      "sha256": "8312081b90629e2b38e943b23a33baea7e816ddfc45cb0f679c9ebb15a260822"
     },
     {
       "path": "tests/runtime-pitch-owner-lock.test.mjs",
@@ -2227,8 +2227,8 @@
     },
     {
       "path": "tests/runtime-pitching-handoff-gateway.test.mjs",
-      "bytes": 14609,
-      "sha256": "6fa999443497dc824f9babd60015c54ad63ad9837deafd4d4b188cac77e3d632"
+      "bytes": 14909,
+      "sha256": "c73d593a48fae05e2570a547b48e81de54f0b05195bfece06f991199f8b6a13e"
     },
     {
       "path": "tests/runtime-pitching-handoff.test.mjs",
