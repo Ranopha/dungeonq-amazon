@@ -2,8 +2,8 @@
   "schemaVersion": "dungeonq.source-release/v1",
   "profile": "SYNTHETIC_ONLY",
   "privateHistoryIncluded": false,
-  "sourceCommit": "ebf79ba216a6a7199dd3e5a67de24b27f8d261f8",
-  "generatedAt": "2026-10-22T07:18:52.754Z",
+  "sourceCommit": "38dcc71bf765d102bada61fa4a15823b275a4f28",
+  "generatedAt": "2026-10-22T07:30:15.560Z",
   "entries": [
     {
       "path": ".github/workflows/ci.yml",
@@ -372,8 +372,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 27820,
-      "sha256": "9545d14d2aaf3b0dc460b27e617da5e840ee65537a15caf2b0604bcaf6fb900b"
+      "bytes": 28370,
+      "sha256": "ea171c63c43767eb71b29ed93902a16229597b3a8a2ce271afb6b2a1dbea9fd4"
     },
     {
       "path": "docs/WORKSPACE_LAB.md",
@@ -682,8 +682,8 @@
     },
     {
       "path": "examples/initial-machine-host/HANDOFF_PROVENANCE.json",
-      "bytes": 8878,
-      "sha256": "575a99b8b5e4bf3dbb73f1cf19e07e46cd928002d9df68d169fc258d956f1821"
+      "bytes": 8983,
+      "sha256": "d3b9aad0de10f50b3208dbdd8f524d0e9fa0ef2f73ab3c1ffbc1be87cc3b662c"
     },
     {
       "path": "examples/initial-machine-host/LICENSE",
@@ -833,12 +833,12 @@
     {
       "path": "examples/initial-machine-host/scripts/dungeonq-host/incident-close.mjs",
       "bytes": 77518,
-      "sha256": "78c50163619a3bbdca8c5119dbc48e4994bb70b1a552653817d102eeb04120e4"
+      "sha256": "526a3bd2fd0464125c67b92803eae6b7328b57dadc8644093ed0dffb8c07d695"
     },
     {
       "path": "examples/initial-machine-host/scripts/dungeonq-host/incident-close.test.mjs",
-      "bytes": 55800,
-      "sha256": "2b6d9c2be933809087e9e54c46485ba7a4510ef35e23cd84928cae9c4cc1c2b8"
+      "bytes": 56090,
+      "sha256": "8391a910b9cbc15c73f093c2825a3f07d02b4a3ed472cd72f8b63a77e8dc1028"
     },
     {
       "path": "examples/initial-machine-host/scripts/dungeonq-host/incident-local-ports.mjs",
@@ -1438,7 +1438,7 @@
     {
       "path": "SBOM.cdx.json",
       "bytes": 65614,
-      "sha256": "6e8b96b98e95d5a0040e5b2566abc32dc991948aca1fa153f1ef46696bdaaf69"
+      "sha256": "4ca6c6c85298012f5d617010098841b9e15070bd91a8d7f347e1f38bbeb72628"
     },
     {
       "path": "scripts/amazon.mjs",
