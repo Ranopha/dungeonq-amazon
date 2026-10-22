@@ -1,3 +1,13 @@
+# v0.16 release candidate — 2026-10-22
+
+The public root is version **0.16.0**; the selected host is **0.3.0** and pins runtime commit `ae3be61d3f25e9cbf0fd1d1b0eef260cccb5c2e4`. That public core includes the source-wide guard, human incident lifecycle and the Hono 4.13.13 dependency repair. The release candidate additionally contains documentation, sanitized evidence and host provenance. Final CI, tag and release status are recorded at publication.
+
+[Film](https://youtu.be/6RqYwUeEmus) · [Human evidence](HUMAN_RESPONSE_RESULTS.md) · [Model results](MODEL_RESULTS.md). Three human attempts are retained; one completed the full guided closure. M9 remains PENDING. No new paid AI test or human trial was performed for this publication.
+
+Amazon materials only. The repository, releases, film and Devpost entry freeze at **2026-10-24 03:00 Asia/Taipei** through the actual winner announcement. See [COMPETITION_FREEZE](COMPETITION_FREEZE.md). Older tags, films and private raw evidence are preserved.
+
+## Historical release records
+
 # v0.15 release and competition freeze
 
 The runtime core is pinned at `345ef3efe46cdd75abff2dde673f57a956cff6db`; the final public release also contains the separately versioned host fixture, current docs, evidence and media references. [VALIDATION](VALIDATION.md) records final publication/CI status. Existing tags and films are immutable historical records.

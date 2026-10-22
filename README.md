@@ -1,5 +1,7 @@
 # DungeonQ — Defensive Deception Runtime
 
+[Current v0.16 film](https://youtu.be/6RqYwUeEmus) · [Human response evidence](docs/HUMAN_RESPONSE_RESULTS.md) · [Judge route](docs/JUDGE_ROUTE.md)
+
 **Keep suspicious AI-agent work separated while people and authorized defender agents respond.**
 
 DungeonQ is an Apache-2.0 reference for developers securing AI-agent tool workflows. A trusted gateway routes a designated session into a persistent synthetic world. The participant can investigate, save a note, use a scoped **Wrong Ticket**, and continue across supported interfaces. Separate source authorization, alert receipt and credential-revocation checks determine what was actually protected.

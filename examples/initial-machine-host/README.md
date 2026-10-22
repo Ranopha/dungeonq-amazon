@@ -1,6 +1,6 @@
 # v0.3.0 host / public runtime v0.16
 
-This selected Apache-2.0 slice now includes the DungeonQ source-response policy, authenticated incident handoff, six-step closure, evidence sealer and tests. It does not export the private OS. `PROVENANCE.json` and `HANDOFF_PROVENANCE.json` identify source transformations; the runtime is fixed to public commit 02b9360c6ccd58fe0a8e3658981d992720af8110.
+This selected Apache-2.0 slice now includes the DungeonQ source-response policy, authenticated incident handoff, six-step closure, evidence sealer and tests. It does not export the private OS. `PROVENANCE.json` and `HANDOFF_PROVENANCE.json` identify source transformations; the runtime is fixed to public commit ae3be61d3f25e9cbf0fd1d1b0eef260cccb5c2e4.
 
 After the existing installation steps below:
 

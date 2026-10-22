@@ -14,7 +14,7 @@ At the independent source, MAIN, A2, CACHE and EXPORT now share tenant, resource
 
 ## Working demonstration
 
-The updated film shows the recorded working MCP/HTTP console, then clearly separates historical real Sol observations and the actual human rehearsal. The five-stage console executes fresh artificial-resource requests and can be rerun without an API key, paid model, Amazon account or production file.
+[The updated 2:30 film](https://youtu.be/6RqYwUeEmus) shows the recorded working MCP/HTTP console, then clearly separates historical real Sol observations and the actual human rehearsal. The five-stage console executes fresh artificial-resource requests and can be rerun without an API key, paid model, Amazon account or production file.
 
 With Node.js 24.15.0+, npm and Git:
 

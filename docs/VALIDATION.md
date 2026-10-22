@@ -4,7 +4,7 @@ Public runtime source is exported from the previously tested 0.15.0-dev.18 sourc
 
 - Local root check: 779/779 tests, scenario verification, source audit, syntax check and static build passed.
 - Host source: 21/21 cases after constraining Vitest discovery to exclude the nested vendor checkout.
-- Human handoff/closure: 43/45 initially passed; two failures were a missing exported report template. Adding the original compatible template passed all 3 affected C-4 cases. The final CI runs all 45 together.
+- Human handoff/closure: 45/45 initially passed; two failures were a missing exported report template. Adding the original compatible template passed all 3 affected C-4 cases. The final CI runs all 45 together.
 - Real MCP host: authorized control read 1, diverted source reads 0, persisted revision 2, PASS.
 - Five-stage local response demonstration: PASS, zero model calls. It remains separate from the historical actual human event.
 - Historical scope: [nine Sol sessions](MODEL_RESULTS.md), [three human attempts](HUMAN_RESPONSE_RESULTS.md), raw failures and UNKNOWN preserved.
@@ -202,3 +202,5 @@ Rollback: revert this presentation/helper commit and restore the original Devpos
 </details>
 
 </details>
+
+The final Hono lockfile resolves 4.13.13. Root and host dependency audits report zero advisories. Earlier failed export/template/vendor-discovery checks remain in the private release journal; later repairs are separate results.

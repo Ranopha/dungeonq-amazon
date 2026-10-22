@@ -1,3 +1,11 @@
+# 0.16.0 — 2026-10-22
+
+- Import the shared source guard and selected human ACK/rotation/closure modules with provenance.
+- Include replayable handoff tests and retain all three human attempts, failures and UNKNOWN.
+- Correct the M8 interpretation: 9/9 targets obtained via the then-open A2 route; no efficacy claim for the later deterministic repair.
+- Publish the updated 2:30 film and judge route with one guided full-closure result.
+- Patch transitive Hono to 4.13.13; preserve strict dependency audit and source-bound CI.
+
 # 0.15.0 — October 20, 2026
 
 - Bounded pitching runtime with false-exit and memory-conflict cues, task-related continuation, persistent notes and explicit stop/UNKNOWN semantics.
