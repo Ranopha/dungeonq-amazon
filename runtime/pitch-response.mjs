@@ -22,8 +22,8 @@ function validateEvent(event) {
   integer(event.epoch, 1, Number.MAX_SAFE_INTEGER);
   check(kinds.includes(event.kind), 'PITCH_RESPONSE_KIND_INVALID');
   check(['HUMAN', 'AUTHORIZED_AGENT', 'SYSTEM'].includes(event.performer), 'PITCH_RESPONSE_PERFORMER_INVALID');
-  check(['USER_CONFIRMATION', 'EMAIL_REPLY', 'OWNER_AUTHORIZATION', 'CANONICAL_READBACK', 'OUTBOX_RECEIPT'].includes(event.evidenceKind), 'PITCH_RESPONSE_EVIDENCE_INVALID');
-  check(['OPERATOR_TRANSCRIBED', 'LOCAL_CANONICAL_READBACK', 'LOCAL_OUTBOX_ACCEPTANCE'].includes(event.assurance), 'PITCH_RESPONSE_EVIDENCE_INVALID');
+  check(['USER_CONFIRMATION', 'EMAIL_REPLY', 'OWNER_AUTHORIZATION', 'CANONICAL_READBACK', 'OUTBOX_RECEIPT', 'VERIFIED_ACK_LINK'].includes(event.evidenceKind), 'PITCH_RESPONSE_EVIDENCE_INVALID');
+  check(['OPERATOR_TRANSCRIBED', 'LOCAL_CANONICAL_READBACK', 'LOCAL_OUTBOX_ACCEPTANCE', 'LOCAL_VERIFIED_LOGIN'].includes(event.assurance), 'PITCH_RESPONSE_EVIDENCE_INVALID');
   atValue(event.observedAt); atValue(event.enteredAt);
   check(event.observedAt >= event.enteredAt, 'PITCH_RESPONSE_TIME_INVALID');
   if (event.sourceAt !== null) { atValue(event.sourceAt); check(event.sourceAt >= event.enteredAt && event.sourceAt <= event.observedAt, 'PITCH_RESPONSE_TIME_INVALID'); }
@@ -39,8 +39,10 @@ function validateEvent(event) {
     && event.sourceAt !== null && event.actionId === null && event.readback === null, 'PITCH_RESPONSE_EVIDENCE_INVALID');
   else {
     check(event.sourceAt === null, 'PITCH_RESPONSE_TIME_INVALID');
+    // M3: a HUMAN_ACK is either owner-transcribed (legacy) or a verified single-use ACK link login.
     if (['DELIVERY_CONFIRMED_BY_REPLY', 'HUMAN_ACK'].includes(event.kind)) check(event.performer === 'HUMAN'
-      && ['USER_CONFIRMATION', 'EMAIL_REPLY'].includes(event.evidenceKind) && event.assurance === 'OPERATOR_TRANSCRIBED'
+      && (['USER_CONFIRMATION', 'EMAIL_REPLY'].includes(event.evidenceKind) && event.assurance === 'OPERATOR_TRANSCRIBED'
+        || event.kind === 'HUMAN_ACK' && event.evidenceKind === 'VERIFIED_ACK_LINK' && event.assurance === 'LOCAL_VERIFIED_LOGIN')
       && event.actionId === null && event.readback === null, 'PITCH_RESPONSE_EVIDENCE_INVALID');
     else check(event.actionId !== null && event.performer !== 'SYSTEM'
       && (event.kind === 'ACTION_STARTED' ? event.evidenceKind === 'OWNER_AUTHORIZATION' && event.assurance === 'OPERATOR_TRANSCRIBED' && event.readback === null
@@ -127,6 +129,13 @@ export function openPitchResponse({ path, clock = Date.now } = {}) {
         assurance: outbox.reconciliationDigest ? 'OPERATOR_TRANSCRIBED' : 'LOCAL_OUTBOX_ACCEPTANCE',
         sourceAt: atValue(outbox.acceptedAt), actionId: null, readback: null }));
     },
+    // Trusted runtime only: called after pitch-handoff verified the operator's password (and TOTP when enrolled)
+    // through a single-use, incident-bound ACK link. No caller-supplied evidence kind reaches this path.
+    recordVerifiedAck(incident, { referenceId }) {
+      return transact((state, at) => append(state, at, incident, { kind: 'HUMAN_ACK', referenceId: id(referenceId),
+        evidenceKind: 'VERIFIED_ACK_LINK', performer: 'HUMAN', assurance: 'LOCAL_VERIFIED_LOGIN',
+        sourceAt: null, actionId: null, readback: null }));
+    },
     record(input, { incident, canonical } = {}) {
       envelope(input, ['incidentId', 'contextId', 'epoch', 'kind', 'referenceId', 'evidenceKind', 'performer'], ['actionId']);
       check(incident && input.incidentId === incident.incidentId && input.contextId === incident.contextId
@@ -154,6 +163,7 @@ export function openPitchResponse({ path, clock = Date.now } = {}) {
         limitations: ['Provider acceptance is not delivery; a transcribed provider receipt is not independently verified.',
           'Reply observation is an upper bound for delivery, not an exact recipient timestamp.',
           'Owner-transcribed human evidence does not attest human identity or presence.',
+          'A verified ACK link proves the local operator password (and TOTP when enrolled) on this host, not physical presence or reading time.',
           'Only canonical FENCED readback completes the response action.'] }));
     },
     close() { if (!closed) { closed = true; db.close(); } }

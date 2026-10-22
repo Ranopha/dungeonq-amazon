@@ -111,12 +111,16 @@ test('lost claim response consumes local attempt even when runtime outcome is un
   assert.equal(f.saved().timeline.filter(row => row.kind === 'CLAIM_INTENT_SAVED').length, 1);
 });
 
-test('a never-settling claim is bounded, remains unknown after reopen, and cannot dispatch later', async t => {
-  const f = fixture(t); let finish;
-  f.owner.claimAlertRelay = () => { f.calls.claim++; return new Promise(resolve => { finish = resolve; }); };
-  const started = performance.now(); const result = await f.open().next(35);
-  assert.equal(result.state, 'UNKNOWN'); assert.ok(performance.now() - started < 500);
-  finish({ claimToken: 'late-token' }); await delay(1);
+test('a never-settling claim is bounded, remains unknown after reopen, and cannot dispatch later', { timeout: 3000 }, async t => {
+  const f = fixture(t); let finish; let entered;
+  const claimed = new Promise(resolve => { entered = resolve; });
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  f.owner.claimAlertRelay = () => { f.calls.claim++; return new Promise(resolve => { finish = resolve; entered(); }); };
+  // Start the timer assertion only after the request exists; disk/parallel-test scheduling is not the subject.
+  const pending = createAutoRelay({ ...f.options, monotonic: () => 0 }).next(35);
+  await claimed; t.mock.timers.tick(35);
+  assert.equal((await pending).state, 'UNKNOWN');
+  finish({ claimToken: 'late-token' }); await Promise.resolve();
   assert.equal((await f.open().next()).state, 'UNKNOWN'); assert.equal(f.calls.claim, 1);
 });
 

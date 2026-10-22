@@ -1,0 +1,12 @@
+# Egress image for the model-participant mode only: CONNECT allowlist proxy, no runtime source or credentials.
+FROM node:24.15.0-bookworm-slim@sha256:4e6b70dd6cbfc88c8157ba19aa3d9f9cce6ba4703576d55459e45efcbc9c5f5d
+ARG EGRESS_UID=64102
+ARG EGRESS_GID=64102
+WORKDIR /opt/egress
+COPY egress-proxy.mjs ./proxy.mjs
+RUN mkdir -p /run/egress && chmod 755 /run/egress && chmod 644 /opt/egress/proxy.mjs
+ENV NODE_ENV=production HOME=/tmp
+USER ${EGRESS_UID}:${EGRESS_GID}
+ARG SOURCE_DIGEST
+LABEL org.dungeonq.profile="participant-lab-v1" org.dungeonq.role="egress" org.dungeonq.source-digest="${SOURCE_DIGEST}"
+CMD ["node", "/opt/egress/proxy.mjs", "/run/egress/egress.json"]

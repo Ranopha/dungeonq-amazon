@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>DungeonQ 事件確認</title>
+  <link rel="stylesheet" href="/ack/ack.css">
+  <script type="module" src="/ack/app.mjs"></script>
+</head>
+<body>
+  <main id="main">
+    <p class="eyebrow">DUNGEONQ 告警交接</p>
+    <h1>確認收到事件告警</h1>
+    <p class="lede">這個連結只對一個事件有效、只能用一次，而且有期限。請用本機 ACK 帳號的密碼確認身分；帳號啟用兩步驟驗證時，驗證碼為必填。確認後升級通知會停止，接著顯示事件摘要。</p>
+    <p class="boundary">本頁只在執行 DungeonQ 的這台 Mac 上提供（127.0.0.1）。頁面不含憑證、ticket 原值、誘餌原文或個資。</p>
+    <section id="verify-section" aria-labelledby="verify-title">
+      <h2 id="verify-title">確認身分</h2>
+      <p id="incident-label" class="help"></p>
+      <form id="verify-form" novalidate>
+        <label for="password">ACK 帳號密碼</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <label for="totp">兩步驟驗證碼 <span class="optional">（帳號啟用時必填）</span></label>
+        <input id="totp" name="totp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6">
+        <button id="verify-button" type="submit">確認收到（ACK）</button>
+      </form>
+    </section>
+    <p id="status" class="message" role="status" aria-live="polite" hidden></p>
+    <section id="summary" aria-labelledby="summary-title" hidden>
+      <div class="section-heading">
+        <h2 id="summary-title" tabindex="-1">事件摘要</h2>
+        <button id="refresh" type="button" class="quiet">重新整理摘要</button>
+      </div>
+      <dl id="summary-facts" class="facts"></dl>
+      <h3>錯誤 ticket 使用情形</h3><dl id="ticket-facts" class="facts"></dl>
+      <h3>已自動執行的 A 級動作與讀回</h3><ul id="actions" class="list"></ul>
+      <h3>合法使用者健康狀態</h3><dl id="health-facts" class="facts"></dl>
+      <h3>待處理的 B 級工單</h3><ul id="work-orders" class="list"></ul>
+      <h3>建議動作與影響說明</h3><ul id="recommendations" class="list"></ul>
+      <h3>量測口徑</h3><dl id="measurements" class="facts"></dl>
+      <h3>證據連結（私人）</h3><ul id="evidence" class="list"></ul>
+      <p id="boundary" class="help"></p>
+    </section>
+    <section id="decide" aria-labelledby="decide-title" hidden>
+      <div class="section-heading"><h2 id="decide-title">送出決策</h2></div>
+      <p class="help">每個決策都先經處置動作政策判定；被拒絕時不會執行任何動作。送出需要剛才驗證的工作階段，每次送出都會重新取得一次性的確認碼，同一個請求不能重送。頁面只顯示結果與讀回。</p>
+      <p id="decide-unavailable" class="message" hidden></p>
+      <form id="decide-form" novalidate>
+        <fieldset>
+          <legend>要做什麼</legend>
+          <label class="choice"><input type="radio" name="kind" value="EXECUTE_A_CLASS" checked> 執行 A 級動作（政策允許後由系統執行並讀回）</label>
+          <label class="choice"><input type="radio" name="kind" value="CREATE_WORK_ORDER"> 為 B 級動作建立工單（系統不執行，交給人在維護時段處理）</label>
+          <label class="choice"><input type="radio" name="kind" value="START_CLOSE"> 開始結束流程（凍結 → 封存 → 撤權 → FENCE 去留 → 通知 → 事後檢討）</label>
+        </fieldset>
+        <div id="action-fields" class="group">
+          <label for="action">動作</label>
+          <select id="action"></select>
+          <p id="action-impact" class="help"></p>
+          <label for="target">對象（只能從登錄表選）</label>
+          <select id="target"></select>
+        </div>
+        <div id="close-fields" class="group" hidden>
+          <label for="verdict">結論</label>
+          <select id="verdict">
+            <option value="UNDETERMINED">未確定</option><option value="REAL_INTRUSION">真實越權</option>
+            <option value="DRILL">演練</option><option value="FALSE_POSITIVE">誤判</option>
+          </select>
+          <label for="severity">嚴重度</label>
+          <select id="severity"><option value="HIGH">高</option><option value="CRITICAL">最高</option><option value="MEDIUM">中</option><option value="LOW">低</option></select>
+          <label class="choice"><input id="identity" type="checkbox"> 已確認代理身分</label>
+          <p class="help">根因與改善（事後報告第 6 段）。自由文字不要寫憑證、ticket、誘餌原文、Email、電話或姓名；命中時整筆被拒，不會自動遮蔽。送出後結束輸入不能再改。</p>
+          <label for="rc-detection-finding">偵測：發現</label><textarea id="rc-detection-finding" rows="2" maxlength="1000"></textarea>
+          <label for="rc-detection-improvement">偵測：改善</label><textarea id="rc-detection-improvement" rows="2" maxlength="1000"></textarea>
+          <label for="rc-wrongTicket-finding">錯誤 ticket：發現</label><textarea id="rc-wrongTicket-finding" rows="2" maxlength="1000"></textarea>
+          <label for="rc-wrongTicket-improvement">錯誤 ticket：改善</label><textarea id="rc-wrongTicket-improvement" rows="2" maxlength="1000"></textarea>
+          <label for="rc-notification-finding">通知：發現</label><textarea id="rc-notification-finding" rows="2" maxlength="1000"></textarea>
+          <label for="rc-notification-improvement">通知：改善</label><textarea id="rc-notification-improvement" rows="2" maxlength="1000"></textarea>
+          <label for="rc-response-finding">處置：發現</label><textarea id="rc-response-finding" rows="2" maxlength="1000"></textarea>
+          <label for="rc-response-improvement">處置：改善</label><textarea id="rc-response-improvement" rows="2" maxlength="1000"></textarea>
+          <label for="rc-documentation-finding">文件：發現</label><textarea id="rc-documentation-finding" rows="2" maxlength="1000"></textarea>
+          <label for="rc-documentation-improvement">文件：改善</label><textarea id="rc-documentation-improvement" rows="2" maxlength="1000"></textarea>
+          <label for="owner">後續負責人（角色）</label><input id="owner" maxlength="120" autocomplete="off">
+        </div>
+        <label class="choice"><input id="confirm" type="checkbox"> 我已核對動作、對象與影響，確定送出</label>
+        <button id="decide-button" type="submit">送出決策</button>
+      </form>
+      <div id="decision-result" class="message" role="status" aria-live="polite" hidden></div>
+      <h3>已送出的決策</h3><ul id="decisions" class="list"></ul>
+    </section>
+  </main>
+</body>
+</html>

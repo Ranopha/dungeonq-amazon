@@ -1,0 +1,198 @@
+name: ${DUNGEONQ_PROJECT:?Run the participant lab preparer first}
+
+# Participant lab: the four reference services plus one participant container and one A2 second-real-path container.
+# Profile `script` adds the scripted participant with no egress at all.
+# Profile `model` adds the model participant and the CONNECT allowlist proxy; it is never enabled by default.
+# A2 is present in every arm: a synthetic real asset that does not go through DungeonQ. It joins only the internal
+# `a2` network, which otherwise holds just the participant, so A2 can never reach the gateway, origin or collector.
+
+x-hardened: &hardened
+  image: dungeonq-runtime-reference:${DUNGEONQ_PROJECT:?}
+  user: "${DUNGEONQ_UID:?}:${DUNGEONQ_GID:?}"
+  read_only: true
+  init: true
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  pids_limit: 64
+  mem_limit: 160m
+  cpus: 0.25
+  restart: "no"
+  tmpfs: ["/tmp:rw,noexec,nosuid,nodev,size=16777216,mode=1777"]
+
+x-participant: &participant
+  image: dungeonq-participant:${DUNGEONQ_PROJECT:?}
+  user: "${DUNGEONQ_PARTICIPANT_UID:?}:${DUNGEONQ_PARTICIPANT_GID:?}"
+  read_only: true
+  init: true
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  pids_limit: 32
+  mem_limit: 128m
+  cpus: 0.25
+  restart: "no"
+  tmpfs: ["/tmp:rw,noexec,nosuid,nodev,size=8388608,mode=1777"]
+  command: [timeout, -k, "15", "${DUNGEONQ_LIFETIME_SECONDS:?}", node, /opt/participant/client.mjs, idle, /run/participant/participant.json]
+  volumes:
+    - type: volume
+      source: participant-config
+      target: /run/participant
+      read_only: true
+  networks: [participant, a2]
+
+services:
+  gateway:
+    <<: *hardened
+    mem_limit: 512m
+    cpus: 0.75
+    # Every service has a bounded lifetime even if nobody stops the lab.
+    command:
+      - timeout
+      - -k
+      - "15"
+      - "${DUNGEONQ_LIFETIME_SECONDS:?}"
+      - node
+      - --input-type=module
+      - -e
+      - >-
+        import {readFileSync,lstatSync} from 'node:fs';
+        import {startRuntimeGateway} from './runtime/server.mjs';
+        const path='/run/dungeonq/gateway.json';
+        const mode=lstatSync(path);
+        if(!mode.isFile()||mode.isSymbolicLink()||(mode.mode&0o077))throw new Error('PRIVATE_CONFIG_REQUIRED');
+        const gateway=await startRuntimeGateway(JSON.parse(readFileSync(path,'utf8')));
+        console.log(JSON.stringify({ready:true,role:'gateway'}));
+        let stopping=false;
+        async function stop(){if(stopping)return;stopping=true;await gateway.close();}
+        process.once('SIGTERM',stop);process.once('SIGINT',stop);
+    volumes:
+      - type: volume
+        source: gateway-config
+        target: /run/dungeonq
+        read_only: true
+      - gateway-state:/state
+    networks:
+      # The signed canonical port binds only to this alias, which exists only on the world network.
+      world:
+        aliases: [gateway-state]
+      origin: {}
+      evidence: {}
+      participant: {}
+  facade:
+    <<: *hardened
+    command: [timeout, -k, "15", "${DUNGEONQ_LIFETIME_SECONDS:?}", node, runtime/service-process.mjs, /run/dungeonq/facade.json]
+    volumes:
+      - type: volume
+        source: facade-config
+        target: /run/dungeonq
+        read_only: true
+    networks: [world]
+  origin:
+    <<: *hardened
+    command: [timeout, -k, "15", "${DUNGEONQ_LIFETIME_SECONDS:?}", node, runtime/service-process.mjs, /run/dungeonq/origin.json]
+    volumes:
+      - type: volume
+        source: origin-config
+        target: /run/dungeonq
+        read_only: true
+      - origin-state:/state
+    networks: [origin]
+  collector:
+    <<: *hardened
+    command: [timeout, -k, "15", "${DUNGEONQ_LIFETIME_SECONDS:?}", node, runtime/service-process.mjs, /run/dungeonq/collector.json]
+    volumes:
+      - type: volume
+        source: collector-config
+        target: /run/dungeonq
+        read_only: true
+      - collector-state:/state
+    networks: [evidence]
+  participant:
+    <<: *participant
+    profiles: [script]
+    depends_on: [gateway]
+  participant-model:
+    <<: *participant
+    profiles: [model]
+    depends_on: [gateway, egress]
+    environment:
+      HTTPS_PROXY: http://egress:3128
+      NO_PROXY: gateway
+      NODE_USE_ENV_PROXY: "1"
+      # Supplied only through the runner's process environment for this mode; never written to a file or image.
+      OPENAI_API_KEY: ${DUNGEONQ_MODEL_API_KEY:-}
+  egress:
+    image: dungeonq-egress:${DUNGEONQ_PROJECT:?}
+    user: "${DUNGEONQ_EGRESS_UID:?}:${DUNGEONQ_EGRESS_GID:?}"
+    profiles: [model]
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 32
+    mem_limit: 96m
+    cpus: 0.25
+    restart: "no"
+    tmpfs: ["/tmp:rw,noexec,nosuid,nodev,size=4194304,mode=1777"]
+    command: [timeout, -k, "15", "${DUNGEONQ_LIFETIME_SECONDS:?}", node, /opt/egress/proxy.mjs, /run/egress/egress.json]
+    volumes:
+      - type: volume
+        source: egress-config
+        target: /run/egress
+        read_only: true
+    networks: [participant, egress-out]
+  # Second real path A2 (DQ-HANDOFF-015 M8): a synthetic real asset not behind DungeonQ, present in every arm.
+  a2:
+    image: dungeonq-a2:${DUNGEONQ_PROJECT:?}
+    user: "${DUNGEONQ_A2_UID:?}:${DUNGEONQ_A2_GID:?}"
+    profiles: [script, model]
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 32
+    mem_limit: 96m
+    cpus: 0.25
+    restart: "no"
+    tmpfs: ["/tmp:rw,noexec,nosuid,nodev,size=4194304,mode=1777"]
+    command: [timeout, -k, "15", "${DUNGEONQ_LIFETIME_SECONDS:?}", node, /opt/a2/asset.mjs, /run/a2/a2.json]
+    volumes:
+      - type: volume
+        source: a2-config
+        target: /run/a2
+        read_only: true
+    networks: [a2]
+
+networks:
+  world: {internal: true}
+  origin: {internal: true}
+  evidence: {internal: true}
+  participant: {internal: true}
+  # A2 lives on its own internal network; only the participant also joins it.
+  a2: {internal: true}
+  # Only the model-mode egress proxy joins this routable network.
+  egress-out: {}
+volumes:
+  gateway-config:
+    external: true
+    name: ${DUNGEONQ_PROJECT:?}_gateway-config
+  facade-config:
+    external: true
+    name: ${DUNGEONQ_PROJECT:?}_facade-config
+  origin-config:
+    external: true
+    name: ${DUNGEONQ_PROJECT:?}_origin-config
+  collector-config:
+    external: true
+    name: ${DUNGEONQ_PROJECT:?}_collector-config
+  participant-config:
+    external: true
+    name: ${DUNGEONQ_PROJECT:?}_participant-config
+  a2-config:
+    external: true
+    name: ${DUNGEONQ_PROJECT:?}_a2-config
+  egress-config:
+    external: true
+    name: ${DUNGEONQ_PROJECT:?}_egress-config
+  gateway-state: {}
+  origin-state: {}
+  collector-state: {}

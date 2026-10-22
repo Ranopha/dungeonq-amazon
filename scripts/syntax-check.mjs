@@ -6,7 +6,7 @@ import { promisify } from 'node:util';
 import { PUBLIC_SOURCE_PATHS } from './lib/distribution-export.mjs';
 
 const execute = promisify(execFile);
-const excluded = new Set(['node_modules', '.git', 'dist', '.next', '.vinext', '.wrangler', '__pycache__', 'vendor', '.local']);
+const excluded = new Set(['node_modules', '.git', 'dist', '.next', '.vinext', '.wrangler', '__pycache__']);
 export async function checkSyntax({ root = fileURLToPath(new URL('../', import.meta.url)), paths = [...PUBLIC_SOURCE_PATHS, 'scripts', 'astra-site'], concurrency = 4 } = {}) {
   root = resolve(root); const files = new Set();
   async function collect(path) {

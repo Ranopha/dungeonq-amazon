@@ -1,0 +1,14 @@
+# A2 image (DQ-HANDOFF-015 M8): Node runtime and the A2 asset server only. No DungeonQ runtime source,
+# no dependencies or control credentials. Guarded v2 fetches the target from the shared authority;
+# only the explicit legacy v1 profile carries a fixed artificial payload.
+FROM node:24.15.0-bookworm-slim@sha256:4e6b70dd6cbfc88c8157ba19aa3d9f9cce6ba4703576d55459e45efcbc9c5f5d
+ARG A2_UID=64103
+ARG A2_GID=64103
+WORKDIR /opt/a2
+COPY a2-asset.mjs ./asset.mjs
+RUN mkdir -p /run/a2 && chmod 755 /run/a2 && chmod 644 /opt/a2/asset.mjs
+ENV NODE_ENV=production HOME=/tmp
+USER ${A2_UID}:${A2_GID}
+ARG SOURCE_DIGEST
+LABEL org.dungeonq.profile="participant-lab-v1" org.dungeonq.role="a2" org.dungeonq.source-digest="${SOURCE_DIGEST}"
+CMD ["node", "/opt/a2/asset.mjs", "/run/a2/a2.json"]

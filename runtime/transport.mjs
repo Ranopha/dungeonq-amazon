@@ -55,8 +55,9 @@ export async function body(req, limit = 32768) {
   try { return runtimeJson(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(chunks))),limit); }
   catch { throw failure('JSON_INVALID'); }
 }
-export async function serve(handler, { host = '127.0.0.1', port = 0, browser = false, before,
+export async function serve(handler, { host = '127.0.0.1', port = 0, browser = false, before, ackNavigation = false,
   protectedRequest, requestLimit = 12000, protectedRequestLimit = 1200 } = {}) {
+  insist(typeof ackNavigation === 'boolean' && (!ackNavigation || browser && host === '127.0.0.1'), 'ACK_NAVIGATION_INVALID');
   const lanes = {shared: {active:0, requests:0, until:0}, control: {active:0, requests:0, until:0}};
   const server = http.createServer({ maxHeaderSize: 8192 }, async (req, res) => {
     let admitted = false; let finish; let caught; let lane;
@@ -71,7 +72,13 @@ export async function serve(handler, { host = '127.0.0.1', port = 0, browser = f
       if (host === '127.0.0.1') insist(expected === `127.0.0.1:${server.address().port}` && req.socket.remoteAddress === '127.0.0.1', 'HOST_DENIED');
       if (browser) insist(!req.headers.origin || req.headers.origin === `http://${expected}`, 'ORIGIN_DENIED');
       else insist(!req.headers.origin && !req.headers.cookie, 'BROWSER_DENIED');
-      insist(!req.headers['sec-fetch-site'] || ['same-origin', 'none'].includes(req.headers['sec-fetch-site']), 'ORIGIN_DENIED');
+      // 告警連結從 webmail／LINE 導入時屬跨站導航。只放行 ACK 登入文件的頂層 GET；
+      // 不開放 fetch、iframe、資源載入或任何 POST，也不改變 Host／Origin／登入驗證。
+      const ackDocument = ackNavigation && req.method === 'GET' && !req.headers.origin
+        && req.headers['sec-fetch-mode'] === 'navigate' && req.headers['sec-fetch-dest'] === 'document'
+        && /^\/ack\/incident-[a-f0-9]{64}\/[A-Za-z0-9_-]{43}$/.test(req.url ?? '');
+      insist(!req.headers['sec-fetch-site'] || ['same-origin', 'none'].includes(req.headers['sec-fetch-site'])
+        || ['cross-site', 'same-site'].includes(req.headers['sec-fetch-site']) && ackDocument, 'ORIGIN_DENIED');
       insist(typeof req.url === 'string' && req.url.length <= 256 && /^\/[A-Za-z0-9_./-]*$/.test(req.url), 'PATH_DENIED');
       finish = before?.(req);
       await handler(req, res);
