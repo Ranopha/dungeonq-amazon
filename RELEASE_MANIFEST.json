@@ -2,8 +2,8 @@
   "schemaVersion": "dungeonq.source-release/v1",
   "profile": "SYNTHETIC_ONLY",
   "privateHistoryIncluded": false,
-  "sourceCommit": "841bf24c39d278f4279720933217301f5ab7e3bf",
-  "generatedAt": "2026-10-22T07:03:44.820Z",
+  "sourceCommit": "ebf79ba216a6a7199dd3e5a67de24b27f8d261f8",
+  "generatedAt": "2026-10-22T07:18:52.754Z",
   "entries": [
     {
       "path": ".github/workflows/ci.yml",
@@ -372,8 +372,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 27211,
-      "sha256": "672fc86d0c710f9373ac742ecb5f9d0507f7d961b33c11c7f95cf20b35a16f26"
+      "bytes": 27820,
+      "sha256": "9545d14d2aaf3b0dc460b27e617da5e840ee65537a15caf2b0604bcaf6fb900b"
     },
     {
       "path": "docs/WORKSPACE_LAB.md",
@@ -477,8 +477,8 @@
     },
     {
       "path": "evidence/final-20261022/runtime-import.json",
-      "bytes": 45462,
-      "sha256": "c407a28e6d662f276db4d29459ca1b126ed78bc7c280115534b017627148e4cf"
+      "bytes": 46067,
+      "sha256": "16a49516bc330e5daf733549baaf4a4877f93e1175807ab00e71208c7f814689"
     },
     {
       "path": "evidence/final-20261022/sol-m8.json",
@@ -1438,7 +1438,7 @@
     {
       "path": "SBOM.cdx.json",
       "bytes": 65614,
-      "sha256": "fa39f64a2b7007f50e30c2bc316f685be23c80510979c3d354d057d9ac145fe1"
+      "sha256": "6e8b96b98e95d5a0040e5b2566abc32dc991948aca1fa153f1ef46696bdaaf69"
     },
     {
       "path": "scripts/amazon.mjs",
@@ -2197,8 +2197,8 @@
     },
     {
       "path": "tests/runtime-pitch-control.test.mjs",
-      "bytes": 22225,
-      "sha256": "301e6aa14cf68a4152243dd43e77c5837743ce3bbf17e8336ac5fd63ae63e906"
+      "bytes": 22580,
+      "sha256": "8312081b90629e2b38e943b23a33baea7e816ddfc45cb0f679c9ebb15a260822"
     },
     {
       "path": "tests/runtime-pitch-owner-lock.test.mjs",
@@ -2227,8 +2227,8 @@
     },
     {
       "path": "tests/runtime-pitching-handoff-gateway.test.mjs",
-      "bytes": 14609,
-      "sha256": "6fa999443497dc824f9babd60015c54ad63ad9837deafd4d4b188cac77e3d632"
+      "bytes": 14909,
+      "sha256": "c73d593a48fae05e2570a547b48e81de54f0b05195bfece06f991199f8b6a13e"
     },
     {
       "path": "tests/runtime-pitching-handoff.test.mjs",
