@@ -25,6 +25,8 @@ import { RESPONSE_WIRING_CONTEXT_ACCOUNT_PREFIX } from './response-wiring.mjs';
 import { openDungeonqWorkOrderStore } from './work-order.mjs';
 import { buildDrillCandidate, buildIncidentTraces, buildRuleCandidates, canonicalJson, checkSensitiveContent, evaluateRule, extractAttackPattern,
   openCandidateStore, POST_INCIDENT_SECTIONS, reportHeadings, sectionHeading } from './incident-review.mjs';
+import { legitHealthMeasurement } from './legit-consumer.mjs';
+import { evaluateDungeonqLegitimateHealth } from '../../packages/policy/src/dungeonq-response-action.ts';
 
 const INCIDENT = 'inc-m7-unit';
 const CLOSE_SCRIPT = fileURLToPath(new URL('./incident-close.mjs', import.meta.url));
@@ -252,6 +254,20 @@ test('C-1 上限：同一步最多執行 3 次，第 4 次直接停止；中途�
 
 const freezeTrail = caseDir => readCloseJournal(caseDir).entries.filter(entry => entry.step === 'FREEZE')
   .map(entry => (entry.kind === 'READBACK' ? `READBACK:${entry.check}` : entry.kind));
+
+test('每秒五個探測需等最後一個完成；延長觀察不丟棄慢樣本或放寬健康門檻', () => {
+  const baseline = Array.from({ length: 5 }, (_, i) => ({ phase: 'BEFORE', startedAt: -5000 + i * 1000, latencyMs: 100, ok: true }));
+  const probes = Array.from({ length: 5 }, (_, i) => ({ phase: 'AFTER', startedAt: (i + 1) * 1000, latencyMs: 190, ok: true }));
+  const read = (at, samples = probes) => {
+    const completed = [...baseline, ...samples].filter(row => row.startedAt + row.latencyMs <= at);
+    const measurement = legitHealthMeasurement(completed, { sinceMs: 0, measuredAtMs: at });
+    return evaluateDungeonqLegitimateHealth(measurement, new Date(at).toISOString());
+  };
+  assert.deepEqual(read(5000), { status: 'UNKNOWN', reason: 'health_insufficient_samples' });
+  assert.equal(read(7000).status, 'HEALTHY');
+  const slow = probes.map((row, i) => i === 4 ? { ...row, latencyMs: 450 } : row);
+  assert.deepEqual(read(7000, slow), { status: 'UNHEALTHY', reason: 'p95_latency_above_threshold' });
+});
 
 test('結案重跑不能以已封鎖 context 略過處置後延遲超標留下的停止狀態', async t => {
   let measurements = 0;

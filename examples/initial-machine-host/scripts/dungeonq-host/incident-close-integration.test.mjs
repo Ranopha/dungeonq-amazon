@@ -22,7 +22,7 @@ import { generateSealKey, SEAL_PUBLIC_KEY } from './evidence-sealer.mjs';
 import { CASE_FILES, createM1SealerPort, openIncidentClose, readCloseJournal, verifyIncidentCase } from './incident-close.mjs';
 import { createJournalWorldPort, createLegitConsumerPort, createLocalEvidencePort, createRuntimeRevocationPort } from './incident-local-ports.mjs';
 import { checkSensitiveContent, openCandidateStore, POST_INCIDENT_SECTIONS, reportHeadings, sectionHeading } from './incident-review.mjs';
-import { legitHealthMeasurement, startLegitConsumer } from './legit-consumer.mjs';
+import { LEGIT_CONSUMER_LIMITS, legitHealthMeasurement, startLegitConsumer } from './legit-consumer.mjs';
 import { openDungeonqWorkOrderStore } from './work-order.mjs';
 
 /*
@@ -37,7 +37,10 @@ import { openDungeonqWorkOrderStore } from './work-order.mjs';
 
 const INCIDENT = 'inc-m7-integration';
 const CONTEXT = 'ctx-flagged-1';
-const OBSERVATION_MS = 5_000;
+// 五個每秒起始的探測不保證在第五秒前全部完成；保留最後一個探測的完整請求期限。
+// 只調整本測試的觀察時間，所有 sinceMs 之後的樣本仍交給原有政策，不能丟棄慢樣本。
+const OBSERVATION_MS = DUNGEONQ_RESPONSE_ACTION_CATALOG.health.minSamples * LEGIT_CONSUMER_LIMITS.defaultIntervalMs
+  + LEGIT_CONSUMER_LIMITS.requestTimeoutMs;
 const waitUntil = async (predicate, timeoutMs, label) => {
   const deadline = Date.now() + timeoutMs;
   while (!(await predicate())) {
