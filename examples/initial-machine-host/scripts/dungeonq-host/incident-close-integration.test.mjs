@@ -22,7 +22,7 @@ import { generateSealKey, SEAL_PUBLIC_KEY } from './evidence-sealer.mjs';
 import { CASE_FILES, createM1SealerPort, openIncidentClose, readCloseJournal, verifyIncidentCase } from './incident-close.mjs';
 import { createJournalWorldPort, createLegitConsumerPort, createLocalEvidencePort, createRuntimeRevocationPort } from './incident-local-ports.mjs';
 import { checkSensitiveContent, openCandidateStore, POST_INCIDENT_SECTIONS, reportHeadings, sectionHeading } from './incident-review.mjs';
-import { legitHealthMeasurement, startLegitConsumer } from './legit-consumer.mjs';
+import { LEGIT_CONSUMER_LIMITS, legitHealthMeasurement, startLegitConsumer } from './legit-consumer.mjs';
 import { openDungeonqWorkOrderStore } from './work-order.mjs';
 
 /*
@@ -37,7 +37,10 @@ import { openDungeonqWorkOrderStore } from './work-order.mjs';
 
 const INCIDENT = 'inc-m7-integration';
 const CONTEXT = 'ctx-flagged-1';
-const OBSERVATION_MS = 5_000;
+// 五個每秒起始的探測不保證在第五秒前全部完成；保留最後一個探測的完整請求期限。
+// 只調整本測試的觀察時間，所有 sinceMs 之後的樣本仍交給原有政策，不能丟棄慢樣本。
+const OBSERVATION_MS = DUNGEONQ_RESPONSE_ACTION_CATALOG.health.minSamples * LEGIT_CONSUMER_LIMITS.defaultIntervalMs
+  + LEGIT_CONSUMER_LIMITS.requestTimeoutMs;
 const waitUntil = async (predicate, timeoutMs, label) => {
   const deadline = Date.now() + timeoutMs;
   while (!(await predicate())) {
@@ -52,6 +55,13 @@ test('LOCAL_PROOF_KERNEL：合成事件在合法消費者全程運作下執行 A
   const root = await mkdtemp(join(tmpdir(), 'dq-m7-integration-'));
   chmodSync(root, 0o700);
   let origin; let store; let pitch; let connector; let consumer;
+  const healthMeasurements = [];
+  const recentSamples = [];
+  const measureHealth = async (stage, { sinceMs }) => {
+    const measurement = await consumer.measure({ sinceMs });
+    healthMeasurements.push({ stage, sinceMs, ...measurement });
+    return measurement;
+  };
   try {
     await installHostLayout(root);
     const targetPath = join(root, dungeonqTargetRelativePath);
@@ -94,6 +104,12 @@ test('LOCAL_PROOF_KERNEL：合成事件在合法消費者全程運作下執行 A
     };
     consumer = startLegitConsumer({
       origin: origin.origin, consumerId: 'legit-1', bindingToken: credentials.binding, credential: credentials.business, fetchImpl: gatewayLikeFetch,
+      onEvent: event => {
+        if (event.kind === 'SAMPLE') {
+          recentSamples.push({ at: Date.now(), ...event });
+          if (recentSamples.length > 12) recentSamples.shift();
+        }
+      },
       durationMs: 5 * 60_000, probe: { operation: 'read', key: 'initial-machine-target', expectedContentsSha256: createHash('sha256').update(contents).digest('hex') }
     });
     const legitimate = createLegitConsumerPort({ consumer });
@@ -129,7 +145,7 @@ test('LOCAL_PROOF_KERNEL：合成事件在合法消費者全程運作下執行 A
       directory: join(root, 'ledger'), registry: () => registry,
       executors: createDungeonqResponseExecutors({ runtimeFence: store,
         fileOrigin: { origin: origin.origin, controlToken: credentials.control, credentialAssetId: 'credential:file-origin-business' } }),
-      health: { measure: ({ sinceMs }) => consumer.measure({ sinceMs }) },
+      health: { measure: args => measureHealth('connector', args) },
       escalate: async (escalation) => { escalations.push(escalation); },
       observationMs: OBSERVATION_MS
     });
@@ -151,7 +167,7 @@ test('LOCAL_PROOF_KERNEL：合成事件在合法消費者全程運作下執行 A
     assert.equal(decision.effect, 'ALLOW', decision.reason);
     const request = { incidentId: INCIDENT, actionCode: rotation.code, targetId: 'target:credential' };
     const rotated = await connector.execute({ decision, input, request, expectedState: await connector.readTargetState(request) });
-    assert.deepEqual([rotated.status, rotated.readback], ['EXECUTED', 'CONFIRMED'], rotated.reason);
+    assert.deepEqual([rotated.status, rotated.readback], ['EXECUTED', 'CONFIRMED'], JSON.stringify({ reason: rotated.reason, healthMeasurements, recentSamples }));
 
     // 一張 B 級工單。
     const workOrders = openDungeonqWorkOrderStore({ directory: join(root, 'work-orders'), responseLedger: connector.responseLedger });
@@ -187,7 +203,7 @@ test('LOCAL_PROOF_KERNEL：合成事件在合法消費者全程運作下執行 A
         workOrders, toolLog: () => toolLog }),
       sealer: createM1SealerPort({ db, sealDir, anchorRepo: anchor, publicKeyPath: join(sealDir, SEAL_PUBLIC_KEY), label: 'm7-integration' }),
       revocation: createRuntimeRevocationPort({ store, pitchControl: pitch, fileOrigin: { origin: origin.origin, controlToken: credentials.control } }),
-      response: { connector, registry: () => registry, health: { measure: ({ sinceMs }) => consumer.measure({ sinceMs }) },
+      response: { connector, registry: () => registry, health: { measure: args => measureHealth('close-policy', args) },
         signal: { kind: 'WRONG_TICKET_USED', eventId: 'evt-m7-close' } },
       notifier: { send: async (message) => { sent.push(message); return { status: 'SENT', receiptId: `synthetic-notice-${sent.length}` }; } },
       legitimate
@@ -210,7 +226,7 @@ test('LOCAL_PROOF_KERNEL：合成事件在合法消費者全程運作下執行 A
     const started = Date.now();
     const result = await closer.run();
     const closeMs = Date.now() - started;
-    assert.equal(result.status, 'CLOSED', JSON.stringify({ step: result.step, code: result.code, detail: result.detail }));
+    assert.equal(result.status, 'CLOSED', JSON.stringify({ step: result.step, code: result.code, detail: result.detail, healthMeasurements, recentSamples }));
 
     // C-1：第 0 步加五步依序完成。
     const journal = readCloseJournal(caseDir).entries;
@@ -266,7 +282,7 @@ test('LOCAL_PROOF_KERNEL：合成事件在合法消費者全程運作下執行 A
       revoke: result.results.REVOKE.kinds, fence: result.results.FENCE_DISPOSITION.decisions.map((row) => `${row.contextId}:${row.decision}`),
       notified: result.results.NOTIFY_AFFECTED, candidates: candidates.map((row) => `${row.kind}:${row.state}`),
       legitimate: Object.fromEntries(Object.entries(health.segments).map(([phase, row]) => [phase, `${row.successes}/${row.count}`])),
-      workOrders: 1, freeze: { health: fenceDecision.health, legitRoutes: routes, routesDuringClose: routes - routesBeforeClose }
+      workOrders: 1, freeze: { health: fenceDecision.health, healthMeasurements, legitRoutes: routes, routesDuringClose: routes - routesBeforeClose }
     };
     console.log(`DQ_M7_CLOSE ${JSON.stringify(summary)}`);
   } finally {

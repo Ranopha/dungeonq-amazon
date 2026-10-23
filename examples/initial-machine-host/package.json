@@ -16,7 +16,7 @@
     "prepare:runtime": "node --import tsx scripts/prepare-runtime.mjs",
     "demo:response": "node --import tsx scripts/judge-response-demo.mjs",
     "console:response": "node --import tsx scripts/demo-console.mjs",
-    "test:handoff": "node --import tsx --test scripts/dungeonq-host/source-response.test.mjs scripts/dungeonq-host/source-close.test.mjs scripts/dungeonq-host/human-source-handoff.test.mjs scripts/dungeonq-host/incident-close.test.mjs scripts/dungeonq-host/incident-close-integration.test.mjs scripts/dungeonq-host/incident-wiring.test.mjs",
+    "test:handoff": "node --import tsx --test --test-concurrency=1 scripts/dungeonq-host/source-response.test.mjs scripts/dungeonq-host/source-close.test.mjs scripts/dungeonq-host/human-source-handoff.test.mjs scripts/dungeonq-host/incident-close.test.mjs scripts/dungeonq-host/incident-close-integration.test.mjs scripts/dungeonq-host/incident-wiring.test.mjs",
     "demo:human-close:isolated": "node --import tsx scripts/dungeonq-host/human-source-close-isolated-test.mjs"
   },
   "dependencies": {
