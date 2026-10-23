@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-export const dungeonqRuntimeCommit = "ae3be61d3f25e9cbf0fd1d1b0eef260cccb5c2e4";
+export const dungeonqRuntimeCommit = "dd99765bf2148681467674237a59deb3a44d3c1c";
+const releasedV016RuntimeCommit = "ae3be61d3f25e9cbf0fd1d1b0eef260cccb5c2e4";
 export const dungeonqRuntimeVersion = "0.16.0";
 export const dungeonqRuntimePackage = "dungeonq-amazon";
 const realityV9RuntimeCommit = "ad5bbfecc164bbfd102d5df2c8c1733028f2d60b";
@@ -11,7 +12,7 @@ const historicalRuntimeCommit = "0e05d8180013314a0d99b7739636e2735ac42d79";
 const previousRuntimeCommit = "ddd9ed321df5532956fc865eeb4484eacbe1c82e";
 const runtimeIdentitySchema = z.object({
   sourceRelativePath: z.literal("vendor/dungeonq-runtime"),
-  commit: z.enum([historicalRuntimeCommit, previousRuntimeCommit, filmRuntimeCommit, realityV7RuntimeCommit, realityV8RuntimeCommit, realityV9RuntimeCommit, dungeonqRuntimeCommit]),
+  commit: z.enum([historicalRuntimeCommit, previousRuntimeCommit, filmRuntimeCommit, realityV7RuntimeCommit, realityV8RuntimeCommit, realityV9RuntimeCommit, releasedV016RuntimeCommit, dungeonqRuntimeCommit]),
   version: z.enum(["0.11.1", "0.12.0", "0.13.1", "0.15.0-dev.7", "0.15.0-dev.8", "0.15.0-dev.9", dungeonqRuntimeVersion])
 }).strict().refine(value => (value.commit === historicalRuntimeCommit && value.version === "0.11.1")
   || (value.commit === previousRuntimeCommit && value.version === "0.12.0")
@@ -19,6 +20,7 @@ const runtimeIdentitySchema = z.object({
   || (value.commit === realityV7RuntimeCommit && value.version === "0.15.0-dev.7")
   || (value.commit === realityV8RuntimeCommit && value.version === "0.15.0-dev.8")
   || (value.commit === realityV9RuntimeCommit && value.version === "0.15.0-dev.9")
+  || (value.commit === releasedV016RuntimeCommit && value.version === "0.16.0")
   || (value.commit === dungeonqRuntimeCommit && value.version === dungeonqRuntimeVersion), "RUNTIME_PAIR_INVALID");
 export const dungeonqTargetRelativePath = ".local/dungeonq-host/target/target.txt";
 export const dungeonqPursuitTargetRelativePath = ".local/dungeonq-host/target/response-fixture.bin";
@@ -111,7 +113,7 @@ export const rehearsalReportSchema = z.object({
     final: targetWitnessSchema
   }).strict(),
   runtime: z.object({
-    commit: z.enum([historicalRuntimeCommit, filmRuntimeCommit, realityV7RuntimeCommit, realityV8RuntimeCommit, realityV9RuntimeCommit, dungeonqRuntimeCommit]),
+    commit: z.enum([historicalRuntimeCommit, filmRuntimeCommit, realityV7RuntimeCommit, realityV8RuntimeCommit, realityV9RuntimeCommit, releasedV016RuntimeCommit, dungeonqRuntimeCommit]),
     version: z.enum(["0.11.1", "0.13.1", "0.15.0-dev.7", "0.15.0-dev.8", "0.15.0-dev.9", dungeonqRuntimeVersion]),
     evidenceStatus: z.enum(["PASS", "FAIL", "INCONCLUSIVE"])
   }).strict().refine(value => (value.commit === historicalRuntimeCommit && value.version === "0.11.1")
@@ -119,6 +121,7 @@ export const rehearsalReportSchema = z.object({
     || (value.commit === realityV7RuntimeCommit && value.version === "0.15.0-dev.7")
     || (value.commit === realityV8RuntimeCommit && value.version === "0.15.0-dev.8")
     || (value.commit === realityV9RuntimeCommit && value.version === "0.15.0-dev.9")
+    || (value.commit === releasedV016RuntimeCommit && value.version === "0.16.0")
     || (value.commit === dungeonqRuntimeCommit && value.version === dungeonqRuntimeVersion), "RUNTIME_PAIR_INVALID"),
   sessions: z.array(astraSessionSchema).max(8),
   providerError: z.string().regex(/^[A-Z][A-Z0-9_]{0,95}$/u).nullable()

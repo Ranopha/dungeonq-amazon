@@ -1,3 +1,10 @@
+# Unreleased — v0.16 tag acceptance correction
+
+- Check the durable incident/global automation halt before every pending closure step, including retries after an irreversible FENCE; missing state remains unknown.
+- Add three closure regressions, serialize the real-health handoff suite, and include sanitized latency samples/measurements in integration diagnostics. Health thresholds and live assertions are unchanged.
+- Pin ip-address 10.7.4 in both consumer lockfiles and update the host runtime pin; no advisory is suppressed.
+- See [diagnosis and evidence boundaries](docs/V016_TAG_DIAGNOSIS_20261023.md). Existing v0.16.0 release assets remain unchanged.
+
 # 0.16.0 — 2026-10-22
 
 - Import the shared source guard and selected human ACK/rotation/closure modules with provenance.

@@ -51,7 +51,7 @@ function closeInput({ incidentId = INCIDENT, contexts = ['ctx-a'], verdict = 'RE
  * 一個合成事件：ctx-a 被導入假世界，依序 snapshot → read → issue-ticket → use-ticket（每步相隔 1 秒）。
  * extra：同一事件另外仍在運作的 context；legit：掛上合法消費者替身（記錄停止順序與健康量測當下是否仍在運作）。
  */
-function lab(t, { verdict = 'REAL_INTRUSION', operations = true, flaggedOwners = [], extra = [], legit = false } = {}) {
+function lab(t, { verdict = 'REAL_INTRUSION', operations = true, flaggedOwners = [], extra = [], legit = false, connectorHealth = healthy } = {}) {
   const root = mkdtempSync(join(tmpdir(), 'dq-m7-close-')); chmodSync(root, 0o700);
   const db = join(root, 'host', 'runtime.sqlite'); const sealDir = join(root, 'sealer'); const anchor = join(root, 'anchor');
   const caseDir = join(root, 'case');
@@ -83,7 +83,7 @@ function lab(t, { verdict = 'REAL_INTRUSION', operations = true, flaggedOwners =
   const connector = openDungeonqResponseConnector({ directory: join(root, 'ledger'), registry: () => registry,
     executors: createDungeonqResponseExecutors({ runtimeFence: store,
       fileOrigin: { origin: 'http://127.0.0.1:9', controlToken: 'c'.repeat(32), credentialAssetId: 'credential:file-origin-business' } }),
-    health: { measure: async () => healthy() }, escalate: async escalation => { escalations.push(escalation); }, sleep: async () => {}, observationMs: 5000 });
+    health: { measure: connectorHealth }, escalate: async escalation => { escalations.push(escalation); }, sleep: async () => {}, observationMs: 5000 });
   const evidence = {
     collect: async ({ contexts }) => {
       const recorded = store.evidence();
@@ -252,6 +252,57 @@ test('C-1 上限：同一步最多執行 3 次，第 4 次直接停止；中途�
 
 const freezeTrail = caseDir => readCloseJournal(caseDir).entries.filter(entry => entry.step === 'FREEZE')
   .map(entry => (entry.kind === 'READBACK' ? `READBACK:${entry.check}` : entry.kind));
+
+test('結案重跑不能以已封鎖 context 略過處置後延遲超標留下的停止狀態', async t => {
+  let measurements = 0;
+  const l = lab(t, { legit: true, connectorHealth: async () => {
+    const measurement = healthy();
+    // 確定性重現：封鎖前健康，封鎖後超過原有 +200ms 門檻。保留真實政策與不可回復的 FENCE。
+    if (++measurements > 1) measurement.current.p95LatencyMs = 211;
+    return measurement;
+  } });
+  const first = await l.open().run();
+  assert.deepEqual([first.status, first.step, first.code], ['HALTED', 'FREEZE', 'FREEZE_FENCE_NOT_EXECUTED']);
+  assert.equal(first.detail.status, 'ROLLBACK_FAILED');
+  assert.match(first.detail.result, /legitimate_health_after_unhealthy:p95_latency_above_threshold/u);
+  assert.equal(l.connector.incidentStatus(INCIDENT).halted, true);
+  assert.equal(l.store.snapshot().contexts[0].state, 'FENCED');
+  assert.ok(l.escalations.some(row => row.priority === 'CRITICAL'));
+  const actions = l.connector.incidentStatus(INCIDENT).actions;
+  const second = await l.open().run();
+  assert.deepEqual([second.status, second.step, second.code], ['HALTED', 'FREEZE', 'CLOSE_AUTOMATION_HALTED']);
+  assert.deepEqual(l.connector.incidentStatus(INCIDENT).actions, actions, '重跑不得重做封鎖或改寫原始失敗');
+  assert.equal(measurements, 2, '停止狀態不可因重測健康而自動清除');
+  assert.ok(!l.log.some(([kind]) => kind === 'world.freeze' || kind === 'legit.stop'));
+  assert.equal(readIncidentCloseStatus(l.caseDir).steps.SEAL_EVIDENCE.state, 'PENDING');
+  assert.deepEqual(l.sent, []);
+});
+
+test('已完成 FREEZE 後若連接器停止，後續步驟與重跑都不得封存', async t => {
+  const l = lab(t, { legit: true });
+  let halt = false;
+  const response = { ...l.ports.response, connector: { ...l.connector, policyInputState: args => ({
+    ...l.connector.policyInputState(args), incidentAutomationHalted: halt
+  }) } };
+  const legitimate = { ...l.ports.legitimate, stop: async args => { await l.ports.legitimate.stop(args); halt = true; } };
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const result = await l.open({ response, legitimate }).run();
+    assert.deepEqual([result.status, result.step, result.code], ['HALTED', 'SEAL_EVIDENCE', 'CLOSE_AUTOMATION_HALTED']);
+  }
+  assert.equal(readIncidentCloseStatus(l.caseDir).steps.FREEZE.runs, 1);
+  assert.equal(readIncidentCloseStatus(l.caseDir).steps.REVOKE.state, 'PENDING');
+  assert.deepEqual(l.sent, []);
+});
+
+test('連接器停止狀態缺失時不能把 UNKNOWN 當成可以結案', async t => {
+  const l = lab(t, { legit: true });
+  const response = { ...l.ports.response, connector: { ...l.connector, policyInputState: () => ({}) } };
+  const result = await l.open({ response }).run();
+  assert.deepEqual([result.status, result.step, result.code], ['HALTED', 'FREEZE', 'CLOSE_AUTOMATION_STATE_UNKNOWN']);
+  assert.equal(l.store.snapshot().contexts[0].state, 'ACTIVE');
+  assert.equal(l.connector.incidentStatus(INCIDENT).actions.length, 0);
+  assert.deepEqual(l.sent, []);
+});
 
 test('第 0 步正向：合法消費者仍運作時經政策封鎖 context 並讀回，接著停止世界、最後停止合法消費者，之後才封存', async t => {
   const l = lab(t, { legit: true });

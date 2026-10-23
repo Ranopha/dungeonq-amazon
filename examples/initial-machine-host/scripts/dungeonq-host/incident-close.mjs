@@ -948,6 +948,13 @@ export function openIncidentClose({ directory, input, ports, sensitiveValues = [
         journal.append('STEP_STARTED', { step });
         let result;
         try {
+          // 包含重跑與已封鎖的 context：先讀連接器的持久停止狀態，不能因略過 A-1 而繼續結案。
+          const response = responsePort(ports);
+          const automation = await callPort('response.policyInputState', () => response.connector.policyInputState({
+            incidentId: caseInput.incidentId, evaluatedAt: iso(clock())
+          }), {}, limits.portTimeoutMs, signal);
+          insist(typeof automation?.incidentAutomationHalted === 'boolean', 'CLOSE_AUTOMATION_STATE_UNKNOWN');
+          insist(automation.incidentAutomationHalted === false, 'CLOSE_AUTOMATION_HALTED');
           result = await STEP_FUNCTIONS[step]({ caseInput, ports, directory, journal, limits, signal, results, clock, sensitiveValues });
         } catch (error) {
           const code = error instanceof IncidentCloseError ? error.code : errorCode(error);
